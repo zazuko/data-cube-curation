@@ -1,1 +1,1 @@
-# data-cube-source-curation
+# > RDF Data Cube curation service
