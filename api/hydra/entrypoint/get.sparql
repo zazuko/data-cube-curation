@@ -1,0 +1,17 @@
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+BASE <${this.env.BASE_URI}>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+construct
+{
+  <> ?p ?o .
+  ?o hydra:title ?label .
+}
+where
+{
+  <> ?p ?o .
+
+  OPTIONAL {
+    ?o hydra:title ?label
+  }
+}
