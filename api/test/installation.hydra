@@ -1,0 +1,14 @@
+With Class "http://localhost:5678/api#Installation" {
+    Expect Operation "http://localhost:5678/api#InstallOperation" {
+        Invoke {
+            Expect Status 201
+            Expect Header Location [entrypoint]
+
+            Follow [entrypoint]
+        }
+    }
+}
+
+With Class "https://rdf-cube-curation.described.at/Entrypoint" {
+    Expect Property "http://www.w3.org/ns/hydra/core#title" "Data Cube Curation"
+}

@@ -22,6 +22,7 @@ function hydraMiddleware () {
   return hydraBox.fromUrl('/api', 'file://' + path.join(__dirname, 'hydra/api.ttl'), {
     debug: true,
     sparqlEndpointUrl: process.env.SPARQL_ENDPOINT,
+    sparqlEndpointUpdateUrl: process.env.SPARQL_ENDPOINT,
     contextHeader: '/context/',
   })
 }

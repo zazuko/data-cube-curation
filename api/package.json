@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "eslint --ext ts . --quiet",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "hypertest-compiler test; hydra-validator e2e test/installation.hydra",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -43,6 +42,7 @@
     "eslint-plugin-jest": "^22.5.1",
     "jest": "^24.7.1",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "@hydrofoil/hypertest": "^0.3.0"
   }
 }

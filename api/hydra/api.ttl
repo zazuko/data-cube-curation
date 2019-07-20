@@ -9,8 +9,31 @@
 ## Entrypoint
 
 <api> a hydra:ApiDocumentation ;
-    hydra:entrypoint <> ;
-    hydra:supportedClass <api#Entrypoint> .
+  hydra:entrypoint <> ;
+  hydra:supportedClass
+    <api#Entrypoint> ,
+    <api#Installation> .
+
+<api#Installation> a hydra:Class ;
+  hydra:title "Data cube curation API setup" ;
+  hydra:supportedOperation [
+    a hydra-box:View, <api#InstallOperation> ;
+    hydra:method "POST" ;
+    hydra:title "Start installation" ;
+    code:implementedBy [
+      a hydra-box:middlewareChain ;
+      code:arguments (
+        [
+          a hydra-box:SparqlUpdate ;
+          hydra-box:source <file:hydra/install.ru>
+        ]
+        [
+          a code:EcmaScript ;
+          code:link <file:lib/installation/setResponseHeaders.js>
+        ]
+      )
+    ]
+  ].
 
 <api#Entrypoint> a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -22,11 +45,13 @@
   hydra:method "GET" ;
   code:implementedBy [
     a hydra-box:SparqlQuery ;
-    hydra-box:source <file:hydra/entrypoint/get.sparql>
+    hydra-box:source
+      <file:hydra/entrypoint/get.sparql> ,
+      <file:hydra/entrypoint/installation.get.rq>
   ] .
 
 ## End Entrypoint
 
 ## Express hooks
 
-<> a <api#Entrypoint> .
+<> a <api#Entrypoint>, <api#Installation> .
