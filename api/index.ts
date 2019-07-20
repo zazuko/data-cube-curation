@@ -38,10 +38,7 @@ Promise.resolve().then(async () => {
   }))
   app.use(await hydraMiddleware())
 
-  const server = app.listen(url.parse(baseUrl).port, () => {
-    const host = server.address().address
-    const port = server.address().port
-
+  app.listen(url.parse(baseUrl).port, () => {
     console.log(`listening at ${baseUrl}`)
   })
 }).catch(err => console.error(err))
