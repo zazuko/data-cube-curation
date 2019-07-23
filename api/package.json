@@ -25,12 +25,12 @@
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
-    "hydra-box": "git+https://github.com/zazuko/hydra-box.git",
+    "hydra-box": "^0.3",
     "express": "^4.17.1",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "dotenv-expand": "^5.1.0",
-    "sparql-http-client": "git+https://github.com/zazuko/sparql-http-client.git"
+    "sparql-http-client": "^1.1.1"
   },
   "devDependencies": {
     "lint-staged": "^8.2.1",
