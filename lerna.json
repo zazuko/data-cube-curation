@@ -2,9 +2,13 @@
   "packages": [
     "api"
   ],
-  "version": "0.0.0",
+  "version": "independent",
   "command": {
     "publish": {
+      "conventionalCommits": true
+    },
+    "version": {
+      "message": "chore: release new versions",
       "conventionalCommits": true
     }
   }
