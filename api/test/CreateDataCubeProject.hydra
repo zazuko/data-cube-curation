@@ -1,0 +1,31 @@
+With Class "http://localhost:5678/api#Entrypoint" {
+    Expect Operation "http://localhost:5678/api#CreateDataCubeProject"
+}
+
+With Operation "http://localhost:5678/api#CreateDataCubeProject" {
+    Invoke {
+        Header Content-Type "text/csv"
+
+        >>> @test/CreateDataCubeProject/sample-input.csv
+    } => {
+        Expect Status 201
+        Expect Header Location
+
+        Expect Class "http://localhost:5678/api#DataCubeProject" {
+            Expect Link "http://localhost:5678/api#DataCubeProject/csvwMetadata" {
+                Expect Header Content-Type "application/csvm+json"
+            }
+
+            Expect Property "http://localhost:5678/api#DataCubeProject/column" {
+                Expect Class "http://www.w3.org/ns/hydra/core#Collection"
+
+                Expect Property "http://www.w3.org/ns/hydra/core#member" {
+                    Expect Class "http://localhost:5678/api#DataCubeColumn"
+
+                    Expect Property "http://localhost:5678/api#DataCubeColumn/unmapped" true
+                    Expect Property "http://www.w3.org/ns/hydra/core#totalItems" 19
+                }
+            }
+        }
+    }
+}
