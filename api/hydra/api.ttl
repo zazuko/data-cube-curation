@@ -29,7 +29,7 @@
         ]
         [
           a code:EcmaScript ;
-          code:link <file:lib/installation/setResponseHeaders.js>
+          code:link <file:lib/installation/setResponseHeaders#default>
         ]
       )
     ]
