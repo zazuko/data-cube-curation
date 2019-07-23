@@ -4,8 +4,8 @@
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint --ext ts . --quiet",
-    "test": "hypertest-compiler test; hydra-validator e2e test/installation.hydra",
+    "pretest": "hypertest-compiler test",
+    "test": "hydra-validator e2e --docs test/installation.hydra.json http://localhost:5678",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -43,6 +43,8 @@
     "jest": "^24.7.1",
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
-    "@hydrofoil/hypertest": "^0.3.0"
+    "@hydrofoil/hypertest": "^0.3.0",
+    "hydra-validator": "^1.0.0",
+    "hydra-validator-e2e": "^0.2.0"
   }
 }
