@@ -1,7 +1,7 @@
 # TODO: get rid of base and provide from env variables
 @base <http://localhost:5678/> .
 
-@prefix : <https://rdf-cube-curation.described.at/> .
+@prefix api: <https://rdf-cube-curation.described.at/api#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
@@ -11,13 +11,13 @@
 <api> a hydra:ApiDocumentation ;
   hydra:entrypoint <> ;
   hydra:supportedClass
-    <api#Entrypoint> ,
-    <api#Installation> .
+    api:Entrypoint ,
+    api:Installation .
 
-<api#Installation> a hydra:Class ;
+api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
   hydra:supportedOperation [
-    a hydra-box:View, <api#InstallOperation> ;
+    a hydra-box:View, api:InstallOperation ;
     hydra:method "POST" ;
     hydra:title "Start installation" ;
     code:implementedBy [
@@ -35,11 +35,11 @@
     ]
   ].
 
-<api#Entrypoint> a hydra:Class ;
+api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
-  hydra:supportedOperation <api#Entrypoint/Get> .
+  hydra:supportedOperation api:EntrypointGetOperation .
 
-<api#Entrypoint/Get>
+api:EntrypointGetOperation
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:title "Get the entrypoint resource" ;
   hydra:method "GET" ;
@@ -54,4 +54,4 @@
 
 ## Express hooks
 
-<> a <api#Entrypoint>, <api#Installation> .
+<> a api:Entrypoint, api:Installation .
