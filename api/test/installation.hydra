@@ -1,5 +1,8 @@
-With Class "https://rdf-cube-curation.described.at/api#Installation" {
-    Expect Operation "https://rdf-cube-curation.described.at/api#InstallOperation" {
+PREFIX "api": <https://rdf-cube-curation.described.at/api#>
+PREFIX "hydra": <http://www.w3.org/ns/hydra/core#>
+
+With Class api:Installation {
+    Expect Operation api:InstallOperation {
         Invoke {
             Expect Status 201
             Expect Header Location [entrypoint]
@@ -9,6 +12,6 @@ With Class "https://rdf-cube-curation.described.at/api#Installation" {
     }
 }
 
-With Class "https://rdf-cube-curation.described.at/api#Entrypoint" {
-    Expect Property "http://www.w3.org/ns/hydra/core#title" "Data Cube Curation"
+With Class api:Entrypoint {
+    Expect Property hydra:title "Data Cube Curation"
 }
