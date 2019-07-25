@@ -22,11 +22,11 @@ With Operation api:CreateDataCubeProject {
             Expect Property api:DataCubeProject_column {
                 Expect Class hydra:Collection
 
+                Expect Property hydra:totalItems 19
                 Expect Property hydra:member {
                     Expect Class api:DataCubeColumn
 
                     Expect Property api:DataCubeColumn_unmapped true
-                    Expect Property hydra:totalItems 19
                 }
             }
         }
