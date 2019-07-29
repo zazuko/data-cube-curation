@@ -1,10 +1,11 @@
 BASE <${this.env.BASE_URI}>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX api: <https://rdf-cube-curation.described.at/api#>
 
 construct
 {
-  ?installation a <api#Installation> ;
+  ?installation a api:Installation ;
      hydra:title "Installation wizard" .
 }
 where

@@ -12,7 +12,8 @@
   hydra:entrypoint <> ;
   hydra:supportedClass
     api:Entrypoint ,
-    api:Installation .
+    api:Installation ,
+    api:DataCubeProjects.
 
 api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
@@ -52,6 +53,25 @@ api:EntrypointGetOperation
 
 ## End Entrypoint
 
+## Projects
+
+api:DataCubeProjects a hydra:Class ;
+  hydra:title "Data Cube Projects" ;
+   hydra:supportedOperation
+    api:CreateDataCubeProject .
+
+api:CreateDataCubeProject
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:title "Design an RDF data cube" ;
+  hydra:method "POST" ;
+  code:implementedBy [
+    a code:EcmaScript ;
+    code:link <file:lib/projects/create#default>
+  ] .
+
+## /End Projects
+
 ## Express hooks
 
 <> a api:Entrypoint, api:Installation .
+<projects> a api:DataCubeProjects .

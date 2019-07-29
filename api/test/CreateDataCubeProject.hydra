@@ -1,33 +1,35 @@
-PREFIX "api": <https://rdf-cube-curation.described.at/api#>
-PREFIX "hydra": <http://www.w3.org/ns/hydra/core#>
+PREFIX api: <https://rdf-cube-curation.described.at/api#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 With Class api:Entrypoint {
-    Expect Operation api:CreateDataCubeProject
+    Expect Property api:dataCubeProjects {
+        Expect Operation api:CreateDataCubeProject
+    }
 }
 
 With Operation api:CreateDataCubeProject {
     Invoke {
-        Header Content-Type "text/csv"
+        Content-Type "text/csv"
 
-        >>> @test/CreateDataCubeProject/sample-input.csv
+        <<< "bodies/UBD0028.Daten_de.csv"
     } => {
         Expect Status 201
         Expect Header Location
 
-        Expect Class api:DataCubeProject {
-            Expect Link api:DataCubeProject_csvwMetadata {
-                Expect Header Content-Type "application/csvm+json"
-            }
+        Expect Type api:DataCubeProject
 
-            Expect Property api:DataCubeProject_column {
-                Expect Class hydra:Collection
+        Expect Link api:DataCubeProject/csvwMetadata {
+            Expect Header Content-Type "application/csvm+json"
+        }
 
-                Expect Property hydra:totalItems 19
-                Expect Property hydra:member {
-                    Expect Class api:DataCubeColumn
+        Expect Property api:DataCubeProject/column {
+            Expect Type hydra:Collection
 
-                    Expect Property api:DataCubeColumn_unmapped true
-                }
+            Expect Property hydra:totalItems 19
+            Expect Property hydra:member {
+                Expect Type api:DataCubeColumn
+
+                Expect Property api:DataCubeColumn/unmapped true
             }
         }
     }
