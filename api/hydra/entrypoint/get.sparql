@@ -5,7 +5,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 construct
 {
   <> ?p ?o .
-  ?o hydra:title ?label .
+  ?o hydra:title ?label
+  ?o a ?type.
 }
 where
 {
@@ -13,5 +14,9 @@ where
 
   OPTIONAL {
     ?o hydra:title ?label
+  }
+
+  OPTIONAL {
+    ?o a ?type
   }
 }
