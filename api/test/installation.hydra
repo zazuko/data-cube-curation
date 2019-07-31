@@ -1,4 +1,4 @@
-PREFIX api: <https://rdf-cube-curation.described.at/api#>
+PREFIX api: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 With Class api:Installation {

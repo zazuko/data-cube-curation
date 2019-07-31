@@ -1,10 +1,11 @@
 # TODO: get rid of base and provide from env variables
 @base <http://localhost:5678/> .
 
-@prefix api: <https://rdf-cube-curation.described.at/api#> .
+@prefix api: <https://rdf-cube-curation.described.at/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix schema: <http://schema.org/> .
 
 ## Entrypoint
 
@@ -13,7 +14,9 @@
   hydra:supportedClass
     api:Entrypoint ,
     api:Installation ,
-    api:DataCubeProjects.
+    api:DataCubeProjects ,
+    api:DataCubeProject ,
+    api:DataCubeColumn .
 
 api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
@@ -57,21 +60,118 @@ api:EntrypointGetOperation
 
 api:DataCubeProjects a hydra:Class ;
   hydra:title "Data Cube Projects" ;
-   hydra:supportedOperation
-    api:CreateDataCubeProject .
+  hydra:supportedOperation
+    api:CreateDataCubeProject ,
+    api:GetDataCubeProjects .
+
+api:GetDataCubeProjects
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Get all projects" ;
+  code:implementedBy [
+    a hydra-box:SparqlQuery ;
+    hydra-box:source <file:hydra/projects/get.rq>, <file:hydra/projects/get.manages-block.rq>
+  ] .
 
 api:CreateDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:title "Design an RDF data cube" ;
   hydra:method "POST" ;
+  hydra:returns api:DataCubeProject ;
   code:implementedBy [
-    a code:EcmaScript ;
-    code:link <file:lib/projects/create#default>
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project/create#initProject>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project/create#processCsv>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project/create.ru>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project/create#setResponse>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/project/get.rq>
+      ]
+    )
   ] .
 
 ## /End Projects
+
+## Project
+
+@prefix api-projects: <https://rdf-cube-curation.described.at/DataCubeProject/> .
+
+api:DataCubeProject
+  a hydra:Class ;
+  hydra:title "A data cube mapping project" ;
+  hydra:supportedOperation
+    api:GetDataCubeProject ;
+  hydra:supportedProperty
+    [
+      hydra:property schema:name ;
+      hydra:title "Project name" ;
+      hydra:readable true ;
+      hydra:writable true
+    ] ,
+    [
+      hydra:property api-projects:columns ;
+      hydra:title "Spreadsheet Columns" ;
+      hydra:writable false
+    ] ;.
+
+api:GetDataCubeProject
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Get a project" ;
+  code:implementedBy [
+    a hydra-box:SparqlQuery ;
+    hydra-box:source <file:hydra/project/get.rq>
+  ] .
+
+## /End Project
+
+## Column
+
+@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeColumn/> .
+
+api:DataCubeColumn
+  a hydra:Class ;
+  hydra:title "Source column" ;
+  hydra:supportedProperty
+    [
+      hydra:property api-column:title ;
+      hydra:title "Column heading"
+    ] ,
+    [
+      hydra:property api-column:mapped ;
+      hydra:title "Mapped" ;
+      hydra:description "Indicates that the column is used in a dimension or measure."
+    ].
+
+## /End Column
 
 ## Express hooks
 
 <> a api:Entrypoint, api:Installation .
 <projects> a api:DataCubeProjects .
+
+# TODO: this shows how the route definition will often be split into a template and express route. only template should be necessary
+</project/:projectId> a api:DataCubeProject .
+[ ]
+  a hydra:IriTemplate ;
+  hydra:template "/project/{projectId}" ;
+  hydra:mapping
+  [
+    a hydra:IriTemplateMapping ;
+    hydra:variable "projectId" ;
+    hydra:property <http://schema.org/id>
+  ].
