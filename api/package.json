@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "hypertest-compiler test",
-    "test": "dotenv npm run hypertest",
-    "hypertest": "hydra-validator e2e --docs test/installation.hydra.json $BASE_URI",
+    "test": "dotenv test/run.sh",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -48,8 +47,8 @@
     "ts-jest": "^24.0.2",
     "typescript": "^3.4.5",
     "@hydrofoil/hypertest": "^0.4.0",
-    "hydra-validator": "^1.0.1",
-    "hydra-validator-e2e": "^0.2.0",
+    "hydra-validator": "^1.0.3",
+    "hydra-validator-e2e": "^0.3.0",
     "dotenv-cli": "^2.0.1"
   }
 }
