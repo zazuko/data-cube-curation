@@ -32,7 +32,8 @@
     "dotenv-expand": "^5.1.0",
     "sparql-http-client": "^1.1.1",
     "csv-parse": "^4.4.3",
-    "body-parser": "^1.19.0"
+    "body-parser": "^1.19.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "lint-staged": "^8.2.1",
