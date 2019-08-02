@@ -4,9 +4,9 @@
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint --ext ts . --quiet",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "pretest": "hypertest-compiler test",
+    "test": "dotenv npm run hypertest",
+    "hypertest": "hydra-validator e2e --docs test/installation.hydra.json $BASE_URI",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -24,6 +24,14 @@
     "url": "https://github.com/zazuko/data-cube-curation/issues"
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
+  "dependencies": {
+    "hydra-box": "^0.3",
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "dotenv-expand": "^5.1.0",
+    "sparql-http-client": "^1.1.1"
+  },
   "devDependencies": {
     "lint-staged": "^8.2.1",
     "eslint": "^5.16.0",
@@ -35,6 +43,10 @@
     "eslint-plugin-jest": "^22.5.1",
     "jest": "^24.7.1",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "@hydrofoil/hypertest": "^0.3.0",
+    "hydra-validator": "^1.0.1",
+    "hydra-validator-e2e": "^0.2.0",
+    "dotenv-cli": "^2.0.1"
   }
 }
