@@ -1,6 +1,7 @@
 PREFIX api: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 With Class api:Entrypoint {
     Expect Property api:dataCubeProjects {
@@ -22,6 +23,19 @@ With Operation api:CreateDataCubeProject {
 
         Expect Link api:DataCubeProject/csvwMetadata {
             Expect Header Content-Type "application/csvm+json"
+            Expect Status 200
+
+            Expect Property csvw:tableSchema {
+                Expect Property csvw:columns {
+                    Expect Property csvw:suppressOutput true
+                }
+
+                With Property csvw:columns {
+                    //When Property csvw:titles Equals "station_id"
+
+                    Expect Property csvw:propertyUrl "http://environment.data.admin.ch/ubd/28/station_id"
+                }
+            }
         }
 
         Expect Property api:DataCubeProject/columns {

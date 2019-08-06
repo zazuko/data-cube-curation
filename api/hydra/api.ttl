@@ -108,7 +108,7 @@ api:CreateDataCubeProject
 
 ## Project
 
-@prefix api-projects: <https://rdf-cube-curation.described.at/DataCubeProject/> .
+@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 
 api:DataCubeProject
   a hydra:Class ;
@@ -123,7 +123,7 @@ api:DataCubeProject
       hydra:writable true
     ] ,
     [
-      hydra:property api-projects:columns ;
+      hydra:property api-project:columns ;
       hydra:title "Spreadsheet Columns" ;
       hydra:writable false
     ] ;.
