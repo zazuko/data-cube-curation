@@ -1,0 +1,30 @@
+${(() => {
+    this.projectId = this.locals.projectId || `${process.env.BASE_URI}project/${projectId}`
+    return ''
+})()}
+
+BASE <https://rdf-cube-curation.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+CONSTRUCT
+{
+    <${this.projectId}> <DataCubeProject/columns> <${this.projectId}/columns> .
+    <${this.projectId}/columns>
+        hydra:member ?column ;
+        a hydra:Collection ;
+        hydra:totalItems ?count .
+
+    ?column ?p ?o .
+}
+WHERE
+{
+    <${this.projectId}> <DataCubeProject/column> ?column .
+
+    ?column ?p ?o .
+
+    {
+        SELECT (COUNT(?column) as ?count) WHERE {
+            <${this.projectId}> <DataCubeProject/column> ?column .
+        }
+    }
+}

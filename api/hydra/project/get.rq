@@ -8,15 +8,8 @@ BASE <https://rdf-cube-curation.described.at/>
 CONSTRUCT
 {
     <${this.projectId}> ?pp ?po .
-    <${this.projectId}> <DataCubeProject/columns> ?columns .
-    ?columns ?cp ?co .
-    ?co ?cop ?coo .
 }
 WHERE
 {
     <${this.projectId}> ?pp ?po .
-    <${this.projectId}> <DataCubeProject/columns> ?columns .
-
-    ?columns ?cp ?co .
-    OPTIONAL { ?co ?cop ?coo . }
 }

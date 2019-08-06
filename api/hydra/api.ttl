@@ -99,7 +99,7 @@ api:CreateDataCubeProject
       ]
       [
         a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project/get.rq>
+        hydra-box:source <file:hydra/project/get.rq>, <file:hydra/project/get.columns.rq>
       ]
     )
   ] .
@@ -134,7 +134,7 @@ api:GetDataCubeProject
   hydra:title "Get a project" ;
   code:implementedBy [
     a hydra-box:SparqlQuery ;
-    hydra-box:source <file:hydra/project/get.rq>
+    hydra-box:source <file:hydra/project/get.rq>, <file:hydra/project/get.columns.rq>
   ] .
 
 ## /End Project
