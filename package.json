@@ -5,7 +5,7 @@
     "start:api": "(cd api; ts-node index.ts)",
     "postinstall": "lerna bootstrap",
     "test": "lerna run test",
-    "version": "standard-changelog && git add CHANGELOG.md"
+    "version": "standard-changelog"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.0.0",
