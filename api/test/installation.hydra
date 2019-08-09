@@ -1,5 +1,6 @@
 PREFIX api: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
 
 With Class api:Installation {
     Expect Operation api:InstallOperation {
@@ -14,5 +15,12 @@ With Class api:Installation {
 
 With Class api:Entrypoint {
     Expect Property hydra:title "Data Cube Curation"
-    Expect Property api:dataCubeProjects
+    Expect Link api:dataCubeProjects
+}
+
+With Link api:dataCubeProjects {
+    Expect Property hydra:member {
+        Expect Type api:DataCubeProject
+        Expect Property schema:name
+    }
 }

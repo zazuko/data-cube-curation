@@ -9,12 +9,18 @@ CONSTRUCT {
         a hydra:Collection ;
         hydra:member ?project ;
         hydra:totalItems ?count .
+
+    ?project
+        schema:name ?projectName ;
+        a ?projectType.
 }
 WHERE {
   resource:projects ?p ?o .
 
   OPTIONAL {
       ?project a <DataCubeProject> .
+      ?project schema:name ?projectName .
+      ?project a ?projectType .
 
       {
         SELECT (COUNT(?p) as ?count) WHERE {
