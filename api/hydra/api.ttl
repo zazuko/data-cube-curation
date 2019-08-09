@@ -41,7 +41,14 @@ api:Installation a hydra:Class ;
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
-  hydra:supportedOperation api:EntrypointGetOperation .
+  hydra:supportedOperation api:EntrypointGetOperation ;
+  hydra:supportedProperty
+    [
+      hydra:property api:dataCubeProjects ;
+      hydra:title "Projects" ;
+      hydra:readable true ;
+      hydra:writable false
+    ].
 
 api:EntrypointGetOperation
   a hydra:SupportedOperation, hydra-box:View ;
@@ -53,6 +60,8 @@ api:EntrypointGetOperation
       <file:hydra/entrypoint/get.sparql> ,
       <file:hydra/entrypoint/installation.get.rq>
   ] .
+
+api:dataCubeProjects a hydra:Link .
 
 ## End Entrypoint
 
