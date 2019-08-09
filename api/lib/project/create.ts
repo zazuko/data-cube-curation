@@ -33,6 +33,5 @@ export function processCsv (req, res, next) {
 export function setResponse (req, res, next) {
   res.status(201)
   res.setHeader('Location', res.locals.projectId)
-  res.setLink(res.locals.projectId, 'canonical')
   next()
 }
