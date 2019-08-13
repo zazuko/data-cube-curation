@@ -45,6 +45,7 @@ With Operation api:CreateDataCubeProject {
             Expect Property hydra:member {
                 Expect Type api:DataCubeColumn
 
+                Expect Property api:DataCubeColumn/title
                 Expect Property api:DataCubeColumn/mapped false
             }
         }

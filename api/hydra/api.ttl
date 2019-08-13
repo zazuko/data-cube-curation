@@ -6,6 +6,7 @@
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
+@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 
 ## Entrypoint
 
@@ -16,7 +17,8 @@
     api:Installation ,
     api:DataCubeProjects ,
     api:DataCubeProject ,
-    api:DataCubeColumn .
+    api:DataCubeColumn ,
+    api-project:CsvwMetadata .
 
 api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
@@ -117,8 +119,6 @@ api:CreateDataCubeProject
 
 ## Project
 
-@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
-
 api:DataCubeProject
   a hydra:Class ;
   hydra:title "A data cube mapping project" ;
@@ -135,7 +135,14 @@ api:DataCubeProject
       hydra:property api-project:columns ;
       hydra:title "Spreadsheet Columns" ;
       hydra:writable false
-    ] ;.
+    ],
+    [
+      hydra:property api-project:csvwMetadata ;
+      hydra:title "CSVW table mapping" ;
+      hydra:writable false
+    ] .
+
+api-project:csvwMetadata a hydra:Link .
 
 api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
@@ -144,6 +151,24 @@ api:GetDataCubeProject
   code:implementedBy [
     a hydra-box:SparqlQuery ;
     hydra-box:source <file:hydra/project/get.rq>, <file:hydra/project/get.columns.rq>
+  ] .
+
+api-project:CsvwMetadata
+  a hydra:Class ;
+  hydra:supportedOperation
+    api-project:GetCsvwMetadata .
+
+api-project:GetCsvwMetadata
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project/csvw#projectMappings>
+      ]
+    )
   ] .
 
 ## /End Project
@@ -175,9 +200,10 @@ api:DataCubeColumn
 
 # TODO: this shows how the route definition will often be split into a template and express route. only template should be necessary
 </project/:projectId> a api:DataCubeProject .
+</project/:projectId/csvw> a api-project:CsvwMetadata .
 [ ]
   a hydra:IriTemplate ;
-  hydra:template "/project/{projectId}" ;
+  hydra:template "/project/{projectId}{/csvw}" ;
   hydra:mapping
   [
     a hydra:IriTemplateMapping ;
