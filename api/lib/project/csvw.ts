@@ -25,7 +25,7 @@ SELECT *
     columns.forEach(column => {
       tableSchema.addOut(csvw.columns, csvwColumn => {
         csvwColumn.addOut(csvw.titles, column.title.value)
-        csvwColumn.addOut(csvw.suppressOutput, graph.node('true', { datatype: xsd.Boolean }))
+        csvwColumn.addOut(csvw.suppressOutput, graph.node('true', { datatype: xsd.boolean }))
         csvwColumn.addOut(csvw.propertyUrl, `http://environment.data.admin.ch/ubd/28/${column.title.value}`)
       })
     })
