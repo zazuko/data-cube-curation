@@ -4,19 +4,38 @@ ${(() => {
 })()}
 
 BASE <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 CONSTRUCT
 {
-    <${this.projectId}> ?pp ?po .
-    <${this.projectId}> <DataCubeProject/columns> ?columns .
-    ?columns ?cp ?co .
-    ?co ?cop ?coo .
+    ?project a ?projectType ;
+      schema:name ?name ;
+      <DataCubeProject/sources> ?sources .
+
+    ?sources
+        a hydra:Collection ;
+        hydra:member ?source ;
+        hydra:totalItems ?count .
 }
 WHERE
 {
-    <${this.projectId}> ?pp ?po .
-    <${this.projectId}> <DataCubeProject/columns> ?columns .
+    BIND (<${this.projectId}> as ?project)
+    BIND (<${this.projectId}/sources> as ?sources)
 
-    ?columns ?cp ?co .
-    OPTIONAL { ?co ?cop ?coo . }
+    ?project
+        schema:name ?name ;
+        a ?projectType .
+
+    OPTIONAL
+    {
+        ?project <DataCubeProject/source> ?source .
+    }
+
+    {
+        SELECT (COUNT(?source) as ?count)
+        {
+            OPTIONAL { ?project <DataCubeProject/source> ?source }
+        }
+    }
 }

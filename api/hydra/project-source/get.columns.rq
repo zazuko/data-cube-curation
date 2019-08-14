@@ -1,0 +1,32 @@
+BASE <https://rdf-cube-curation.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+CONSTRUCT
+{
+    ?source <DataCubeSource/columns> ?columnsCollection .
+
+    ?columnsCollection
+        hydra:member ?column ;
+        a hydra:Collection ;
+        hydra:totalItems ?count .
+
+    ?column ?p ?o .
+}
+WHERE
+{
+    BIND (<${this.locals.sourceId}> as ?source)
+    BIND (<${this.locals.sourceId}/columns> as ?columnsCollection)
+
+    ?source <DataCubeSource/column> ?column .
+
+    ?column ?p ?o .
+
+    {
+        SELECT (COUNT(?column) as ?count)
+        {
+            BIND (<${this.locals.sourceId}> as ?source)
+
+            ?source <DataCubeSource/column> ?column .
+        }
+    }
+}

@@ -1,0 +1,23 @@
+BASE <https://rdf-cube-curation.described.at/>
+
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+CONSTRUCT
+{
+    ?source ?prop ?value .
+}
+WHERE
+{
+    BIND (<${this.locals.sourceId}> as ?source)
+
+    VALUES ?prop
+    {
+        rdf:type
+        schema:name
+    }
+
+    OPTIONAL {
+        ?source ?prop ?value .
+    }
+}

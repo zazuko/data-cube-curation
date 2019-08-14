@@ -16,7 +16,9 @@
     api:Installation ,
     api:DataCubeProjects ,
     api:DataCubeProject ,
-    api:DataCubeColumn .
+    api:DataCubeSource ,
+    api:DataCubeSourcesCollection ,
+    api:DataCubeSourceColumn .
 
 api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
@@ -78,16 +80,13 @@ api:CreateDataCubeProject
   hydra:title "Design an RDF data cube" ;
   hydra:method "POST" ;
   hydra:returns api:DataCubeProject ;
+  hydra:expects api:DataCubeProject ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project/create#initProject>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/project/create#processCsv>
+        code:link <file:lib/project/create#initLocals>
       ]
       [
         a hydra-box:SparqlUpdate ;
@@ -102,6 +101,15 @@ api:CreateDataCubeProject
         hydra-box:source <file:hydra/project/get.rq>
       ]
     )
+  ] ;
+  <http://hydra-box.org/schema/variables>
+  [
+    hydra:mapping
+    [
+      a hydra:IriTemplateMapping ;
+      hydra:property schema:name ;
+      hydra:variable "projectName"
+    ]
   ] .
 
 ## /End Projects
@@ -123,10 +131,13 @@ api:DataCubeProject
       hydra:writeable true
     ] ,
     [
-      hydra:property api-projects:columns ;
-      hydra:title "Spreadsheet Columns" ;
+      hydra:property api-projects:sources ;
+      hydra:title "Data cube sources" ;
       hydra:writeable false
-    ] ;.
+    ] .
+
+api-projects:sources
+  hydra:supportedOperation api-projects:PostSource .
 
 api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
@@ -137,13 +148,90 @@ api:GetDataCubeProject
     hydra-box:source <file:hydra/project/get.rq>
   ] .
 
+api-projects:PostSource
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Create a data cube source" ;
+  hydra:returns api:DataCubeProject ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source#initNew>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source/create#processCsv>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project-source/create.ru>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source/create#setResponse>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+      ]
+    )
+  ] .
+
 ## /End Project
+
+## DataCubeSource
+
+@prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
+
+api:DataCubeSourcesCollection
+  a hydra:Class ;
+  hydra:supportedOperation
+    api-projects:PostSource .
+
+api:DataCubeSource
+  a hydra:Class ;
+  hydra:supportedOperation
+    api:GetDataCubeSource ;
+  hydra:supportedProperty
+    [
+      hydra:property schema:name ;
+      hydra:title "Source name" ;
+      hydra:readable true ;
+      hydra:writeable true
+    ] ,
+    [
+      hydra:property api-source:columns ;
+      hydra:title "Source columns" ;
+      hydra:writeable false
+    ] .
+
+api:GetDataCubeSource
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Get project source" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source#initExisting>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+      ]
+    )
+  ] .
+
+## /End DataCubeSource
 
 ## Column
 
-@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeColumn/> .
+@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
-api:DataCubeColumn
+api:DataCubeSourceColumn
   a hydra:Class ;
   hydra:title "Source column" ;
   hydra:supportedProperty
@@ -166,12 +254,28 @@ api:DataCubeColumn
 
 # TODO: this shows how the route definition will often be split into a template and express route. only template should be necessary
 </project/:projectId> a api:DataCubeProject .
+</project/:projectId/sources> a api:DataCubeSourcesCollection .
+</project/:projectId/source/:sourceId> a api:DataCubeSource .
 [ ]
   a hydra:IriTemplate ;
-  hydra:template "/project/{projectId}" ;
+  hydra:template "/project/{projectId}{/rest}" ;
   hydra:mapping
   [
     a hydra:IriTemplateMapping ;
     hydra:variable "projectId" ;
     hydra:property <http://schema.org/id>
   ].
+[ ]
+  a hydra:IriTemplate ;
+  hydra:template "/project/{projectId}/source/{sourceId}" ;
+  hydra:mapping
+  [
+    a hydra:IriTemplateMapping ;
+    hydra:variable "projectId" ;
+    hydra:property <http://schema.org/id>
+  ] ,
+  [
+    a hydra:IriTemplateMapping ;
+    hydra:variable "sourceId" ;
+    hydra:property <http://schema.org/sourceId>
+  ] .
