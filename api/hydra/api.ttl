@@ -120,12 +120,12 @@ api:DataCubeProject
       hydra:property schema:name ;
       hydra:title "Project name" ;
       hydra:readable true ;
-      hydra:writable true
+      hydra:writeable true
     ] ,
     [
       hydra:property api-projects:columns ;
       hydra:title "Spreadsheet Columns" ;
-      hydra:writable false
+      hydra:writeable false
     ] ;.
 
 api:GetDataCubeProject
