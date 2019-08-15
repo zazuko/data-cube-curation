@@ -1,10 +1,15 @@
 import * as uuid from 'uuid/v4'
+import { getProjectId } from '../project'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
 
+function getSourceId (projectId: string, sourceGuid: string = uuid()) {
+  return `${projectId}/source/${sourceGuid}`
+}
+
 export function initNew (req, res, next) {
-  const projectId = `${process.env.BASE_URI}project/${req.params.projectId}`
-  res.locals.sourceId = `${projectId}/source/${uuid()}`
+  res.locals.projectId = getProjectId(req.params.projectId)
+  res.locals.sourceId = getSourceId(uuid())
 
   const contentDisposition: string = req.headers['content-disposition']
   if (contentDisposition) {
@@ -18,7 +23,7 @@ export function initNew (req, res, next) {
 }
 
 export function initExisting (req, res, next) {
-  const projectId = `${process.env.BASE_URI}project/${req.params.projectId}`
-  res.locals.sourceId = `${projectId}/source/${req.params.sourceId}`
+  res.locals.projectId = getProjectId(req.params.projectId)
+  res.locals.sourceId = getSourceId(res.locals.projectId, req.params.sourceId)
   next()
 }

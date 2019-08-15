@@ -36,6 +36,10 @@ With Class api:DataCubeProject {
     }
 }
 
+With Link api:DataCubeProject/sources {
+    Expect Status 200
+}
+
 With Operation api:DataCubeProject/PostSource {
     Invoke {
         Content-Type "text/csv"

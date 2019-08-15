@@ -35,6 +35,9 @@ WHERE
     {
         SELECT (COUNT(?source) as ?count)
         {
+            BIND (<${this.projectId}> as ?project)
+            BIND (<${this.projectId}/sources> as ?sources)
+
             OPTIONAL { ?project <DataCubeProject/source> ?source }
         }
     }

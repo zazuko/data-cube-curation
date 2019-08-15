@@ -86,7 +86,7 @@ api:CreateDataCubeProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project/create#initLocals>
+        code:link <file:lib/project#initNew>
       ]
       [
         a hydra-box:SparqlUpdate ;
@@ -137,6 +137,7 @@ api:DataCubeProject
     ] .
 
 api-projects:sources
+  a hydra:Link ;
   hydra:supportedOperation api-projects:PostSource .
 
 api:GetDataCubeProject
@@ -179,6 +180,25 @@ api-projects:PostSource
     )
   ] .
 
+api-projects:GetSourcesCollection
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Get the data cube source" ;
+  hydra:returns api:DataCubeSourcesCollection ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project#initExisting>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/project-source-collection/get.rq>, <file:hydra/project-source-collection/get.manages-block.rq>
+      ]
+    )
+  ] .
+
 ## /End Project
 
 ## DataCubeSource
@@ -188,6 +208,7 @@ api-projects:PostSource
 api:DataCubeSourcesCollection
   a hydra:Class ;
   hydra:supportedOperation
+    api-projects:GetSourcesCollection ,
     api-projects:PostSource .
 
 api:DataCubeSource
