@@ -102,7 +102,7 @@ api:CreateDataCubeProject
       ]
     )
   ] ;
-  <http://hydra-box.org/schema/variables>
+  hydra-box:variables
   [
     hydra:mapping
     [
@@ -145,8 +145,17 @@ api:GetDataCubeProject
   hydra:method "GET" ;
   hydra:title "Get a project" ;
   code:implementedBy [
-    a hydra-box:SparqlQuery ;
-    hydra-box:source <file:hydra/project/get.rq>
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project#initExisting>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/project/get.rq>
+      ]
+    )
   ] .
 
 api-projects:PostSource
@@ -277,26 +286,3 @@ api:DataCubeSourceColumn
 </project/:projectId> a api:DataCubeProject .
 </project/:projectId/sources> a api:DataCubeSourcesCollection .
 </project/:projectId/source/:sourceId> a api:DataCubeSource .
-[ ]
-  a hydra:IriTemplate ;
-  hydra:template "/project/{projectId}{/rest}" ;
-  hydra:mapping
-  [
-    a hydra:IriTemplateMapping ;
-    hydra:variable "projectId" ;
-    hydra:property <http://schema.org/id>
-  ].
-[ ]
-  a hydra:IriTemplate ;
-  hydra:template "/project/{projectId}/source/{sourceId}" ;
-  hydra:mapping
-  [
-    a hydra:IriTemplateMapping ;
-    hydra:variable "projectId" ;
-    hydra:property <http://schema.org/id>
-  ] ,
-  [
-    a hydra:IriTemplateMapping ;
-    hydra:variable "sourceId" ;
-    hydra:property <http://schema.org/sourceId>
-  ] .

@@ -9,7 +9,7 @@ function getSourceId (projectId: string, sourceGuid: string = uuid()) {
 
 export function initNew (req, res, next) {
   res.locals.projectId = getProjectId(req.params.projectId)
-  res.locals.sourceId = getSourceId(uuid())
+  res.locals.sourceId = getSourceId(res.locals.projectId)
 
   const contentDisposition: string = req.headers['content-disposition']
   if (contentDisposition) {

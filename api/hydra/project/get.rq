@@ -1,8 +1,3 @@
-${(() => {
-    this.projectId = this.locals.projectId || `${process.env.BASE_URI}project/${projectId}`
-    return ''
-})()}
-
 BASE <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
@@ -20,8 +15,8 @@ CONSTRUCT
 }
 WHERE
 {
-    BIND (<${this.projectId}> as ?project)
-    BIND (<${this.projectId}/sources> as ?sources)
+    BIND (<${this.locals.projectId}> as ?project)
+    BIND (<${this.locals.projectId}/sources> as ?sources)
 
     ?project
         schema:name ?name ;
@@ -35,8 +30,8 @@ WHERE
     {
         SELECT (COUNT(?source) as ?count)
         {
-            BIND (<${this.projectId}> as ?project)
-            BIND (<${this.projectId}/sources> as ?sources)
+            BIND (<${this.locals.projectId}> as ?project)
+            BIND (<${this.locals.projectId}/sources> as ?sources)
 
             OPTIONAL { ?project <DataCubeProject/source> ?source }
         }
