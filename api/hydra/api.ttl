@@ -6,6 +6,9 @@
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
+@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
+@prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
+@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
 ## Entrypoint
 
@@ -18,7 +21,8 @@
     api:DataCubeProject ,
     api:DataCubeSource ,
     api:DataCubeSourcesCollection ,
-    api:DataCubeSourceColumn .
+    api:DataCubeSourceColumn ,
+    api-source:CsvwMetadata .
 
 api:Installation a hydra:Class ;
   hydra:title "Data cube curation API setup" ;
@@ -43,7 +47,14 @@ api:Installation a hydra:Class ;
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
-  hydra:supportedOperation api:EntrypointGetOperation .
+  hydra:supportedOperation api:EntrypointGetOperation ;
+  hydra:supportedProperty
+    [
+      hydra:property api:dataCubeProjects ;
+      hydra:title "Projects" ;
+      hydra:readable true ;
+      hydra:writeable false
+    ].
 
 api:EntrypointGetOperation
   a hydra:SupportedOperation, hydra-box:View ;
@@ -55,6 +66,8 @@ api:EntrypointGetOperation
       <file:hydra/entrypoint/get.sparql> ,
       <file:hydra/entrypoint/installation.get.rq>
   ] .
+
+api:dataCubeProjects a hydra:Link .
 
 ## End Entrypoint
 
@@ -116,8 +129,6 @@ api:CreateDataCubeProject
 
 ## Project
 
-@prefix api-projects: <https://rdf-cube-curation.described.at/DataCubeProject/> .
-
 api:DataCubeProject
   a hydra:Class ;
   hydra:title "A data cube mapping project" ;
@@ -131,14 +142,14 @@ api:DataCubeProject
       hydra:writeable true
     ] ,
     [
-      hydra:property api-projects:sources ;
+      hydra:property api-project:sources ;
       hydra:title "Data cube sources" ;
       hydra:writeable false
     ] .
 
-api-projects:sources
+api-project:sources
   a hydra:Link ;
-  hydra:supportedOperation api-projects:PostSource .
+  hydra:supportedOperation api-project:PostSource .
 
 api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
@@ -158,7 +169,7 @@ api:GetDataCubeProject
     )
   ] .
 
-api-projects:PostSource
+api-project:PostSource
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "POST" ;
   hydra:title "Create a data cube source" ;
@@ -189,7 +200,7 @@ api-projects:PostSource
     )
   ] .
 
-api-projects:GetSourcesCollection
+api-project:GetSourcesCollection
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   hydra:title "Get the data cube source" ;
@@ -212,13 +223,11 @@ api-projects:GetSourcesCollection
 
 ## DataCubeSource
 
-@prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
-
 api:DataCubeSourcesCollection
   a hydra:Class ;
   hydra:supportedOperation
-    api-projects:GetSourcesCollection ,
-    api-projects:PostSource .
+    api-project:GetSourcesCollection ,
+    api-project:PostSource .
 
 api:DataCubeSource
   a hydra:Class ;
@@ -235,7 +244,14 @@ api:DataCubeSource
       hydra:property api-source:columns ;
       hydra:title "Source columns" ;
       hydra:writeable false
+    ] ,
+    [
+      hydra:property api-source:csvwMetadata ;
+      hydra:title "CSVW table mapping" ;
+      hydra:writeable false
     ] .
+
+api-source:csvwMetadata a hydra:Link .
 
 api:GetDataCubeSource
   a hydra:SupportedOperation, hydra-box:View ;
@@ -255,11 +271,31 @@ api:GetDataCubeSource
     )
   ] .
 
+api-source:CsvwMetadata
+  a hydra:Class ;
+  hydra:supportedOperation
+    api-source:GetCsvwMetadata .
+
+api-source:GetCsvwMetadata
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source#initExisting>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/project-source/csvw#projectMappings>
+      ]
+    )
+  ] .
+
 ## /End DataCubeSource
 
 ## Column
-
-@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
 api:DataCubeSourceColumn
   a hydra:Class ;
@@ -282,7 +318,7 @@ api:DataCubeSourceColumn
 <> a api:Entrypoint, api:Installation .
 <projects> a api:DataCubeProjects .
 
-# TODO: this shows how the route definition will often be split into a template and express route. only template should be necessary
 </project/:projectId> a api:DataCubeProject .
 </project/:projectId/sources> a api:DataCubeSourcesCollection .
 </project/:projectId/source/:sourceId> a api:DataCubeSource .
+</project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

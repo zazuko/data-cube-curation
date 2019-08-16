@@ -1,5 +1,5 @@
-import * as parse from 'csv-parse'
-import * as uuid from 'uuid/v4'
+import parse from 'csv-parse'
+import uuid from 'uuid/v4'
 
 const parserOptions = {
   to: 100,

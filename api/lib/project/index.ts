@@ -1,4 +1,4 @@
-import * as uuid from 'uuid/v4'
+import uuid from 'uuid/v4'
 
 export function getProjectId (projectGuid: string = uuid()) {
   return `${process.env.BASE_URI}project/${projectGuid}`

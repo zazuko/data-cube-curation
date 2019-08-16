@@ -12,7 +12,8 @@ CONSTRUCT {
         hydra:totalItems ?count .
 
     ?project
-        schema:name ?name .
+        schema:name ?name ;
+        a ?projectType.
 }
 WHERE {
     resource:projects ?p ?o .
@@ -20,6 +21,7 @@ WHERE {
     OPTIONAL {
         ?project a <DataCubeProject> .
         OPTIONAL { ?project schema:name ?name . }
+        OPTIONAL { ?project a ?projectType . }
     }
 
     {

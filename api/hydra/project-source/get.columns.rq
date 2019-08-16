@@ -10,7 +10,7 @@ CONSTRUCT
         a hydra:Collection ;
         hydra:totalItems ?count .
 
-    ?column ?p ?o .
+    ?column ?columnProp ?o .
 }
 WHERE
 {
@@ -19,7 +19,14 @@ WHERE
 
     ?source <DataCubeSource/column> ?column .
 
-    ?column ?p ?o .
+    VALUES ?columnProp
+    {
+        rdf:type
+        <DataCubeSourceColumn/title>
+        <DataCubeSourceColumn/mapped>
+    }
+
+    ?column ?columnProp ?o .
 
     {
         SELECT (COUNT(?column) as ?count)

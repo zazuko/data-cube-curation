@@ -1,4 +1,4 @@
-import * as uuid from 'uuid/v4'
+import uuid from 'uuid/v4'
 import { getProjectId } from '../project'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
