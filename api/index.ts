@@ -1,10 +1,10 @@
-import * as cors from 'cors'
-import * as path from 'path'
-import * as hydraBox from 'hydra-box'
-import * as url from 'url'
-import * as express from 'express'
-import * as dotenv from 'dotenv'
-import * as dotenvExpand from 'dotenv-expand'
+import cors from 'cors'
+import path from 'path'
+import hydraBox from 'hydra-box'
+import url from 'url'
+import express from 'express'
+import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 
 dotenvExpand(dotenv.config())
 
