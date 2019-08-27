@@ -11,16 +11,6 @@ assignees: ''
 
 <!-- summary of the functionality -->
 
-## Story
-
-<!--
-  Corporate-style user story
-
-  As User
-  I want this feature
-  So that I can get my job done
--->
-
 ## API operations
 
 ### `GET`/`PUT/`POST`
