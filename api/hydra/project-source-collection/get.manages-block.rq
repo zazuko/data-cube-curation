@@ -9,10 +9,10 @@ CONSTRUCT {
             hydra:property rdf:type ;
             hydra:object <DataCubeSource>
         ] , [
-            hydra:subject <${this.locals.projectId}> ;
-            hydra:property <DataCubeProject/source>
+            hydra:subject <${this.locals.modelId}> ;
+            hydra:property <DataCubeModel/source>
         ].
 }
 WHERE {
-    BIND (<${this.locals.projectId}/sources> as ?collection)
+    BIND (<${this.locals.modelId}/sources> as ?collection)
 }

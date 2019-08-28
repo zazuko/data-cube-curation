@@ -1,0 +1,30 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+BASE <${this.env.BASE_URI}>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+
+CONSTRUCT {
+    <models>
+        a hydra:Collection ;
+        hydra:member ?model ;
+        hydra:totalItems ?count .
+
+    ?model
+        schema:name ?name ;
+        a ?modelType .
+}
+WHERE {
+    OPTIONAL {
+        ?model a dataCube:Model .
+        OPTIONAL { ?model schema:name ?name . }
+        OPTIONAL { ?model a ?modelType . }
+    }
+
+    {
+        SELECT (COUNT(?p) as ?count) WHERE {
+            ?p a dataCube:Model .
+        }
+    }
+}

@@ -1,0 +1,43 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+CONSTRUCT
+{
+    ?model a ?modelType ;
+      schema:name ?name ;
+      api:sources ?sources .
+
+    ?sources
+        a hydra:Collection ;
+        hydra:member ?source ;
+        hydra:totalItems ?count .
+
+    ?source schema:name ?sourceName
+}
+WHERE
+{
+    BIND (<${this.locals.modelId}> as ?model)
+    BIND (<${this.locals.modelId}/sources> as ?sources)
+
+    ?model
+        schema:name ?name ;
+        a ?modelType .
+
+    OPTIONAL
+    {
+        ?model dataCube:source ?source .
+        ?source schema:name ?sourceName .
+    }
+
+    {
+        SELECT (COUNT(?source) as ?count)
+        {
+            BIND (<${this.locals.modelId}> as ?model)
+            BIND (<${this.locals.modelId}/sources> as ?sources)
+
+            OPTIONAL { ?model dataCube:source ?source }
+        }
+    }
+}

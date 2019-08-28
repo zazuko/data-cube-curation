@@ -1,22 +1,16 @@
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 BASE <${this.env.BASE_URI}>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
 
 construct
 {
-  <> ?p ?o .
-  ?o hydra:title ?label
-  ?o a ?type.
+  <> a api:Entrypoint ;
+     hydra:title "Data Cube Curation" ;
+     api:models <models> .
+
+   <models> a api:Models .
 }
 where
 {
-  <> ?p ?o .
-
-  OPTIONAL {
-    ?o hydra:title ?label
-  }
-
-  OPTIONAL {
-    ?o a ?type
-  }
 }

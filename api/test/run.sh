@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 SCENARIOS=(
-  "installation"
-  "CreateDataCubeProject"
+  "Entrypoint"
+  "CreateDataCubeModel"
 )
 
 for SCENARIO in ${SCENARIOS[@]}
