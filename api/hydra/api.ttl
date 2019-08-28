@@ -17,34 +17,12 @@
   hydra:entrypoint <> ;
   hydra:supportedClass
     api:Entrypoint ,
-    api:Installation ,
     api:Models ,
     dataCube:Model ,
     dataCube:Source ,
     api:Sources ,
     dataCube:Column ,
     api-source:CsvwMetadata .
-
-api:Installation a hydra:Class ;
-  hydra:title "Data cube curation API setup" ;
-  hydra:supportedOperation [
-    a hydra-box:View, api:InstallOperation ;
-    hydra:method "POST" ;
-    hydra:title "Start installation" ;
-    code:implementedBy [
-      a hydra-box:middlewareChain ;
-      code:arguments (
-        [
-          a hydra-box:SparqlUpdate ;
-          hydra-box:source <file:hydra/install.ru>
-        ]
-        [
-          a code:EcmaScript ;
-          code:link <file:lib/installation/setResponseHeaders#default>
-        ]
-      )
-    ]
-  ].
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -64,8 +42,7 @@ api:EntrypointGetOperation
   code:implementedBy [
     a hydra-box:SparqlQuery ;
     hydra-box:source
-      <file:hydra/entrypoint/get.sparql> ,
-      <file:hydra/entrypoint/installation.get.rq>
+      <file:hydra/entrypoint/get.sparql>
   ] .
 
 api:models a hydra:Link .
@@ -316,7 +293,7 @@ api:DataCubeSourceColumn
 
 ## Express hooks
 
-<> a api:Entrypoint, api:Installation .
+<> a api:Entrypoint .
 <models> a api:Models .
 
 </model/:modelId> a dataCube:Model .
