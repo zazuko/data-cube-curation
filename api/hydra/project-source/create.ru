@@ -2,7 +2,7 @@ BASE <https://rdf-cube-curation.described.at/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 INSERT DATA {
-    <${this.locals.projectId}> <DataCubeProject/source> <${this.locals.sourceId}>
+    <${this.locals.projectId}> <DataCubeProject/source> <${this.locals.sourceId}> .
 
     <${this.locals.sourceId}>
         a <DataCubeSource> ;
@@ -14,6 +14,6 @@ INSERT DATA {
             <DataCubeSourceColumn/mapped> false ;
             <DataCubeSourceColumn/title> "${column.title}" .
 
-     <${this.locals.sourceId}> <DataCubeSource/column> <${column.id}>`).join('')}
+     <${this.locals.sourceId}> <DataCubeSource/column> <${column.id}> .`).join('')}
 
 }
