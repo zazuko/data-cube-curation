@@ -54,7 +54,7 @@ With Operation api:DataCubeModel/PostSource {
         Expect Property schema:name "UBD0028.Daten_de.csv"
 
         Expect Link api:DataCubeSource/csvwMetadata {
-            Expect Header Content-Type "application/csvm+json"
+            //Expect Header Content-Type "application/csvm+json"
             Expect Status 200
 
             Expect Property csvw:tableSchema {
@@ -63,7 +63,7 @@ With Operation api:DataCubeModel/PostSource {
                 }
 
                 With Property csvw:columns {
-                    //When Property csvw:titles Equals "station_id"
+                    When Property csvw:titles Equals "station_id"
 
                     Expect Property csvw:propertyUrl "http://environment.data.admin.ch/ubd/28/station_id"
                 }

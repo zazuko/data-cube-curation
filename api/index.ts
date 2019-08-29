@@ -19,12 +19,14 @@ function logger (req, res, next) {
 }
 
 function hydraMiddleware () {
-  return hydraBox.fromUrl('/api', 'file://' + path.join(__dirname, 'hydra/api.ttl'), {
+  const options: Record<string, unknown> = {
     debug: true,
     sparqlEndpointUrl: process.env.SPARQL_ENDPOINT,
-    sparqlEndpointUpdateUrl: process.env.SPARQL_ENDPOINT,
+    sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
-  })
+  }
+
+  return hydraBox.fromUrl('/api', 'file://' + path.join(__dirname, 'hydra/api.ttl'), options)
 }
 
 Promise.resolve().then(async () => {
