@@ -19,7 +19,7 @@ With Class api:Entrypoint {
 }
 
 With Link api:dataCubeProjects {
-    Expect Property hydra:member {
+    With Property hydra:member {
         Expect Type api:DataCubeProject
         Expect Property schema:name
     }
