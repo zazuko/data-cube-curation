@@ -6,6 +6,7 @@
   "scripts": {
     "pretest": "hypertest-compiler test",
     "test": "dotenv test/run.sh",
+    "test:analyse": "dotenv test/analyse.sh",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -51,7 +52,8 @@
     "typescript": "^3.4.5",
     "@hydrofoil/hypertest": "^0.5.0",
     "hydra-validator": "^1.0.5",
-    "hydra-validator-e2e": "^0.4.0",
+    "hydra-validator-e2e": "^0.4.2",
+    "hydra-validator-analyse": "^0.1.6",
     "dotenv-cli": "^2.0.1"
   }
 }
