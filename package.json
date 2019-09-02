@@ -5,6 +5,7 @@
     "start:api": "(cd api; ts-node index.ts)",
     "postinstall": "lerna bootstrap",
     "test": "lerna run test",
+    "test:analyse": "lerna run test:analyse",
     "version": "standard-changelog"
   },
   "devDependencies": {
