@@ -4,8 +4,8 @@
   "scripts": {
     "start:api": "(cd api; ts-node index.ts)",
     "postinstall": "lerna bootstrap",
-    "test": "lerna run test",
-    "test:analyse": "lerna run test:analyse",
+    "test": "lerna run test --stream --no-prefix",
+    "test:analyse": "lerna run test:analyse --stream --no-prefix",
     "version": "standard-changelog"
   },
   "devDependencies": {
