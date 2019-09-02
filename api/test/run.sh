@@ -2,7 +2,7 @@
 
 SCENARIOS=(
   "Entrypoint"
-  "CreateDataCubeModel"
+  "CreateDataCubeProject"
 )
 
 for SCENARIO in ${SCENARIOS[@]}

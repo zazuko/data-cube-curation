@@ -6,25 +6,25 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
 
 CONSTRUCT {
-    <models>
+    <projects>
         a hydra:Collection ;
-        hydra:member ?model ;
+        hydra:member ?project ;
         hydra:totalItems ?count .
 
-    ?model
+    ?project
         schema:name ?name ;
-        a ?modelType .
+        a ?projectType .
 }
 WHERE {
     OPTIONAL {
-        ?model a dataCube:Model .
-        OPTIONAL { ?model schema:name ?name . }
-        OPTIONAL { ?model a ?modelType . }
+        ?project a dataCube:Project .
+        OPTIONAL { ?project schema:name ?name . }
+        OPTIONAL { ?project a ?projectType . }
     }
 
     {
         SELECT (COUNT(?p) as ?count) WHERE {
-            ?p a dataCube:Model .
+            ?p a dataCube:Project .
         }
     }
 }

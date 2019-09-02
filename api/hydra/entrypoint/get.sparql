@@ -7,9 +7,9 @@ construct
 {
   <> a api:Entrypoint ;
      hydra:title "Data Cube Curation" ;
-     api:models <models> .
+     api:projects <projects> .
 
-   <models> a api:Models .
+   <projects> a api:Projects .
 }
 where
 {

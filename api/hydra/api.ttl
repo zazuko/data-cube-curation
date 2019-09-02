@@ -7,7 +7,7 @@
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
-@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeModel/> .
+@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 @prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
 @prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
@@ -17,8 +17,8 @@
   hydra:entrypoint <> ;
   hydra:supportedClass
     api:Entrypoint ,
-    api:Models ,
-    dataCube:Model ,
+    api:Projects ,
+    dataCube:Project ,
     dataCube:Source ,
     api:Sources ,
     dataCube:Column ,
@@ -29,7 +29,7 @@ api:Entrypoint a hydra:Class ;
   hydra:supportedOperation api:EntrypointGetOperation ;
   hydra:supportedProperty
     [
-      hydra:property api:models ;
+      hydra:property api:projects ;
       hydra:title "Projects" ;
       hydra:readable true ;
       hydra:writeable false
@@ -45,51 +45,51 @@ api:EntrypointGetOperation
       <file:hydra/entrypoint/get.sparql>
   ] .
 
-api:models a hydra:Link .
+api:projects a hydra:Link .
 
 ## End Entrypoint
 
-## Models
+## Projects
 
-api:Models a hydra:Class ;
-  hydra:title "Data Cube Models" ;
+api:Projects a hydra:Class ;
+  hydra:title "Data Cube Projects" ;
   hydra:supportedOperation
-    api:CreateModel ,
-    api:GetDataCubeModels .
+    api:CreateProject ,
+    api:GetDataCubeProjects .
 
-api:GetDataCubeModels
+api:GetDataCubeProjects
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
-  hydra:title "Get all models" ;
+  hydra:title "Get all projects" ;
   code:implementedBy [
     a hydra-box:SparqlQuery ;
-    hydra-box:source <file:hydra/models/get.rq>, <file:hydra/models/get.manages-block.rq>
+    hydra-box:source <file:hydra/projects/get.rq>, <file:hydra/projects/get.manages-block.rq>
   ] .
 
-api:CreateModel
+api:CreateProject
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:title "Design an RDF data cube" ;
   hydra:method "POST" ;
-  hydra:returns dataCube:Model ;
-  hydra:expects dataCube:Model ;
+  hydra:returns dataCube:Project ;
+  hydra:expects dataCube:Project ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/model#initNew>
+        code:link <file:lib/project#initNew>
       ]
       [
         a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/model/create.ru>
+        hydra-box:source <file:hydra/project/create.ru>
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/model/create#setResponse>
+        code:link <file:lib/project/create#setResponse>
       ]
       [
         a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/model/get.rq>
+        hydra-box:source <file:hydra/project/get.rq>
       ]
     )
   ] ;
@@ -99,7 +99,7 @@ api:CreateModel
     [
       a hydra:IriTemplateMapping ;
       hydra:property schema:name ;
-      hydra:variable "modelName"
+      hydra:variable "projectName"
     ]
   ] .
 
@@ -107,11 +107,11 @@ api:CreateModel
 
 ## Project
 
-dataCube:Model
+dataCube:Project
   a hydra:Class ;
-  hydra:title "A data cube mapping model" ;
+  hydra:title "A data cube mapping project" ;
   hydra:supportedOperation
-    api:GetDataCubeModel ;
+    api:GetDataCubeProject ;
   hydra:supportedProperty
     [
       hydra:property schema:name ;
@@ -129,7 +129,7 @@ api-project:sources
   a hydra:Link ;
   hydra:supportedOperation api-project:PostSource .
 
-api:GetDataCubeModel
+api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   hydra:title "Get a project" ;
@@ -138,11 +138,11 @@ api:GetDataCubeModel
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/model#initExisting>
+        code:link <file:lib/project#initExisting>
       ]
       [
         a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/model/get.rq>
+        hydra-box:source <file:hydra/project/get.rq>
       ]
     )
   ] .
@@ -151,7 +151,7 @@ api-project:PostSource
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "POST" ;
   hydra:title "Create a data cube source" ;
-  hydra:returns dataCube:Model ;
+  hydra:returns dataCube:Project ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
@@ -188,7 +188,7 @@ api-project:GetSourcesCollection
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/model#initExisting>
+        code:link <file:lib/project#initExisting>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -294,9 +294,9 @@ api:DataCubeSourceColumn
 ## Express hooks
 
 <> a api:Entrypoint .
-<models> a api:Models .
+<projects> a api:Projects .
 
-</model/:modelId> a dataCube:Model .
-</model/:modelId/sources> a dataCube:Sources .
-</model/:modelId/source/:sourceId> a api:DataCubeSource .
-</model/:modelId/source/:sourceId/csvw> a api-source:CsvwMetadata .
+</project/:projectId> a dataCube:Project .
+</project/:projectId/sources> a dataCube:Sources .
+</project/:projectId/source/:sourceId> a api:DataCubeSource .
+</project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

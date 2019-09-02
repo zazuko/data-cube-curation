@@ -5,7 +5,7 @@ PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 CONSTRUCT
 {
-    ?model a ?modelType ;
+    ?project a ?projectType ;
       schema:name ?name ;
       api:sources ?sources .
 
@@ -18,26 +18,26 @@ CONSTRUCT
 }
 WHERE
 {
-    BIND (<${this.locals.modelId}> as ?model)
-    BIND (<${this.locals.modelId}/sources> as ?sources)
+    BIND (<${this.locals.projectId}> as ?project)
+    BIND (<${this.locals.projectId}/sources> as ?sources)
 
-    ?model
+    ?project
         schema:name ?name ;
-        a ?modelType .
+        a ?projectType .
 
     OPTIONAL
     {
-        ?model dataCube:source ?source .
+        ?project dataCube:source ?source .
         ?source schema:name ?sourceName .
     }
 
     {
         SELECT (COUNT(?source) as ?count)
         {
-            BIND (<${this.locals.modelId}> as ?model)
-            BIND (<${this.locals.modelId}/sources> as ?sources)
+            BIND (<${this.locals.projectId}> as ?project)
+            BIND (<${this.locals.projectId}/sources> as ?sources)
 
-            OPTIONAL { ?model dataCube:source ?source }
+            OPTIONAL { ?project dataCube:source ?source }
         }
     }
 }

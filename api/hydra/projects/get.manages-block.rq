@@ -4,10 +4,10 @@ BASE <${this.env.BASE_URI}>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 CONSTRUCT {
-    <models>
+    <projects>
         hydra:manages [
             hydra:property rdf:type ;
-            hydra:object dataCube:Model
+            hydra:object dataCube:Project
         ] .
 }
 WHERE {

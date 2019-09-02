@@ -16,14 +16,14 @@ With Class api:Installation {
 
 With Class api:Entrypoint {
     Expect Property hydra:title "Data Cube Curation"
-    Expect Link api:models
+    Expect Link api:projects
 }
 
-With Link api:models {
+With Link api:projects {
     When Property hydra:totalItems Greater Than 0
 
     Expect Property hydra:member {
-        Expect Type dataCube:Model
+        Expect Type dataCube:Project
         Expect Property schema:name
     }
 }
