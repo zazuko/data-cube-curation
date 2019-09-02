@@ -1,4 +1,5 @@
-BASE <https://rdf-cube-curation.described.at/>
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
@@ -6,12 +7,14 @@ CONSTRUCT
 {
     ?project a ?projectType ;
       schema:name ?name ;
-      <DataCubeProject/sources> ?sources .
+      api:sources ?sources .
 
     ?sources
         a hydra:Collection ;
         hydra:member ?source ;
         hydra:totalItems ?count .
+
+    ?source schema:name ?sourceName
 }
 WHERE
 {
@@ -24,7 +27,8 @@ WHERE
 
     OPTIONAL
     {
-        ?project <DataCubeProject/source> ?source .
+        ?project dataCube:source ?source .
+        ?source schema:name ?sourceName .
     }
 
     {
@@ -33,7 +37,7 @@ WHERE
             BIND (<${this.locals.projectId}> as ?project)
             BIND (<${this.locals.projectId}/sources> as ?sources)
 
-            OPTIONAL { ?project <DataCubeProject/source> ?source }
+            OPTIONAL { ?project dataCube:source ?source }
         }
     }
 }

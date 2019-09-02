@@ -1,7 +1,8 @@
 # TODO: get rid of base and provide from env variables
 @base <http://localhost:5678/> .
 
-@prefix api: <https://rdf-cube-curation.described.at/> .
+@prefix api: <https://rdf-cube-curation.described.at/api/> .
+@prefix dataCube: <https://rdf-cube-curation.described.at/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
@@ -16,41 +17,19 @@
   hydra:entrypoint <> ;
   hydra:supportedClass
     api:Entrypoint ,
-    api:Installation ,
-    api:DataCubeProjects ,
-    api:DataCubeProject ,
-    api:DataCubeSource ,
-    api:DataCubeSourcesCollection ,
-    api:DataCubeSourceColumn ,
+    api:Projects ,
+    dataCube:Project ,
+    dataCube:Source ,
+    api:Sources ,
+    dataCube:Column ,
     api-source:CsvwMetadata .
-
-api:Installation a hydra:Class ;
-  hydra:title "Data cube curation API setup" ;
-  hydra:supportedOperation [
-    a hydra-box:View, api:InstallOperation ;
-    hydra:method "POST" ;
-    hydra:title "Start installation" ;
-    code:implementedBy [
-      a hydra-box:middlewareChain ;
-      code:arguments (
-        [
-          a hydra-box:SparqlUpdate ;
-          hydra-box:source <file:hydra/install.ru>
-        ]
-        [
-          a code:EcmaScript ;
-          code:link <file:lib/installation/setResponseHeaders#default>
-        ]
-      )
-    ]
-  ].
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
   hydra:supportedOperation api:EntrypointGetOperation ;
   hydra:supportedProperty
     [
-      hydra:property api:dataCubeProjects ;
+      hydra:property api:projects ;
       hydra:title "Projects" ;
       hydra:readable true ;
       hydra:writeable false
@@ -63,20 +42,19 @@ api:EntrypointGetOperation
   code:implementedBy [
     a hydra-box:SparqlQuery ;
     hydra-box:source
-      <file:hydra/entrypoint/get.sparql> ,
-      <file:hydra/entrypoint/installation.get.rq>
+      <file:hydra/entrypoint/get.sparql>
   ] .
 
-api:dataCubeProjects a hydra:Link .
+api:projects a hydra:Link .
 
 ## End Entrypoint
 
 ## Projects
 
-api:DataCubeProjects a hydra:Class ;
+api:Projects a hydra:Class ;
   hydra:title "Data Cube Projects" ;
   hydra:supportedOperation
-    api:CreateDataCubeProject ,
+    api:CreateProject ,
     api:GetDataCubeProjects .
 
 api:GetDataCubeProjects
@@ -88,12 +66,12 @@ api:GetDataCubeProjects
     hydra-box:source <file:hydra/projects/get.rq>, <file:hydra/projects/get.manages-block.rq>
   ] .
 
-api:CreateDataCubeProject
+api:CreateProject
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:title "Design an RDF data cube" ;
   hydra:method "POST" ;
-  hydra:returns api:DataCubeProject ;
-  hydra:expects api:DataCubeProject ;
+  hydra:returns dataCube:Project ;
+  hydra:expects dataCube:Project ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
@@ -129,7 +107,7 @@ api:CreateDataCubeProject
 
 ## Project
 
-api:DataCubeProject
+dataCube:Project
   a hydra:Class ;
   hydra:title "A data cube mapping project" ;
   hydra:supportedOperation
@@ -173,7 +151,7 @@ api-project:PostSource
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "POST" ;
   hydra:title "Create a data cube source" ;
-  hydra:returns api:DataCubeProject ;
+  hydra:returns dataCube:Project ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
@@ -315,10 +293,10 @@ api:DataCubeSourceColumn
 
 ## Express hooks
 
-<> a api:Entrypoint, api:Installation .
-<projects> a api:DataCubeProjects .
+<> a api:Entrypoint .
+<projects> a api:Projects .
 
-</project/:projectId> a api:DataCubeProject .
-</project/:projectId/sources> a api:DataCubeSourcesCollection .
+</project/:projectId> a dataCube:Project .
+</project/:projectId/sources> a dataCube:Sources .
 </project/:projectId/source/:sourceId> a api:DataCubeSource .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

@@ -1,32 +1,30 @@
-BASE <https://rdf-cube-curation.described.at/>
-
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX resource: <${this.env.BASE_URI}>
+BASE <${this.env.BASE_URI}>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
 
 CONSTRUCT {
-    resource:projects ?p ?o ;
+    <projects>
         a hydra:Collection ;
         hydra:member ?project ;
         hydra:totalItems ?count .
 
     ?project
         schema:name ?name ;
-        a ?projectType.
+        a ?projectType .
 }
 WHERE {
-    resource:projects ?p ?o .
-
     OPTIONAL {
-        ?project a <DataCubeProject> .
+        ?project a dataCube:Project .
         OPTIONAL { ?project schema:name ?name . }
         OPTIONAL { ?project a ?projectType . }
     }
 
     {
         SELECT (COUNT(?p) as ?count) WHERE {
-            ?p a <DataCubeProject> .
+            ?p a dataCube:Project .
         }
     }
 }
