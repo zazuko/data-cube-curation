@@ -214,23 +214,19 @@ dataCube:Source
   hydra:supportedProperty
     [
       hydra:property schema:name ;
-      hydra:title "Source name" ;
+      hydra:title "Name" ;
       hydra:readable true ;
       hydra:writeable true
     ] ,
     [
       hydra:property api-source:columns ;
-      hydra:title "Source columns" ;
+      hydra:title "Columns" ;
       hydra:writeable false
     ] ,
     [
       hydra:property dataCube:project ;
-      hydra:title "The project this source belongs to" ;
-      hydra:writeable false
-    ] ,
-    [
-      hydra:property api-source:csvwMetadata ;
-      hydra:title "CSVW table mapping" ;
+      hydra:title "Project" ;
+      hydra:description "The project this source belongs to" ;
       hydra:writeable false
     ] .
 
