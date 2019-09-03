@@ -204,11 +204,10 @@ api:GetProjectSources
 api:Sources
   a hydra:Class ;
   hydra:supportedOperation
-    api:GetProjectSources
-    , api:AddSource
-    .
+    api:GetProjectSources ,
+    api:AddSource .
 
-api:DataCubeSource
+dataCube:Source
   a hydra:Class ;
   hydra:supportedOperation
     api:GetDataCubeSource ;
@@ -225,11 +224,17 @@ api:DataCubeSource
       hydra:writeable false
     ] ,
     [
+      hydra:property dataCube:project ;
+      hydra:title "The project this source belongs to" ;
+      hydra:writeable false
+    ] ,
+    [
       hydra:property api-source:csvwMetadata ;
       hydra:title "CSVW table mapping" ;
       hydra:writeable false
     ] .
 
+dataCube:project a hydra:Link .
 api-source:csvwMetadata a hydra:Link .
 
 api:GetDataCubeSource
