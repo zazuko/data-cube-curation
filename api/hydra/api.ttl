@@ -120,14 +120,14 @@ dataCube:Project
       hydra:writeable true
     ] ,
     [
-      hydra:property api-project:sources ;
+      hydra:property api:sources ;
       hydra:title "Data cube sources" ;
       hydra:writeable false
     ] .
 
-api-project:sources
+api:sources
   a hydra:Link ;
-  hydra:supportedOperation api-project:PostSource .
+  hydra:supportedOperation api:AddSource .
 
 api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
@@ -147,7 +147,7 @@ api:GetDataCubeProject
     )
   ] .
 
-api-project:PostSource
+api:AddSource
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "POST" ;
   hydra:title "Create a data cube source" ;
@@ -178,11 +178,11 @@ api-project:PostSource
     )
   ] .
 
-api-project:GetSourcesCollection
+api:GetProjectSources
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   hydra:title "Get the data cube source" ;
-  hydra:returns api:DataCubeSourcesCollection ;
+  hydra:returns api:Sources ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
@@ -201,11 +201,12 @@ api-project:GetSourcesCollection
 
 ## DataCubeSource
 
-api:DataCubeSourcesCollection
+api:Sources
   a hydra:Class ;
   hydra:supportedOperation
-    api-project:GetSourcesCollection ,
-    api-project:PostSource .
+    api:GetProjectSources
+    , api:AddSource
+    .
 
 api:DataCubeSource
   a hydra:Class ;
@@ -297,6 +298,6 @@ api:DataCubeSourceColumn
 <projects> a api:Projects .
 
 </project/:projectId> a dataCube:Project .
-</project/:projectId/sources> a dataCube:Sources .
+</project/:projectId/sources> a api:Sources .
 </project/:projectId/source/:sourceId> a api:DataCubeSource .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

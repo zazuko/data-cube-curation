@@ -31,3 +31,30 @@ With Operation api:CreateProject {
         }
     }
 }
+
+With Class dataCube:Project {
+    With Property api:sources {
+         Expect Operation api:AddSource
+    }
+}
+
+With Link api:sources {
+    Expect Status 200
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="UBD0028.Daten_de.csv"'
+
+        <<< "bodies/UBD0028.Daten_de.csv"
+    } => {
+        Expect Status 201
+        Expect Type dataCube:Source
+        Expect Type dataCube:CsvSource
+
+        Expect Property dataCube:project
+
+        Expect Property schema:name "UBD0028.Daten_de.csv"
+    }
+}
