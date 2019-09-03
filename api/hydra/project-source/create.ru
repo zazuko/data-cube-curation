@@ -1,5 +1,6 @@
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
 
 INSERT DATA {
     <${this.locals.projectId}> dataCube:source <${this.locals.sourceId}> .
