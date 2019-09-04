@@ -1,7 +1,7 @@
 import { promises } from 'fs'
 
 export async function saveFile (path: string, contents: string) {
-  await promises.mkdir(process.env.FILESYSTEM_FILE_STORAGE_PATH, { recursive: true })
+  await promises.mkdir(process.env.STORAGE_FILESYSTEM_PATH, { recursive: true })
 
-  return promises.writeFile(`${process.env.FILESYSTEM_FILE_STORAGE_PATH}/${path}`, contents)
+  return promises.writeFile(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`, contents)
 }
