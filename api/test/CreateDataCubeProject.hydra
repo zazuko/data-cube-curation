@@ -43,6 +43,7 @@ With Link api:sources {
 }
 
 With Operation api:AddSource {
+    // First time like charm
     Invoke {
         Content-Type "text/csv"
         Content-Disposition 'attachment; filename="UBD0028.Daten_de.csv"'
@@ -60,5 +61,15 @@ With Operation api:AddSource {
         }
 
         Expect Property schema:name "UBD0028.Daten_de.csv"
+    }
+
+    // Repeat the same should fail
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="UBD0028.Daten_de.csv"'
+
+        <<< "bodies/UBD0028.Daten_de.csv"
+    } => {
+        Expect Status 409
     }
 }

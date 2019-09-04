@@ -1,4 +1,6 @@
+import { DataCubeRequest, Response } from 'express'
 import { getProjectId } from '../project'
+import { ask } from '../sparql'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
 
@@ -6,7 +8,7 @@ function getSourceId (projectId: string, sourceName: string) {
   return `${projectId}/source/${sourceName}`
 }
 
-export function initNew (req, res, next) {
+export async function initNew (req: DataCubeRequest, res: Response, next) {
   res.locals.projectId = getProjectId(req.params.projectId)
 
   const contentDisposition: string = req.headers['content-disposition']
@@ -19,6 +21,13 @@ export function initNew (req, res, next) {
   }
 
   res.locals.sourceId = getSourceId(res.locals.projectId, res.locals.sourceName)
+
+  if (await ask(req.sparql, `<${res.locals.sourceId}> ?p ?o`) === true) {
+    res.status(409)
+    res.end()
+    return
+  }
+
   next()
 }
 

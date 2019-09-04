@@ -9,3 +9,10 @@ export async function select (client, query: string) {
 
   return (await response.json()).results.bindings
 }
+
+export async function ask (client, ...patterns: string[]): Promise<boolean> {
+  const response = await client.selectQuery(`ASK { ${patterns.join('\n')} }`)
+  const json = await response.json()
+
+  return json.boolean
+}
