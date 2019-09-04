@@ -1,7 +1,7 @@
 import parse from 'csv-parse'
 import uuid from 'uuid/v4'
 import md5 from 'md5'
-import { saveFile } from '../storage'
+import { saveFile } from '../../storage'
 
 const parserOptions = {
   to: 100,

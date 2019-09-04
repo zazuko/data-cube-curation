@@ -1,6 +1,6 @@
 import { DataCubeRequest, Response } from 'express'
 import { getProjectId } from '../project'
-import { ask } from '../sparql'
+import { ask } from '../../sparql'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
 

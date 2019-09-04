@@ -1,7 +1,7 @@
 import cf from 'clownface'
 import rdf from 'rdf-ext'
-import { select } from '../sparql'
-import { csvw, xsd } from '../namespaces'
+import { select } from '../../sparql'
+import { csvw, xsd } from '../../namespaces'
 
 export async function projectMappings (req, res) {
   const graph = cf(rdf.dataset(), rdf.namedNode(`${res.locals.sourceId}/csvw`))
