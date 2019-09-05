@@ -2,7 +2,6 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
-PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 With Class api:Entrypoint {
     Expect Property api:projects {
