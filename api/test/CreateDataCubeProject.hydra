@@ -36,6 +36,8 @@ With Class dataCube:Project {
     With Property api:sources {
          Expect Operation api:AddSource
     }
+
+    Expect Link dataCube:factTable
 }
 
 With Link api:sources {

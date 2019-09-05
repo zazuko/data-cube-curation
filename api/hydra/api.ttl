@@ -7,6 +7,7 @@
 @prefix code: <https://code.described.at/> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 @prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
 
@@ -19,6 +20,7 @@
     api:Projects ,
     dataCube:Project ,
     dataCube:Source ,
+    dataCube:Table ,
     api:Sources ,
     dataCube:Column ,
     api-source:CsvwMetadata ,
@@ -123,7 +125,18 @@ dataCube:Project
       hydra:property api:sources ;
       hydra:title "Data cube sources" ;
       hydra:writeable false
+    ] ,
+    [
+      hydra:property dataCube:factTable ;
+      hydra:title "The project's output Fact Table" ;
+      hydra:writeable false
     ] .
+
+dataCube:factTable
+  a hydra:Link ;
+  rdfs:range dataCube:Table ;
+  hydra:supportedOperation
+    api:CreateFactTable .
 
 api:sources
   a hydra:Link ;
@@ -294,6 +307,53 @@ dataCube:Column
 
 ## /End Column
 
+## Table
+
+dataCube:Table
+  a hydra:Class ;
+  hydra:title "A table" ;
+  hydra:description "Models the output of transforming source data into the data cube structure" ;
+  hydra:supportedProperty
+    [
+      hydra:property dataCube:source ;
+      hydra:title "The tables's source"
+    ] ;
+  hydra:supportedOperation
+    api:GetTable .
+
+dataCube:source a hydra:Link .
+
+api:GetTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:returns dataCube:Table ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#get>
+      ]
+    )
+  ] .
+
+api:CreateFactTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "PUT" ;
+  hydra:title "Create a Fact Table for a data cube project" ;
+  hydra:expects dataCube:FactTable ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#createFactTable>
+      ]
+    )
+  ] .
+
+## /End Table
+
 ## Errors
 
 api:Error
@@ -313,5 +373,7 @@ api:Error
 
 </project/:projectId> a dataCube:Project .
 </project/:projectId/sources> a api:Sources .
+</project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
+</project/:projectId/fact-table> a dataCube:Table .
 </project/:projectId/source/:sourceId> a dataCube:Source .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .
