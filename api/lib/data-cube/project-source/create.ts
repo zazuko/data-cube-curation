@@ -1,5 +1,4 @@
 import parse from 'csv-parse'
-import uuid from 'uuid/v4'
 import md5 from 'md5'
 import { saveFile } from '../../storage'
 
@@ -24,7 +23,7 @@ export function processCsv (req, res, next) {
       }
 
       res.locals.columns = header.map(column => ({
-        id: `${res.locals.sourceId}/column/${uuid()}`,
+        id: `${res.locals.sourceId}/${column}`,
         title: column,
       }))
 

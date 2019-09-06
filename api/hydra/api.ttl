@@ -9,7 +9,6 @@
 @prefix schema: <http://schema.org/> .
 @prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 @prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
-@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
 ## Entrypoint
 
@@ -220,7 +219,7 @@ dataCube:Source
       hydra:writeable true
     ] ,
     [
-      hydra:property api-source:columns ;
+      hydra:property api:columns ;
       hydra:title "Columns" ;
       hydra:writeable false
     ] ,
@@ -278,16 +277,16 @@ api-source:GetCsvwMetadata
 
 ## Column
 
-api:DataCubeSourceColumn
+dataCube:Column
   a hydra:Class ;
   hydra:title "Source column" ;
   hydra:supportedProperty
     [
-      hydra:property api-column:title ;
+      hydra:property schema:name ;
       hydra:title "Column heading"
     ] ,
     [
-      hydra:property api-column:mapped ;
+      hydra:property dataCube:mapped ;
       hydra:title "Mapped" ;
       hydra:description "Indicates that the column is used in a dimension or measure."
     ].
