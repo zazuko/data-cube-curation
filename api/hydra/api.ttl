@@ -22,7 +22,8 @@
     dataCube:Source ,
     api:Sources ,
     dataCube:Column ,
-    api-source:CsvwMetadata .
+    api-source:CsvwMetadata ,
+    api:Error .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -292,6 +293,18 @@ api:DataCubeSourceColumn
     ].
 
 ## /End Column
+
+## Errors
+
+api:Error
+  a hydra:Class ;
+  hydra:supportedProperty
+    [
+      hydra:property dataCube:project ;
+      hydra:title "Project"
+    ] .
+
+## /End Errors
 
 ## Express hooks
 
