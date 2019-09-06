@@ -60,6 +60,17 @@ With Operation api:AddSource {
             }
         }
 
+        Expect Property api:columns {
+            Expect Type hydra:Collection
+
+            Expect Property hydra:totalItems 19
+            Expect Property hydra:member {
+                Expect Type dataCube:Column
+
+                Expect Property schema:name
+            }
+        }
+
         Expect Property schema:name "UBD0028.Daten_de.csv"
     }
 

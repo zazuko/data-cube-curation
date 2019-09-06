@@ -1,10 +1,11 @@
-BASE <https://rdf-cube-curation.described.at/>
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 CONSTRUCT
 {
-    ?source <DataCubeSource/columns> ?columnsCollection .
+    ?source api:columns ?columnsCollection .
 
     ?columnsCollection
         hydra:member ?column ;
@@ -18,13 +19,12 @@ WHERE
     BIND (<${this.locals.sourceId}> as ?source)
     BIND (<${this.locals.sourceId}/columns> as ?columnsCollection)
 
-    ?source <DataCubeSource/column> ?column .
+    ?source dataCube:column ?column .
 
     VALUES ?columnProp
     {
         rdf:type
-        <DataCubeSourceColumn/title>
-        <DataCubeSourceColumn/mapped>
+        schema:name
     }
 
     ?column ?columnProp ?o .
@@ -34,7 +34,7 @@ WHERE
         {
             BIND (<${this.locals.sourceId}> as ?source)
 
-            ?source <DataCubeSource/column> ?column .
+            ?source dataCube:column ?column .
         }
     }
 }
