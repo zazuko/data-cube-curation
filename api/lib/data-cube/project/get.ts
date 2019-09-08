@@ -5,29 +5,29 @@ import { api, dataCube, hydra, schema } from '../../namespaces'
 async function placeholderRepresentation (req: express.DataCubeRequest, res: express.DataCubeResponse) {
   const placeholderUri = res.locals.projectId.replace(/\/project/, '/_project')
 
-  const quads = await construct(req.sparql,
-    {
+  const query = construct()
+    .prefixes({
       api,
       dataCube,
-    },
-    `
+    })
+    .graph(`
       <${placeholderUri}> a api:ProjectPlaceholder ;
         api:project <${res.locals.projectId}> .
     `)
 
   res.setLink(placeholderUri, 'canonical')
-  res.graph(quads)
+  res.graph(await query.execute(req.sparql))
 }
 
 async function getExistingProject (req: express.DataCubeRequest, res: express.DataCubeResponse) {
-  const quads = await construct(req.sparql,
-    {
+  const query = construct()
+    .prefixes({
       api,
       dataCube,
       schema,
       hydra,
-    },
-    `
+    })
+    .graph(`
     ?project a ?projectType ;
       schema:name ?name ;
       api:sources ?sources ;
@@ -38,8 +38,8 @@ async function getExistingProject (req: express.DataCubeRequest, res: express.Da
         hydra:member ?source ;
         hydra:totalItems ?count .
 
-    ?source schema:name ?sourceName`,
-    `
+    ?source schema:name ?sourceName`)
+    .where(`
 GRAPH <${res.locals.projectId}> {
     BIND (<${res.locals.projectId}> as ?project)
     BIND (<${res.locals.projectId}/sources> as ?sources)
@@ -66,11 +66,13 @@ GRAPH <${res.locals.projectId}> {
     }
 }`)
 
-  res.graph(quads)
+  res.graph(await query.execute(req.sparql))
 }
 
 export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
-  if (await ask(req.sparql, `GRAPH <${res.locals.projectId}> { ?s ?p ?o }`) === false) {
+  const projectExistsQuery = ask(`GRAPH <${res.locals.projectId}> { ?s ?p ?o }`)
+
+  if (await projectExistsQuery.execute(req.sparql) === false) {
     return placeholderRepresentation(req, res).catch(next)
   }
 
