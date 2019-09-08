@@ -24,7 +24,8 @@
     api:Sources ,
     dataCube:Column ,
     api-source:CsvwMetadata ,
-    api:Error .
+    api:Error ,
+    api:ProjectPlaceholder .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -69,7 +70,7 @@ api:GetDataCubeProjects
   ] .
 
 api:CreateProject
-  a hydra:SupportedOperation, hydra-box:View ;
+  a hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
   hydra:title "Design an RDF data cube" ;
   hydra:method "POST" ;
   hydra:returns dataCube:Project ;
@@ -90,8 +91,45 @@ api:CreateProject
         code:link <file:lib/data-cube/project/create#setResponse>
       ]
       [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project/get.rq>
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#get>
+      ]
+    )
+  ] ;
+  hydra-box:variables
+  [
+    hydra:mapping
+    [
+      a hydra:IriTemplateMapping ;
+      hydra:property schema:name ;
+      hydra:variable "projectName"
+    ]
+  ] .
+
+api:ReplaceProject
+  a hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
+  hydra:title "Design an RDF data cube" ;
+  hydra:method "PUT" ;
+  hydra:returns dataCube:Project ;
+  hydra:expects dataCube:Project ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#initExisting>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project/create.ru>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project/create#setResponse>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#get>
       ]
     )
   ] ;
@@ -109,11 +147,23 @@ api:CreateProject
 
 ## Project
 
+api:ProjectPlaceholder
+  a hydra:Class ;
+  hydra:supportedProperty
+    [
+      hydra:property api:project
+    ] .
+
+api:project
+  hydra:supportedOperation
+    api:ReplaceProject .
+
 dataCube:Project
   a hydra:Class ;
   hydra:title "A data cube mapping project" ;
   hydra:supportedOperation
-    api:GetDataCubeProject ;
+    api:GetProject ,
+    api:DeleteProject ;
   hydra:supportedProperty
     [
       hydra:property schema:name ;
@@ -142,7 +192,29 @@ api:sources
   a hydra:Link ;
   hydra:supportedOperation api:AddSource .
 
-api:GetDataCubeProject
+api:DeleteProject
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "DELETE" ;
+  hydra:title "Deletes a project" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#initExisting>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project/delete.sources.ru>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project/delete.ru>
+      ]
+     )
+   ] .
+
+api:GetProject
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   hydra:title "Get a project" ;
@@ -154,8 +226,8 @@ api:GetDataCubeProject
         code:link <file:lib/data-cube/project#initExisting>
       ]
       [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project/get.rq>
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#get>
       ]
     )
   ] .
@@ -372,6 +444,8 @@ api:Error
 <projects> a api:Projects .
 
 </project/:projectId> a dataCube:Project .
+</_project/:projectId> a api:ProjectPlaceholder .
+</_project/:projectId> api:project </project/:projectId> .
 </project/:projectId/sources> a api:Sources .
 </project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
 </project/:projectId/fact-table> a dataCube:Table .
