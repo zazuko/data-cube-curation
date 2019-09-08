@@ -23,7 +23,7 @@ export async function initNew (req: DataCubeRequest, res: DataCubeResponse, next
 
   res.locals.sourceId = getSourceId(res.locals.projectId, res.locals.sourceName)
 
-  if (await ask(req.sparql, `<${res.locals.sourceId}> ?p ?o`) === true) {
+  if (await ask(req.sparql, `GRAPH <${res.locals.sourceId}> { ?s ?p ?o }`) === true) {
     return duplicateNameErrorResponse(req, res)
   }
 

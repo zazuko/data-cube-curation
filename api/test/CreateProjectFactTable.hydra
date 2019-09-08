@@ -3,8 +3,10 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 
 With Class api:ProjectPlaceholder {
-    Expect Operation api:CreateProject {
-        // Expect Method "PUT"
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+            // Expect Method "PUT"
+        }
     }
 }
 
@@ -13,12 +15,12 @@ With Class dataCube:Project {
         // Expect Operation "DELETE"
 
         Invoke {
-            Expect Status 200
+            Expect Status 204
         }
     }
 }
 
-With Operation api:CreateProject {
+With Operation schema:CreateAction {
     Invoke {
         Content-Type "text/turtle"
 
@@ -28,7 +30,9 @@ With Operation api:CreateProject {
         <> schema:name "Fact table project" .
         ```
     } => {
-        Expect Operation api:AddSource
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
         Expect Operation api:CreateFactTable
     }
 }
@@ -39,7 +43,9 @@ With Operation api:AddSource {
         Content-Disposition 'attachment; filename="single-column.csv"'
 
         <<< "bodies/single-column.csv"
-    } => {}
+    } => {
+        Expect Status 201
+    }
 }
 
 With Operation api:CreateFactTable {

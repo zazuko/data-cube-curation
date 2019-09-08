@@ -13,6 +13,7 @@ CONSTRUCT {
     ?source
         schema:name ?name .
 }
+FROM <${this.locals.projectId}>
 WHERE {
     BIND (<${this.locals.projectId}/sources> as ?collection)
     BIND (<${this.locals.projectId}> as ?project)
