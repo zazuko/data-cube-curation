@@ -15,6 +15,9 @@ You can get those value by creating a repository on [dydra.com](https://dydra.co
 Alternatively, you may replace the `SPARQL_ENDPOINT` variable completely with your
 desired installation URL. 
 
+Finally, if the triple has a separate SPARQL Update endpoint, you can add a
+`SPARQL_UPDATE_ENDPOINT` variable to `.env`.
+
 Once that's done run from the repository root:
 
 ```
