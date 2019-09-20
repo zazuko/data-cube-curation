@@ -27,6 +27,7 @@ async function getExistingProject (req: express.DataCubeRequest, res: express.Da
       schema,
       hydra,
     })
+    .from(res.locals.projectId)
     .graph(`
     ?project a ?projectType ;
       schema:name ?name ;
@@ -40,7 +41,6 @@ async function getExistingProject (req: express.DataCubeRequest, res: express.Da
 
     ?source schema:name ?sourceName`)
     .where(`
-GRAPH <${res.locals.projectId}> {
     BIND (<${res.locals.projectId}> as ?project)
     BIND (<${res.locals.projectId}/sources> as ?sources)
     BIND (<${res.locals.projectId}/fact-table> as ?factTable)
@@ -58,12 +58,8 @@ GRAPH <${res.locals.projectId}> {
     {
         SELECT (COUNT(?source) as ?count)
         {
-            BIND (<${res.locals.projectId}> as ?project)
-            BIND (<${res.locals.projectId}/sources> as ?sources)
-
             OPTIONAL { ?project dataCube:source ?source }
         }
-    }
 }`)
 
   res.graph(await query.execute(req.sparql))

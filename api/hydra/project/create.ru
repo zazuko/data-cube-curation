@@ -7,4 +7,6 @@ INSERT DATA {
             a dataCube:Project ;
             <http://schema.org/name> "${projectName.value}" .
     }
+
+    <${this.locals.projectId}> a dataCube:Project .
 }

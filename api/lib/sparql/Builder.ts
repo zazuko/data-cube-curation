@@ -17,6 +17,7 @@ type QueryKind = 'SELECT' | 'CONSTRUCT' | 'DELETE' | 'ASK'
 
 export class Builder {
   private __prefixes = {}
+  private __defaultGraph?: string
   private __variables: string[] = ['*']
   private __patterns: string[] = []
   private __constructGraph: string[] = []
@@ -29,6 +30,11 @@ export class Builder {
   public prefixes (value: Record<string, (term: string) => NamedNode>) {
     this.__prefixes = value
 
+    return this
+  }
+
+  public from (defaultGraph: string) {
+    this.__defaultGraph = defaultGraph
     return this
   }
 
@@ -69,6 +75,7 @@ export class Builder {
       ${buildPrefixes(this.__prefixes)}
       
       ${this.__kind} ${graphOrVariables}
+      ${this.__defaultGraph ? `FROM <${this.__defaultGraph}>` : ''}
       WHERE {
         ${this.__patterns.join('\n')}
       }`
@@ -76,6 +83,8 @@ export class Builder {
 
   public execute (client: any): Promise<any> {
     const query = this.build()
+
+    console.log(query)
 
     if (this.__kind === 'CONSTRUCT') {
       return client.constructQuery(query)
