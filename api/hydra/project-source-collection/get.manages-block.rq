@@ -1,5 +1,4 @@
-BASE <https://rdf-cube-curation.described.at/>
-
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
@@ -7,10 +6,10 @@ CONSTRUCT {
     ?collection
         hydra:manages [
             hydra:property rdf:type ;
-            hydra:object <DataCubeSource>
+            hydra:object dataCube:Source
         ] , [
             hydra:subject <${this.locals.projectId}> ;
-            hydra:property <DataCubeProject/source>
+            hydra:property dataCube:source
         ].
 }
 WHERE {

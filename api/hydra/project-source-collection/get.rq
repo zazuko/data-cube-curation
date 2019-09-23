@@ -1,4 +1,4 @@
-BASE <https://rdf-cube-curation.described.at/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
@@ -18,7 +18,7 @@ WHERE {
     BIND (<${this.locals.projectId}> as ?project)
 
     OPTIONAL {
-        ?project <DataCubeProject/source> ?source .
+        ?project dataCube:source ?source .
         OPTIONAL { ?source schema:name ?name . }
     }
 
@@ -26,7 +26,7 @@ WHERE {
         SELECT (COUNT(?source) as ?count) WHERE {
             BIND (<${this.locals.projectId}> as ?project)
 
-            ?project <DataCubeProject/source> ?source .
+            ?project dataCube:source ?source .
         }
     }
 }

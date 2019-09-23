@@ -9,7 +9,6 @@
 @prefix schema: <http://schema.org/> .
 @prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 @prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
-@prefix api-column: <https://rdf-cube-curation.described.at/DataCubeSourceColumn/> .
 
 ## Entrypoint
 
@@ -22,7 +21,8 @@
     dataCube:Source ,
     api:Sources ,
     dataCube:Column ,
-    api-source:CsvwMetadata .
+    api-source:CsvwMetadata ,
+    api:Error .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -77,7 +77,7 @@ api:CreateProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project#initNew>
+        code:link <file:lib/data-cube/project#initNew>
       ]
       [
         a hydra-box:SparqlUpdate ;
@@ -85,7 +85,7 @@ api:CreateProject
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/project/create#setResponse>
+        code:link <file:lib/data-cube/project/create#setResponse>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -120,14 +120,14 @@ dataCube:Project
       hydra:writeable true
     ] ,
     [
-      hydra:property api-project:sources ;
+      hydra:property api:sources ;
       hydra:title "Data cube sources" ;
       hydra:writeable false
     ] .
 
-api-project:sources
+api:sources
   a hydra:Link ;
-  hydra:supportedOperation api-project:PostSource .
+  hydra:supportedOperation api:AddSource .
 
 api:GetDataCubeProject
   a hydra:SupportedOperation, hydra-box:View ;
@@ -138,7 +138,7 @@ api:GetDataCubeProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project#initExisting>
+        code:link <file:lib/data-cube/project#initExisting>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -147,21 +147,22 @@ api:GetDataCubeProject
     )
   ] .
 
-api-project:PostSource
+api:AddSource
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "POST" ;
   hydra:title "Create a data cube source" ;
+  hydra:description "Select a comma-separated values file" ;
   hydra:returns dataCube:Project ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source#initNew>
+        code:link <file:lib/data-cube/project-source#initNew>
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source/create#processCsv>
+        code:link <file:lib/data-cube/project-source/create#processCsv>
       ]
       [
         a hydra-box:SparqlUpdate ;
@@ -169,7 +170,7 @@ api-project:PostSource
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source/create#setResponse>
+        code:link <file:lib/data-cube/project-source/create#setResponse>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -178,17 +179,17 @@ api-project:PostSource
     )
   ] .
 
-api-project:GetSourcesCollection
+api:GetProjectSources
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   hydra:title "Get the data cube source" ;
-  hydra:returns api:DataCubeSourcesCollection ;
+  hydra:returns api:Sources ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project#initExisting>
+        code:link <file:lib/data-cube/project#initExisting>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -201,34 +202,36 @@ api-project:GetSourcesCollection
 
 ## DataCubeSource
 
-api:DataCubeSourcesCollection
+api:Sources
   a hydra:Class ;
   hydra:supportedOperation
-    api-project:GetSourcesCollection ,
-    api-project:PostSource .
+    api:GetProjectSources ,
+    api:AddSource .
 
-api:DataCubeSource
+dataCube:Source
   a hydra:Class ;
   hydra:supportedOperation
     api:GetDataCubeSource ;
   hydra:supportedProperty
     [
       hydra:property schema:name ;
-      hydra:title "Source name" ;
+      hydra:title "Name" ;
       hydra:readable true ;
       hydra:writeable true
     ] ,
     [
-      hydra:property api-source:columns ;
-      hydra:title "Source columns" ;
+      hydra:property api:columns ;
+      hydra:title "Columns" ;
       hydra:writeable false
     ] ,
     [
-      hydra:property api-source:csvwMetadata ;
-      hydra:title "CSVW table mapping" ;
+      hydra:property dataCube:project ;
+      hydra:title "Project" ;
+      hydra:description "The project this source belongs to" ;
       hydra:writeable false
     ] .
 
+dataCube:project a hydra:Link .
 api-source:csvwMetadata a hydra:Link .
 
 api:GetDataCubeSource
@@ -240,7 +243,7 @@ api:GetDataCubeSource
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source#initExisting>
+        code:link <file:lib/data-cube/project-source#initExisting>
       ]
       [
         a hydra-box:SparqlQuery ;
@@ -262,11 +265,11 @@ api-source:GetCsvwMetadata
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source#initExisting>
+        code:link <file:lib/data-cube/project-source#initExisting>
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/project-source/csvw#projectMappings>
+        code:link <file:lib/data-cube/project-source/csvw#projectMappings>
       ]
     )
   ] .
@@ -275,21 +278,33 @@ api-source:GetCsvwMetadata
 
 ## Column
 
-api:DataCubeSourceColumn
+dataCube:Column
   a hydra:Class ;
   hydra:title "Source column" ;
   hydra:supportedProperty
     [
-      hydra:property api-column:title ;
+      hydra:property schema:name ;
       hydra:title "Column heading"
     ] ,
     [
-      hydra:property api-column:mapped ;
+      hydra:property dataCube:mapped ;
       hydra:title "Mapped" ;
       hydra:description "Indicates that the column is used in a dimension or measure."
     ].
 
 ## /End Column
+
+## Errors
+
+api:Error
+  a hydra:Class ;
+  hydra:supportedProperty
+    [
+      hydra:property dataCube:project ;
+      hydra:title "Project"
+    ] .
+
+## /End Errors
 
 ## Express hooks
 
@@ -297,6 +312,6 @@ api:DataCubeSourceColumn
 <projects> a api:Projects .
 
 </project/:projectId> a dataCube:Project .
-</project/:projectId/sources> a dataCube:Sources .
-</project/:projectId/source/:sourceId> a api:DataCubeSource .
+</project/:projectId/sources> a api:Sources .
+</project/:projectId/source/:sourceId> a dataCube:Source .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

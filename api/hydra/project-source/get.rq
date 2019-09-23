@@ -1,13 +1,10 @@
-BASE <https://rdf-cube-curation.described.at/>
-
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 CONSTRUCT
 {
     ?source ?prop ?value .
-
-    ?source <DataCubeSource/csvwMetadata> <${this.locals.sourceId}/csvw> .
 }
 WHERE
 {
@@ -17,6 +14,7 @@ WHERE
     {
         rdf:type
         schema:name
+        dataCube:project
     }
 
     OPTIONAL {

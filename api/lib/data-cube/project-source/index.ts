@@ -1,15 +1,16 @@
-import uuid from 'uuid/v4'
+import { DataCubeRequest, DataCubeResponse } from 'express'
 import { getProjectId } from '../project'
+import { ask } from '../../sparql'
+import { duplicateNameErrorResponse } from './error-duplicate-name'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
 
-function getSourceId (projectId: string, sourceGuid: string = uuid()) {
-  return `${projectId}/source/${sourceGuid}`
+function getSourceId (projectId: string, sourceName: string) {
+  return `${projectId}/source/${sourceName}`
 }
 
-export function initNew (req, res, next) {
+export async function initNew (req: DataCubeRequest, res: DataCubeResponse, next) {
   res.locals.projectId = getProjectId(req.params.projectId)
-  res.locals.sourceId = getSourceId(res.locals.projectId)
 
   const contentDisposition: string = req.headers['content-disposition']
   if (contentDisposition) {
@@ -19,6 +20,13 @@ export function initNew (req, res, next) {
   } else {
     res.locals.sourceName = 'unnamed source'
   }
+
+  res.locals.sourceId = getSourceId(res.locals.projectId, res.locals.sourceName)
+
+  if (await ask(req.sparql, `<${res.locals.sourceId}> ?p ?o`) === true) {
+    return duplicateNameErrorResponse(req, res)
+  }
+
   next()
 }
 
