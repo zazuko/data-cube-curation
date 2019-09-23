@@ -209,6 +209,10 @@ api:DeleteProject
       ]
       [
         a hydra-box:SparqlUpdate ;
+        hydra-box:source <file:hydra/project/delete.tables.ru>
+      ]
+      [
+        a hydra-box:SparqlUpdate ;
         hydra-box:source <file:hydra/project/delete.ru>
       ]
      )
@@ -420,6 +424,10 @@ api:CreateFactTable
       [
         a code:EcmaScript ;
         code:link <file:lib/data-cube/table#createFactTable>
+      ]
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#get>
       ]
     )
   ] .

@@ -1,8 +1,10 @@
 import { Request, Response } from 'express'
+import { SparqlHttp } from 'sparql-http-client'
 
 declare module 'express' {
   interface DataCubeRequest extends Request {
-    sparql: any;
+    sparql: SparqlHttp;
+    graph: any;
   }
 
   interface DataCubeResponse extends Response {

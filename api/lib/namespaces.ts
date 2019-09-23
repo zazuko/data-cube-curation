@@ -1,6 +1,8 @@
 import namespace from '@rdfjs/namespace'
 import { prefixes } from '@zazuko/rdf-vocabularies'
 
+(prefixes as any).dataCube = 'https://rdf-cube-curation.described.at/'
+
 export const rdf = namespace(prefixes.rdf)
 export const rdfs = namespace(prefixes.rdfs)
 export const hydra = namespace(prefixes.hydra)

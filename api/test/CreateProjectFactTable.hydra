@@ -33,7 +33,9 @@ With Operation schema:CreateAction {
         Expect Property api:sources {
             Expect Operation api:AddSource
         }
-        Expect Operation api:CreateFactTable
+        Expect Property dataCube:factTable {
+            Expect Operation api:CreateFactTable
+        }
     }
 }
 
@@ -53,11 +55,14 @@ With Operation api:CreateFactTable {
         Content-Type "text/turtle"
 
         ```
-        @prefix schema: <http://schema.org/> .
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
 
         <> dataCube:source <project/fact-table-test/source/single-column.csv> .
         ```
     } => {
         Expect Status 201
+        Expect Type dataCube:Table
+        Expect Property dataCube:source
+        Expect Property dataCube:project
     }
 }
