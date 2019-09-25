@@ -12,7 +12,7 @@ async function placeholderRepresentation (req: express.DataCubeRequest, res: exp
     })
     .graph(`
       <${placeholderUri}> a api:ProjectPlaceholder ;
-        api:project <${res.locals.projectId}> .
+        api:project </project/${req.params.projectId}> .
     `)
 
   res.setLink(placeholderUri, 'canonical')
@@ -66,6 +66,7 @@ async function getExistingProject (req: express.DataCubeRequest, res: express.Da
 }
 
 export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+  res.locals.projectId = `/project/${req.params.projectId}`
   const projectExistsQuery = ask(`GRAPH <${res.locals.projectId}> { ?s ?p ?o }`)
 
   if (await projectExistsQuery.execute(req.sparql) === false) {

@@ -34,7 +34,7 @@ export function processCsv (req, res, next) {
 export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const ar = await projects.load(`/project/${req.params.projectId}`)
 
-  createSource(ar, {
+  createSource(ar.state, {
     type: 'csv',
     columns: res.locals.columns,
     fileName: res.locals.sourceName,

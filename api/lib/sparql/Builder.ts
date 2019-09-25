@@ -72,6 +72,7 @@ export class Builder {
     }
 
     return `
+      BASE <${process.env.BASE_URI}>
       ${buildPrefixes(this.__prefixes)}
       
       ${this.__kind} ${graphOrVariables}

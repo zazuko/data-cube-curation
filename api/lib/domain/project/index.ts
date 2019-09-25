@@ -15,18 +15,23 @@ export interface Source extends Entity {
   columns: Column[];
 }
 
-export const createProject = bootstrap<Project, string>(function (name) {
+interface CreateCommand {
+  uriSlug?: string;
+  name: string;
+}
+
+export const createProject = bootstrap<Project, CreateCommand>(function (createCommand) {
   this.emit({
     name: 'ProjectCreated',
     data: {
-      name,
+      name: createCommand.name,
     },
   })
 
   return {
-    '@id': `/project/${uuid()}`,
+    '@id': `/project/${createCommand.uriSlug || uuid()}`,
     '@type': 'Project',
-    name: name,
+    name: createCommand.name,
   }
 })
 

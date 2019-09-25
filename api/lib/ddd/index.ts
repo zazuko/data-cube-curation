@@ -1,6 +1,7 @@
-export interface AggregateRoot<TState> {
+export interface AggregateRoot<TState extends Entity> {
   state: TState;
   version: number;
+  getUnitOfWork(): UnitOfWork<TState>;
 }
 
 export interface DomainEvent {
@@ -13,23 +14,13 @@ export interface Entity {
   '@type': string | string[];
 }
 
-class AR<T extends Entity> implements AggregateRoot<T> {
-  public constructor (state: T, version: number) {
-    this.state = state
-    this.version = version
-  }
-
-  public readonly state: T;
-  public readonly version: number;
-}
-
 interface DomainEventEmitter {
   emit(ev: DomainEvent): void;
 }
 
 export interface Repository<S extends Entity> {
-  save (ar: AggregateRoot<S>): Promise<void>;
-  load (id: string): Promise<S>;
+  save (ar: S, version: number): Promise<void>;
+  load (id: string): Promise<AggregateRoot<S> | null>;
 }
 
 class UnitOfWork<T extends Entity> implements DomainEventEmitter {
@@ -65,7 +56,7 @@ class UnitOfWork<T extends Entity> implements DomainEventEmitter {
 
   public commit (repo: Repository<T>): Promise<T> {
     if (!this.__error) {
-      return repo.save(new AR(this.__state, this.__previousVersion + 1))
+      return repo.save(this.__state, this.__previousVersion + 1)
         .then(() => {
           // todo
           this.__events.forEach(e => console.log(JSON.stringify(e)))
@@ -78,6 +69,20 @@ class UnitOfWork<T extends Entity> implements DomainEventEmitter {
 
   public emit (ev: DomainEvent) {
     this.__events.push(ev)
+  }
+}
+
+export class AR<T extends Entity> implements AggregateRoot<T> {
+  public constructor (state: T, version: number) {
+    this.state = state
+    this.version = version
+  }
+
+  public readonly state: T;
+  public readonly version: number;
+
+  public getUnitOfWork () {
+    return new UnitOfWork(this)
   }
 }
 
@@ -94,13 +99,13 @@ export function bootstrap<T extends Entity, TArguments> (
 }
 
 type CommandRunFunc<T extends Entity, TCommand> = (this: UnitOfWork<T>, state: T, cmd: TCommand) => T
-type MutatorFunc<T extends Entity, TCommand> = (a: T, cmd: TCommand) => T
+type MutatorFunc<T extends Entity, TCommand> = (a: T, cmd: TCommand) => UnitOfWork<T>
 
 export function mutate<T extends Entity, TCommand> (
   runCommand: CommandRunFunc<T, TCommand>
 ): MutatorFunc<T, TCommand> {
   return function (this: UnitOfWork<T>, ar: T, cmd: TCommand) {
-    return runCommand.call(this, ar, cmd)
+    return runCommand.call(this || new UnitOfWork<T>(), ar, cmd)
   }
 }
 

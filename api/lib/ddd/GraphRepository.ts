@@ -1,10 +1,11 @@
-import { Entity, AggregateRoot, Repository } from './index'
+import { Entity, AggregateRoot, Repository, AR } from './index'
 import SparqlHttp from 'sparql-http-client'
 import ParserJsonld from '@rdfjs/parser-jsonld'
 import SerializerJsonld from '@rdfjs/serializer-jsonld'
 import { promises } from 'jsonld'
 import stringToStream from 'string-to-stream'
 import rdf from 'rdf-ext'
+import { expand } from '@zazuko/rdf-vocabularies'
 
 const parserJsonld = new ParserJsonld()
 const serializerJsonld = new SerializerJsonld()
@@ -22,14 +23,14 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
     this.__frame = frame
   }
 
-  public async save (ar: AggregateRoot<S>): Promise<void> {
-    const id = ar.state['@id']
+  public async save (state: S, version: number): Promise<void> {
+    const id = state['@id']
     const jsonld = {
       '@context': {
         ...this.__context,
         '@base': this.__base,
       },
-      ...ar.state,
+      ...state,
     }
 
     const parsed = await rdf.dataset().import(parserJsonld.import(stringToStream(JSON.stringify(jsonld))))
@@ -47,7 +48,7 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
         GRAPH <${id}> {
           ${parsed.toString()}
         }
-        <${id}> <urn:ar:version> ${ar.version} .
+        <${id}> <urn:ar:version> ${version} .
       }
       WHERE
       {
@@ -60,7 +61,7 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
     }
   }
 
-  public async load (id: string): Promise<S> {
+  public async load (id: string): Promise<AggregateRoot<S> | null> {
     const graph = await this.__sparql.constructQuery(`
     BASE <${this.__base}>
     
@@ -81,14 +82,21 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
       })
     })
 
-    const state = await promises.frame(jsonldArray, {
+    const jsonld = await promises.frame(jsonldArray, {
       '@context': {
         ...this.__context,
         '@base': this.__base,
+        'urn:ar:version': { '@type': expand('xsd:integer') },
       },
       ...this.__frame,
     })
 
-    return state['@graph'][0]
+    const state = jsonld['@graph'][0]
+
+    if (state) {
+      return new AR<S>(state, Number.parseInt(state['urn:ar:version']))
+    }
+
+    return null
   }
 }

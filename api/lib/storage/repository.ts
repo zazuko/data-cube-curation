@@ -3,6 +3,7 @@ import SparqlHttp from 'sparql-http-client'
 import { SparqlRepository } from '../ddd/GraphRepository'
 import { Project, Source } from '../domain/project'
 import { prefixes } from '@zazuko/rdf-vocabularies'
+import { Repository } from '../ddd'
 
 const base = process.env.BASE_URI
 const sparqlClient = new SparqlHttp({
@@ -20,7 +21,7 @@ const context = {
 const projectFrame = {
   '@type': 'Project',
 }
-export const projects = new SparqlRepository<Project>(sparqlClient, base, context, projectFrame)
+export const projects = new SparqlRepository<Project>(sparqlClient, base, context, projectFrame) as Repository<Project>
 
 const sourceContext = {
   columns: 'column',
@@ -29,4 +30,4 @@ const sourceContext = {
 const sourceFrame = {
   '@type': 'Source',
 }
-export const sources = new SparqlRepository<Source>(sparqlClient, base, { ...context, ...sourceContext }, sourceFrame)
+export const sources = new SparqlRepository<Source>(sparqlClient, base, { ...context, ...sourceContext }, sourceFrame) as Repository<Source>

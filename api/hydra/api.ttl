@@ -84,7 +84,7 @@ api:CreateProject
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#get>
+        code:link <file:lib/data-cube/project/get#get>
       ]
     )
   ] ;
@@ -109,19 +109,11 @@ api:ReplaceProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initExisting>
-      ]
-      [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project/create.ru>
+        code:link <file:lib/data-cube/project#createOrUpdate>
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project/create#setResponse>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#get>
+        code:link <file:lib/data-cube/project/get#get>
       ]
     )
   ] ;
@@ -223,7 +215,7 @@ api:GetProject
       ]
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#get>
+        code:link <file:lib/data-cube/project/get#get>
       ]
     )
   ] .
