@@ -18,15 +18,18 @@ WHERE {
     BIND (<${this.locals.projectId}> as ?project)
 
     OPTIONAL {
-        ?project dataCube:source ?source .
-        OPTIONAL { ?source schema:name ?name . }
+        GRAPH ?g {
+            ?source a dataCube:Source ;
+                    dataCube:project ?project ;
+                    schema:name ?name .
+        }
     }
 
     {
         SELECT (COUNT(?source) as ?count) WHERE {
             BIND (<${this.locals.projectId}> as ?project)
 
-            ?project dataCube:source ?source .
+            GRAPH ?g { ?source dataCube:project ?project . }
         }
     }
 }

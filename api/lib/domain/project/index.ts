@@ -1,13 +1,18 @@
 import uuid from 'uuid'
-import { mutate, bootstrap, factory, State } from '../../ddd'
+import { mutate, bootstrap, factory, Entity } from '../../ddd'
 
-export interface Project extends State {
+export interface Project extends Entity {
   name: string;
 }
 
-export interface Source extends State {
+interface Column extends Entity {
+  name: string;
+}
+
+export interface Source extends Entity {
   type: 'csv' | 'excel';
-  columns: string[];
+  project: string;
+  columns: Column[];
 }
 
 export const createProject = bootstrap<Project, string>(function (name) {
@@ -50,10 +55,18 @@ interface UploadSourceCommand {
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command) {
+  const sourceId = `${project['@id']}/source/${command.fileName}`
+
   return {
-    '@id': `${project['@id']}/${command.fileName}`,
+    '@id': sourceId,
     '@type': [ 'Source', 'CsvSource' ],
     type: command.type,
-    columns: command.columns,
+    name: command.fileName,
+    project: project['@id'],
+    columns: command.columns.map(name => ({
+      '@id': `${sourceId}/${name}`,
+      '@type': 'Column',
+      name,
+    })),
   }
 })

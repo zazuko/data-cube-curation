@@ -42,7 +42,7 @@ export async function createSourceHandler (req: express.DataCubeRequest, res: ex
     .commit(sources)
     .then((source) => {
       res.status(201)
-      res.setHeader('Location', source['@id'])
+      res.setHeader('Location', '/' + source['@id'])
       next()
     })
     .catch(next)

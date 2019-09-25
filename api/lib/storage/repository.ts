@@ -21,7 +21,11 @@ const projectFrame = {
 }
 export const projects = new SparqlRepository<Project>(sparqlClient, base, context, projectFrame)
 
+const sourceContext = {
+  columns: 'column',
+  project: { '@id': 'project', '@type': '@id' },
+}
 const sourceFrame = {
   '@type': 'Source',
 }
-export const sources = new SparqlRepository<Source>(sparqlClient, base, context, sourceFrame)
+export const sources = new SparqlRepository<Source>(sparqlClient, base, { ...context, ...sourceContext }, sourceFrame)

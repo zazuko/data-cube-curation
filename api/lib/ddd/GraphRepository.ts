@@ -1,4 +1,4 @@
-import { State, AggregateRoot, Repository } from './index'
+import { Entity, AggregateRoot, Repository } from './index'
 import SparqlHttp from 'sparql-http-client'
 import ParserJsonld from '@rdfjs/parser-jsonld'
 import SerializerJsonld from '@rdfjs/serializer-jsonld'
@@ -9,7 +9,7 @@ import rdf from 'rdf-ext'
 const parserJsonld = new ParserJsonld()
 const serializerJsonld = new SerializerJsonld()
 
-export class SparqlRepository<S extends State> implements Repository<S> {
+export class SparqlRepository<S extends Entity> implements Repository<S> {
   private readonly __sparql: SparqlHttp
   private readonly __base: string
   private readonly __context: object

@@ -6,6 +6,7 @@ CONSTRUCT
 {
     ?source ?prop ?value .
 }
+FROM <${this.locals.sourceId}>
 WHERE
 {
     BIND (<${this.locals.sourceId}> as ?source)

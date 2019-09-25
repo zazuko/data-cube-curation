@@ -8,12 +8,12 @@ export interface DomainEvent {
   data: any;
 }
 
-export interface State {
+export interface Entity {
   '@id': string;
   '@type': string | string[];
 }
 
-class AR<T extends State> implements AggregateRoot<T> {
+class AR<T extends Entity> implements AggregateRoot<T> {
   public constructor (state: T, version: number) {
     this.state = state
     this.version = version
@@ -27,12 +27,12 @@ interface DomainEventEmitter {
   emit(ev: DomainEvent): void;
 }
 
-export interface Repository<S extends State> {
+export interface Repository<S extends Entity> {
   save (ar: AggregateRoot<S>): Promise<void>;
   load (id: string): Promise<S>;
 }
 
-class UnitOfWork<T extends State> implements DomainEventEmitter {
+class UnitOfWork<T extends Entity> implements DomainEventEmitter {
   private __error: Error | null = null
   private __state: T | null = null
   private readonly __events: DomainEvent[] = []
@@ -81,9 +81,9 @@ class UnitOfWork<T extends State> implements DomainEventEmitter {
   }
 }
 
-type AggregateRootInitFunc<T extends State, TArguments> = (this: UnitOfWork<T>, args: TArguments) => T
+type AggregateRootInitFunc<T extends Entity, TArguments> = (this: UnitOfWork<T>, args: TArguments) => T
 
-export function bootstrap<T extends State, TArguments> (
+export function bootstrap<T extends Entity, TArguments> (
   getInitialState: AggregateRootInitFunc<T, TArguments>
 ): (a: TArguments) => UnitOfWork<T> {
   return function (args: TArguments) {
@@ -93,10 +93,10 @@ export function bootstrap<T extends State, TArguments> (
   }
 }
 
-type CommandRunFunc<T extends State, TCommand> = (this: UnitOfWork<T>, state: T, cmd: TCommand) => T
-type MutatorFunc<T extends State, TCommand> = (a: T, cmd: TCommand) => T
+type CommandRunFunc<T extends Entity, TCommand> = (this: UnitOfWork<T>, state: T, cmd: TCommand) => T
+type MutatorFunc<T extends Entity, TCommand> = (a: T, cmd: TCommand) => T
 
-export function mutate<T extends State, TCommand> (
+export function mutate<T extends Entity, TCommand> (
   runCommand: CommandRunFunc<T, TCommand>
 ): MutatorFunc<T, TCommand> {
   return function (this: UnitOfWork<T>, ar: T, cmd: TCommand) {
@@ -104,10 +104,10 @@ export function mutate<T extends State, TCommand> (
   }
 }
 
-type FactoryMethodImpl<T extends State, TCommand, TCreated extends State> = (this: UnitOfWork<TCreated>, state: T, command: TCommand) => TCreated
-type FactoryFunc<T extends State, TCommand, TCreated extends State> = (a: T, cmd: TCommand) => UnitOfWork<TCreated>
+type FactoryMethodImpl<T extends Entity, TCommand, TCreated extends Entity> = (this: UnitOfWork<TCreated>, state: T, command: TCommand) => TCreated
+type FactoryFunc<T extends Entity, TCommand, TCreated extends Entity> = (a: T, cmd: TCommand) => UnitOfWork<TCreated>
 
-export function factory<T extends State, TCommand, TCreated extends State> (
+export function factory<T extends Entity, TCommand, TCreated extends Entity> (
   runFactory: FactoryMethodImpl<T, TCommand, TCreated>
 ): FactoryFunc<T, TCommand, TCreated> {
   const updateSink = new UnitOfWork<TCreated>()
