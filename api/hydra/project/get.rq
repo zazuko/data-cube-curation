@@ -1,3 +1,4 @@
+BASE <${this.env.BASE_URI}>
 PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
@@ -16,6 +17,7 @@ CONSTRUCT
 
     ?source schema:name ?sourceName
 }
+FROM <${this.locals.projectId}>
 WHERE
 {
     BIND (<${this.locals.projectId}> as ?project)

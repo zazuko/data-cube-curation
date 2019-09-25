@@ -1,6 +1,9 @@
 import parse from 'csv-parse'
 import md5 from 'md5'
+import express from 'express'
 import { saveFile } from '../../storage'
+import { createSource } from '../../domain/project'
+import { projects, sources } from '../../storage/repository'
 
 const parserOptions = {
   to: 100,
@@ -22,17 +25,25 @@ export function processCsv (req, res, next) {
         next(err)
       }
 
-      res.locals.columns = header.map(column => ({
-        id: `${res.locals.sourceId}/${column}`,
-        title: column,
-      }))
+      res.locals.columns = header
 
       storeSample(res.locals.sourceId, rows).then(next).catch(next)
     })
 }
 
-export function setResponse (req, res, next) {
-  res.status(201)
-  res.setHeader('Location', res.locals.sourceId)
-  next()
+export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+  const ar = await projects.load(`/project/${req.params.projectId}`)
+
+  createSource(ar, {
+    type: 'csv',
+    columns: res.locals.columns,
+    fileName: res.locals.sourceName,
+  })
+    .commit(sources)
+    .then((source) => {
+      res.status(201)
+      res.setHeader('Location', source['@id'])
+      next()
+    })
+    .catch(next)
 }
