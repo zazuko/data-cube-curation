@@ -66,7 +66,7 @@ async function getExistingProject (req: express.DataCubeRequest, res: express.Da
 }
 
 export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
-  res.locals.projectId = `/project/${req.params.projectId}`
+  res.locals.projectId = res.locals.projectId || `/project/${req.params.projectId}`
   const projectExistsQuery = ask(`GRAPH <${res.locals.projectId}> { ?s ?p ?o }`)
 
   if (await projectExistsQuery.execute(req.sparql) === false) {

@@ -32,13 +32,16 @@ export function processCsv (req, res, next) {
 }
 
 export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
-  const ar = await projects.load(`/project/${req.params.projectId}`)
+  const project = await projects.load(`/project/${req.params.projectId}`)
 
-  createSource(ar.state, {
-    type: 'csv',
+  const createSourceCommand = {
+    type: 'csv' as 'csv' | 'excel',
     columns: res.locals.columns,
     fileName: res.locals.sourceName,
-  })
+  }
+
+  project
+    .factory(createSource)(createSourceCommand)
     .commit(sources)
     .then((source) => {
       res.status(201)

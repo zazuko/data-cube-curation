@@ -36,7 +36,8 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
-  const project = await projects.load(`/project/${req.params.projectId}`)
+  res.locals.projectId = `/project/${req.params.projectId}`
+  let aggregateRoot = await projects.load(res.locals.projectId)
 
   const renameCommand = {
     newName: projectName.value,
@@ -46,9 +47,9 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     uriSlug: req.params.projectId,
   }
 
-  let unitOfWork = !project
+  aggregateRoot = !aggregateRoot
     ? createProject(createCommand)
-    : project.getUnitOfWork().then(renameProject, renameCommand)
+    : aggregateRoot.mutation(renameProject)(renameCommand)
 
-  unitOfWork.commit(projects).then(() => next()).catch(next)
+  aggregateRoot.commit(projects).then(() => next()).catch(next)
 }

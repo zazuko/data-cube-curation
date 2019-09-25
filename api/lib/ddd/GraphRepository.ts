@@ -1,4 +1,4 @@
-import { Entity, AggregateRoot, Repository, AR } from './index'
+import { Entity, AggregateRoot, Repository, AggregateRootImpl } from './index'
 import SparqlHttp from 'sparql-http-client'
 import ParserJsonld from '@rdfjs/parser-jsonld'
 import SerializerJsonld from '@rdfjs/serializer-jsonld'
@@ -94,7 +94,7 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
     const state = jsonld['@graph'][0]
 
     if (state) {
-      return new AR<S>(state, Number.parseInt(state['urn:ar:version']))
+      return new AggregateRootImpl<S>(state, Number.parseInt(state['urn:ar:version']))
     }
 
     return null
