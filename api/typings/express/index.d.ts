@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
-import { SparqlHttp } from 'sparql-http-client'
+import SparqlHttp from 'sparql-http-client'
 
 declare module 'express' {
+
   interface DataCubeRequest extends Request {
     sparql: SparqlHttp;
     graph: any;

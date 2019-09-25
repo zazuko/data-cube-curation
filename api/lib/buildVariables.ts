@@ -1,6 +1,7 @@
 import express from 'express'
+import { Term } from 'rdf-js'
 
-export function buildVariables<T extends Record<string, string>> (req: express.DataCubeRequest, mappings: T): Record<keyof T, any> {
+export function buildVariables<T extends Record<string, string>> (req: express.DataCubeRequest, mappings: T): Record<keyof T, Term> {
   return Object.entries(mappings).reduce((locals, mapping) => {
     const name = mapping[0]
     const property = mapping[1]

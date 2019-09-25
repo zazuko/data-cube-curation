@@ -21,7 +21,9 @@
     "@typescript-eslint/explicit-function-return-type": 0,
     "comma-dangle": ["error", "always-multiline"],
     "indent": "off",
-    "@typescript-eslint/indent": ["error", 2]
+    "@typescript-eslint/indent": ["error", 2],
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "error"
   },
   "overrides": [
     {

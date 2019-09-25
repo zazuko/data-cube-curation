@@ -80,15 +80,7 @@ api:CreateProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initNew>
-      ]
-      [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project/create.ru>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project/create#setResponse>
+        code:link <file:lib/data-cube/project#create>
       ]
       [
         a code:EcmaScript ;
@@ -254,12 +246,8 @@ api:AddSource
         code:link <file:lib/data-cube/project-source/create#processCsv>
       ]
       [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project-source/create.ru>
-      ]
-      [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source/create#setResponse>
+        code:link <file:lib/data-cube/project-source/create#createSourceHandler>
       ]
       [
         a hydra-box:SparqlQuery ;
