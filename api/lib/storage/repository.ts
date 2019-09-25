@@ -2,8 +2,9 @@ import rdfFetch from 'hydra-box/lib/rdfFetch'
 import SparqlHttp from 'sparql-http-client'
 import { SparqlRepository } from '../ddd/GraphRepository'
 import { Project, Source } from '../domain/project'
+import { prefixes } from '@zazuko/rdf-vocabularies'
 
-const base = 'http://localhost:5678/'
+const base = process.env.BASE_URI
 const sparqlClient = new SparqlHttp({
   endpointUrl: process.env.SPARQL_ENDPOINT,
   updateUrl: process.env.SPARQL_UPDATE_ENDPOINT || process.env.SPARQL_ENDPOINT,
@@ -12,7 +13,7 @@ const sparqlClient = new SparqlHttp({
 
 const context = {
   '@vocab': 'https://rdf-cube-curation.described.at/',
-  'schema': 'http://schema.org/',
+  'schema': prefixes.schema,
   name: 'schema:name',
 }
 

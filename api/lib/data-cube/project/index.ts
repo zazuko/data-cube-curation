@@ -1,7 +1,7 @@
 import uuid from 'uuid/v4'
 import express from 'express'
 import { createProject } from '../../domain/project'
-import { projects } from '../../storage/Repository'
+import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 
