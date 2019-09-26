@@ -3,7 +3,7 @@ export interface AggregateRoot<TState extends Entity> {
   version: number;
 
   mutation<TCommand> (mutator: MutatorFunc<TState, TCommand>): (cmd: TCommand) => AggregateRoot<TState>;
-  factory<T extends Entity, TCommand, TCreated extends Entity> (factoryFunc: FactoryFunc<T, TCommand, TCreated>): (cmd: TCommand) => AggregateRoot<TCreated>;
+  factory<TCommand, TCreated extends Entity> (factoryFunc: FactoryFunc<TState, TCommand, TCreated>): (cmd: TCommand) => AggregateRoot<TCreated>;
   commit (repo: Repository<TState>): Promise<TState>;
 }
 
@@ -67,11 +67,11 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
     }
   }
 
-  public factory<T extends Entity, TCommand, TCreated extends Entity> (factoryFunc: FactoryFunc<T, TCommand, TCreated>): (cmd: TCommand) => AggregateRoot<TCreated> {
+  public factory<TCommand, TCreated extends Entity> (factoryFunc: FactoryFunc<T, TCommand, TCreated>): (cmd: TCommand) => AggregateRoot<TCreated> {
     return (cmd: TCommand) => {
       if (!this.__error) {
         try {
-          return factoryFunc.call(this.state, cmd)
+          return factoryFunc(this.state, cmd)
         } catch (e) {
           this.__error = e
         }
@@ -123,16 +123,17 @@ export function mutate<T extends Entity, TCommand> (
 }
 
 type FactoryMethodImpl<T extends Entity, TCommand, TCreated extends Entity> = (this: DomainEventEmitter, state: T, command: TCommand) => TCreated
-type FactoryFunc<T extends Entity, TCommand, TCreated extends Entity> = (a: T, cmd: TCommand) => AggregateRoot<TCreated>
+type FactoryFunc<T extends Entity, TCommand, TCreated extends Entity> = (parent: T, cmd: TCommand) => AggregateRoot<TCreated>
 
 export function factory<T extends Entity, TCommand, TCreated extends Entity> (
   runFactory: FactoryMethodImpl<T, TCommand, TCreated>
 ): FactoryFunc<T, TCommand, TCreated> {
-  const updateSink = new AggregateRootImpl<TCreated>()
-
-  return (ar: T, cmd: TCommand) => {
+  return (parent: T, cmd: TCommand) => {
     try {
-      return runFactory.call(updateSink, ar, cmd)
+      const ar = new AggregateRootImpl<TCreated>()
+      return ar.mutation<TCommand>(a => {
+        return runFactory.call(a, parent, cmd) as TCreated
+      })(cmd)
     } catch (error) {
       return new AggregateRootImpl<TCreated>(error)
     }
