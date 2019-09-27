@@ -18,10 +18,8 @@ CONSTRUCT {
 WHERE {
     ?project a dataCube:Project .
 
-    GRAPH ?project {
-        OPTIONAL { ?project schema:name ?name . }
-        OPTIONAL { ?project a ?projectType . }
-    }
+    OPTIONAL { ?project schema:name ?name . }
+    OPTIONAL { ?project a ?projectType . }
 
     {
         SELECT (COUNT(?p) as ?count) WHERE {
