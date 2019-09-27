@@ -21,7 +21,7 @@ function logger (req, res, next) {
 function hydraMiddleware () {
   const options: Record<string, unknown> = {
     debug: true,
-    sparqlEndpointUrl: process.env.SPARQL_ENDPOINT,
+    sparqlEndpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,
     sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
   }

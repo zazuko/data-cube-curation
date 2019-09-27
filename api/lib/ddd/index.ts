@@ -1,3 +1,5 @@
+import { emit } from './events'
+
 export interface AggregateRoot<TState extends Entity> {
   state: TState;
   version: number;
@@ -7,9 +9,10 @@ export interface AggregateRoot<TState extends Entity> {
   commit (repo: Repository<TState>): Promise<TState>;
 }
 
-export interface DomainEvent {
+export interface DomainEvent<T = unknown> {
   name: string;
-  data: any;
+  data: T;
+  id: string;
 }
 
 export interface Entity {
@@ -18,7 +21,7 @@ export interface Entity {
 }
 
 interface DomainEventEmitter {
-  emit(ev: DomainEvent): void;
+  emit<T extends Record<string, any>, K extends keyof Pick<T, string>>(name: K, value: T[K]): void;
 }
 
 export interface Repository<S extends Entity> {
@@ -29,7 +32,7 @@ export interface Repository<S extends Entity> {
 export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, DomainEventEmitter {
   private __error: Error | null = null
   private __state: T | null = null
-  private readonly __events: DomainEvent[] = []
+  private readonly __events: { name: string; data: any }[] = []
   private readonly __previousVersion: number = 0
 
   public get state () {
@@ -85,8 +88,10 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
     if (!this.__error) {
       return repo.save(this.__state, this.__previousVersion + 1)
         .then(() => {
-          // todo
-          this.__events.forEach(e => console.log(JSON.stringify(e)))
+          this.__events.forEach(e => emit(e.name, {
+            id: this.state['@id'],
+            ...e,
+          }))
           return this.__state
         })
     }
@@ -94,8 +99,11 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
     return Promise.reject(this.__error)
   }
 
-  public emit (ev: DomainEvent) {
-    this.__events.push(ev)
+  public emit<T extends Record<string, unknown>, K extends keyof Pick<T, string>> (name: K, data: T[K]) {
+    this.__events.push({
+      name,
+      data,
+    })
   }
 }
 

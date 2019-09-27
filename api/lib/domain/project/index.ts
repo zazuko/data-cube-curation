@@ -1,5 +1,6 @@
 import uuid from 'uuid'
 import { mutate, bootstrap, factory, Entity } from '../../ddd'
+import { ProjectEvents } from './events'
 
 export interface Project extends Entity {
   name: string;
@@ -21,11 +22,8 @@ interface CreateCommand {
 }
 
 export const createProject = bootstrap<Project, CreateCommand>(function (createCommand) {
-  this.emit({
-    name: 'ProjectCreated',
-    data: {
-      name: createCommand.name,
-    },
+  this.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
+    name: createCommand.name,
   })
 
   return {
@@ -40,11 +38,8 @@ interface RenameCommand {
 }
 
 export const renameProject = mutate<Project, RenameCommand>(function (state, renameCommand) {
-  this.emit({
-    name: 'ProjectRenamed',
-    data: {
-      name: renameCommand.newName,
-    },
+  this.emit<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', {
+    name: renameCommand.newName,
   })
 
   return {
