@@ -134,4 +134,24 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
 
     return null
   }
+
+  public 'delete' (id: string): Promise<any> {
+    return this.__sparql.updateQuery(`
+      BASE <${this.__base}>
+      
+      DELETE { 
+        ?root <urn:ddd:deleted> ?isDeleted .
+      } 
+      INSERT {
+        ?root <urn:ddd:deleted> true .
+      }
+      WHERE { 
+        ?root <urn:ddd:id> <${id}>.
+        
+        OPTIONAL {
+          ?root <urn:ddd:deleted> ?isDeleted .
+        }
+      }
+    `)
+  }
 }

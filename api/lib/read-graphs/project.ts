@@ -16,7 +16,7 @@ function getClient () {
   return sparqlClient
 }
 
-handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async (ev) => {
+handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
   insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" .
   `)
@@ -28,13 +28,19 @@ handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async (ev) => {
     .catch(console.error)
 })
 
-handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async (ev) => {
+handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', ev => {
   deleteInsert(`<${ev.id}> schema:name ?currentName .`)
     .insert(`<${ev.id}> schema:name "${ev.data.name}" .`)
     .prefixes({
       schema,
       dataCube,
     })
+    .execute(getClient())
+    .catch(console.error)
+})
+
+handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
+  deleteInsert(`<${ev.id}> ?p ?o .`)
     .execute(getClient())
     .catch(console.error)
 })

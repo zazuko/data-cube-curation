@@ -4,9 +4,10 @@ export interface AggregateRoot<TState extends Entity> {
   state: TState;
   version: number;
 
-  mutation<TCommand> (mutator: MutatorFunc<TState, TCommand>): (cmd: TCommand) => AggregateRoot<TState>;
+  mutation<TCommand> (mutator: MutatorFunc<TState, TCommand>): (cmd?: TCommand) => AggregateRoot<TState>;
   factory<TCommand, TCreated extends Entity> (factoryFunc: FactoryFunc<TState, TCommand, TCreated>): (cmd: TCommand) => AggregateRoot<TCreated>;
   commit (repo: Repository<TState>): Promise<TState>;
+  'delete'(): AggregateRoot<TState>;
 }
 
 export interface DomainEvent<T = unknown> {
@@ -27,11 +28,13 @@ interface DomainEventEmitter {
 export interface Repository<S extends Entity> {
   save (ar: S, version: number): Promise<void>;
   load (id: string): Promise<AggregateRoot<S> | null>;
+  'delete' (id: string): Promise<void>;
 }
 
 export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, DomainEventEmitter {
   private __error: Error | null = null
   private __state: T | null = null
+  private __markedForDeletion = false
   private readonly __events: { name: string; data: any }[] = []
   private readonly __previousVersion: number = 0
 
@@ -84,9 +87,20 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
     }
   }
 
+  public 'delete' () {
+    this.__markedForDeletion = true
+
+    return this
+  }
+
   public commit (repo: Repository<T>): Promise<T> {
     if (!this.__error) {
       return repo.save(this.__state, this.__previousVersion + 1)
+        .then(() => {
+          if (this.__markedForDeletion) {
+            return repo.delete(this.__state['@id'])
+          }
+        })
         .then(() => {
           this.__events.forEach(e => emit(e.name, {
             id: this.state['@id'],

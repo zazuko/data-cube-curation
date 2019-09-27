@@ -185,19 +185,7 @@ api:DeleteProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initExisting>
-      ]
-      [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project/delete.sources.ru>
-      ]
-      [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project/delete.tables.ru>
-      ]
-      [
-        a hydra-box:SparqlUpdate ;
-        hydra-box:source <file:hydra/project/delete.ru>
+        code:link <file:lib/data-cube/project#archive>
       ]
      )
    ] .

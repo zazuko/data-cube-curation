@@ -4,6 +4,7 @@ import { ProjectEvents } from './events'
 
 export interface Project extends Entity {
   name: string;
+  archived: boolean;
 }
 
 interface Column extends Entity {
@@ -30,6 +31,7 @@ export const createProject = bootstrap<Project, CreateCommand>(function (createC
     '@id': `/project/${createCommand.uriSlug || uuid()}`,
     '@type': 'Project',
     name: createCommand.name,
+    archived: false,
   }
 })
 
@@ -68,5 +70,16 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
       '@type': 'Column',
       name,
     })),
+  }
+})
+
+export const archiveProject = mutate<Project, never>(function (state) {
+  if (!state.archived) {
+    this.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', {})
+  }
+
+  return {
+    ...state,
+    archived: true,
   }
 })
