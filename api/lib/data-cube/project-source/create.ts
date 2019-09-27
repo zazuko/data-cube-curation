@@ -1,7 +1,5 @@
 import parse from 'csv-parse'
-import md5 from 'md5'
 import express from 'express'
-import { saveFile } from '../../storage'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
 import { duplicateNameErrorResponse } from './error-duplicate-name'
@@ -11,13 +9,7 @@ const parserOptions = {
   delimiter: ';',
 }
 
-function storeSample (sourceId: string, rows: string[][]) {
-  const csvStringified = rows.map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')
-
-  return saveFile(md5(sourceId), csvStringified)
-}
-
-export function processCsv (req, res, next) {
+export function parseCsv (req, res, next) {
   parse(
     req.body,
     parserOptions,
@@ -27,8 +19,8 @@ export function processCsv (req, res, next) {
       }
 
       res.locals.columns = header
-
-      storeSample(res.locals.sourceId, rows).then(next).catch(next)
+      res.locals.fileSample = rows
+      next()
     })
 }
 
@@ -39,6 +31,7 @@ export async function createSourceHandler (req: express.DataCubeRequest, res: ex
     type: 'csv' as 'csv' | 'excel',
     columns: res.locals.columns,
     fileName: res.locals.sourceName,
+    sample: res.locals.fileSample,
   }
 
   project
@@ -51,7 +44,7 @@ export async function createSourceHandler (req: express.DataCubeRequest, res: ex
     })
     .catch((e: Error) => {
       if (e.message.includes('It has already been modified')) {
-        duplicateNameErrorResponse(req, res).then(next)
+        duplicateNameErrorResponse(req, res)
       } else {
         next(e)
       }

@@ -48,6 +48,7 @@ interface UploadSourceCommand {
   fileName: string;
   type: 'csv' | 'excel';
   columns: string[];
+  sample: string[][];
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {
@@ -57,6 +58,7 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
     fileName: command.fileName,
     projectId: project['@id'],
     columns: command.columns,
+    sampleRows: command.sample,
   })
 
   return {

@@ -3,5 +3,6 @@ export interface SourceEvents {
     projectId: string;
     fileName: string;
     columns: string[];
+    sampleRows: string[][];
   };
 }

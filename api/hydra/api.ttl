@@ -211,11 +211,7 @@ api:AddSource
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source#initNew>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source/create#processCsv>
+        code:link <file:lib/data-cube/project-source/create#parseCsv>
       ]
       [
         a code:EcmaScript ;
