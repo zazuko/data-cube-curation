@@ -90,7 +90,7 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
     }
   }
 
-  public async load (id: string): Promise<AggregateRoot<S> | null> {
+  public async load (id: string): Promise<AggregateRoot<S>> {
     const graph = await this.__sparql.constructQuery(`
     BASE <${this.__base}>
     
@@ -132,7 +132,7 @@ export class SparqlRepository<S extends Entity> implements Repository<S> {
       return new AggregateRootImpl<S>(state, Number.parseInt(version))
     }
 
-    return null
+    return new AggregateRootImpl<S>(new Error('Resoruce not found or deleted'))
   }
 
   public 'delete' (id: string): Promise<any> {

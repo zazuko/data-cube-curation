@@ -1,20 +1,12 @@
 import uuid from 'uuid'
 import { mutate, bootstrap, factory, Entity } from '../../ddd'
 import { ProjectEvents } from './events'
+import { Source } from '../source'
+import { SourceEvents } from '../source/events'
 
 export interface Project extends Entity {
   name: string;
   archived: boolean;
-}
-
-interface Column extends Entity {
-  name: string;
-}
-
-export interface Source extends Entity {
-  type: 'csv' | 'excel';
-  project: string;
-  columns: Column[];
 }
 
 interface CreateCommand {
@@ -58,8 +50,14 @@ interface UploadSourceCommand {
   columns: string[];
 }
 
-export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command) {
+export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {
   const sourceId = `${project['@id']}/source/${command.fileName}`
+
+  emitter.emit<SourceEvents, 'SourceUploaded'>('SourceUploaded', {
+    fileName: command.fileName,
+    projectId: project['@id'],
+    columns: command.columns,
+  })
 
   return {
     '@id': sourceId,
@@ -67,11 +65,7 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
     type: command.type,
     name: command.fileName,
     project: project['@id'],
-    columns: command.columns.map(name => ({
-      '@id': `${sourceId}/${name}`,
-      '@type': 'Column',
-      name,
-    })),
+    columns: command.columns,
   }
 })
 

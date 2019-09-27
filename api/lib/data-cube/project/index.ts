@@ -25,8 +25,7 @@ export function create (req: express.DataCubeRequest, res: express.DataCubeRespo
     .commit(projects)
     .then((project) => {
       res.status(201)
-      res.setHeader('Location', project['@id'])
-      res.locals.projectId = project['@id']
+      res.setHeader('Location', `${process.env.BASE_URI}${project['@id'].replace('/', '')}`)
       next()
     })
     .catch(next)
@@ -47,7 +46,7 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     uriSlug: req.params.projectId,
   }
 
-  aggregateRoot = !aggregateRoot
+  aggregateRoot = !aggregateRoot.state
     ? createProject(createCommand)
     : aggregateRoot.mutation(renameProject)(renameCommand)
 

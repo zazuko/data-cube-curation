@@ -5,6 +5,7 @@ import url from 'url'
 import express from 'express'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
+import './lib/read-graphs'
 
 dotenvExpand(dotenv.config())
 

@@ -82,10 +82,6 @@ api:CreateProject
         a code:EcmaScript ;
         code:link <file:lib/data-cube/project#create>
       ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project/get#get>
-      ]
     )
   ] ;
   hydra-box:variables
@@ -110,10 +106,6 @@ api:ReplaceProject
       [
         a code:EcmaScript ;
         code:link <file:lib/data-cube/project#createOrUpdate>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project/get#get>
       ]
     )
   ] ;

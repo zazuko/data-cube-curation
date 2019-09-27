@@ -1,7 +1,5 @@
 import { DataCubeRequest, DataCubeResponse } from 'express'
 import { getProjectId } from '../project'
-import { ask } from '../../sparql'
-import { duplicateNameErrorResponse } from './error-duplicate-name'
 
 const contentDispositionPattern = /attachment; filename="(.+)"/
 
@@ -22,11 +20,6 @@ export async function initNew (req: DataCubeRequest, res: DataCubeResponse, next
   }
 
   res.locals.sourceId = getSourceId(res.locals.projectId, res.locals.sourceName)
-
-  const sourceExists = ask(`GRAPH <${res.locals.sourceId}> { ?s ?p ?o }`)
-  if (await sourceExists.execute(req.sparql) === true) {
-    return duplicateNameErrorResponse(req, res)
-  }
 
   next()
 }

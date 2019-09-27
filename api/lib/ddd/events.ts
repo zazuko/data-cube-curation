@@ -4,6 +4,7 @@ import { DomainEvent } from './index'
 const emitter = new EventEmitter()
 
 export function handle<T extends Record<string, any>, K extends keyof Pick<T, string>> (name: K, handler: (ev: DomainEvent<T[K]>) => void) {
+  console.log(`Adding handler for event ${name}: ${handler.name}`)
   emitter.on(name, handler)
 }
 

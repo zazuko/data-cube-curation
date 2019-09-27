@@ -20,20 +20,18 @@ With Operation api:CreateProject {
         ```
     } => {
         Expect Status 201
-        Expect Header Location
+        Expect Header Location [projectUri]
 
-        Expect Type dataCube:Project
-        Expect Property schema:name "BAFU UBD 28"
-
-        Expect Property api:sources {
-            Expect Property hydra:totalItems 0
-        }
+        Follow [projectUri]
     }
 }
 
 With Class dataCube:Project {
-    With Property api:sources {
-         Expect Operation api:AddSource
+    Expect Type dataCube:Project
+    Expect Property schema:name "BAFU UBD 28"
+
+    Expect Property api:sources {
+        Expect Operation api:AddSource
     }
 
     Expect Link dataCube:factTable
@@ -52,27 +50,9 @@ With Operation api:AddSource {
         <<< "bodies/UBD0028.Daten_de.csv"
     } => {
         Expect Status 201
-        Expect Type dataCube:Source
-        Expect Type dataCube:CsvSource
+        Expect Header Location [sourceUri]
 
-        Expect Link dataCube:project {
-            Expect Link api:sources {
-                Expect Property hydra:totalItems 1
-            }
-        }
-
-        Expect Property api:columns {
-            Expect Type hydra:Collection
-
-            Expect Property hydra:totalItems 19
-            Expect Property hydra:member {
-                Expect Type dataCube:Column
-
-                Expect Property schema:name
-            }
-        }
-
-        Expect Property schema:name "UBD0028.Daten_de.csv"
+        Follow [sourceUri]
     }
 
     // Repeat the same should fail
@@ -84,4 +64,28 @@ With Operation api:AddSource {
     } => {
         Expect Status 409
     }
+}
+
+With Class dataCube:Source {
+    Expect Type dataCube:Source
+    Expect Type dataCube:CsvSource
+
+    Expect Link dataCube:project {
+        Expect Link api:sources {
+            Expect Property hydra:totalItems 1
+        }
+    }
+
+    Expect Property api:columns {
+        Expect Type hydra:Collection
+
+        Expect Property hydra:totalItems 19
+        Expect Property hydra:member {
+            Expect Type dataCube:Column
+
+            Expect Property schema:name
+        }
+    }
+
+    Expect Property schema:name "UBD0028.Daten_de.csv"
 }

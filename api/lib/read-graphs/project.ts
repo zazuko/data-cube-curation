@@ -1,20 +1,8 @@
-import rdfFetch from 'hydra-box/lib/rdfFetch'
-import SparqlHttp from 'sparql-http-client'
 import { ProjectEvents } from '../domain/project/events'
 import { handle } from '../ddd/events'
 import { ask, construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, schema } from '../namespaces'
-
-let sparqlClient
-function getClient () {
-  sparqlClient = sparqlClient || new SparqlHttp({
-    endpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,
-    updateUrl: process.env.READ_MODEL_SPARQL_UPDATE_ENDPOINT || process.env.READ_MODEL_SPARQL_ENDPOINT,
-    fetch: rdfFetch,
-  })
-
-  return sparqlClient
-}
+import { getClient } from './sparqlClient'
 
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
   insertData(`
@@ -87,6 +75,7 @@ export function getProject (id: string): Promise<any> {
     {
         SELECT (COUNT(?source) as ?count)
         {
+            BIND (<${id}> as ?project)
             OPTIONAL { ?project dataCube:source ?source }
         }
   }`).execute(getClient())

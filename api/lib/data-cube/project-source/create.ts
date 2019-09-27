@@ -4,6 +4,7 @@ import express from 'express'
 import { saveFile } from '../../storage'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
+import { duplicateNameErrorResponse } from './error-duplicate-name'
 
 const parserOptions = {
   to: 100,
@@ -45,8 +46,14 @@ export async function createSourceHandler (req: express.DataCubeRequest, res: ex
     .commit(sources)
     .then((source) => {
       res.status(201)
-      res.setHeader('Location', '/' + source['@id'])
+      res.setHeader('Location', `${process.env.BASE_URI}${source['@id']}`)
       next()
     })
-    .catch(next)
+    .catch((e: Error) => {
+      if (e.message.includes('It has already been modified')) {
+        duplicateNameErrorResponse(req, res).then(next)
+      } else {
+        next(e)
+      }
+    })
 }

@@ -27,7 +27,7 @@ interface DomainEventEmitter {
 
 export interface Repository<S extends Entity> {
   save (ar: S, version: number): Promise<void>;
-  load (id: string): Promise<AggregateRoot<S> | null>;
+  load (id: string): Promise<AggregateRoot<S>>;
   'delete' (id: string): Promise<void>;
 }
 
@@ -63,7 +63,7 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
     return (cmd: TCommand) => {
       if (!this.__error) {
         try {
-          this.__state = mutator.call(this, this.__state, cmd)
+          this.__state = mutator(this.__state, cmd, this)
         } catch (e) {
           this.__error = e
         }

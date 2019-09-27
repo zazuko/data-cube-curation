@@ -15,7 +15,6 @@ CONSTRUCT
 
     ?column ?columnProp ?o .
 }
-FROM <${this.locals.sourceId}>
 WHERE
 {
     BIND (<${this.locals.sourceId}> as ?source)
