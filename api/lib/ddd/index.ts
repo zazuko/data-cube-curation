@@ -121,30 +121,30 @@ export class AggregateRootImpl<T extends Entity> implements AggregateRoot<T>, Do
   }
 }
 
-type AggregateRootInitFunc<T extends Entity, TArguments> = (this: DomainEventEmitter, args: TArguments) => T
+type AggregateRootInitFunc<T extends Entity, TArguments> = (args: TArguments, emitter: DomainEventEmitter) => T
 
 export function bootstrap<T extends Entity, TArguments> (
   getInitialState: AggregateRootInitFunc<T, TArguments>
 ): (a: TArguments) => AggregateRoot<T> {
   return function (args: TArguments) {
-    const updateSink = new AggregateRootImpl<T>()
+    const aggregateRoot = new AggregateRootImpl<T>()
 
-    return updateSink.mutation(() => getInitialState.call(updateSink, args))(args)
+    return aggregateRoot.mutation(() => getInitialState(args, aggregateRoot))(args)
   }
 }
 
-type CommandRunFunc<T extends Entity, TCommand> = (this: DomainEventEmitter, state: T, cmd: TCommand) => T
-type MutatorFunc<T extends Entity, TCommand> = (a: T, cmd: TCommand) => T
+type CommandRunFunc<T extends Entity, TCommand> = (state: T, cmd: TCommand, emitter: DomainEventEmitter) => T
+type MutatorFunc<T extends Entity, TCommand> = (state: T, cmd: TCommand, emitter: DomainEventEmitter) => T
 
 export function mutate<T extends Entity, TCommand> (
   runCommand: CommandRunFunc<T, TCommand>
 ): MutatorFunc<T, TCommand> {
-  return function (this: DomainEventEmitter, ar: T, cmd: TCommand) {
-    return runCommand.call(this, ar, cmd)
+  return function (state, cmd, emitter) {
+    return runCommand(state, cmd, emitter)
   }
 }
 
-type FactoryMethodImpl<T extends Entity, TCommand, TCreated extends Entity> = (this: DomainEventEmitter, state: T, command: TCommand) => TCreated
+type FactoryMethodImpl<T extends Entity, TCommand, TCreated extends Entity> = (state: T, command: TCommand, emitter: DomainEventEmitter) => TCreated
 type FactoryFunc<T extends Entity, TCommand, TCreated extends Entity> = (parent: T, cmd: TCommand) => AggregateRoot<TCreated>
 
 export function factory<T extends Entity, TCommand, TCreated extends Entity> (
@@ -153,8 +153,8 @@ export function factory<T extends Entity, TCommand, TCreated extends Entity> (
   return (parent: T, cmd: TCommand) => {
     try {
       const ar = new AggregateRootImpl<TCreated>()
-      return ar.mutation<TCommand>(a => {
-        return runFactory.call(a, parent, cmd) as TCreated
+      return ar.mutation<TCommand>((a, cmd, emitter) => {
+        return runFactory(parent, cmd, emitter) as TCreated
       })(cmd)
     } catch (error) {
       return new AggregateRootImpl<TCreated>(error)

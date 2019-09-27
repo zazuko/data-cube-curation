@@ -22,8 +22,8 @@ interface CreateCommand {
   name: string;
 }
 
-export const createProject = bootstrap<Project, CreateCommand>(function (createCommand) {
-  this.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
+export const createProject = bootstrap<Project, CreateCommand>(function (createCommand, emitter) {
+  emitter.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
     name: createCommand.name,
   })
 
@@ -39,10 +39,12 @@ interface RenameCommand {
   newName: string;
 }
 
-export const renameProject = mutate<Project, RenameCommand>(function (state, renameCommand) {
-  this.emit<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', {
-    name: renameCommand.newName,
-  })
+export const renameProject = mutate<Project, RenameCommand>(function (state, renameCommand, emitter) {
+  if (state.name !== renameCommand.newName) {
+    emitter.emit<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', {
+      name: renameCommand.newName,
+    })
+  }
 
   return {
     ...state,
@@ -73,9 +75,9 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
   }
 })
 
-export const archiveProject = mutate<Project, never>(function (state) {
+export const archiveProject = mutate<Project, never>(function (state, cmd, emitter) {
   if (!state.archived) {
-    this.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', {})
+    emitter.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', {})
   }
 
   return {
