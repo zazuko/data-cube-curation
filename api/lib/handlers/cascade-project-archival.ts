@@ -25,25 +25,15 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function archiveSour
 
 handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
-    deleteInsert('?source ?p ?o ')
+    deleteInsert(`
+      ?source ?p0 ?o0 .
+      ?column ?p1 ?o1 .`
+    )
       .where(`
-        ?source a dataCube:Source ; ?p ?o .
-        FILTER ( ?source = <${ev.id}> )`)
-      .prefixes({
-        dataCube,
-      })
-      .execute(getClient())
-      .catch(console.error)
-  }
-})
-
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSourceColumns (ev) {
-  if (ev.data.types.includes('Source')) {
-    deleteInsert('?column ?p ?o ')
-      .where(`
+        ?source ?p0 ?o0 .
         ?source dataCube:column ?column . 
-        ?column ?p ?o .
-        
+        ?column ?p1 ?o1 .
+  
         FILTER ( ?source = <${ev.id}> )`)
       .prefixes({
         dataCube,

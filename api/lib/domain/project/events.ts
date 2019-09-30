@@ -5,5 +5,5 @@ export interface ProjectEvents {
   ProjectRenamed: {
     name: string;
   };
-  ProjectArchived: {};
+  ProjectArchived: object;
 }

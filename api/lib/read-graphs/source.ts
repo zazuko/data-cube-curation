@@ -1,7 +1,7 @@
 import { SourceEvents } from '../domain/source/events'
 import { handle } from 'fun-ddr'
 import { getClient } from './sparqlClient'
-import { deleteInsert, insertData } from '../sparql'
+import { insertData } from '../sparql'
 import { dataCube, schema } from '../namespaces'
 
 handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
@@ -22,21 +22,6 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
 
     ${columns.join('\n')}
   `)
-    .prefixes({
-      dataCube,
-      schema,
-    })
-    .execute(getClient())
-    .catch(console.error)
-})
-
-handle<SourceEvents, 'SourceArchived'>('SourceArchived', function removeSourceWhenProjectIsArchived (ev) {
-  deleteInsert(`?source ?p ?o .`)
-    .where(`<${ev.id}> ?p ?o . ?col ?schema:name ?name .`)
-    .where(`OPTIONAL { 
-      <${ev.id}> dataCube:column ?col . 
-      ?col ?schema:name ?name .
-    }`)
     .prefixes({
       dataCube,
       schema,

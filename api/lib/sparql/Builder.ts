@@ -69,7 +69,7 @@ export class Builder {
 
     switch (this.__kind) {
       case 'SELECT':
-        graphOrVariables = this.__variables.join('')
+        graphOrVariables = this.__variables.map(v => v.replace(/^\??/, '?')).join('')
         break
       case 'CONSTRUCT':
         graphOrVariables = `{
