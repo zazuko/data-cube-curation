@@ -5,9 +5,9 @@ import url from 'url'
 import express from 'express'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
-import './lib/handlers'
 
 dotenvExpand(dotenv.config())
+import('./lib/handlers')
 
 function logger (req, res, next) {
   process.stdout.write(`${req.method} ${req.url} `)

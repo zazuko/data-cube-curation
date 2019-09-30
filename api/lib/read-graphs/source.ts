@@ -1,5 +1,5 @@
 import { SourceEvents } from '../domain/source/events'
-import { handle } from '../ddd/events'
+import { handle } from 'fun-ddr'
 import { getClient } from './sparqlClient'
 import { deleteInsert, insertData } from '../sparql'
 import { dataCube, schema } from '../namespaces'

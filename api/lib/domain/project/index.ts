@@ -1,5 +1,6 @@
 import uuid from 'uuid'
-import { mutate, bootstrap, factory, Entity } from '../../ddd'
+import { mutate, initialize, factory } from 'fun-ddr'
+import { Entity } from 'fun-ddr/lib'
 import { ProjectEvents } from './events'
 import { Source } from '../source'
 import { SourceEvents } from '../source/events'
@@ -14,7 +15,7 @@ interface CreateCommand {
   name: string;
 }
 
-export const createProject = bootstrap<Project, CreateCommand>(function (createCommand, emitter) {
+export const createProject = initialize<Project, CreateCommand>(function (createCommand, emitter) {
   emitter.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
     name: createCommand.name,
   })

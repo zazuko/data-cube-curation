@@ -1,5 +1,5 @@
 import md5 from 'md5'
-import { handle } from '../ddd/events'
+import { handle } from 'fun-ddr'
 import { SourceEvents } from '../domain/source/events'
 import { saveFile } from '../storage'
 

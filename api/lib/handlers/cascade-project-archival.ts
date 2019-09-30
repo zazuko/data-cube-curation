@@ -1,6 +1,7 @@
-import { handle } from '../ddd/events'
+import { handle } from 'fun-ddr'
+import { CoreEvents } from 'fun-ddr/lib/events'
 import { ProjectEvents } from '../domain/project/events'
-import { select } from '../sparql'
+import { select, deleteInsert } from '../sparql'
 import { dataCube } from '../namespaces'
 import { getClient } from '../read-graphs/sparqlClient'
 import { sources } from '../storage/repository'
@@ -20,4 +21,34 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function archiveSour
         .catch(console.error)
     }))
     .catch(console.error)
+})
+
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSource (ev) {
+  if (ev.data.types.includes('Source')) {
+    deleteInsert('?source ?p ?o ')
+      .where(`
+        ?source a dataCube:Source ; ?p ?o .
+        FILTER ( ?source = <${ev.id}> )`)
+      .prefixes({
+        dataCube,
+      })
+      .execute(getClient())
+      .catch(console.error)
+  }
+})
+
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSourceColumns (ev) {
+  if (ev.data.types.includes('Source')) {
+    deleteInsert('?column ?p ?o ')
+      .where(`
+        ?source dataCube:column ?column . 
+        ?column ?p ?o .
+        
+        FILTER ( ?source = <${ev.id}> )`)
+      .prefixes({
+        dataCube,
+      })
+      .execute(getClient())
+      .catch(console.error)
+  }
 })

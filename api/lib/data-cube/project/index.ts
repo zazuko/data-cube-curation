@@ -63,7 +63,7 @@ export async function archive (req: express.DataCubeRequest, res: express.DataCu
     return
   }
 
-  aggregateRoot.mutation(archiveProject)()
+  aggregateRoot.mutation(archiveProject)(null as never)
     .delete()
     .commit(projects)
     .then(() => {

@@ -27,6 +27,16 @@ export function parseCsv (req, res, next) {
 export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const project = await projects.load(`/project/${req.params.projectId}`)
 
+  const contentDispositionPattern = /attachment; filename="(.+)"/
+  const contentDisposition: string = req.headers['content-disposition']
+  if (contentDisposition) {
+    if (contentDispositionPattern.test(contentDisposition)) {
+      res.locals.sourceName = contentDisposition.match(contentDispositionPattern)[1]
+    }
+  } else {
+    res.locals.sourceName = 'unnamed'
+  }
+
   const createSourceCommand = {
     type: 'csv' as 'csv' | 'excel',
     columns: res.locals.columns,

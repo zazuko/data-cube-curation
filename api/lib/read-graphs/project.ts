@@ -1,5 +1,5 @@
 import { ProjectEvents } from '../domain/project/events'
-import { handle } from '../ddd/events'
+import { handle } from 'fun-ddr'
 import { ask, construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
