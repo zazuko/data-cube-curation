@@ -4,7 +4,7 @@ describe('Project', () => {
   const nullProject = {
     '@id': 'foo',
     '@type': 'Project',
-    archived: false,
+    archived: 'false' as 'true' | 'false',
   }
 
   let emitter

@@ -57,10 +57,17 @@ export async function archive (req: express.DataCubeRequest, res: express.DataCu
   res.locals.projectId = `/project/${req.params.projectId}`
   let aggregateRoot = await projects.load(res.locals.projectId)
 
+  if (!aggregateRoot.state) {
+    res.status(404)
+    next()
+    return
+  }
+
   aggregateRoot.mutation(archiveProject)()
     .delete()
     .commit(projects)
     .then(() => {
+      res.status(204)
       next()
     })
     .catch(next)

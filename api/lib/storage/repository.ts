@@ -3,7 +3,7 @@ import SparqlHttp from 'sparql-http-client'
 import { SparqlRepository } from '../ddd/GraphRepository'
 import { Project } from '../domain/project'
 import { Source } from '../domain/source'
-import { prefixes } from '@zazuko/rdf-vocabularies'
+import { prefixes, expand } from '@zazuko/rdf-vocabularies'
 import { Repository } from '../ddd'
 
 const base = process.env.BASE_URI
@@ -17,6 +17,7 @@ const context = {
   '@vocab': 'https://rdf-cube-curation.described.at/',
   'schema': prefixes.schema,
   name: 'schema:name',
+  archived: { '@id': 'archived', '@type': expand('xsd:boolean') },
 }
 
 const projectFrame = {

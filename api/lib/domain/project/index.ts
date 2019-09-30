@@ -6,7 +6,7 @@ import { SourceEvents } from '../source/events'
 
 export interface Project extends Entity {
   name: string;
-  archived: boolean;
+  archived: 'true' | 'false';
 }
 
 interface CreateCommand {
@@ -23,7 +23,7 @@ export const createProject = bootstrap<Project, CreateCommand>(function (createC
     '@id': `/project/${createCommand.uriSlug || uuid()}`,
     '@type': 'Project',
     name: createCommand.name,
-    archived: false,
+    archived: 'false',
   }
 })
 
@@ -68,16 +68,17 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
     name: command.fileName,
     project: project['@id'],
     columns: command.columns,
+    archived: 'false',
   }
 })
 
 export const archiveProject = mutate<Project, never>(function (state, cmd, emitter) {
-  if (!state.archived) {
+  if (state.archived === 'false') {
     emitter.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', {})
   }
 
   return {
     ...state,
-    archived: true,
+    archived: 'true',
   }
 })

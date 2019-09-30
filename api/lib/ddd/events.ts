@@ -9,5 +9,6 @@ export function handle<T extends Record<string, any>, K extends keyof Pick<T, st
 }
 
 export function emit (name: string, ev: DomainEvent) {
+  console.log(`Emitting event ${ev.name} for resource ${ev.id}`)
   emitter.emit(name, ev)
 }
