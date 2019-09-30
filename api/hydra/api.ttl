@@ -191,10 +191,6 @@ api:GetProject
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initExisting>
-      ]
-      [
-        a code:EcmaScript ;
         code:link <file:lib/data-cube/project/get#get>
       ]
     )
