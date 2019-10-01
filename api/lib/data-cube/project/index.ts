@@ -46,11 +46,19 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     uriSlug: req.params.projectId,
   }
 
-  aggregateRoot = !aggregateRoot.state
-    ? createProject(createCommand)
-    : aggregateRoot.mutation(renameProject)(renameCommand)
+  let status: number
+  if (!aggregateRoot.state) {
+    status = 201
+    aggregateRoot = createProject(createCommand)
+  } else {
+    status = 200
+    aggregateRoot = aggregateRoot.mutation(renameProject)(renameCommand)
+  }
 
-  aggregateRoot.commit(projects).then(() => next()).catch(next)
+  aggregateRoot.commit(projects).then(() => {
+    res.status(status)
+    next()
+  }).catch(next)
 }
 
 export async function archive (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
