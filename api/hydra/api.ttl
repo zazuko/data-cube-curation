@@ -346,7 +346,16 @@ dataCube:FactTable
   hydra:supportedProperty
     [
       hydra:property dataCube:project ;
-      hydra:title "The project which contains this fact table"
+      hydra:title "The project which contains this fact table" ;
+      hydra:writeable false
+    ] ,
+    [
+      hydra:property dataCube:source ;
+      hydra:title "The previously uploaded source (CSV etc)"
+    ] ,
+    [
+      hydra:property schema:name ;
+      hydra:title "Table name"
     ] .
 
 dataCube:Table
@@ -361,7 +370,8 @@ dataCube:Table
   hydra:supportedOperation
     api:GetTable .
 
-dataCube:source a hydra:Link .
+dataCube:source a hydra:Link ;
+  rdfs:range dataCube:Source .
 
 api:GetTable
   a hydra:SupportedOperation, hydra-box:View ;
