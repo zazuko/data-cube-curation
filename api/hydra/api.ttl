@@ -342,7 +342,12 @@ dataCube:FactTable
   a hydra:Class ;
   hydra:title "Project's fact table" ;
   hydra:supportedOperation
-    api:GetFactTable .
+    api:GetFactTable ;
+  hydra:supportedProperty
+    [
+      hydra:property dataCube:project ;
+      hydra:title "The project which contains this fact table"
+    ] .
 
 dataCube:Table
   a hydra:Class ;
