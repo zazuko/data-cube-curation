@@ -1,8 +1,7 @@
 import md5 from 'md5'
-import { handle } from 'fun-ddr'
+import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { SourceEvents } from '../domain/source/events'
 import { deleteFile, saveFile } from '../storage'
-import { CoreEvents } from 'fun-ddr/lib/events'
 
 handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', function storeSample (ev) {
   const csvStringified = ev.data.sampleRows.map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')

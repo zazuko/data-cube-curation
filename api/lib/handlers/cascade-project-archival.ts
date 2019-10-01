@@ -1,5 +1,4 @@
-import { handle } from 'fun-ddr'
-import { CoreEvents } from 'fun-ddr/lib/events'
+import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from '../domain/project/events'
 import { select, deleteInsert } from '../sparql'
 import { dataCube } from '../namespaces'

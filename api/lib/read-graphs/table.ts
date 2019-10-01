@@ -1,9 +1,8 @@
-import { handle } from 'fun-ddr'
+import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { construct, deleteInsert, insertData } from '../sparql'
 import { dataCube, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
-import { CoreEvents } from 'fun-ddr/lib/events'
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
   insertData(`

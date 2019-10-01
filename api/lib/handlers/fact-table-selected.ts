@@ -1,6 +1,6 @@
 import { ProjectEvents } from '../domain/project/events'
 import { tables } from '../storage/repository'
-import { handle } from 'fun-ddr'
+import { handle } from '@tpluscode/fun-ddr'
 import { createTable } from '../domain/table'
 
 handle<ProjectEvents, 'FactTableSourceSelected'>('FactTableSourceSelected', function createProjectFactTable (ev) {

@@ -1,10 +1,10 @@
 import rdfFetch from 'hydra-box/lib/rdfFetch'
 import SparqlHttp from 'sparql-http-client'
-import { SparqlGraphRepository } from '@fun-ddr/sparql-graph-repository'
+import { SparqlGraphRepository } from '@tpluscode/fun-ddr-sparql-graph-repository'
 import { Project } from '../domain/project'
 import { Source } from '../domain/source'
 import { prefixes, expand } from '@zazuko/rdf-vocabularies'
-import { Repository, Entity } from 'fun-ddr/lib'
+import { Repository, Entity } from '@tpluscode/fun-ddr'
 import { Table } from '../domain/table'
 
 const base = process.env.BASE_URI

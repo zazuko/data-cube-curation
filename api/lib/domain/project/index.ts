@@ -1,6 +1,5 @@
 import uuid from 'uuid'
-import { mutate, initialize, factory } from 'fun-ddr'
-import { Entity } from 'fun-ddr/lib'
+import { mutate, initialize, factory, Entity } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from './events'
 import { Source } from '../source'
 import { SourceEvents } from '../source/events'

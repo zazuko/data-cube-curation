@@ -1,4 +1,4 @@
-import { mutate } from 'fun-ddr'
+import { mutate } from '@tpluscode/fun-ddr'
 import { Project } from './index'
 import { ProjectEvents } from './events'
 import { sources } from '../../storage/repository'

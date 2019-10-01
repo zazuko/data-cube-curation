@@ -1,5 +1,5 @@
 import { SourceEvents } from '../domain/source/events'
-import { handle } from 'fun-ddr'
+import { handle } from '@tpluscode/fun-ddr'
 import { getClient } from './sparqlClient'
 import { insertData } from '../sparql'
 import { dataCube, schema } from '../namespaces'

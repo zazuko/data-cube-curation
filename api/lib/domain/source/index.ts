@@ -1,4 +1,4 @@
-import { Entity } from 'fun-ddr/lib'
+import { Entity } from '@tpluscode/fun-ddr'
 
 export interface Source extends Entity {
   type: 'csv' | 'excel';

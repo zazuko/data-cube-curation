@@ -1,5 +1,4 @@
-import { initialize } from 'fun-ddr'
-import { Entity } from 'fun-ddr/lib'
+import { initialize, Entity } from '@tpluscode/fun-ddr'
 import { TableEvents } from './events'
 
 export interface Table extends Entity {
