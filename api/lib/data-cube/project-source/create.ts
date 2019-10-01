@@ -1,19 +1,15 @@
 import parse from 'csv-parse'
-import md5 from 'md5'
-import { saveFile } from '../../storage'
+import express from 'express'
+import { createSource } from '../../domain/project'
+import { projects, sources } from '../../storage/repository'
+import { duplicateNameErrorResponse } from './error-duplicate-name'
 
 const parserOptions = {
   to: 100,
   delimiter: ';',
 }
 
-function storeSample (sourceId: string, rows: string[][]) {
-  const csvStringified = rows.map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')
-
-  return saveFile(md5(sourceId), csvStringified)
-}
-
-export function processCsv (req, res, next) {
+export function parseCsv (req, res, next) {
   parse(
     req.body,
     parserOptions,
@@ -22,17 +18,46 @@ export function processCsv (req, res, next) {
         next(err)
       }
 
-      res.locals.columns = header.map(column => ({
-        id: `${res.locals.sourceId}/${column}`,
-        title: column,
-      }))
-
-      storeSample(res.locals.sourceId, rows).then(next).catch(next)
+      res.locals.columns = header
+      res.locals.fileSample = rows
+      next()
     })
 }
 
-export function setResponse (req, res, next) {
-  res.status(201)
-  res.setHeader('Location', res.locals.sourceId)
-  next()
+export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+  const project = await projects.load(`/project/${req.params.projectId}`)
+
+  const contentDispositionPattern = /attachment; filename="(.+)"/
+  const contentDisposition: string = req.headers['content-disposition']
+  if (contentDisposition) {
+    if (contentDispositionPattern.test(contentDisposition)) {
+      res.locals.sourceName = contentDisposition.match(contentDispositionPattern)[1]
+    }
+  } else {
+    res.locals.sourceName = 'unnamed'
+  }
+
+  const createSourceCommand = {
+    type: 'csv' as 'csv' | 'excel',
+    columns: res.locals.columns,
+    fileName: res.locals.sourceName,
+    sample: res.locals.fileSample,
+  }
+
+  const source = await project
+    .factory(createSource)(createSourceCommand)
+
+  source.commit(sources)
+    .then((source) => {
+      res.status(201)
+      res.setHeader('Location', `${process.env.BASE_URI}${source['@id']}`)
+      next()
+    })
+    .catch((e: Error) => {
+      if (e.message.includes('It has already been modified')) {
+        duplicateNameErrorResponse(req, res)
+      } else {
+        next(e)
+      }
+    })
 }

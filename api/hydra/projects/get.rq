@@ -16,11 +16,10 @@ CONSTRUCT {
         a ?projectType .
 }
 WHERE {
-    OPTIONAL {
-        ?project a dataCube:Project .
-        OPTIONAL { ?project schema:name ?name . }
-        OPTIONAL { ?project a ?projectType . }
-    }
+    ?project a dataCube:Project .
+
+    OPTIONAL { ?project schema:name ?name . }
+    OPTIONAL { ?project a ?projectType . }
 
     {
         SELECT (COUNT(?p) as ?count) WHERE {

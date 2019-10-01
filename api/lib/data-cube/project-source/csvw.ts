@@ -1,21 +1,18 @@
 import cf from 'clownface'
 import rdf from 'rdf-ext'
 import { select } from '../../sparql'
-import { csvw, xsd } from '../../namespaces'
+import { csvw, hydra, schema, xsd } from '../../namespaces'
 
 export async function projectMappings (req, res) {
   const graph = cf(rdf.dataset(), rdf.namedNode(`${res.locals.sourceId}/csvw`))
 
-  const columns = await select(req.sparql, `
-PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
-BASE <https://rdf-cube-curation.described.at/>
-
-SELECT *
-{
-    <${res.locals.sourceId}> <DataCubeSource/column> ?column .
-
-    ?column <DataCubeSourceColumn/title> ?title .
-}`)
+  const columns = await select()
+    .prefixes({ hydra, schema })
+    .where(
+      `<${res.locals.sourceId}> dataCube:column ?column .`,
+      `?column schema:title ?title .`
+    )
+    .execute(req.sparql)
 
   graph.addOut(csvw.tableSchema, tableSchema => {
     tableSchema.addOut(csvw.aboutUrl, 'http://environment.data.admin.ch/ubd/28/cube/')

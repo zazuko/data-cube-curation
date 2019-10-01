@@ -1,0 +1,68 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+            // Expect Method "PUT"
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        // Expect Operation "DELETE"
+
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Fact table project" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property dataCube:factTable {
+            Expect Operation api:CreateFactTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="single-column.csv"'
+
+        <<< "bodies/single-column.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:CreateFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+
+        <> dataCube:source <project/fact-table-test/source/single-column.csv> .
+        ```
+    } => {
+        Expect Status 201
+        Expect Type dataCube:Table
+        Expect Property dataCube:source
+        Expect Property dataCube:project
+    }
+}

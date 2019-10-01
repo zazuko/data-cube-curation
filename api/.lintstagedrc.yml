@@ -1,4 +1,4 @@
 linters:
    "*.ts":
-    - eslint --fix
+    - eslint --fix --quiet
     - git add
