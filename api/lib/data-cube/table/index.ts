@@ -4,7 +4,6 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { getProjectId } from '../project'
 import { selectFactTableSource } from '../../domain/project'
 import { projects } from '../../storage/repository'
-import { getFactTable } from '../../read-graphs/table'
 
 export async function createFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const projectId = getProjectId(req.params.projectId)
@@ -25,12 +24,10 @@ export async function createFactTable (req: express.DataCubeRequest, res: expres
     tableName: variables.name.value,
   })
     .commit(projects)
-    .then(() => next())
-    .catch(next)
-}
-
-export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
-  getFactTable(getProjectId(req.params.projectId))
-    .then(value => res.graph(value))
+    .then(() => {
+      res.status(201)
+      res.setHeader('Location', `${projectId}/table/${variables.name.value}`)
+      next()
+    })
     .catch(next)
 }

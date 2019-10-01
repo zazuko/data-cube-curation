@@ -56,13 +56,20 @@ With Operation api:CreateFactTable {
 
         ```
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/fact-table-test/source/single-column.csv> .
+        <> dataCube:source <project/foo/source/single-column.csv> ;
+           schema:name "Observation" .
         ```
     } => {
         Expect Status 201
-        Expect Type dataCube:Table
+        Expect Header Location [tableId]
+
+        Follow [tableId]
+    }
+}
+
+With Class dataCube:Table {
         Expect Property dataCube:source
         Expect Property dataCube:project
-    }
 }

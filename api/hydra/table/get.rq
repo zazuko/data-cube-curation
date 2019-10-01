@@ -1,0 +1,3 @@
+BASE <${this.env.BASE_URI}>
+
+DESCRIBE <${this.locals.resourceId}>

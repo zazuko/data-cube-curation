@@ -21,6 +21,7 @@
     dataCube:Project ,
     dataCube:Source ,
     dataCube:Table ,
+    dataCube:FactTable ,
     api:Sources ,
     dataCube:Column ,
     api-source:CsvwMetadata ,
@@ -160,7 +161,7 @@ dataCube:Project
 
 dataCube:factTable
   a hydra:Link ;
-  rdfs:range dataCube:Table ;
+  rdfs:range dataCube:FactTable ;
   hydra:supportedOperation
     api:CreateFactTable .
 
@@ -337,6 +338,12 @@ dataCube:Column
 
 ## Table
 
+dataCube:FactTable
+  a hydra:Class ;
+  hydra:title "Project's fact table" ;
+  hydra:supportedOperation
+    api:GetFactTable .
+
 dataCube:Table
   a hydra:Class ;
   hydra:title "A table" ;
@@ -360,7 +367,25 @@ api:GetTable
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#get>
+        code:link <file:lib/express#getRequestedId>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/table/get.rq>
+      ]
+    )
+  ] .
+
+api:GetFactTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:returns dataCube:Table ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#getFactTable>
       ]
     )
   ] .
@@ -404,6 +429,7 @@ api:Error
 </_project/:projectId> api:project </project/:projectId> .
 </project/:projectId/sources> a api:Sources .
 </project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
-</project/:projectId/fact-table> a dataCube:Table .
+</project/:projectId/fact-table> a dataCube:FactTable .
+</project/:projectId/table/:tableName> a dataCube:Table .
 </project/:projectId/source/:sourceId> a dataCube:Source .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

@@ -1,5 +1,5 @@
 import { handle, CoreEvents } from '@tpluscode/fun-ddr'
-import { construct, deleteInsert, insertData } from '../sparql'
+import { deleteInsert, insertData, select } from '../sparql'
 import { dataCube, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
@@ -36,12 +36,12 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable 
   }
 })
 
-export function getFactTable (projectId: string) {
-  return construct()
-    .graph('?factTable ?p ?o')
-    .where(`<${projectId}> dataCube:factTable ?factTable. ?factTable ?p ?o`)
+export function getFactTableId (projectId: string) {
+  return select('factTable')
+    .where(`<${projectId}> dataCube:factTable ?factTable .`)
     .prefixes({
       dataCube,
     })
     .execute(getClient())
+    .then(bindings => bindings[0].factTable.value)
 }
