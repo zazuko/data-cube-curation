@@ -71,7 +71,6 @@ export const createSource = factory<Project, UploadSourceCommand, Source>(functi
     name: command.fileName,
     project: project['@id'],
     columns: command.columns,
-    archived: 'false',
   }
 })
 
