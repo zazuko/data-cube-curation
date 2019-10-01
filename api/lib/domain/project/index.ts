@@ -5,9 +5,12 @@ import { ProjectEvents } from './events'
 import { Source } from '../source'
 import { SourceEvents } from '../source/events'
 
+export { selectFactTableSource } from './createFactTable'
+
 export interface Project extends Entity {
   name: string;
   archived: 'true' | 'false';
+  factTableSource?: string;
 }
 
 interface CreateCommand {

@@ -15,7 +15,7 @@ describe('Project', () => {
   })
 
   describe('rename command', () => {
-    it('does not emit event when new name is same as current', () => {
+    it('does not emit event when new name is same as current', async () => {
       // given
       const project = {
         ...nullProject,
@@ -26,13 +26,13 @@ describe('Project', () => {
       }
 
       // when
-      renameProject(project, cmd, emitter)
+      await renameProject(project, cmd, emitter)
 
       // then
       expect(emitter.emit).not.toHaveBeenCalled()
     })
 
-    it('emits an event with new name', () => {
+    it('emits an event with new name', async () => {
       // given
       const project = {
         ...nullProject,
@@ -43,7 +43,7 @@ describe('Project', () => {
       }
 
       // when
-      renameProject(project, cmd, emitter)
+      await renameProject(project, cmd, emitter)
 
       // then
       expect(emitter.emit).toHaveBeenCalledWith('ProjectRenamed', {
@@ -51,7 +51,7 @@ describe('Project', () => {
       })
     })
 
-    it('sets the name property', () => {
+    it('sets the name property', async () => {
       // given
       const project = {
         ...nullProject,
@@ -62,7 +62,7 @@ describe('Project', () => {
       }
 
       // when
-      const newState = renameProject(project, cmd, emitter)
+      const newState = await renameProject(project, cmd, emitter)
 
       // then
       expect(newState.name).toBe('bar')

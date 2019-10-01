@@ -377,10 +377,6 @@ api:CreateFactTable
         a code:EcmaScript ;
         code:link <file:lib/data-cube/table#createFactTable>
       ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#get>
-      ]
     )
   ] .
 

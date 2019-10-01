@@ -4,7 +4,8 @@ import { SparqlGraphRepository } from '@fun-ddr/sparql-graph-repository'
 import { Project } from '../domain/project'
 import { Source } from '../domain/source'
 import { prefixes, expand } from '@zazuko/rdf-vocabularies'
-import { Repository } from 'fun-ddr/lib'
+import { Repository, Entity } from 'fun-ddr/lib'
+import { Table } from '../domain/table'
 
 const base = process.env.BASE_URI
 const sparqlClient = new SparqlHttp({
@@ -20,10 +21,18 @@ const context = {
   archived: { '@id': 'archived', '@type': expand('xsd:boolean') },
 }
 
+function createRepository<T extends Entity> (frame: object, specialisedContext?: object): Repository<T> {
+  return new SparqlGraphRepository<T>(
+    sparqlClient,
+    base,
+    { ...context, ...specialisedContext },
+    frame) as Repository<T>
+}
+
 const projectFrame = {
   '@type': 'Project',
 }
-export const projects = new SparqlGraphRepository<Project>(sparqlClient, base, context, projectFrame) as Repository<Project>
+export const projects = createRepository<Project>(projectFrame)
 
 const sourceContext = {
   columns: 'column',
@@ -32,4 +41,12 @@ const sourceContext = {
 const sourceFrame = {
   '@type': 'Source',
 }
-export const sources = new SparqlGraphRepository<Source>(sparqlClient, base, { ...context, ...sourceContext }, sourceFrame) as Repository<Source>
+export const sources = createRepository<Source>(sourceFrame, sourceContext)
+
+const tableContext = {
+  project: { '@id': 'project', '@type': '@id' },
+}
+const tableFrame = {
+  '@type': 'Table',
+}
+export const tables = createRepository<Table>(tableFrame, tableContext)

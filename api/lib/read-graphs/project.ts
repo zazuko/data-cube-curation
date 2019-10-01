@@ -3,6 +3,7 @@ import { handle } from 'fun-ddr'
 import { ask, construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
+import { TableEvents } from '../domain/table/events'
 
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
   insertData(`
@@ -29,6 +30,15 @@ handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', ev => {
 
 handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
   deleteInsert(`<${ev.id}> ?p ?o .`)
+    .execute(getClient())
+    .catch(console.error)
+})
+
+handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseFactTableResource (ev) {
+  insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
+    .prefixes({
+      dataCube,
+    })
     .execute(getClient())
     .catch(console.error)
 })

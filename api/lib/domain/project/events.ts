@@ -6,4 +6,8 @@ export interface ProjectEvents {
     name: string;
   };
   ProjectArchived: object;
+  FactTableSourceSelected: {
+    sourceId: string;
+    tableName: string;
+  };
 }
