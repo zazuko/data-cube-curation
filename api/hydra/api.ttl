@@ -10,6 +10,8 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
 @prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 ## Entrypoint
 
@@ -26,7 +28,10 @@
     dataCube:Column ,
     api-source:CsvwMetadata ,
     api:Error ,
-    api:ProjectPlaceholder .
+    api:ProjectPlaceholder ,
+    dataCube:ColumnAttribute ,
+    dataCube:Attribute ,
+    api:AttributeCollection .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -366,9 +371,20 @@ dataCube:Table
     [
       hydra:property dataCube:source ;
       hydra:title "The tables's source"
+    ] ,
+    [
+      hydra:property api:attributes ;
+      hydra:title "Table's attributes mapped from it's source";
+      hydra:writeable false
     ] ;
   hydra:supportedOperation
     api:GetTable .
+
+api:attributes a hydra:Link ;
+  rdfs:range api:AttributeCollection ;
+  hydra:supportedOperation
+    api:AddAttributeMappedFromSingleColumn ,
+    api:GetTableAttributes .
 
 dataCube:source a hydra:Link ;
   rdfs:range dataCube:Source .
@@ -422,6 +438,107 @@ api:CreateFactTable
 
 ## /End Table
 
+## dataCube:Attribute
+
+dataCube:Attribute a hydra:Class ;
+  hydra:supportedOperation
+    api:GetAttribute ;
+  hydra:supportedProperty
+    [
+      hydra:property schema:name ;
+      hydra:title "Name for this attribute";
+      hydra:required true
+    ] .
+
+dataCube:ColumnAttribute a hydra:Class ; rdfs:subclassOf dataCube:Attribute ;
+  hydra:supportedProperty
+  # TODO: this should be inferred by Alcaeus
+  [
+    hydra:property schema:name ;
+    hydra:title "Name for this attribute";
+    hydra:required true
+  ] ,
+  [
+    hydra:property dataCube:table ;
+    hydra:title "Table containing this attribute" ;
+    hydra:writeable false
+  ] ,
+  [
+    hydra:property dataCube:column ;
+    hydra:title "Column to be transformed by this attribute" ;
+    hydra:required true
+  ] ,
+  [
+    hydra:property rdf:predicate ;
+    hydra:title "Predicate URI for mapped value" ;
+    hydra:required true
+  ] ,
+  [
+    hydra:property rdf:type ;
+    hydra:title "Datatype URI for mapped value" ;
+    hydra:description "Cannot be used together with language tag"
+  ] ,
+  [
+    hydra:property dataCube:language ;
+    hydra:title "Language of the mapped values" ;
+    hydra:description "Cannot be used together with datatype"
+  ] .
+
+api:AddAttributeMappedFromSingleColumn
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Creates a table attribute from column" ;
+  hydra:description "Such an attribute will always map a single value into a literal" ;
+  hydra:expects dataCube:ColumnAttribute ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#addAttributeHandler>
+      ]
+    )
+  ] .
+
+api:GetAttribute
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Retrieves a table's attribute" ;
+  hydra:returns dataCube:Attribute ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/attribute#getHandler>
+      ]
+    )
+  ] .
+
+dataCube:column a hydra:Link .
+dataCube:table a hydra:Link .
+
+## /End dataCube:Attribute
+
+## api:AttributeCollection
+
+api:AttributeCollection a hydra:Class .
+
+api:GetTableAttributes
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#getAttributes>
+      ]
+    )
+  ] .
+
+## /End api:AttributeCollection
+
 ## Errors
 
 api:Error
@@ -446,5 +563,7 @@ api:Error
 </project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
 </project/:projectId/fact-table> a dataCube:FactTable .
 </project/:projectId/table/:tableName> a dataCube:Table .
+</project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .
+</project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
 </project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .

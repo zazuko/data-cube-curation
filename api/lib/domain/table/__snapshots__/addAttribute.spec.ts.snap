@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`table add attribute emits an event 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "name": "foo-bar",
+      "tableId": "example/table",
+    },
+    "name": "AttributeAdded",
+  },
+]
+`;
+
+exports[`table add attribute return expected state 1`] = `
+Object {
+  "@id": "example/table/attribute/foo-bar",
+  "@type": "Attribute",
+  "name": "foo-bar",
+  "tableId": "example/table",
+}
+`;

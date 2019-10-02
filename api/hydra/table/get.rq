@@ -1,3 +1,16 @@
 BASE <${this.env.BASE_URI}>
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 
-DESCRIBE <${this.locals.resourceId}>
+CONSTRUCT {
+    ?table ?p ?o .
+    ?table api:attributes ?attributes .
+}
+WHERE {
+    BIND (<${this.locals.resourceId}> as ?table)
+    BIND (<${this.locals.resourceId}/attributes> as ?attributes)
+
+    ?table
+        a dataCube:Table ;
+        ?p ?o .
+}

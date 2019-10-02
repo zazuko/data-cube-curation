@@ -13,11 +13,11 @@ export const selectFactTableSource = mutate<Project, CreateFactTableCommand>(asy
     throw new Error('Fact table has already been selected.')
   }
 
-  const source = await sources.load(command.sourceId)
-  if (!source.state) {
+  const source = await sources.load(command.sourceId).then(ar => ar.state)
+  if (!source) {
     throw new Error(`Source '${command.sourceId}' was not found`)
   }
-  if (source.state.project !== project['@id']) {
+  if (source.project !== project['@id']) {
     throw new Error(`Source '${command.sourceId}' does not belong to project '${project['@id']}'`)
   }
 
