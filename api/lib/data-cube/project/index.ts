@@ -48,7 +48,7 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     uriSlug: req.params.projectId,
   }
 
-  aggregateRoot = !aggregateRoot.state
+  aggregateRoot = !(await aggregateRoot.state)
     ? createProject(createCommand)
     : aggregateRoot.mutation(renameProject)(renameCommand)
 
