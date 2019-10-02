@@ -3,6 +3,10 @@ import { ask, deleteInsert, insertData, select } from '../sparql'
 import { dataCube, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
+import { getTableAttributes } from './attribute'
+import { expand } from '@zazuko/rdf-vocabularies'
+import { attributes } from '../storage/repository'
+import { Quad } from 'rdf-js'
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
   insertData(`
@@ -33,6 +37,19 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable 
       })
       .execute(getClient())
       .catch(console.error)
+  }
+})
+
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributes (ev) {
+  if (ev.data.types.includes('Table')) {
+    const hydraCollection = await getTableAttributes(ev.id)
+
+    hydraCollection.match(null, expand('hydra:member')).toArray()
+      .map((quad: Quad) => quad.object.value)
+      .forEach(async (attributeId: string) => {
+        const aggregate = await attributes.load(attributeId)
+        aggregate.delete().commit(attributes).catch(console.error)
+      })
   }
 })
 

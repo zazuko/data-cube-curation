@@ -1,6 +1,6 @@
-import { handle } from '@tpluscode/fun-ddr'
+import { CoreEvents, handle } from '@tpluscode/fun-ddr'
 import $rdf from 'rdf-ext'
-import { construct, insertData } from '../sparql'
+import { construct, deleteInsert, insertData } from '../sparql'
 import { dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { AttributeEvents } from '../domain/attribute/events'
@@ -27,6 +27,24 @@ handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttribut
   })
     .execute(getClient())
     .catch(console.error)
+})
+
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
+  if (ev.data.types.includes('Attribute')) {
+    deleteInsert(`
+      ?attribute ?p0 ?o0 .`
+    )
+      .where(`
+        ?attribute a dataCube:Attribute .
+        ?attribute ?p0 ?o0 .
+  
+        FILTER ( ?attribute = <${ev.id}> )`)
+      .prefixes({
+        dataCube,
+      })
+      .execute(getClient())
+      .catch(console.error)
+  }
 })
 
 export async function getTableAttributes (tableId: string) {
