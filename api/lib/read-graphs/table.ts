@@ -1,5 +1,5 @@
 import { handle, CoreEvents } from '@tpluscode/fun-ddr'
-import { deleteInsert, insertData, select } from '../sparql'
+import { ask, deleteInsert, insertData, select } from '../sparql'
 import { dataCube, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
@@ -44,4 +44,15 @@ export function getFactTableId (projectId: string) {
     })
     .execute(getClient())
     .then(bindings => bindings[0].factTable.value)
+}
+
+export function existsInTableSource (tableId: string, columnId: string): Promise<boolean> {
+  return ask(`
+    <${tableId}> dataCube:source ?source .
+    ?source dataCube:column <${columnId}> .
+  `)
+    .prefixes({
+      dataCube,
+    })
+    .execute(getClient())
 }

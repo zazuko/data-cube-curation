@@ -3,6 +3,7 @@ import { Table } from './index'
 import { Attribute } from '../attribute'
 import { AttributeEvents } from '../attribute/events'
 import { expand } from '@zazuko/rdf-vocabularies'
+import { existsInTableSource } from '../../read-graphs/table'
 
 interface AddAttributeCommand {
   name: string;
@@ -24,6 +25,9 @@ export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async
   }
   if (command.datatype && command.language) {
     throw new Error('Datatype and language cannot be used together')
+  }
+  if (!await existsInTableSource(table['@id'], command.columnId)) {
+    throw new Error("Column not found or it does not belong to the table's source")
   }
 
   const attributeId = `${table['@id']}/attribute/${encodeURIComponent(command.name)}`
