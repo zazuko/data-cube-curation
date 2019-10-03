@@ -8,8 +8,6 @@
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
-@prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -26,7 +24,6 @@
     dataCube:FactTable ,
     api:Sources ,
     dataCube:Column ,
-    api-source:CsvwMetadata ,
     api:Error ,
     api:ProjectPlaceholder ,
     dataCube:ColumnAttribute ,
@@ -279,7 +276,8 @@ dataCube:Source
     ] .
 
 dataCube:project a hydra:Link .
-api-source:csvwMetadata a hydra:Link .
+api:csvwMetadata a hydra:Link ;
+  hydra:supportedOperation api:GetCsvwMetadata .
 
 api:GetDataCubeSource
   a hydra:SupportedOperation, hydra-box:View ;
@@ -299,12 +297,7 @@ api:GetDataCubeSource
     )
   ] .
 
-api-source:CsvwMetadata
-  a hydra:Class ;
-  hydra:supportedOperation
-    api-source:GetCsvwMetadata .
-
-api-source:GetCsvwMetadata
+api:GetCsvwMetadata
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   code:implementedBy [
@@ -312,11 +305,7 @@ api-source:GetCsvwMetadata
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source#initExisting>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source/csvw#projectMappings>
+        code:link <file:lib/data-cube/table/csvw#getMappingsForTable>
       ]
     )
   ] .
@@ -371,6 +360,11 @@ dataCube:Table
     [
       hydra:property dataCube:source ;
       hydra:title "The tables's source"
+    ] ,
+    [
+      hydra:property api:csvwMetadata ;
+      hydra:title "CVSW mapping document for this table" ;
+      hydra:writeable false
     ] ,
     [
       hydra:property api:attributes ;
@@ -566,4 +560,4 @@ api:Error
 </project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .
 </project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
-</project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .
+</project/:projectId/table/:tableName> api:csvwMetadata </project/:projectId/table/:tableName/csvw> .
