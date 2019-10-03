@@ -1,21 +1,25 @@
-import { Builder } from './Builder'
+import { SelectBuilder } from './SelectBuilder'
+import { AskBuilder } from './AskBuilder'
+import { ConstructBuilder } from './ConstructBuilder'
+import { InsertDataBuilder } from './InsertDataBuilder'
+import { DeleteInsertBuilder } from './DeleteInsertBuilder'
 
 export function construct () {
-  return new Builder('CONSTRUCT')
+  return new ConstructBuilder()
 }
 
 export function select (...variables: string[]) {
-  return new Builder('SELECT').variables(...variables)
+  return new SelectBuilder().variables(...variables)
 }
 
 export function ask (...patterns: string[]) {
-  return new Builder('ASK').where(...patterns)
+  return new AskBuilder().where(...patterns)
 }
 
 export function insertData (...data: string[]) {
-  return new Builder('INSERT DATA').graph(...data)
+  return new InsertDataBuilder().graph(...data)
 }
 
 export function deleteInsert (...deletePatterns: string[]) {
-  return new Builder('DELETE').graph(...deletePatterns)
+  return new DeleteInsertBuilder().delete(...deletePatterns)
 }
