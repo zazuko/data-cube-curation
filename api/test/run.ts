@@ -1,13 +1,31 @@
 import { spawn } from 'child_process'
+import program from 'commander'
+import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 
-const scenarios = {
+dotenvExpand(dotenv.config())
+
+program.option('--grep <pattern>', 'RegExp to filter the test cases')
+
+program.parse(process.argv)
+
+const scenarios = Object.entries({
   Entrypoint: '',
   CreateDataCubeProject: '',
   CreateProjectFactTable: 'project/fact-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
-}
+})
 
-const promise = Object.entries(scenarios).reduce((promise, [ scenario, path ]) => {
+const selectedScenarios = scenarios
+  .filter(([ scenario ]) => {
+    if (program.grep) {
+      return scenario.match(program.grep)
+    }
+
+    return true
+  })
+
+const promise = selectedScenarios.reduce((promise, [ scenario, path ]) => {
   return promise.then(() => {
     return new Promise(async (resolve, reject) => {
       const command = `hydra-validator e2e --docs test/${scenario}.hydra.json ${process.env.BASE_URI}${path}`

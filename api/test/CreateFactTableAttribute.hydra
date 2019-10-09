@@ -1,6 +1,7 @@
 PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
@@ -72,6 +73,15 @@ With Operation api:CreateFactTable {
 With Class dataCube:Table {
     Expect Property api:attributes {
         Expect Operation api:AddAttributeMappedFromSingleColumn
+    }
+
+    Expect Link api:csvwMetadata {
+        Expect Property csvw:tableSchema {
+            Expect Property csvw:columns {
+                Expect Property csvw:title "Identifier"
+                Expect Property csvw:propertyUrl "http://schema.org/identifier"
+            }
+        }
     }
 }
 
