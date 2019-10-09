@@ -20,7 +20,7 @@ async function placeholderRepresentation (req: express.DataCubeRequest, res: exp
   res.graph(await query.execute(req.sparql))
 }
 
-async function getExistingProject (req: express.DataCubeRequest, res: express.DataCubeResponse) {
+export async function getExistingProject (req: express.DataCubeRequest, res: express.DataCubeResponse) {
   return res.graph(await getProject(res.locals.projectId))
 }
 

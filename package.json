@@ -4,6 +4,7 @@
   "scripts": {
     "start:api": "(cd api; ts-node index.ts)",
     "postinstall": "lerna bootstrap",
+    "jest": "lerna run jest --stream --no-prefix",
     "test": "lerna run test --stream --no-prefix",
     "test:analyse": "lerna run test:analyse --stream --no-prefix",
     "version": "standard-changelog"

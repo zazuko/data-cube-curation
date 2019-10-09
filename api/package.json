@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "hypertest-compiler test",
     "jest": "jest",
-    "test": "dotenv test/run.sh",
+    "test": "dotenv ts-node test/run.ts",
     "test:analyse": "dotenv test/analyse.sh",
     "precommit": "lint-staged"
   },
@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
-    "@tpluscode/fun-ddr": "0.1.0",
-    "@tpluscode/fun-ddr-sparql-graph-repository": "0.1.2",
+    "@tpluscode/fun-ddr": "^0.1.1",
+    "@tpluscode/fun-ddr-sparql-graph-repository": "^0.1.4",
     "@zazuko/rdf-vocabularies": "^2019.7.9-2",
     "body-parser": "^1.19.0",
     "clownface": "^0.10.0",

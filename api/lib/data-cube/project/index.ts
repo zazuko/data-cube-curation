@@ -4,6 +4,8 @@ import { createProject, renameProject, archiveProject } from '../../domain/proje
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
+import { getExistingProject } from './get'
+import { getFactTableId } from '../../read-graphs/table'
 
 export function getProjectId (projectGuid: string = uuid()) {
   return `${process.env.BASE_URI}project/${projectGuid}`
@@ -46,11 +48,20 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     uriSlug: req.params.projectId,
   }
 
-  aggregateRoot = !aggregateRoot.state
+  aggregateRoot = !(await aggregateRoot.state)
     ? createProject(createCommand)
     : aggregateRoot.mutation(renameProject)(renameCommand)
 
-  aggregateRoot.commit(projects).then(() => next()).catch(next)
+  aggregateRoot.commit(projects)
+    .then(() => {
+      setTimeout(() => getExistingProject(req, res), 50)
+    }).catch(next)
+}
+
+export async function getFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+  getFactTableId(getProjectId(req.params.projectId))
+    .then(value => res.redirect(value, 303))
+    .catch(next)
 }
 
 export async function archive (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {

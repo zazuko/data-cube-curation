@@ -8,8 +8,8 @@
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix schema: <http://schema.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix api-project: <https://rdf-cube-curation.described.at/DataCubeProject/> .
-@prefix api-source: <https://rdf-cube-curation.described.at/DataCubeSource/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 ## Entrypoint
 
@@ -21,11 +21,14 @@
     dataCube:Project ,
     dataCube:Source ,
     dataCube:Table ,
+    dataCube:FactTable ,
     api:Sources ,
     dataCube:Column ,
-    api-source:CsvwMetadata ,
     api:Error ,
-    api:ProjectPlaceholder .
+    api:ProjectPlaceholder ,
+    dataCube:ColumnAttribute ,
+    dataCube:Attribute ,
+    api:AttributeCollection .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -160,7 +163,7 @@ dataCube:Project
 
 dataCube:factTable
   a hydra:Link ;
-  rdfs:range dataCube:Table ;
+  rdfs:range dataCube:FactTable ;
   hydra:supportedOperation
     api:CreateFactTable .
 
@@ -273,7 +276,8 @@ dataCube:Source
     ] .
 
 dataCube:project a hydra:Link .
-api-source:csvwMetadata a hydra:Link .
+api:csvwMetadata a hydra:Link ;
+  hydra:supportedOperation api:GetCsvwMetadata .
 
 api:GetDataCubeSource
   a hydra:SupportedOperation, hydra-box:View ;
@@ -293,12 +297,7 @@ api:GetDataCubeSource
     )
   ] .
 
-api-source:CsvwMetadata
-  a hydra:Class ;
-  hydra:supportedOperation
-    api-source:GetCsvwMetadata .
-
-api-source:GetCsvwMetadata
+api:GetCsvwMetadata
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "GET" ;
   code:implementedBy [
@@ -306,11 +305,7 @@ api-source:GetCsvwMetadata
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source#initExisting>
-      ]
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source/csvw#projectMappings>
+        code:link <file:lib/data-cube/table/csvw#getMappingsForTable>
       ]
     )
   ] .
@@ -337,6 +332,26 @@ dataCube:Column
 
 ## Table
 
+dataCube:FactTable
+  a hydra:Class ;
+  hydra:title "Project's fact table" ;
+  hydra:supportedOperation
+    api:GetFactTable ;
+  hydra:supportedProperty
+    [
+      hydra:property dataCube:project ;
+      hydra:title "The project which contains this fact table" ;
+      hydra:writeable false
+    ] ,
+    [
+      hydra:property dataCube:source ;
+      hydra:title "The previously uploaded source (CSV etc)"
+    ] ,
+    [
+      hydra:property schema:name ;
+      hydra:title "Table name"
+    ] .
+
 dataCube:Table
   a hydra:Class ;
   hydra:title "A table" ;
@@ -345,11 +360,28 @@ dataCube:Table
     [
       hydra:property dataCube:source ;
       hydra:title "The tables's source"
+    ] ,
+    [
+      hydra:property api:csvwMetadata ;
+      hydra:title "CVSW mapping document for this table" ;
+      hydra:writeable false
+    ] ,
+    [
+      hydra:property api:attributes ;
+      hydra:title "Table's attributes mapped from it's source";
+      hydra:writeable false
     ] ;
   hydra:supportedOperation
     api:GetTable .
 
-dataCube:source a hydra:Link .
+api:attributes a hydra:Link ;
+  rdfs:range api:AttributeCollection ;
+  hydra:supportedOperation
+    api:AddAttributeMappedFromSingleColumn ,
+    api:GetTableAttributes .
+
+dataCube:source a hydra:Link ;
+  rdfs:range dataCube:Source .
 
 api:GetTable
   a hydra:SupportedOperation, hydra-box:View ;
@@ -360,7 +392,25 @@ api:GetTable
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#get>
+        code:link <file:lib/express#getRequestedId>
+      ]
+      [
+        a hydra-box:SparqlQuery ;
+        hydra-box:source <file:hydra/table/get.rq>
+      ]
+    )
+  ] .
+
+api:GetFactTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:returns dataCube:Table ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project#getFactTable>
       ]
     )
   ] .
@@ -381,6 +431,107 @@ api:CreateFactTable
   ] .
 
 ## /End Table
+
+## dataCube:Attribute
+
+dataCube:Attribute a hydra:Class ;
+  hydra:supportedOperation
+    api:GetAttribute ;
+  hydra:supportedProperty
+    [
+      hydra:property schema:name ;
+      hydra:title "Name for this attribute";
+      hydra:required true
+    ] .
+
+dataCube:ColumnAttribute a hydra:Class ; rdfs:subclassOf dataCube:Attribute ;
+  hydra:supportedProperty
+  # TODO: this should be inferred by Alcaeus
+  [
+    hydra:property schema:name ;
+    hydra:title "Name for this attribute";
+    hydra:required true
+  ] ,
+  [
+    hydra:property dataCube:table ;
+    hydra:title "Table containing this attribute" ;
+    hydra:writeable false
+  ] ,
+  [
+    hydra:property dataCube:column ;
+    hydra:title "Column to be transformed by this attribute" ;
+    hydra:required true
+  ] ,
+  [
+    hydra:property rdf:predicate ;
+    hydra:title "Predicate URI for mapped value" ;
+    hydra:required true
+  ] ,
+  [
+    hydra:property rdf:type ;
+    hydra:title "Datatype URI for mapped value" ;
+    hydra:description "Cannot be used together with language tag"
+  ] ,
+  [
+    hydra:property dataCube:language ;
+    hydra:title "Language of the mapped values" ;
+    hydra:description "Cannot be used together with datatype"
+  ] .
+
+api:AddAttributeMappedFromSingleColumn
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Creates a table attribute from column" ;
+  hydra:description "Such an attribute will always map a single value into a literal" ;
+  hydra:expects dataCube:ColumnAttribute ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#addAttributeHandler>
+      ]
+    )
+  ] .
+
+api:GetAttribute
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Retrieves a table's attribute" ;
+  hydra:returns dataCube:Attribute ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/attribute#getHandler>
+      ]
+    )
+  ] .
+
+dataCube:column a hydra:Link .
+dataCube:table a hydra:Link .
+
+## /End dataCube:Attribute
+
+## api:AttributeCollection
+
+api:AttributeCollection a hydra:Class .
+
+api:GetTableAttributes
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#getAttributes>
+      ]
+    )
+  ] .
+
+## /End api:AttributeCollection
 
 ## Errors
 
@@ -404,6 +555,9 @@ api:Error
 </_project/:projectId> api:project </project/:projectId> .
 </project/:projectId/sources> a api:Sources .
 </project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
-</project/:projectId/fact-table> a dataCube:Table .
+</project/:projectId/fact-table> a dataCube:FactTable .
+</project/:projectId/table/:tableName> a dataCube:Table .
+</project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .
+</project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
-</project/:projectId/source/:sourceId/csvw> a api-source:CsvwMetadata .
+</project/:projectId/table/:tableName> api:csvwMetadata </project/:projectId/table/:tableName/csvw> .
