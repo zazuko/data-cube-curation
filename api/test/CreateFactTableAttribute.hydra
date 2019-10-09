@@ -71,11 +71,11 @@ With Operation api:CreateFactTable {
 
 With Class dataCube:Table {
     Expect Property api:attributes {
-        Expect Operation api:AddAttribute
+        Expect Operation api:AddAttributeMappedFromSingleColumn
     }
 }
 
-With Operation api:AddAttribute {
+With Operation api:AddAttributeMappedFromSingleColumn {
     Invoke {
         Content-Type "text/turtle"
 
@@ -88,5 +88,7 @@ With Operation api:AddAttribute {
            schema:name "Identifier" ;
            rdf:predicate <http://schema.org/identifier> .
         ```
+    } => {
+        Expect Status 201
     }
 }
