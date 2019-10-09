@@ -31,4 +31,7 @@ const promise = Object.entries(scenarios).reduce((promise, [ scenario, path ]) =
 
 promise
   .then(() => console.log('done'))
-  .catch(e => console.error(e))
+  .catch(e => {
+    console.error(e)
+    process.exit(1)
+  })
