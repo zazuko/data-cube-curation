@@ -1,6 +1,11 @@
 import { addAttribute } from './addAttribute'
 import { Table } from './index'
 import { expand } from '@zazuko/rdf-vocabularies'
+import { existsInTableSource } from '../../read-graphs/table'
+
+jest.mock('../../read-graphs/table')
+
+const existsInTableSourceMock = existsInTableSource as jest.Mock
 
 describe('table', () => {
   let table: Table
@@ -73,6 +78,9 @@ describe('table', () => {
     })
 
     it('return expected state', async () => {
+      // given
+      existsInTableSourceMock.mockResolvedValueOnce(true)
+
       // when
       const result = await addAttribute(table, command)
 
@@ -82,6 +90,9 @@ describe('table', () => {
 
     it('emits an event', async () => {
       // given
+      existsInTableSourceMock.mockResolvedValueOnce(true)
+
+      // when
       const result = await addAttribute(table, command)
 
       // then
