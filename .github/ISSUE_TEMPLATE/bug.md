@@ -1,6 +1,6 @@
 ---
 name: Bug report/missing feature
-about: New feature
+about: Someting broken or incomplete
 title: ''
 labels: ''
 assignees: ''
