@@ -1,5 +1,5 @@
 import { createRepository } from './create'
-import { Attribute } from '../../domain/Attribute'
+import { Attribute } from '../../domain/attribute'
 import { expand } from '@zazuko/rdf-vocabularies'
 
 const context = {
