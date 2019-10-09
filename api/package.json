@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "hypertest-compiler test",
     "jest": "jest",
-    "test": "dotenv test/run.sh",
+    "test": "dotenv ts-node test/run.ts",
     "test:analyse": "dotenv test/analyse.sh",
     "precommit": "lint-staged"
   },
