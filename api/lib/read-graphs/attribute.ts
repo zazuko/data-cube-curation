@@ -15,7 +15,7 @@ handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttribut
   `)
 
   if (ev.data.datatype) {
-    builder.graph(`<${ev.id}> rdf:type <${ev.data.datatype}>`)
+    builder.graph(`<${ev.id}> dataCube:datatype <${ev.data.datatype}>`)
   } else if (ev.data.language) {
     builder.graph(`<${ev.id}> dataCube:language "${ev.data.language}"`)
   }

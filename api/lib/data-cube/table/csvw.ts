@@ -23,9 +23,7 @@ export async function getMappingsForTable (req: express.DataCubeRequest, res: ex
         ?attribute dataCube:language ?language .
       }
       OPTIONAL {
-        ?attribute rdf:type ?datatype .
-        FILTER ( ?datatype != dataCube:Attribute )
-        FILTER ( ?datatype != dataCube:ColumnAttribute )
+        ?attribute dataCube:datatype ?datatype .
       }  
     `)
     .execute(req.sparql)
@@ -38,7 +36,7 @@ export async function getMappingsForTable (req: express.DataCubeRequest, res: ex
         csvwColumn.addOut(csvw.title, column.name.value)
         csvwColumn.addOut(csvw.propertyUrl, column.property.value)
         if (column.datatype) {
-          csvwColumn.addOut(csvw.datatype, column.datatype.value)
+          csvwColumn.addOut(csvw.datatype, $rdf.namedNode(column.datatype.value))
         }
         if (column.language) {
           csvwColumn.addOut(csvw.lang, column.language.value)

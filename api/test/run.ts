@@ -14,6 +14,7 @@ const scenarios = Object.entries({
   CreateDataCubeProject: '',
   CreateProjectFactTable: 'project/fact-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
+  CreateFactTableAttributeWithDataType: 'project/add-attribute-test',
 })
 
 const selectedScenarios = scenarios
