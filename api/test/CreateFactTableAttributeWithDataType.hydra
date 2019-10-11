@@ -78,7 +78,9 @@ With Class dataCube:Table {
     Expect Link api:csvwMetadata {
         Expect Property csvw:tableSchema {
             Expect Property csvw:columns {
-                Expect Property csvw:datatype "http://www.w3.org/2001/XMLSchema#integer"
+                Expect Property csvw:datatype {
+                    Expect Id <http://www.w3.org/2001/XMLSchema#integer>
+                }
             }
         }
     }

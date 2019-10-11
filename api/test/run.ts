@@ -26,30 +26,47 @@ const selectedScenarios = scenarios
     return true
   })
 
-const promise = selectedScenarios.reduce((promise, [ scenario, path ]) => {
-  return promise.then(() => {
-    return new Promise(async (resolve, reject) => {
-      const command = `hydra-validator e2e --docs test/${scenario}.hydra.json ${process.env.BASE_URI}${path}`
-      console.log(`\n------\n   ${command}\n------\n`)
+function parseScenarios () {
+  return new Promise((resolve, reject) => {
+    console.log(`\n------\n   Compiling test scenarios\n------\n`)
+    const childProcess = spawn('hypertest-compiler', ['test'], { stdio: 'inherit' })
 
-      const childProcess = spawn(
-        `hydra-validator`,
-        [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`],
-        { stdio: 'inherit' })
+    childProcess.on('exit', code => {
+      if (code === 0) {
+        resolve()
+      }
 
-      childProcess.on('exit', code => {
-        if (code === 0) {
-          resolve()
-        }
-
-        reject(new Error('Last scenario failed. Stopping'))
-      })
+      reject(new Error('Failed to compile test scenarios'))
     })
   })
-}, Promise.resolve())
+}
 
-promise
-  .then(() => console.log('done'))
+function runScenarios () {
+  return selectedScenarios.reduce((promise, [scenario, path]) => {
+    return promise.then(() => {
+      return new Promise(async (resolve, reject) => {
+        const command = `hydra-validator e2e --docs test/${scenario}.hydra.json ${process.env.BASE_URI}${path}`
+        console.log(`\n------\n   ${command}\n------\n`)
+
+        const childProcess = spawn(
+          `hydra-validator`,
+          [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`],
+          { stdio: 'inherit' })
+
+        childProcess.on('exit', code => {
+          if (code === 0) {
+            resolve()
+          }
+
+          reject(new Error('Last scenario failed. Stopping'))
+        })
+      })
+    })
+  }, Promise.resolve())
+}
+
+parseScenarios()
+  .then(runScenarios)
   .catch(e => {
     console.error(e)
     process.exit(1)
