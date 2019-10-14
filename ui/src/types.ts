@@ -1,5 +1,13 @@
 
+export type ProjectId = string;
+
 export interface Project {
-    id: string;
+    id: ProjectId;
     name: string | null;
+}
+
+export interface RemoteData<T> {
+    isLoading: boolean;
+    data?: T;
+    error?: string;
 }
