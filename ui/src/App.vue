@@ -1,8 +1,18 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-    </div>
+  <div id="app" class="container is-fluid">
+    <b-navbar>
+      <template slot="brand">
+        <b-navbar-item tag="router-link" :to="{ path: '/' }">
+          Data-cube-curation
+        </b-navbar-item>
+      </template>
+      <template slot="start">
+        <b-navbar-item tag="router-link" :to="{ path: '/projects' }">
+          Projects
+        </b-navbar-item>
+      </template>
+    </b-navbar>
+
     <router-view/>
   </div>
 </template>
