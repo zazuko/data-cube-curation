@@ -78,8 +78,9 @@ With Class dataCube:Table {
     Expect Link api:csvwMetadata {
         Expect Property csvw:tableSchema {
             Expect Property csvw:columns {
-                Expect Property csvw:title "Identifier"
-                Expect Property csvw:propertyUrl "http://schema.org/identifier"
+                Expect Property csvw:datatype {
+                    Expect Id <http://www.w3.org/2001/XMLSchema#integer>
+                }
             }
         }
     }
@@ -96,7 +97,8 @@ With Operation api:AddAttributeMappedFromSingleColumn {
 
         <> dataCube:column <project/add-attribute-test/source/single-column.csv/station_id> ;
            schema:name "Identifier" ;
-           rdf:predicate <http://schema.org/identifier> .
+           rdf:predicate <http://schema.org/identifier> ;
+           dataCube:datatype <http://www.w3.org/2001/XMLSchema#integer>.
         ```
     } => {
         Expect Status 201

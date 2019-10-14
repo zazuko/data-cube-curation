@@ -43,7 +43,7 @@ export async function addAttributeHandler (req: express.DataCubeRequest, res: ex
   const variables = buildVariables(req, {
     name: expand('schema:name'),
     predicate: expand('rdf:predicate'),
-    datatype: expand('rdf:type'),
+    datatype: expand('dataCube:datatype'),
     language: expand('dataCube:language'),
     columnId: expand('dataCube:column'),
   })
