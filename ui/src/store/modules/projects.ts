@@ -1,8 +1,8 @@
 import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { ProjectsState, RootState } from '@/store/types';
 import { ProjectId, Project, RemoteData } from '@/types';
-import { Hydra } from 'alcaeus';
-import { ICollection, IHydraResource } from 'alcaeus/types/Resources';
+import { client } from '../../api';
+import { ICollection } from 'alcaeus/types/Resources';
 
 
 const initialState: ProjectsState = {
@@ -30,7 +30,7 @@ const getters: GetterTree<ProjectsState, RootState> = {
 
 const actions: ActionTree<ProjectsState, RootState> = {
   async loadAll({ commit }) {
-    Hydra.loadResource('http://localhost:5678/projects')
+    client.loadResource('http://localhost:5678/projects')
       .then((response) => {
         const projectsCollection = response.root as ICollection | null;
 
@@ -38,9 +38,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
           throw Error('No `root` in Hydra response');
         }
 
-        const members = projectsCollection.members || [];
-        const projects = members.map(deserializeProject);
-
+        const projects = projectsCollection.members || [];
         commit('storeAll', projects);
       })
       .catch((error) => {
@@ -50,13 +48,11 @@ const actions: ActionTree<ProjectsState, RootState> = {
   },
 
   loadOne({ commit }, id) {
-    Hydra.loadResource(id)
+    client.loadResource(id)
       .then((response) => {
-        const projectResource = response.root;
+        const project = response.root;
 
-        if (!projectResource) { return; }
-
-        const project = deserializeProject(projectResource);
+        if (!project) { return; }
 
         commit('storeOne', project);
       })
@@ -100,11 +96,3 @@ export default {
   actions,
   mutations,
 };
-
-
-function deserializeProject(resource): Project {
-  return {
-    id: resource.id,
-    name: resource.get('http://schema.org/name') || '',
-  };
-}
