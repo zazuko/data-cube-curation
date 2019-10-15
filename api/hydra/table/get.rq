@@ -5,11 +5,13 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 CONSTRUCT {
     ?table ?p ?o .
     ?table api:attributes ?attributes .
+    ?table api:preview ?preview .
     ?table api:csvwMetadata ?csvw .
 }
 WHERE {
     BIND (<${this.locals.resourceId}> as ?table)
     BIND (<${this.locals.resourceId}/attributes> as ?attributes)
+    BIND (<${this.locals.resourceId}/preview> as ?preview)
     BIND (<${this.locals.resourceId}/csvw> as ?csvw)
 
     ?table

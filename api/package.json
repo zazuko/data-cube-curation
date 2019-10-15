@@ -27,9 +27,9 @@
   "dependencies": {
     "@tpluscode/fun-ddr": "^0.1.1",
     "@tpluscode/fun-ddr-sparql-graph-repository": "^0.1.4",
-    "@zazuko/rdf-vocabularies": "^2019.7.9-2",
+    "@zazuko/rdf-vocabularies": "^2019.9.24",
     "body-parser": "^1.19.0",
-    "clownface": "^0.10.0",
+    "clownface": "^0.11.0",
     "cors": "^2.8.5",
     "csv-parse": "^4.4.3",
     "dotenv": "^8.0.0",
@@ -39,10 +39,12 @@
     "hydra-box": "^0.4.1",
     "md5": "^2.2.1",
     "sparql-http-client": "^1.1.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "rdf-parser-csvw": "^0.13.0"
   },
   "devDependencies": {
     "@hydrofoil/hypertest": "^0.6.0",
+    "jsonld": "^1.8.0",
     "@types/express": "^4.17.1",
     "@types/jest": "^24.0.18",
     "@types/node": "^11.13.9",

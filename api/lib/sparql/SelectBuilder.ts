@@ -25,7 +25,7 @@ export class SelectBuilder extends Builder<Record<string, Term>[]> {
   }
 
   protected _buildQueryInternal (): string {
-    const variables = this.__variables.map(v => v.replace(/^\??/, '?')).join('')
+    const variables = this.__variables.map(v => v.replace(/^\??/, '?')).join(' ')
 
     return `SELECT ${variables}
       ${this.__defaultGraph ? `FROM <${this.__defaultGraph}>` : ''}
