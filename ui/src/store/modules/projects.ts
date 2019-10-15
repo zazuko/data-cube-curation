@@ -2,7 +2,7 @@ import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { ProjectsState, RootState } from '@/store/types';
 import { ProjectId, Project, RemoteData } from '@/types';
 import { Hydra } from 'alcaeus';
-import { ICollection } from 'alcaeus/types/Resources';
+import { ICollection, IHydraResource } from 'alcaeus/types/Resources';
 
 
 const initialState: ProjectsState = {
@@ -14,6 +14,16 @@ const getters: GetterTree<ProjectsState, RootState> = {
     return {
       ...state.projects,
       data: Object.values(state.projects.data || {}),
+    };
+  },
+
+  one(state): (id: ProjectId) => RemoteData<Project> {
+    return (id) => {
+      const project = (state.projects.data || {})[id];
+      return {
+        ...state.projects,
+        data: project,
+      };
     };
   },
 };
@@ -29,13 +39,29 @@ const actions: ActionTree<ProjectsState, RootState> = {
         }
 
         const members = projectsCollection.members || [];
-        const projects = members.map((project) => ({
-          id: project.id,
-          name: project.get('http://schema.org/name') || '',
-        }));
+        const projects = members.map(deserializeProject);
+
         commit('storeAll', projects);
       })
       .catch((error) => {
+        console.error(error);
+        commit('loadingError', error);
+      });
+  },
+
+  loadOne({ commit }, id) {
+    Hydra.loadResource(id)
+      .then((response) => {
+        const projectResource = response.root;
+
+        if (!projectResource) { return; }
+
+        const project = deserializeProject(projectResource);
+
+        commit('storeOne', project);
+      })
+      .catch((error) => {
+        console.error(error);
         commit('loadingError', error);
       });
   },
@@ -48,6 +74,15 @@ const mutations: MutationTree<ProjectsState> = {
       acc[project.id] = project;
       return acc;
     }, emptyData);
+    state.projects.isLoading = false;
+  },
+
+  storeOne(state, project: Project) {
+    if (!state.projects.data) {
+      state.projects.data = {};
+    }
+
+    state.projects.data[project.id] = project;
     state.projects.isLoading = false;
   },
 
@@ -65,3 +100,11 @@ export default {
   actions,
   mutations,
 };
+
+
+function deserializeProject(resource): Project {
+  return {
+    id: resource.id,
+    name: resource.get('http://schema.org/name') || '',
+  };
+}
