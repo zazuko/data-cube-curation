@@ -3,10 +3,10 @@ import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { SourceEvents } from '../domain/source/events'
 import { deleteFile, saveFile } from '../storage'
 
-handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', function storeSample (ev) {
-  const csvStringified = ev.data.sampleRows.map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')
+export const storeSampleHandler = handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', function storeSample (ev) {
+  const csvStringified = [ev.data.columns, ...ev.data.sampleRows].map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')
 
-  return saveFile(md5(ev.id), csvStringified)
+  saveFile(md5(ev.id), csvStringified)
 })
 
 handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function deleteSampleCsv (ev) {

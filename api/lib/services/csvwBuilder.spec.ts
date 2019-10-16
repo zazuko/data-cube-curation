@@ -1,6 +1,5 @@
 import * as specGraphs from './csvwBuilder.spec-graphs'
 import { buildCsvw } from './csvwBuilder'
-import { canonized } from '../../test-support/serializations'
 
 const { ids } = specGraphs
 
@@ -13,7 +12,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(await canonized(csvwDataset)).toMatchSnapshot()
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute', async () => {
@@ -24,7 +23,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(await canonized(csvwDataset)).toMatchSnapshot()
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute with datatype', async () => {
@@ -35,7 +34,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(await canonized(csvwDataset)).toMatchSnapshot()
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute with language tag', async () => {
@@ -46,6 +45,6 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(await canonized(csvwDataset)).toMatchSnapshot()
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
 })
