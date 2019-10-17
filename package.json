@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "start:api": "(cd api; ts-node index.ts)",
+    "start:api": "(cd api; npm run start)",
     "postinstall": "lerna bootstrap",
     "jest": "lerna run jest --stream --no-prefix",
     "test": "lerna run test --stream --no-prefix",

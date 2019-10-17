@@ -4,6 +4,7 @@
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node index.ts",
     "jest": "jest",
     "test": "ts-node test/run.ts",
     "test:analyse": "dotenv test/analyse.sh",
