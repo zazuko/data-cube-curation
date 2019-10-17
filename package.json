@@ -22,8 +22,5 @@
     "commitizen": {
       "path": "./node_modules/cz-lerna-changelog"
     }
-  },
-  "dependencies": {
-    "alcaeus": "0.9.1"
   }
 }

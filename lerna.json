@@ -1,6 +1,7 @@
 {
   "packages": [
-    "api"
+    "api",
+    "ui"
   ],
   "version": "independent",
   "command": {
