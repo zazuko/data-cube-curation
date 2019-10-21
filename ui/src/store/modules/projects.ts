@@ -2,7 +2,6 @@ import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { ProjectsState, RootState } from '@/store/types';
 import { ProjectId, Project, RemoteData } from '@/types';
 import { client } from '../../api';
-import { ICollection } from 'alcaeus/types/Resources';
 
 
 const initialState: ProjectsState = {
@@ -30,36 +29,21 @@ const getters: GetterTree<ProjectsState, RootState> = {
 
 const actions: ActionTree<ProjectsState, RootState> = {
   async loadAll({ commit }) {
-    client.loadResource('http://localhost:5678/projects')
-      .then((response) => {
-        const projectsCollection = response.root as ICollection | null;
-
-        if (!projectsCollection) {
-          throw Error('No `root` in Hydra response');
-        }
-
-        const projects = projectsCollection.members || [];
-        commit('storeAll', projects);
-      })
-      .catch((error) => {
-        console.error(error);
-        commit('loadingError', error);
-      });
+    try {
+      const projects = await client.projects.list();
+      commit('storeAll', projects);
+    } catch (error) {
+      commit('loadingError', error);
+    }
   },
 
-  loadOne({ commit }, id) {
-    client.loadResource(id)
-      .then((response) => {
-        const project = response.root;
-
-        if (!project) { return; }
-
-        commit('storeOne', project);
-      })
-      .catch((error) => {
-        console.error(error);
-        commit('loadingError', error);
-      });
+  async loadOne({ commit }, id) {
+    try {
+      const project = await client.projects.get(id);
+      commit('storeOne', project);
+    } catch (error) {
+      commit('loadingError', error);
+    }
   },
 };
 
@@ -83,6 +67,8 @@ const mutations: MutationTree<ProjectsState> = {
   },
 
   loadingError(state, error) {
+    console.error(error);
+
     state.projects.isLoading = false;
     state.projects.error = 'Error: could not load projects';
   },
