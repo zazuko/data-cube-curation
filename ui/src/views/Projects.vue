@@ -43,12 +43,6 @@ import Loader from '../components/Loader.vue';
   },
 })
 export default class Projects extends Vue {
-  columns = [
-    { label: 'Name', field: 'name' },
-    { label: 'ID', field: 'id' },
-    { label: 'Actions', field: '' },
-  ];
-
   get projects(): RemoteData<Project[]> {
     return this.$store.getters['projects/list'];
   }
