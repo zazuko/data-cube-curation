@@ -73,3 +73,13 @@ export function existsInTableSource (tableId: string, columnId: string): Promise
     })
     .execute(getClient())
 }
+
+export function getTableSourceId (tableId: string) {
+  return select('source')
+    .where(`<${tableId}> a dataCube:Table; dataCube:source ?source .`)
+    .prefixes({
+      dataCube,
+    })
+    .execute(getClient())
+    .then(bindings => bindings[0].source.value.replace(process.env.BASE_URI, ''))
+}

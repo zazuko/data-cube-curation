@@ -77,8 +77,8 @@ With Class dataCube:Table {
 
     Expect Link api:csvwMetadata {
         Expect Property csvw:tableSchema {
-            Expect Property csvw:columns {
-                Expect Property csvw:title "Identifier"
+            Expect Property csvw:column {
+                Expect Property csvw:title "station_id"
                 Expect Property csvw:propertyUrl "http://schema.org/identifier"
             }
         }

@@ -1,4 +1,4 @@
-import { promises } from 'fs'
+import { promises, createReadStream } from 'fs'
 
 export async function saveFile (path: string, contents: string) {
   await promises.mkdir(process.env.STORAGE_FILESYSTEM_PATH, { recursive: true })
@@ -8,4 +8,8 @@ export async function saveFile (path: string, contents: string) {
 
 export async function deleteFile (path: string) {
   return promises.unlink(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`)
+}
+
+export function loadFile (path: string) {
+  return createReadStream(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`)
 }

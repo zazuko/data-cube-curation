@@ -305,7 +305,7 @@ api:GetCsvwMetadata
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table/csvw#getMappingsForTable>
+        code:link <file:lib/data-cube/table/csvw#get>
       ]
     )
   ] .
@@ -370,9 +370,30 @@ dataCube:Table
       hydra:property api:attributes ;
       hydra:title "Table's attributes mapped from it's source";
       hydra:writeable false
+    ] ,
+    [
+      hydra:property api:preview ;
+      hydra:title "Preview the table's mapping";
+      hydra:writeable false
     ] ;
   hydra:supportedOperation
     api:GetTable .
+
+api:preview a hydra:Link ;
+  hydra:supportedOperation api:GetPreview .
+
+api:GetPreview a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Runs the table's mapping on sample source data and returns the resulting triples" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table/preview#parseSample>
+      ]
+    )
+  ] .
 
 api:attributes a hydra:Link ;
   rdfs:range api:AttributeCollection ;
@@ -559,5 +580,6 @@ api:Error
 </project/:projectId/table/:tableName> a dataCube:Table .
 </project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .
 </project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
+</project/:projectId/table/:tableName> api:preview </project/:projectId/table/:tableName/preview> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
 </project/:projectId/table/:tableName> api:csvwMetadata </project/:projectId/table/:tableName/csvw> .
