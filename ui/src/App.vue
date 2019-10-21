@@ -13,6 +13,8 @@
       </template>
     </b-navbar>
 
-    <router-view/>
+    <main class="main">
+      <router-view/>
+    </main>
   </div>
 </template>
