@@ -45,6 +45,13 @@ const actions: ActionTree<ProjectsState, RootState> = {
       commit('loadingError', error);
     }
   },
+
+  async uploadSource({ dispatch }, { project, file }) {
+    // TODO: Handle error?
+    const response = await client.projects.createSource(project, file);
+    // Reload project to get the new source
+    dispatch('loadOne', project.id);
+  },
 };
 
 const mutations: MutationTree<ProjectsState> = {

@@ -4,6 +4,11 @@ import { HydraResource, ICollection } from 'alcaeus/types/Resources';
 const apiURL = process.env.VUE_APP_API_URL;
 
 const PROJECT_TYPE = 'https://rdf-cube-curation.described.at/Project';
+const SOURCE_TYPE = 'https://rdf-cube-curation.described.at/Source';
+const FACT_TABLE_TYPE = 'https://rdf-cube-curation.described.at/FactTable';
+
+const NAME_PROPERTY = 'http://schema.org/name';
+const SOURCES_PROPERTY = 'https://rdf-cube-curation.described.at/api/sources';
 
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
@@ -13,7 +18,22 @@ const ProjectMixin = {
   Mixin<B extends Constructor>(Base: B) {
     return class extends Base {
       get name() {
-        return this.get('http://schema.org/name');
+        return this.get(NAME_PROPERTY);
+      }
+
+      get sourcesCollection() {
+        return this[SOURCES_PROPERTY] as ICollection | null;
+      }
+
+      get sources() {
+        if (!this.sourcesCollection) { return []; }
+
+        // TODO: Alcaeus doesn't assign the correct type to these objects
+        // so they don't get applied the proper Mixin.
+        return this.sourcesCollection.members.map((source) => ({
+          ...source,
+          name: source.get(NAME_PROPERTY),
+        }));
       }
     };
   },
@@ -24,7 +44,23 @@ const ProjectMixin = {
 };
 
 
+const SourceMixin = {
+  Mixin<B extends Constructor>(Base: B) {
+    return class extends Base {
+      get name() {
+        return this.get(NAME_PROPERTY);
+      }
+    };
+  },
+
+  shouldApply(resource: HydraResource) {
+    return resource.types.contains(SOURCE_TYPE);
+  },
+};
+
+
 Hydra.mediaTypeProcessors.RDF.resourceFactory.mixins.push(ProjectMixin);
+Hydra.mediaTypeProcessors.RDF.resourceFactory.mixins.push(SourceMixin);
 
 
 export class Client {
@@ -74,6 +110,15 @@ class ProjectsClient {
     }
 
     return project;
+  }
+
+  async createSource(project, file: File) {
+    const operation = project.sourcesCollection.operations.find((op) => op.method === 'POST');
+    const headers = {
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="${file.name}"`,
+    };
+    await operation.invoke(file, headers);
   }
 }
 
