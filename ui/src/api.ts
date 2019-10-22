@@ -69,7 +69,7 @@ export class Client {
   projects: ProjectsClient;
 
   constructor(url: string) {
-    if (!url) { throw new Error('API URL not defined'); }
+    // if (!url) { throw new Error('API URL not defined'); }
 
     this.url = url;
 
