@@ -32,6 +32,7 @@ export interface Property {
 }
 
 export interface Rule {
+  id: string;
   table: string;
   property: string;
   columns: string[];

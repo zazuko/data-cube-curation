@@ -1,7 +1,7 @@
 <template>
   <div class="mapping-rules">
     <b-field>
-      <b-button type="is-primary" icon-left="plus">
+      <b-button type="is-primary" icon-left="plus" @click="createRule">
         Add rule
       </b-button>
     </b-field>
@@ -22,8 +22,8 @@
         </b-table-column>
         <b-table-column label="">
           <div class="buttons has-addons">
-            <b-button icon-left="pencil" class="is-small"></b-button>
-            <b-button icon-left="trash-can-outline" class="is-small"></b-button>
+            <b-button icon-left="pencil" class="is-small" @click="editRule(props.row)" />
+            <b-button icon-left="trash-can-outline" class="is-small" />
           </div>
         </b-table-column>
       </template>
@@ -33,13 +33,15 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import TableTag from '../TableTag.vue';
 import { Table, Rule, Source } from '../../types';
+import TableTag from '../TableTag.vue';
+import RuleForm from './RuleForm.vue';
 
 
 @Component({
   components: {
     TableTag,
+    RuleForm,
   },
 })
 export default class TabRules extends Vue {
@@ -49,6 +51,31 @@ export default class TabRules extends Vue {
 
   getTable(tableId: string) {
     return this.tables.find((table) => table.id === tableId);
+  }
+
+  createRule() {
+    this.$buefy.modal.open({
+      parent: this,
+      component: RuleForm,
+      props: {
+        tables: this.tables,
+        sources: this.sources,
+      },
+      hasModalCard: true,
+    });
+  }
+
+  editRule(rule) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: RuleForm,
+      props: {
+        rule: rule,
+        tables: this.tables,
+        sources: this.sources,
+      },
+      hasModalCard: true,
+    });
   }
 }
 </script>
