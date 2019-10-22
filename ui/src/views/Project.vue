@@ -60,7 +60,7 @@ export default class ProjectView extends Vue {
     this.$store.dispatch('projects/loadOne', this.projectId);
   }
 
-  uploadSource(file) {
+  uploadSource(file: File) {
     this.$store.dispatch('projects/uploadSource', {
       project: this.project.data,
       file: file,

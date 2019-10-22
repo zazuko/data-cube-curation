@@ -59,8 +59,9 @@ const SourceMixin = {
 };
 
 
-Hydra.mediaTypeProcessors.RDF.resourceFactory.mixins.push(ProjectMixin);
-Hydra.mediaTypeProcessors.RDF.resourceFactory.mixins.push(SourceMixin);
+const rdf = Hydra.mediaTypeProcessors.RDF as any;
+rdf.resourceFactory.mixins.push(ProjectMixin);
+rdf.resourceFactory.mixins.push(SourceMixin);
 
 
 export class Client {
@@ -112,8 +113,8 @@ class ProjectsClient {
     return project;
   }
 
-  async createSource(project, file: File) {
-    const operation = project.sourcesCollection.operations.find((op) => op.method === 'POST');
+  async createSource(project: any, file: File) {
+    const operation = project.sourcesCollection.operations.find((op: any) => op.method === 'POST');
     const headers = {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`,
