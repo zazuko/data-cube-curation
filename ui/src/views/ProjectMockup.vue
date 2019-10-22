@@ -117,12 +117,90 @@ export default class ProjectView extends Vue {
 
   rules = [
     {
-      id: '1',
+      table: 'vehicle',
+      property: 'Identifier',
+      columns: ['make', 'model'],
+      transform: '</{make}/{model}>',
+    },
+    {
       table: 'vehicle',
       property: 'veh:length',
       columns: ['length'],
       transform: '',
     },
-  ];
+    {
+      table: 'vehicle',
+      property: 'veh:kind',
+      columns: ['kind'],
+      transform: '</but-type/{kind}>',
+    },
+
+    {
+      table: 'municipality',
+      property: 'Identifier',
+      columns: ['municipality'],
+      transform: '</counties/{municipality}>',
+    },
+    {
+      table: 'municipality',
+      property: 'skos:broader',
+      columns: ['canton'],
+      transform: '</canton/{canton}>',
+    },
+
+    {
+      table: 'operator',
+      property: 'Identifier',
+      columns: ['operator'],
+      transform: '</operators/{operator}>',
+    },
+    {
+      table: 'operator',
+      property: 'ex:location',
+      columns: ['municipality'],
+      transform: '</counties/{municipality}>',
+    },
+
+    {
+      table: 'canton',
+      property: 'Identifier',
+      columns: ['canton'],
+      transform: '</canton/{canton}>',
+    },
+
+    {
+      table: 'registered',
+      property: 'Identifier',
+      columns: ['make', 'model', 'operator'],
+      transform: '</registration/{make}/{model}/{operator}>',
+    },
+    {
+      table: 'registered',
+      property: 'reg:vehicle',
+      columns: ['make', 'model'],
+      transform: '</{make}/{model}>',
+    },
+    {
+      table: 'registered',
+      property: 'reg:operator',
+      columns: ['operator'],
+      transform: '</operators/{operator}>',
+    },
+    {
+      table: 'registered',
+      property: 'reg:count',
+      columns: ['registered'],
+      transform: '',
+    },
+    {
+      table: 'registered',
+      property: 'reg:when',
+      columns: ['month', 'year'],
+      transform: '{month}-{year}',
+    },
+  ].map((rule, index) => ({
+    ...rule,
+    id: index,
+  }));
 }
 </script>
