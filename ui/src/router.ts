@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import Projects from './views/Projects.vue';
-import ProjectView from './views/Project.vue';
+import ProjectsMockupView from './views/ProjectsMockup.vue';
+import ProjectMockupView from './views/ProjectMockup.vue';
 
 Vue.use(Router);
 
@@ -18,12 +18,12 @@ export default new Router({
     {
       path: '/projects',
       name: 'projects',
-      component: Projects,
+      component: ProjectsMockupView,
     },
     {
       path: '/projects/:id',
       name: 'project',
-      component: ProjectView,
+      component: ProjectMockupView,
     },
   ],
 });
