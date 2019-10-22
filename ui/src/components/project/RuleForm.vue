@@ -1,5 +1,5 @@
 <template>
-  <form action="" class="modal-card">
+  <form action="" class="modal-card" @submit="save">
     <header class="modal-card-head">
       <h3 class="modal-card-title">{{ title }}</h3>
     </header>
@@ -85,6 +85,12 @@ export default class TableForm extends Vue {
     if (!table) { return []; }
 
     return table.properties;
+  }
+
+  save() {
+    this.$buefy.dialog.alert({
+      message: 'Not implemeted yet'
+    });
   }
 }
 
