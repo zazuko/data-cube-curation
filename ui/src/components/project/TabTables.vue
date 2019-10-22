@@ -1,7 +1,7 @@
 <template>
   <div class="output-tables">
     <b-field>
-      <b-button type="is-primary" icon-left="plus">
+      <b-button type="is-primary" icon-left="plus" @click="createTable">
         Add table
       </b-button>
     </b-field>
@@ -23,8 +23,8 @@
         </section>
         <footer class="card-footer">
           <div class="buttons has-addons">
-            <b-button icon-left="pencil"></b-button>
-            <b-button icon-left="trash-can-outline"></b-button>
+            <b-button icon-left="pencil" @click="editTable(table)" />
+            <b-button icon-left="trash-can-outline" />
           </div>
         </footer>
       </article>
@@ -63,12 +63,38 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
 import { Table } from '../../types';
+import TableForm from './TableForm.vue';
 
 @Component({
   components: {
+    TableForm,
   },
 })
 export default class TabTables extends Vue {
   @Prop({ default: [] }) readonly tables: Table[];
+
+  createTable() {
+    this.$buefy.modal.open({
+      parent: this,
+      component: TableForm,
+      props: {
+        tables: this.tables,
+      },
+      hasModalCard: true,
+    });
+  }
+
+  editTable(table) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: TableForm,
+      props: {
+        tables: this.tables,
+        table: table,
+      },
+      hasModalCard: true,
+    });
+  }
 }
+
 </script>
