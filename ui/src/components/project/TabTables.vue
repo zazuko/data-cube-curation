@@ -84,7 +84,7 @@ export default class TabTables extends Vue {
     });
   }
 
-  editTable(table) {
+  editTable(table: Table) {
     this.$buefy.modal.open({
       parent: this,
       component: TableForm,

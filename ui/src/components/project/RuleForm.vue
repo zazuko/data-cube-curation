@@ -80,9 +80,10 @@ export default class TableForm extends Vue {
   }
 
   getTableProperties(tableId: string) {
-    if (!tableId) { return []; }
-
     const table = this.tables.find((table) => table.id === tableId);
+
+    if (!table) { return []; }
+
     return table.properties;
   }
 }

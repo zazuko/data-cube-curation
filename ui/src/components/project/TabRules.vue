@@ -65,7 +65,7 @@ export default class TabRules extends Vue {
     });
   }
 
-  editRule(rule) {
+  editRule(rule: Rule) {
     this.$buefy.modal.open({
       parent: this,
       component: RuleForm,

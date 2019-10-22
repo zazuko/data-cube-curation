@@ -76,7 +76,7 @@ export default class TableForm extends Vue {
     });
   }
 
-  deleteProperty(index) {
+  deleteProperty(index: number) {
     this.table.properties.splice(index, 1);
   }
 }
