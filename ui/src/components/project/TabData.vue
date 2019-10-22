@@ -9,19 +9,18 @@
       </b-upload>
     </b-field>
 
-    <div v-for="source in sources" :key="source.id">
-      <article class="card project-source">
+    <div v-for="source in sources" :key="source.id" class="sources-list">
+      <article class="card">
         <header class="card-header">
           <h2 class="card-header-title">{{ source.name }}</h2>
           <b-button icon-left="trash-can-outline"></b-button>
         </header>
-        <section class="">
+        <section class="card-content">
           <b-table
             :data="source.data"
             bordered
             striped
             narrowed
-            hoverable
           >
             <template slot="empty">File is empty</template>
             <template slot-scope="props">
@@ -29,7 +28,9 @@
                 <template slot="header">
                   {{ column.label }}
                   <b-taglist>
-                    <TableTag v-for="rule in columnRules(column)" :key="rule.id" :table="rule.table" />
+                    <TableTag v-for="rule in columnRules(column)" :key="rule.id" :table="rule.table">
+                      {{ rule.table.name }} > {{ rule.property }}
+                    </TableTag>
                   </b-taglist>
                 </template>
                 {{ props.row[column.field] }}
@@ -46,6 +47,13 @@
     </div>
   </div>
 </template>
+
+<style>
+  .sources-list > .card > .card-content {
+    padding: 0;
+    overflow-x: scroll;
+  }
+</style>
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';

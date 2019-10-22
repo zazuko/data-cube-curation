@@ -1,6 +1,6 @@
 <template>
   <b-tag :style="{'background-color': table.color}">
-    {{ table.name }}
+    <slot>{{ table.name }}</slot>
   </b-tag>
 </template>
 

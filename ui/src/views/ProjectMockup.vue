@@ -34,7 +34,7 @@ import TabRules from '../components/project/TabRules.vue';
   },
 })
 export default class ProjectView extends Vue {
-  activeTab = 2;
+  activeTab = 0;
 
   project = {
     id: 'dfe46722-3b54-41b8-ac4a-811760b2a420',
@@ -200,7 +200,7 @@ export default class ProjectView extends Vue {
     },
   ].map((rule, index) => ({
     ...rule,
-    id: index,
+    id: index.toString(),
   }));
 }
 </script>
