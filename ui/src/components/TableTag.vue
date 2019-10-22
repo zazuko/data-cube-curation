@@ -5,16 +5,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component, Vue } from 'vue-property-decorator';
+import { Table } from '../types';
 
 
-@Component({
-  components: {
-  },
-})
+@Component
 export default class TabRules extends Vue {
-  @Prop() table;
+  @Prop() readonly table: Table;
 }
 </script>

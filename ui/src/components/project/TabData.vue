@@ -48,10 +48,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component, Vue } from 'vue-property-decorator';
 import TableTag from '../TableTag.vue';
+import { Rule, Table, Source } from '../../types';
 
 @Component({
   components: {
@@ -59,17 +58,17 @@ import TableTag from '../TableTag.vue';
   },
 })
 export default class TabData extends Vue {
-  @Prop() sources;
-  @Prop() rules;
-  @Prop() tables;
+  @Prop({ default: [] }) readonly sources: Source[];
+  @Prop({ default: [] }) readonly rules: Rule[];
+  @Prop({ default: [] }) readonly tables: Table[];
 
   uploadSource() {}
 
-  columnRules(column) {
+  columnRules(column: any) {
     const columnId = column.field;
     const rules = this.rules.filter((rule) => rule.columns.includes(columnId));
     return rules.map((rule) => {
-      const table = this.tables.find((table) => table.id === rule.table);
+      const table = this.tables.find((table: any) => table.id === rule.table);
       return {
         ...rule,
         table: table,

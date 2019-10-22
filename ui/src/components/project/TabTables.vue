@@ -61,15 +61,14 @@
 </style>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component, Vue } from 'vue-property-decorator';
+import { Table } from '../../types';
 
 @Component({
   components: {
   },
 })
 export default class TabTables extends Vue {
-  @Prop() tables;
+  @Prop({ default: [] }) readonly tables: Table[];
 }
 </script>

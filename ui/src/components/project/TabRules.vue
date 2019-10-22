@@ -32,10 +32,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component, Vue } from 'vue-property-decorator';
 import TableTag from '../TableTag.vue';
+import { Table, Rule, Source } from '../../types';
 
 
 @Component({
@@ -44,11 +43,11 @@ import TableTag from '../TableTag.vue';
   },
 })
 export default class TabRules extends Vue {
-  @Prop() tables;
-  @Prop() rules;
-  @Prop() sources;
+  @Prop({ default: [] }) readonly tables: Table[];
+  @Prop({ default: [] }) readonly rules: Rule[];
+  @Prop({ default: [] }) readonly sources: Source[];
 
-  getTable(tableId) {
+  getTable(tableId: string) {
     return this.tables.find((table) => table.id === tableId);
   }
 }

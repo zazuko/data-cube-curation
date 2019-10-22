@@ -19,12 +19,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Vue } from 'vue-property-decorator';
 import { Project, RemoteData } from '../types';
 import TabData from '../components/project/TabData.vue';
 import TabTables from '../components/project/TabTables.vue';
 import TabRules from '../components/project/TabRules.vue';
+
 
 @Component({
   components: {
@@ -56,13 +56,13 @@ export default class ProjectView extends Vue {
           {label: 'Canton', field: 'canton'},
         ],
         data: [
-          {make: 'MAN', model: "Lion's City", municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
-          {make: 'MAN', model: "Lion's City", municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
-          {make: 'MAN', model: "Lion's City", municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
+          {make: 'MAN', model: 'Lion\'s City', municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
+          {make: 'MAN', model: 'Lion\'s City', municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
+          {make: 'MAN', model: 'Lion\'s City', municipality: '122', operator: 'Bernmobil', registered: '10', length: '12', kind: 'city', year: '2019', month: '8', canton: 'ZH'},
         ],
-      }
+      },
     ],
-  }
+  };
 
   tables = [
     {
@@ -73,7 +73,7 @@ export default class ProjectView extends Vue {
         {name: 'Identifier'},
         {name: 'veh:length', type: 'xsd:int'},
         {name: 'veh:kind', type: 'Kind'},
-      ]
+      ],
     },
     {
       id: 'municipality',
@@ -82,7 +82,7 @@ export default class ProjectView extends Vue {
       properties: [
         {name: 'Identifier'},
         {name: 'skos:broader', type: 'Canton'},
-      ]
+      ],
     },
     {
       id: 'operator',
@@ -91,7 +91,7 @@ export default class ProjectView extends Vue {
       properties: [
         {name: 'Identifier'},
         {name: 'ex:location', type: 'Municipality'},
-      ]
+      ],
     },
     {
       id: 'canton',
@@ -99,7 +99,7 @@ export default class ProjectView extends Vue {
       color: '#46bdc6',
       properties: [
         {name: 'Identifier'},
-      ]
+      ],
     },
     {
       id: 'registered',
@@ -111,7 +111,7 @@ export default class ProjectView extends Vue {
         {name: 'reg:operator', type: 'Operator'},
         {name: 'reg:count', type: 'xsd:int'},
         {name: 'reg:when', type: 'xsd:gYearMonth'},
-      ]
+      ],
     },
   ];
 
