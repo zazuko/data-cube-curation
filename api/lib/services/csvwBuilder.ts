@@ -14,7 +14,7 @@ function createColumn (csvwGraph: any, column: any, attribute?: any) {
   let csvwColumn = csvwGraph.blankNode()
     .addOut(csvw.title, column.out(schema.name).value)
 
-  if (!attribute.value) {
+  if (!attribute) {
     return csvwColumn.addOut(csvw.suppressOutput, true)
   }
 
@@ -35,11 +35,23 @@ export function buildCsvw (tableDataset: any, tableId: string) {
   addDialect(csvwGraph)
 
   csvwGraph.addOut(csvw.tableSchema, tableSchema => {
-    tableSchema.addList(csvw.column, tableContext
+    const columnsAndAttributes: [] = tableContext
       .out(dataCube.source)
       .out(dataCube.column)
-      .map(column => {
-        const attribute = tableContext.in(dataCube.table).has(dataCube.column, column)
+      .toArray()
+
+    tableSchema.addList(csvw.column, columnsAndAttributes
+      .reduce(function matchColumnsToAttributes (previousValue, column) {
+        const attributes = tableContext.in(dataCube.table).has(dataCube.column, column)
+        if (attributes.values.length > 0) {
+          return [...previousValue, ...attributes.map(attribute => ({
+            column, attribute,
+          }))]
+        }
+
+        return [...previousValue, { column }]
+      }, [])
+      .map(({ column, attribute }) => {
         return createColumn(csvwGraph, column, attribute)
       }))
   })

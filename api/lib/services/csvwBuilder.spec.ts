@@ -26,6 +26,17 @@ describe('csvwBuilder', () => {
     expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
 
+  it('maps multiple attributes mapping same column', async () => {
+    // given
+    const dataset = await specGraphs.multipleMappedColumnsGraph()
+
+    // when
+    const csvwDataset = buildCsvw(dataset, ids.tableId)
+
+    // then
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+  })
+
   it('maps attribute with datatype', async () => {
     // given
     const dataset = await specGraphs.columnMappedWithDatatypeGraph()
