@@ -43,6 +43,16 @@ const mappedColumn = `${tableAndSource}
       rdf:predicate <http://schema.org/name> .
 `
 
+const multipleMappedColumns = `${mappedColumn}
+
+<http://example.com/attribute/station_name_with_lang>
+      a dataCube:Attribute, dataCube:ColumnAttribute ;
+      dataCube:column <http://example.com/column/station_name> ;
+      dataCube:table <${ids.tableId}> ;
+      rdf:predicate <http://schema.org/name> ;
+      dataCube:language "fr" .
+`
+
 const columnMappedWithDatatype = `${mappedColumn}
 
 <http://example.com/attribute/station_name>
@@ -70,5 +80,6 @@ function createGraph (ntriples: string) {
 
 export const unmappedColumnGraph = createGraph(unmappedColumn)
 export const mappedColumnGraph = createGraph(mappedColumn)
+export const multipleMappedColumnsGraph = createGraph(multipleMappedColumns)
 export const columnMappedWithDatatypeGraph = createGraph(columnMappedWithDatatype)
 export const columnMappedWithLanguageGraph = createGraph(columnMappedWithLanguage)
