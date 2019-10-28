@@ -36,23 +36,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Project, RemoteData } from '../types';
-import Loader from '../components/Loader.vue';
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import { Project, RemoteData } from '../types'
+import Loader from '../components/Loader.vue'
 
 @Component({
   components: {
-    Loader,
-  },
+    Loader
+  }
 })
 export default class Projects extends Vue {
-  get projects(): Project[] {
-    return this.$store.getters['projects/list'];
+  get projects (): Project[] {
+    return this.$store.getters['projects/list']
   }
 
-  created() {
-    this.$store.dispatch('projects/loadAll');
+  created () {
+    this.$store.dispatch('projects/loadAll')
   }
 }
 </script>

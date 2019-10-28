@@ -56,44 +56,43 @@
 </style>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
-import TableTag from '../../components/TableTag.vue';
-import { Project, ProjectId, Rule, Table, Source } from '../../types';
+import { Prop, Component, Vue } from 'vue-property-decorator'
+import TableTag from '../../components/TableTag.vue'
+import { Project, ProjectId, Rule, Table, Source } from '../../types'
 
 @Component({
   components: {
-    TableTag,
-  },
+    TableTag
+  }
 })
 export default class ProjectDataView extends Vue {
-  get projectId(): ProjectId {
-    return this.$route.params.id;
+  get projectId (): ProjectId {
+    return this.$route.params.id
   }
 
-  get project(): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId);
+  get project (): Project {
+    const remoteProject = this.$store.getters['projects/one'](this.projectId)
     // Assume project is loaded because we're in a nested view
-    return remoteProject.data;
+    return remoteProject.data
   }
 
-  uploadSource(file: File) {
+  uploadSource (file: File) {
     this.$store.dispatch('projects/uploadSource', {
       project: this.project,
-      file,
-    });
+      file
+    })
   }
 
-  columnRules(column: any) {
-    const columnId = column.field;
-    const rules = this.project.rules.filter((rule) => rule.columns.includes(columnId));
+  columnRules (column: any) {
+    const columnId = column.field
+    const rules = this.project.rules.filter((rule) => rule.columns.includes(columnId))
     return rules.map((rule) => {
-      const table = this.project.tables.find(({ id }) => id === rule.table);
+      const table = this.project.tables.find(({ id }) => id === rule.table)
       return {
         ...rule,
-        table,
-      };
-    });
+        table
+      }
+    })
   }
-
 }
 </script>

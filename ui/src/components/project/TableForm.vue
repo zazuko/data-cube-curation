@@ -1,7 +1,7 @@
 <template>
   <form action="" class="modal-card" @submit="save">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">{{ title }}</h3>
+      <h3 class="modal-card-title">{{ title }}</h3>
     </header>
     <section class="modal-card-body">
       <b-field label="Name">
@@ -43,56 +43,56 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
-import { Table } from '../../types';
+import { Prop, Component, Vue } from 'vue-property-decorator'
+import { Table } from '../../types'
 
 @Component
 export default class TableForm extends Vue {
   @Prop({ default: emptyTable }) readonly table: Table;
   @Prop({ default: [] }) readonly tables: Table[];
 
-  get dataTypes() {
+  get dataTypes () {
     const basicTypes = [
       'xsd:int',
-      'xsd:gYearMonth',
-    ];
-    const tableTypes = this.tables.map((t) => t.name);
+      'xsd:gYearMonth'
+    ]
+    const tableTypes = this.tables.map((t) => t.name)
 
-    return basicTypes.concat(tableTypes).sort();
+    return basicTypes.concat(tableTypes).sort()
   }
 
-  get title() {
+  get title () {
     if (this.table.id) {
-      return 'Edit table';
+      return 'Edit table'
     } else {
-      return 'Create table';
+      return 'Create table'
     }
   }
 
-  addProperty() {
+  addProperty () {
     this.table.properties.push({
       name: '',
-      type: '',
-    });
+      type: ''
+    })
   }
 
-  deleteProperty(index: number) {
-    this.table.properties.splice(index, 1);
+  deleteProperty (index: number) {
+    this.table.properties.splice(index, 1)
   }
 
-  save() {
+  save () {
     this.$buefy.dialog.alert({
-      message: 'Not implemented yet',
-    });
+      message: 'Not implemented yet'
+    })
   }
 }
 
-function emptyTable() {
+function emptyTable () {
   return {
     id: '',
     name: '',
     color: '',
-    properties: [],
-  };
+    properties: []
+  }
 }
 </script>

@@ -29,27 +29,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { RemoteData } from '../types';
-import Loader from '../components/Loader.vue';
-
+import { Component, Vue } from 'vue-property-decorator'
+import { RemoteData } from '../types'
+import Loader from '../components/Loader.vue'
 
 @Component({
   components: {
-    Loader,
-  },
+    Loader
+  }
 })
 export default class ProjectView extends Vue {
-  get projectId(): string {
-    return this.$route.params.id;
+  get projectId (): string {
+    return this.$route.params.id
   }
 
-  get project(): any {
-    return this.$store.getters['projects/one'](this.projectId);
+  get project (): any {
+    return this.$store.getters['projects/one'](this.projectId)
   }
 
-  created() {
-    this.$store.dispatch('projects/loadOne', this.projectId);
+  created () {
+    this.$store.dispatch('projects/loadOne', this.projectId)
   }
 }
 </script>

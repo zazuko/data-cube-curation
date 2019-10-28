@@ -61,47 +61,47 @@
 </style>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
-import { Project, ProjectId, Table } from '../../types';
-import TableForm from '../../components/project/TableForm.vue';
+import { Prop, Component, Vue } from 'vue-property-decorator'
+import { Project, ProjectId, Table } from '../../types'
+import TableForm from '../../components/project/TableForm.vue'
 
 @Component({
   components: {
-    TableForm,
-  },
+    TableForm
+  }
 })
 export default class ProjectTablesView extends Vue {
-  get projectId(): ProjectId {
-    return this.$route.params.id;
+  get projectId (): ProjectId {
+    return this.$route.params.id
   }
 
-  get project(): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId);
+  get project (): Project {
+    const remoteProject = this.$store.getters['projects/one'](this.projectId)
     // Assume project is loaded because we're in a nested view
-    return remoteProject.data;
+    return remoteProject.data
   }
 
-  createTable() {
+  createTable () {
+    this.$buefy.modal.open({
+      parent: this,
+      component: TableForm,
+      props: {
+        tables: this.project.tables
+      },
+      hasModalCard: true
+    })
+  }
+
+  editTable (table: Table) {
     this.$buefy.modal.open({
       parent: this,
       component: TableForm,
       props: {
         tables: this.project.tables,
+        table
       },
-      hasModalCard: true,
-    });
-  }
-
-  editTable(table: Table) {
-    this.$buefy.modal.open({
-      parent: this,
-      component: TableForm,
-      props: {
-        tables: this.project.tables,
-        table,
-      },
-      hasModalCard: true,
-    });
+      hasModalCard: true
+    })
   }
 }
 

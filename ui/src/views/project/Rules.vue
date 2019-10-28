@@ -32,56 +32,55 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator';
-import { Project, ProjectId, Table, Rule, Source } from '../../types';
-import TableTag from '../../components/TableTag.vue';
-import RuleForm from '../../components/project/RuleForm.vue';
-
+import { Prop, Component, Vue } from 'vue-property-decorator'
+import { Project, ProjectId, Table, Rule, Source } from '../../types'
+import TableTag from '../../components/TableTag.vue'
+import RuleForm from '../../components/project/RuleForm.vue'
 
 @Component({
   components: {
     TableTag,
-    RuleForm,
-  },
+    RuleForm
+  }
 })
 export default class ProjectRulesView extends Vue {
-  get projectId(): ProjectId {
-    return this.$route.params.id;
+  get projectId (): ProjectId {
+    return this.$route.params.id
   }
 
-  get project(): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId);
+  get project (): Project {
+    const remoteProject = this.$store.getters['projects/one'](this.projectId)
     // Assume project is loaded because we're in a nested view
-    return remoteProject.data;
+    return remoteProject.data
   }
 
-  getTable(tableId: string) {
-    return this.project.tables.find((table) => table.id === tableId);
+  getTable (tableId: string) {
+    return this.project.tables.find((table) => table.id === tableId)
   }
 
-  createRule() {
+  createRule () {
     this.$buefy.modal.open({
       parent: this,
       component: RuleForm,
       props: {
         tables: this.project.tables,
-        sources: this.project.sources,
+        sources: this.project.sources
       },
-      hasModalCard: true,
-    });
+      hasModalCard: true
+    })
   }
 
-  editRule(rule: Rule) {
+  editRule (rule: Rule) {
     this.$buefy.modal.open({
       parent: this,
       component: RuleForm,
       props: {
         rule,
         tables: this.project.tables,
-        sources: this.project.sources,
+        sources: this.project.sources
       },
-      hasModalCard: true,
-    });
+      hasModalCard: true
+    })
   }
 }
 </script>

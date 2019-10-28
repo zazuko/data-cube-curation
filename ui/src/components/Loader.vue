@@ -13,16 +13,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { RemoteData } from '../types';
-
+import { Vue, Component, Prop } from 'vue-property-decorator'
+import { RemoteData } from '../types'
 
 @Component
 export default class Loader extends Vue {
   @Prop() data: RemoteData<any>;
 
-  get isReady() {
-    return !this.data.isLoading && !this.data.error;
+  get isReady () {
+    return !this.data.isLoading && !this.data.error
   }
 }
 </script>

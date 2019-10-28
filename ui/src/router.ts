@@ -1,13 +1,13 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Home from './views/Home.vue';
-import ProjectsView from './views/Projects.vue';
-import ProjectView from './views/Project.vue';
-import ProjectDataView from './views/project/Data.vue';
-import ProjectTablesView from './views/project/Tables.vue';
-import ProjectRulesView from './views/project/Rules.vue';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from './views/Home.vue'
+import ProjectsView from './views/Projects.vue'
+import ProjectView from './views/Project.vue'
+import ProjectDataView from './views/project/Data.vue'
+import ProjectTablesView from './views/project/Tables.vue'
+import ProjectRulesView from './views/project/Rules.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   mode: 'history',
@@ -16,12 +16,12 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      redirect: { name: 'projects' },
+      redirect: { name: 'projects' }
     },
     {
       path: '/projects',
       name: 'projects',
-      component: ProjectsView,
+      component: ProjectsView
     },
     {
       path: '/projects/:id',
@@ -32,19 +32,19 @@ export default new Router({
         {
           path: 'data',
           name: 'project/data',
-          component: ProjectDataView,
+          component: ProjectDataView
         },
         {
           path: 'tables',
           name: 'project/tables',
-          component: ProjectTablesView,
+          component: ProjectTablesView
         },
         {
           path: 'rules',
           name: 'project/rules',
-          component: ProjectRulesView,
-        },
-      ],
-    },
-  ],
-});
+          component: ProjectRulesView
+        }
+      ]
+    }
+  ]
+})
