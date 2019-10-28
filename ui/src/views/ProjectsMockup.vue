@@ -43,8 +43,8 @@ import Loader from '../components/Loader.vue';
   },
 })
 export default class Projects extends Vue {
-  projects = [
-    {id: 'dfe46722-3b54-41b8-ac4a-811760b2a420', name: 'Bus registrations'},
-  ];
+  get projects(): Project[] {
+    return this.$store.getters['projectsFixtures/list'];
+  }
 }
 </script>
