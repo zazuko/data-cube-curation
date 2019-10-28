@@ -7,7 +7,7 @@
     </b-field>
 
     <section class="tables-list">
-      <article class="card" v-for="(table, index) in tables" :key="index">
+      <article class="card" v-for="(table, index) in project.tables" :key="index">
         <header class="card-header" :style="{'background-color': table.color}">
           <h3 class="card-header-title">{{ table.name }}</h3>
         </header>
@@ -62,23 +62,29 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import { Table } from '../../types';
-import TableForm from './TableForm.vue';
+import { Project, ProjectId, Table } from '../../types';
+import TableForm from '../../components/project/TableForm.vue';
 
 @Component({
   components: {
     TableForm,
   },
 })
-export default class TabTables extends Vue {
-  @Prop({ default: [] }) readonly tables: Table[];
+export default class ProjectTablesView extends Vue {
+  get projectId(): ProjectId {
+    return this.$route.params.id;
+  }
+
+  get project(): Project {
+    return this.$store.getters['projectsFixtures/one'](this.projectId);
+  }
 
   createTable() {
     this.$buefy.modal.open({
       parent: this,
       component: TableForm,
       props: {
-        tables: this.tables,
+        tables: this.project.tables,
       },
       hasModalCard: true,
     });
@@ -89,7 +95,7 @@ export default class TabTables extends Vue {
       parent: this,
       component: TableForm,
       props: {
-        tables: this.tables,
+        tables: this.project.tables,
         table: table,
       },
       hasModalCard: true,

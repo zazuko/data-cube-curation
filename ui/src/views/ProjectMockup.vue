@@ -2,40 +2,39 @@
   <div id="project-page">
     <h2 class="title is-2">{{ project.name }}</h2>
 
-    <b-tabs v-model="activeTab">
-      <b-tab-item label="Input data">
-        <TabData :sources="project.sources" :rules="project.rules" :tables="project.tables" />
-      </b-tab-item>
+    <div class="tabs">
+      <ul>
+        <router-link :to="{ name: 'project/data' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Input data</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/tables' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Output tables</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/rules' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Mapping rules</a>
+          </li>
+        </router-link>
+      </ul>
+    </div>
 
-      <b-tab-item label="Output tables">
-        <TabTables :tables="project.tables" />
-      </b-tab-item>
-
-      <b-tab-item label="Mapping rules">
-        <TabRules :sources="project.sources" :rules="project.rules" :tables="project.tables" />
-      </b-tab-item>
-    </b-tabs>
+    <section class="tab-content">
+      <router-view />
+    </section>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { RemoteData } from '../types';
-import TabData from '../components/project/TabData.vue';
-import TabTables from '../components/project/TabTables.vue';
-import TabRules from '../components/project/TabRules.vue';
 
 
-@Component({
-  components: {
-    TabData,
-    TabTables,
-    TabRules,
-  },
-})
+@Component
 export default class ProjectView extends Vue {
-  activeTab = 0;
-
   get projectId(): string {
     return this.$route.params.id;
   }

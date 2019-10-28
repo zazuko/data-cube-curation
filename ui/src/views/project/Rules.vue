@@ -6,7 +6,7 @@
       </b-button>
     </b-field>
 
-    <b-table :data="rules">
+    <b-table :data="project.rules">
       <template slot-scope="props">
         <b-table-column label="Data column(s)">
           {{ props.row.columns.join(', ') }}
@@ -33,9 +33,9 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import { Table, Rule, Source } from '../../types';
-import TableTag from '../TableTag.vue';
-import RuleForm from './RuleForm.vue';
+import { Project, ProjectId, Table, Rule, Source } from '../../types';
+import TableTag from '../../components/TableTag.vue';
+import RuleForm from '../../components/project/RuleForm.vue';
 
 
 @Component({
@@ -44,13 +44,17 @@ import RuleForm from './RuleForm.vue';
     RuleForm,
   },
 })
-export default class TabRules extends Vue {
-  @Prop({ default: [] }) readonly tables: Table[];
-  @Prop({ default: [] }) readonly rules: Rule[];
-  @Prop({ default: [] }) readonly sources: Source[];
+export default class ProjectRulesView extends Vue {
+  get projectId(): ProjectId {
+    return this.$route.params.id;
+  }
+
+  get project(): Project {
+    return this.$store.getters['projectsFixtures/one'](this.projectId);
+  }
 
   getTable(tableId: string) {
-    return this.tables.find((table) => table.id === tableId);
+    return this.project.tables.find((table) => table.id === tableId);
   }
 
   createRule() {
@@ -58,8 +62,8 @@ export default class TabRules extends Vue {
       parent: this,
       component: RuleForm,
       props: {
-        tables: this.tables,
-        sources: this.sources,
+        tables: this.project.tables,
+        sources: this.project.sources,
       },
       hasModalCard: true,
     });
@@ -71,8 +75,8 @@ export default class TabRules extends Vue {
       component: RuleForm,
       props: {
         rule: rule,
-        tables: this.tables,
-        sources: this.sources,
+        tables: this.project.tables,
+        sources: this.project.sources,
       },
       hasModalCard: true,
     });

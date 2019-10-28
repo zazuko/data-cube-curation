@@ -4,6 +4,9 @@ export type ProjectId = string;
 export interface Project {
   id: ProjectId;
   name: string | null;
+  sources: Source[];
+  tables: Table[];
+  rules: Rule[];
 }
 
 export interface RemoteData<T> {

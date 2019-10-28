@@ -1,17 +1,7 @@
 import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import { RootState } from '@/store/types';
-import { Source, Table, Rule } from '../../types';
+import { Project, ProjectId } from '../../types';
 
-
-type ProjectId = string;
-
-interface Project {
-  id: ProjectId;
-  name: string;
-  sources: Source[];
-  tables: Table[];
-  rules: Rule[];
-}
 
 interface ProjectsState {
   projects: Record<ProjectId, Project>;

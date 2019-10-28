@@ -9,7 +9,7 @@
       </b-upload>
     </b-field>
 
-    <div v-for="source in sources" :key="source.id" class="sources-list">
+    <div v-for="source in project.sources" :key="source.id" class="sources-list">
       <article class="card">
         <header class="card-header">
           <h2 class="card-header-title">{{ source.name }}</h2>
@@ -57,26 +57,30 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator';
-import TableTag from '../TableTag.vue';
-import { Rule, Table, Source } from '../../types';
+import TableTag from '../../components/TableTag.vue';
+import { Project, ProjectId, Rule, Table, Source } from '../../types';
 
 @Component({
   components: {
     TableTag,
   },
 })
-export default class TabData extends Vue {
-  @Prop({ default: [] }) readonly sources: Source[];
-  @Prop({ default: [] }) readonly rules: Rule[];
-  @Prop({ default: [] }) readonly tables: Table[];
+export default class ProjectDataView extends Vue {
+  get projectId(): ProjectId {
+    return this.$route.params.id;
+  }
+
+  get project(): Project {
+    return this.$store.getters['projectsFixtures/one'](this.projectId);
+  }
 
   uploadSource() {}
 
   columnRules(column: any) {
     const columnId = column.field;
-    const rules = this.rules.filter((rule) => rule.columns.includes(columnId));
+    const rules = this.project.rules.filter((rule) => rule.columns.includes(columnId));
     return rules.map((rule) => {
-      const table = this.tables.find((table: any) => table.id === rule.table);
+      const table = this.project.tables.find((table: any) => table.id === rule.table);
       return {
         ...rule,
         table: table,
