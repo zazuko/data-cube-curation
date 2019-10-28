@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import { RootState } from './types';
 import projects from './modules/projects';
-import projectsFixtures from './modules/projects-fixtures';
 
 Vue.use(Vuex);
 
@@ -11,7 +10,6 @@ const store: StoreOptions<RootState> = {
   state: {},
   modules: {
     projects,
-    projectsFixtures,
   },
 };
 

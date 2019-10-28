@@ -1,46 +1,38 @@
 <template>
-  <div id="project-page">
-    <Loader :data="project" v-slot="{ data: loadedProject }">
-      <h2 class="title">{{ loadedProject.name }}</h2>
+  <Loader id="project-page" :data="project" v-slot="{ data: project }">
+    <h2 class="title is-2">{{ project.name }}</h2>
 
-      <b-field class="file">
-        <b-upload @input="uploadSource" accept=".csv">
-          <a class="button is-primary">
-            <b-icon icon="upload"></b-icon>
-            <span>Upload CSV</span>
-          </a>
-        </b-upload>
-      </b-field>
+    <div class="tabs">
+      <ul>
+        <router-link :to="{ name: 'project/data' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Input data</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/tables' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Output tables</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/rules' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate">Mapping rules</a>
+          </li>
+        </router-link>
+      </ul>
+    </div>
 
-      <b-table :data="loadedProject.sources" :columns="sourcesColumns">
-        <template slot-scope="props">
-          <b-table-column field="name" label="Name">
-            <router-link :to="{ name: 'project', params: { id: props.row.id } }">
-              {{ props.row.name }}
-            </router-link>
-          </b-table-column>
-          <b-table-column field="id" label="ID">
-            {{ props.row.id }}
-          </b-table-column>
-          <b-table-column field label="Actions"></b-table-column>
-        </template>
-        <template slot="empty">
-          <section class="section">
-            <div class="content has-text-grey has-text-centered">
-              <p>You don't have any sources yet.</p>
-            </div>
-          </section>
-        </template>
-      </b-table>
-    </Loader>
-  </div>
+    <section class="tab-content">
+      <router-view />
+    </section>
+  </Loader>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Project, RemoteData } from '../types';
+import { Component, Vue } from 'vue-property-decorator';
+import { RemoteData } from '../types';
 import Loader from '../components/Loader.vue';
+
 
 @Component({
   components: {
@@ -48,23 +40,16 @@ import Loader from '../components/Loader.vue';
   },
 })
 export default class ProjectView extends Vue {
-  get projectId() {
+  get projectId(): string {
     return this.$route.params.id;
   }
 
-  get project(): RemoteData<Project> {
+  get project(): any {
     return this.$store.getters['projects/one'](this.projectId);
   }
 
   created() {
     this.$store.dispatch('projects/loadOne', this.projectId);
-  }
-
-  uploadSource(file: File) {
-    this.$store.dispatch('projects/uploadSource', {
-      project: this.project.data,
-      file: file,
-    });
   }
 }
 </script>

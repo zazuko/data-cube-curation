@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import ProjectsMockupView from './views/ProjectsMockup.vue';
-import ProjectMockupView from './views/ProjectMockup.vue';
+import ProjectsView from './views/Projects.vue';
+import ProjectView from './views/Project.vue';
 import ProjectDataView from './views/project/Data.vue';
 import ProjectTablesView from './views/project/Tables.vue';
 import ProjectRulesView from './views/project/Rules.vue';
@@ -21,13 +21,13 @@ export default new Router({
     {
       path: '/projects',
       name: 'projects',
-      component: ProjectsMockupView,
+      component: ProjectsView,
     },
     {
       path: '/projects/:id',
       name: 'project',
       redirect: { name: 'project/data' },
-      component: ProjectMockupView,
+      component: ProjectView,
       children: [
         {
           path: 'data',

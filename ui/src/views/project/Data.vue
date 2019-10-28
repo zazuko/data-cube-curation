@@ -71,10 +71,17 @@ export default class ProjectDataView extends Vue {
   }
 
   get project(): Project {
-    return this.$store.getters['projectsFixtures/one'](this.projectId);
+    const remoteProject = this.$store.getters['projects/one'](this.projectId);
+    // Assume project is loaded because we're in a nested view
+    return remoteProject.data;
   }
 
-  uploadSource() {}
+  uploadSource(file: File) {
+    this.$store.dispatch('projects/uploadSource', {
+      project: this.project,
+      file: file,
+    });
+  }
 
   columnRules(column: any) {
     const columnId = column.field;

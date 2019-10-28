@@ -1,5 +1,6 @@
 import { Hydra } from 'alcaeus';
 import { HydraResource, ICollection } from 'alcaeus/types/Resources';
+import projectsFixtures from './projects-fixtures';
 
 const apiURL = process.env.VUE_APP_API_URL;
 
@@ -124,4 +125,28 @@ class ProjectsClient {
 }
 
 
-export const client = new Client(apiURL);
+class FixturesClient {
+  projects = {
+    async list() {
+      return projectsFixtures;
+    },
+
+    async get(id: string) {
+      return projectsFixtures.find((p) => p.id === id);
+    },
+
+    async createSource() {
+      throw new Error('Not implemented');
+    },
+  };
+}
+
+
+let theClient;
+if (process.env.VUE_APP_USE_FIXTURES === 'true')  {
+  theClient = new FixturesClient();
+} else {
+  theClient = new Client(apiURL);
+}
+
+export const client = theClient;

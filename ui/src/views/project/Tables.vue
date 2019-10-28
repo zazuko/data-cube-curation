@@ -76,7 +76,9 @@ export default class ProjectTablesView extends Vue {
   }
 
   get project(): Project {
-    return this.$store.getters['projectsFixtures/one'](this.projectId);
+    const remoteProject = this.$store.getters['projects/one'](this.projectId);
+    // Assume project is loaded because we're in a nested view
+    return remoteProject.data;
   }
 
   createTable() {
