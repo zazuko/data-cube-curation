@@ -79,7 +79,7 @@ export default class ProjectDataView extends Vue {
   uploadSource(file: File) {
     this.$store.dispatch('projects/uploadSource', {
       project: this.project,
-      file: file,
+      file,
     });
   }
 
@@ -87,10 +87,10 @@ export default class ProjectDataView extends Vue {
     const columnId = column.field;
     const rules = this.project.rules.filter((rule) => rule.columns.includes(columnId));
     return rules.map((rule) => {
-      const table = this.project.tables.find((table: any) => table.id === rule.table);
+      const table = this.project.tables.find(({ id }) => id === rule.table);
       return {
         ...rule,
-        table: table,
+        table,
       };
     });
   }

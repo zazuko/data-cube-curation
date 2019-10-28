@@ -98,7 +98,7 @@ export default class ProjectTablesView extends Vue {
       component: TableForm,
       props: {
         tables: this.project.tables,
-        table: table,
+        table,
       },
       hasModalCard: true,
     });

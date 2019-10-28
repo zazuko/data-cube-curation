@@ -76,7 +76,7 @@ export default class ProjectRulesView extends Vue {
       parent: this,
       component: RuleForm,
       props: {
-        rule: rule,
+        rule,
         tables: this.project.tables,
         sources: this.project.sources,
       },

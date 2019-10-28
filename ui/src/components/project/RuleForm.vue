@@ -55,7 +55,7 @@ import TableTag from '../TableTag.vue';
 @Component({
   components: {
     TableTag,
-  }
+  },
 })
 export default class TableForm extends Vue {
   @Prop({ default: emptyRule }) readonly rule: Rule;
@@ -66,7 +66,7 @@ export default class TableForm extends Vue {
     return this.sources.flatMap((source) => {
       return source.columns.map((column) => ({
         ...column,
-        compositeName: `${source.name} / ${column.field}`
+        compositeName: `${source.name} / ${column.field}`,
       }));
     });
   }
@@ -80,7 +80,7 @@ export default class TableForm extends Vue {
   }
 
   getTableProperties(tableId: string) {
-    const table = this.tables.find((table) => table.id === tableId);
+    const table = this.tables.find(({ id }) => id === tableId);
 
     if (!table) { return []; }
 
@@ -89,7 +89,7 @@ export default class TableForm extends Vue {
 
   save() {
     this.$buefy.dialog.alert({
-      message: 'Not implemeted yet'
+      message: 'Not implemeted yet',
     });
   }
 }
