@@ -1,9 +1,11 @@
 <template>
   <div id="projects-page">
-    <h2 class="title">My projects</h2>
+    <h2 class="title is-2">My projects</h2>
 
     <div class="actions">
-      <button class="button">New project</button>
+      <b-button type="is-primary" icon-left="plus">
+        New project
+      </b-button>
     </div>
 
     <b-table :data="projects">
