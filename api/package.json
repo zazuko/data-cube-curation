@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
-    "@tpluscode/fun-ddr": "^0.2",
-    "@tpluscode/fun-ddr-sparql-graph-repository": "^0.1.5",
+    "@tpluscode/fun-ddr": "^0.3.1",
+    "@tpluscode/fun-ddr-sparql-graph-repository": "^0.2",
     "@zazuko/rdf-vocabularies": "^2019.9.24",
     "body-parser": "^1.19.0",
     "clownface": "^0.11.0",
