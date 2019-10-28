@@ -1,5 +1,5 @@
 import { Hydra } from 'alcaeus'
-import { HydraResource, ICollection } from 'alcaeus/types/Resources'
+import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
 import projectsFixtures from './projects-fixtures'
 
 const apiURL = process.env.VUE_APP_API_URL
@@ -9,7 +9,11 @@ const SOURCE_TYPE = 'https://rdf-cube-curation.described.at/Source'
 const FACT_TABLE_TYPE = 'https://rdf-cube-curation.described.at/FactTable'
 
 const NAME_PROPERTY = 'http://schema.org/name'
+const PROJECTS_PROPERTY = 'https://rdf-cube-curation.described.at/api/projects'
 const SOURCES_PROPERTY = 'https://rdf-cube-curation.described.at/api/sources'
+const OP_PROJECTS_GET = 'https://rdf-cube-curation.described.at/api/GetDataCubeProjects'
+const OP_PROJECTS_CREATE = 'https://rdf-cube-curation.described.at/api/CreateProject'
+const OP_SOURCES_CREATE = 'https://rdf-cube-curation.described.at/api/AddSource'
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 
@@ -63,59 +67,84 @@ rdf.resourceFactory.mixins.push(SourceMixin)
 export class Client {
   url: string;
   projects: ProjectsClient;
+  cachedEntrypoint: HydraResource;
 
   constructor (url: string) {
-    // if (!url) { throw new Error('API URL not defined'); }
-
     this.url = url
 
     this.projects = new ProjectsClient(this)
   }
 
-  path (relativePath: string) {
-    return this.url + relativePath
+  async entrypoint () {
+    if (!this.cachedEntrypoint) {
+      const response = await Hydra.loadResource(this.url)
+      this.cachedEntrypoint = getOrThrow(response, 'root')
+    }
+
+    return this.cachedEntrypoint
   }
 }
 
 // TODO: Can we generate this from API description somehow?
 class ProjectsClient {
   api: Client;
+  cachedResource: HydraResource;
 
   constructor (api: Client) {
     this.api = api
   }
 
-  async list () {
-    const url = this.api.path('/projects')
-    const response = await Hydra.loadResource(url)
-    const projectsCollection = response.root as ICollection | null
-
-    if (!projectsCollection) {
-      throw new Error('No `root` in Hydra response')
+  async resource () {
+    if (!this.cachedResource) {
+      const entrypoint = await this.api.entrypoint()
+      this.cachedResource = getOrThrow(entrypoint, PROJECTS_PROPERTY)
     }
+
+    return this.cachedResource
+  }
+
+  async list () {
+    const resource = await this.resource()
+    const operation = getOperation(resource, OP_PROJECTS_GET)
+    const response = await operation.invoke('')
+    const projectsCollection = getOrThrow(response, 'root') as ICollection
 
     return projectsCollection.members || []
   }
 
   async get (id: string) {
     const response = await Hydra.loadResource(id)
-    const project = response.root
-
-    if (!project) {
-      throw new Error(`Project does not exist: {id}`)
-    }
-
-    return project
+    return getOrThrow(response, 'root')
   }
 
   async createSource (project: any, file: File) {
-    const operation = project.sourcesCollection.operations.find((op: any) => op.method === 'POST')
+    const operation = getOperation(project.sourcesCollection, OP_SOURCES_CREATE)
     const headers = {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`
     }
     await operation.invoke(file, headers)
   }
+}
+
+function getOrThrow (obj: any, prop: string) {
+  const value = obj[prop]
+
+  if (!prop) {
+    throw new Error(`No ${prop} found in ${obj}`)
+  }
+
+  return value
+}
+
+function getOperation (resource: HydraResource, operationId: string) {
+  const operation = resource.operations.find((op: IOperation) => op.supportedOperation.id === operationId)
+
+  if (!operation) {
+    throw new Error(`Operation ${operationId} not found on ${resource.id}`)
+  }
+
+  return operation
 }
 
 class FixturesClient {
