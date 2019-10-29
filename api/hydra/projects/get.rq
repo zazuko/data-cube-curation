@@ -16,7 +16,7 @@ CONSTRUCT {
         a ?projectType .
 }
 WHERE {
-    ?project a dataCube:Project .
+    OPTIONAL { ?project a dataCube:Project . }
 
     OPTIONAL { ?project schema:name ?name . }
     OPTIONAL { ?project a ?projectType . }
