@@ -1,4 +1,4 @@
-import { factory, DomainError } from '@tpluscode/fun-ddr'
+import { factory } from '@tpluscode/fun-ddr'
 import { Table } from './index'
 import { Attribute } from '../attribute'
 import { AttributeEvents } from '../attribute/events'
@@ -15,22 +15,22 @@ interface AddAttributeCommand {
 }
 
 export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async (table, command, emitter) => {
-  const error = errorFactory(table, 'Cannot add attribute to table')
+  const DomainError = errorFactory(table, 'Cannot add attribute to table')
 
   if (!command.name) {
-    throw error('Name missing')
+    throw new DomainError('Name missing')
   }
   if (!command.predicate) {
-    throw error('Predicate missing')
+    throw new DomainError('Predicate missing')
   }
   if (!command.columnId) {
-    throw error('Column missing')
+    throw new DomainError('Column missing')
   }
   if (command.datatype && command.language) {
-    throw error('Datatype and language cannot be used together')
+    throw new DomainError('Datatype and language cannot be used together')
   }
   if (!await existsInTableSource(table['@id'], command.columnId)) {
-    throw error("Column not found or it does not belong to the table's source")
+    throw new DomainError("Column not found or it does not belong to the table's source")
   }
 
   const attributeId = `${table['@id']}/attribute/${encodeURIComponent(command.name)}`

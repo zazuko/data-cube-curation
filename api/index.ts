@@ -45,6 +45,10 @@ Promise.resolve().then(async () => {
   app.use(function (req, res, next) {
     next(new NotFoundError())
   })
+  app.use(function (err, req, res, next) {
+    console.log(err)
+    next(err)
+  })
   app.use(httpProblemMiddleware)
 
   app.listen(url.parse(baseUrl).port, () => {
