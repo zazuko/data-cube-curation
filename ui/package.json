@@ -10,6 +10,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@hydrofoil/alcaeus-forms": "^0.1.0",
+    "@lit-any/forms": "^0.10.1",
+    "lit-element": "^2.2.1",
     "@zazuko/rdf-vocabularies": "2019.10.22",
     "alcaeus": "0.9.2",
     "buefy": "0.8.5",

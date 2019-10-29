@@ -3,8 +3,8 @@
     <h2 class="title is-2">My projects</h2>
 
     <div class="actions">
-      <b-button type="is-primary" icon-left="plus" @click="addProject">
-        New project
+      <b-button type="is-primary" icon-left="plus" @click="addProject" v-if="createOperation">
+        {{ createOperation.title }}
       </b-button>
     </div>
 
@@ -53,6 +53,10 @@ export default class Projects extends Vue {
     return this.$store.getters['projects/list']
   }
 
+  get createOperation () {
+    return this.$store.state.projects.createOperation
+  }
+
   created () {
     this.$store.dispatch('projects/loadAll')
   }
@@ -62,8 +66,9 @@ export default class Projects extends Vue {
       parent: this,
       component: ProjectForm,
       props: {
+        operation: this.createOperation,
         save: (project: Project) => {
-          this.$store.dispatch('projects/create', project.name)
+          this.$store.dispatch('projects/create', project)
           modal.close()
         }
       },

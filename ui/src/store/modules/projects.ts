@@ -1,10 +1,12 @@
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { ProjectsState, RootState } from '@/store/types'
 import { ProjectId, Project, RemoteData } from '@/types'
-import { client } from '../../api'
+import { client, OP_PROJECTS_CREATE } from '../../api'
+import { IOperation } from 'alcaeus/types/Resources'
 
 const initialState: ProjectsState = {
-  projects: { isLoading: true }
+  projects: { isLoading: true },
+  createOperation: null
 }
 
 const getters: GetterTree<ProjectsState, RootState> = {
@@ -30,7 +32,9 @@ const actions: ActionTree<ProjectsState, RootState> = {
   async loadAll ({ commit }) {
     try {
       const projects = await client.projects.list()
+      const operations = await client.projects.operations()
       commit('storeAll', projects)
+      commit('storeOperations', operations)
     } catch (error) {
       commit('loadingError', error)
     }
@@ -60,6 +64,10 @@ const actions: ActionTree<ProjectsState, RootState> = {
 }
 
 const mutations: MutationTree<ProjectsState> = {
+  storeOperations (state, operations: IOperation[]) {
+    state.createOperation = operations.find((op: IOperation) => op.supportedOperation.id === OP_PROJECTS_CREATE) || null
+  },
+
   storeAll (state, projects: Project[]) {
     const emptyData: Record<ProjectId, Project> = {}
     state.projects.data = projects.reduce((acc, project) => {

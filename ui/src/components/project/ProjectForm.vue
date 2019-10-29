@@ -1,12 +1,11 @@
 <template>
-  <form class="modal-card" @submit.prevent="save(project)">
+  <form class="modal-card" @submit.prevent="save($refs.form.value)">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">{{ title }}</h3>
+      <h3 class="modal-card-title">{{ operation.title }}</h3>
     </header>
     <section class="modal-card-body">
-      <b-field label="Name">
-        <b-input v-model="project.name" />
-      </b-field>
+      <alcaeus-form ref="form" :operation.prop="operation"
+                    no-legend no-submit-button no-reset-button no-clear-button></alcaeus-form>
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -18,29 +17,13 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { Project, Table, Rule, Source } from '../../types'
-import TableTag from '../TableTag.vue'
+import '@hydrofoil/alcaeus-forms/alcaeus-form'
+import { IOperation } from 'alcaeus/types/Resources'
 
 @Component
 export default class extends Vue {
-  @Prop({ default: emptyProject }) project: Project;
+  @Prop() project: Project;
   @Prop() save: (project: Project) => any;
-
-  get title () {
-    if (this.project.id) {
-      return 'Edit project'
-    } else {
-      return 'Create project'
-    }
-  }
-}
-
-function emptyProject (): Project {
-  return {
-    id: '',
-    name: '',
-    tables: [],
-    sources: [],
-    rules: []
-  }
+  @Prop() operation: IOperation
 }
 </script>

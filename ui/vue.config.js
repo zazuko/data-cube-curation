@@ -1,5 +1,11 @@
 module.exports = {
-  transpileDependencies: ['alcaeus'],
+  transpileDependencies: [
+    'alcaeus',
+    '@lit-any/core',
+    '@lit-any/forms',
+    '@hydrofoil/alcaeus-forms',
+    'lit-element'
+  ],
   chainWebpack: config => {
     config.module
       .rule('nq')

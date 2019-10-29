@@ -17,7 +17,7 @@ const PROP_NAME = expand('schema:name')
 const API_PROJECTS = expand('dataCube:api/projects')
 const API_SOURCES = expand('dataCube:api/sources')
 const OP_PROJECTS_GET = expand('dataCube:api/GetDataCubeProjects')
-const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
+export const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
 const OP_SOURCES_CREATE = expand('dataCube:api/AddSource')
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
@@ -117,12 +117,12 @@ class ProjectsClient {
     return projectsCollection.members || []
   }
 
-  async create (name: string): Promise<ProjectId> {
-    const data = {
-      '@type': TYPE_PROJECT,
-      [PROP_NAME]: name
-    }
+  async operations () {
+    const resource = await this.resource()
+    return resource.operations
+  }
 
+  async create (data: object): Promise<ProjectId> {
     const resource = await this.resource()
     const operation = getOperation(resource, OP_PROJECTS_CREATE)
     const response = await operation.invoke(JSON.stringify(data))
@@ -182,6 +182,10 @@ class FixturesClient {
 
     async create () {
       throw new Error('Not implemented')
+    },
+
+    operations () {
+      return []
     },
 
     async createSource () {
