@@ -64,11 +64,7 @@ const mutations: MutationTree<ProjectsState> = {
   },
 
   storeOne (state, project: Project) {
-    if (!state.projects.data) {
-      state.projects.data = {}
-    }
-
-    state.projects.data[project.id] = project
+    state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
     state.projects.isLoading = false
   },
 
