@@ -5,6 +5,8 @@ import url from 'url'
 import express from 'express'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
+import { NotFoundError } from './lib/error'
+import { httpProblemMiddleware } from './lib/error/middleware'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
@@ -40,6 +42,14 @@ Promise.resolve().then(async () => {
     exposedHeaders: ['link', 'location'],
   }))
   app.use(await hydraMiddleware())
+  app.use(function (req, res, next) {
+    next(new NotFoundError())
+  })
+  app.use(function (err, req, res, next) {
+    console.log(err)
+    next(err)
+  })
+  app.use(httpProblemMiddleware)
 
   app.listen(url.parse(baseUrl).port, () => {
     console.log(`listening at ${baseUrl}`)
