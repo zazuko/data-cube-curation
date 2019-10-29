@@ -2,6 +2,7 @@ import { Hydra } from 'alcaeus'
 import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
+import { Project, ProjectId } from './types'
 
 prefixes.dataCube = 'https://rdf-cube-curation.described.at/'
 
@@ -158,7 +159,7 @@ class FixturesClient {
     },
 
     async get (id: string) {
-      return projectsFixtures.find((p) => p.id === id)
+      return projectsFixtures.find((p: Project) => p.id === id)
     },
 
     async createSource () {
