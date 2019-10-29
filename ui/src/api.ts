@@ -1,19 +1,23 @@
 import { Hydra } from 'alcaeus'
 import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
+import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
+
+prefixes.dataCube = 'https://rdf-cube-curation.described.at/'
 
 const apiURL = process.env.VUE_APP_API_URL
 
-const PROJECT_TYPE = 'https://rdf-cube-curation.described.at/Project'
-const SOURCE_TYPE = 'https://rdf-cube-curation.described.at/Source'
-const FACT_TABLE_TYPE = 'https://rdf-cube-curation.described.at/FactTable'
+const TYPE_PROJECT = expand('dataCube:Project')
+const TYPE_SOURCE = expand('dataCube:Source')
+const TYPE_FACT_TABLE = expand('dataCube:FactTable')
 
-const NAME_PROPERTY = 'http://schema.org/name'
-const PROJECTS_PROPERTY = 'https://rdf-cube-curation.described.at/api/projects'
-const SOURCES_PROPERTY = 'https://rdf-cube-curation.described.at/api/sources'
-const OP_PROJECTS_GET = 'https://rdf-cube-curation.described.at/api/GetDataCubeProjects'
-const OP_PROJECTS_CREATE = 'https://rdf-cube-curation.described.at/api/CreateProject'
-const OP_SOURCES_CREATE = 'https://rdf-cube-curation.described.at/api/AddSource'
+const PROP_NAME = expand('schema:name')
+
+const API_PROJECTS = expand('dataCube:api/projects')
+const API_SOURCES = expand('dataCube:api/sources')
+const OP_PROJECTS_GET = expand('dataCube:api/GetDataCubeProjects')
+const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
+const OP_SOURCES_CREATE = expand('dataCube:api/AddSource')
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 
@@ -21,11 +25,11 @@ const ProjectMixin = {
   Mixin<B extends Constructor> (Base: B) {
     return class extends Base {
       get name () {
-        return this.get(NAME_PROPERTY)
+        return this.get(PROP_NAME)
       }
 
       get sourcesCollection () {
-        return this[SOURCES_PROPERTY] as ICollection | null
+        return this[API_SOURCES] as ICollection | null
       }
 
       get sources () {
@@ -35,14 +39,14 @@ const ProjectMixin = {
         // so they don't get applied the proper Mixin.
         return this.sourcesCollection.members.map((source) => ({
           ...source,
-          name: source.get(NAME_PROPERTY)
+          name: source.get(PROP_NAME)
         }))
       }
     }
   },
 
   shouldApply (resource: HydraResource) {
-    return resource.types.contains(PROJECT_TYPE)
+    return resource.types.contains(TYPE_PROJECT)
   }
 }
 
@@ -50,13 +54,13 @@ const SourceMixin = {
   Mixin<B extends Constructor> (Base: B) {
     return class extends Base {
       get name () {
-        return this.get(NAME_PROPERTY)
+        return this.get(PROP_NAME)
       }
     }
   },
 
   shouldApply (resource: HydraResource) {
-    return resource.types.contains(SOURCE_TYPE)
+    return resource.types.contains(TYPE_SOURCE)
   }
 }
 
@@ -97,7 +101,7 @@ class ProjectsClient {
   async resource () {
     if (!this.cachedResource) {
       const entrypoint = await this.api.entrypoint()
-      this.cachedResource = getOrThrow(entrypoint, PROJECTS_PROPERTY)
+      this.cachedResource = getOrThrow(entrypoint, API_PROJECTS)
     }
 
     return this.cachedResource
