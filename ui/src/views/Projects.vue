@@ -3,7 +3,7 @@
     <h2 class="title is-2">My projects</h2>
 
     <div class="actions">
-      <b-button type="is-primary" icon-left="plus">
+      <b-button type="is-primary" icon-left="plus" @click="addProject">
         New project
       </b-button>
     </div>
@@ -40,10 +40,12 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Project, RemoteData } from '../types'
 import Loader from '../components/Loader.vue'
+import ProjectForm from '../components/project/ProjectForm.vue'
 
 @Component({
   components: {
-    Loader
+    Loader,
+    ProjectForm
   }
 })
 export default class Projects extends Vue {
@@ -53,6 +55,20 @@ export default class Projects extends Vue {
 
   created () {
     this.$store.dispatch('projects/loadAll')
+  }
+
+  addProject () {
+    const modal = this.$buefy.modal.open({
+      parent: this,
+      component: ProjectForm,
+      props: {
+        save: (project: Project) => {
+          this.$store.dispatch('projects/create', project.name)
+          modal.close()
+        }
+      },
+      hasModalCard: true
+    })
   }
 }
 </script>

@@ -112,6 +112,24 @@ class ProjectsClient {
     return projectsCollection.members || []
   }
 
+  async create (name: string): Promise<ProjectId> {
+    const data = {
+      '@type': TYPE_PROJECT,
+      [PROP_NAME]: name
+    }
+
+    const resource = await this.resource()
+    const operation = getOperation(resource, OP_PROJECTS_CREATE)
+    const response = await operation.invoke(JSON.stringify(data))
+    const id = response.xhr.headers.get('Location')
+
+    if (!id) {
+      throw new Error('Error creating project')
+    }
+
+    return id
+  }
+
   async get (id: string) {
     const response = await Hydra.loadResource(id)
     return getOrThrow(response, 'root')
@@ -155,6 +173,10 @@ class FixturesClient {
 
     async get (id: string) {
       return projectsFixtures.find((p: Project) => p.id === id)
+    },
+
+    async create () {
+      throw new Error('Not implemented')
     },
 
     async createSource () {
