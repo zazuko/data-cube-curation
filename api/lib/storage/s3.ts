@@ -5,10 +5,14 @@ const s3 = new aws.S3({
   endpoint: process.env.AWS_S3_ENDPOINT,
 })
 
+const defaultS3Options = {
+  Bucket: process.env.AWS_S3_BUCKET,
+}
+
 export async function saveFile (path: string, contents: string) {
   const upload = s3.upload({
+    ...defaultS3Options,
     Body: contents,
-    Bucket: 'data-cube-curation',
     Key: path,
   })
 
@@ -17,14 +21,14 @@ export async function saveFile (path: string, contents: string) {
 
 export async function deleteFile (path: string) {
   return s3.deleteObject({
-    Bucket: 'data-cube-curation',
+    ...defaultS3Options,
     Key: path,
   }).promise()
 }
 
 export async function loadFile (path: string) {
   const file = await s3.getObject({
-    Bucket: 'data-cube-curation',
+    ...defaultS3Options,
     Key: path,
   }).promise()
 
