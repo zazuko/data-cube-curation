@@ -8,5 +8,6 @@
     "typeRoots" : ["./typings", "./node_modules/@types"],
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist"
-  }
+  },
+  "exclude": ["test"]
 }
