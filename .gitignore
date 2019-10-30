@@ -3,3 +3,6 @@ node_modules/
 *.hydra.json
 /CHANGELOG.md
 uploads/
+api/**/*.js
+!api/jest.config.js
+*.d.ts
