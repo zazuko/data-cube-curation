@@ -1,9 +1,6 @@
 # First step: build the assets
 FROM node:lts-alpine AS builder
 
-ARG VERSION
-ARG COMMIT
-
 # https://stackoverflow.com/questions/18136746/npm-install-failed-with-cannot-run-in-wd
 RUN npm set unsafe-perm true
 
@@ -23,8 +20,9 @@ ENV NODE_ENV=production
 RUN npm run build
 
 WORKDIR /api
+ADD api ./
 # copy built frontend to backend
-RUN mv ../ui/dist ./ui/dist
+RUN mv ../ui/dist ./ui
 # install and build backend
 ENV NODE_ENV=
 RUN npm ci
