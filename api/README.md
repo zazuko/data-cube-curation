@@ -52,4 +52,7 @@ STORAGE=s3
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 AWS_S3_ENDPOINT=fra1.digitaloceanspaces.com
+AWS_S3_BUCKET=data-cube-curation
 ```
+
+In the case of Digital Ocean, the `AWS_S3_BUCKET` is also the Space's name.
