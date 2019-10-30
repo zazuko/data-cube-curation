@@ -9,7 +9,7 @@
     "test": "ts-node test/run.ts",
     "test:analyse": "dotenv test/analyse.sh",
     "precommit": "lint-staged",
-    "build":  "tsc -p tsconfig.json"
+    "build":  "tsc -p tsconfig.json; cp -r hydra dist"
   },
   "repository": {
     "type": "git",
