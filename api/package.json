@@ -29,6 +29,7 @@
     "@tpluscode/fun-ddr": "^0.3.1",
     "@tpluscode/fun-ddr-sparql-graph-repository": "^0.2",
     "@zazuko/rdf-vocabularies": "^2019.9.24",
+    "aws-sdk": "^2.559.0",
     "body-parser": "^1.19.0",
     "clownface": "^0.11.0",
     "cors": "^2.8.5",

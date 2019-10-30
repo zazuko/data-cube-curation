@@ -1,5 +1,5 @@
 import md5 from 'md5'
-import { saveFile } from '../storage'
+import storage from '../storage'
 import { storeSampleHandler } from './store-source'
 
 jest.mock('../storage')
@@ -22,7 +22,7 @@ describe('SourceUploaded', () => {
       })
 
       // then
-      expect(saveFile).toHaveBeenCalledWith('hash', `"col1";"col2"\n"row11";"row12"\n"row21";"row22"`)
+      expect(storage.saveFile).toHaveBeenCalledWith('hash', `"col1";"col2"\n"row11";"row12"\n"row21";"row22"`)
     })
   })
 })

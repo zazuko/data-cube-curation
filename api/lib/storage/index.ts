@@ -1,19 +1,19 @@
-import { promises, createReadStream, existsSync } from 'fs'
+import * as localStorage from './local'
+import * as awsStorage from './s3'
+import { Readable } from 'stream'
 
-export async function saveFile (path: string, contents: string) {
-  await promises.mkdir(process.env.STORAGE_FILESYSTEM_PATH, { recursive: true })
-
-  return promises.writeFile(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`, contents)
+interface FileStorage {
+  saveFile (path: string, contents: string): Promise<any>;
+  deleteFile (path: string): Promise<any>;
+  loadFile (path: string): Readable | Promise<Readable>;
 }
 
-export async function deleteFile (path: string) {
-  return promises.unlink(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`)
+let storage: FileStorage
+
+if (process.env.STORAGE === 's3') {
+  storage = awsStorage
+} else {
+  storage = localStorage
 }
 
-export function loadFile (path: string) {
-  if (!existsSync(path)) {
-    return null
-  }
-
-  return createReadStream(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`)
-}
+export default storage
