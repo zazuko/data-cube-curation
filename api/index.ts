@@ -51,7 +51,7 @@ Promise.resolve().then(async () => {
   })
   app.use(httpProblemMiddleware)
 
-  app.listen(url.parse(baseUrl).port, () => {
+  app.listen((process.env.PORT || url.parse(baseUrl).port), () => {
     console.log(`listening at ${baseUrl}`)
   })
 }).catch(err => console.error(err))
