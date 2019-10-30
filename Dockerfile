@@ -21,8 +21,6 @@ RUN npm run build
 
 WORKDIR /api
 ADD api ./
-# copy built frontend to backend
-RUN mv ../ui/dist ./ui
 # install and build backend
 ENV NODE_ENV=
 RUN npm ci
@@ -39,7 +37,8 @@ COPY --from=builder /api/package-lock.json ./package-lock.json
 RUN npm ci --only=production
 
 # Copy the built assets from the first step
-COPY --from=builder /api ./
+COPY --from=builder /api/dist ./
+COPY --from=builder /ui/dist ./ui
 
 ENV HOST 0.0.0.0
 
