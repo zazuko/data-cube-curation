@@ -1,4 +1,5 @@
 module.exports = {
+  publicPath: process.env.NODE_ENV === 'production' ? '/app' : '/',
   transpileDependencies: ['alcaeus'],
   chainWebpack: config => {
     config.module

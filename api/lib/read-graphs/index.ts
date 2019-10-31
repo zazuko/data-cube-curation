@@ -1,4 +1,4 @@
-import './source.ts'
-import './project.ts'
-import './attribute.ts'
-import './table.ts'
+import './source'
+import './project'
+import './attribute'
+import './table'
