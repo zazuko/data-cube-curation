@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: data-cube-curation
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    external-dns.alpha.kubernetes.io/hostname: datacube.zazukoians.org
+spec:
+  tls:
+  - secretName: data-cube-curation-cert
+    hosts:
+    - datacube.zazukoians.org
+  rules:
+  - host: datacube.zazukoians.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: server
+          servicePort: 80
