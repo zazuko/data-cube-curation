@@ -463,29 +463,23 @@ dataCube:Attribute a hydra:Class ;
       hydra:property schema:name ;
       hydra:title "Name for this attribute";
       hydra:required true
+    ] ,
+    [
+      hydra:property rdf:predicate ;
+      hydra:title "Predicate URI for mapped value" ;
+      hydra:required true
+    ] ,
+    [
+      hydra:property dataCube:table ;
+      hydra:title "Table containing this attribute" ;
+      hydra:writeable false
     ] .
 
-dataCube:ColumnAttribute a hydra:Class ; rdfs:subclassOf dataCube:Attribute ;
+dataCube:ColumnAttribute rdfs:subclassOf dataCube:Attribute ;
   hydra:supportedProperty
-  # TODO: this should be inferred by Alcaeus
-  [
-    hydra:property schema:name ;
-    hydra:title "Name for this attribute";
-    hydra:required true
-  ] ,
-  [
-    hydra:property dataCube:table ;
-    hydra:title "Table containing this attribute" ;
-    hydra:writeable false
-  ] ,
   [
     hydra:property dataCube:column ;
     hydra:title "Column to be transformed by this attribute" ;
-    hydra:required true
-  ] ,
-  [
-    hydra:property rdf:predicate ;
-    hydra:title "Predicate URI for mapped value" ;
     hydra:required true
   ] ,
   [

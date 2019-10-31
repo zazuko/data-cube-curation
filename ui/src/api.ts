@@ -36,12 +36,7 @@ const ProjectMixin = {
       get sources () {
         if (!this.sourcesCollection) { return [] }
 
-        // TODO: Alcaeus doesn't assign the correct type to these objects
-        // so they don't get applied the proper Mixin.
-        return this.sourcesCollection.members.map((source) => ({
-          ...source,
-          name: source.get(PROP_NAME)
-        }))
+        return this.sourcesCollection.members
       }
     }
   },

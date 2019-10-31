@@ -1,7 +1,9 @@
+import cf from 'clownface'
+import $rdf from 'rdf-ext'
 import { ProjectEvents } from '../domain/project/events'
 import { handle } from '@tpluscode/fun-ddr'
 import { ask, construct, deleteInsert, insertData } from '../sparql'
-import { api, dataCube, hydra, schema } from '../namespaces'
+import { api, dataCube, hydra, schema, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
 
@@ -47,8 +49,8 @@ export function exists (id: string) {
   return ask(`<${id}> ?p ?o`).execute(getClient())
 }
 
-export function getProject (id: string): Promise<any> {
-  return construct()
+export async function getProject (id: string) {
+  const dataset = await $rdf.dataset().import(await construct()
     .prefixes({
       api,
       dataCube,
@@ -88,5 +90,15 @@ export function getProject (id: string): Promise<any> {
             BIND (<${id}> as ?project)
             OPTIONAL { ?project dataCube:source ?source }
         }
-  }`).execute(getClient())
+  }`).execute(getClient()))
+
+  cf(dataset)
+    .has(rdf.type, dataCube.Project)
+    .out(api.sources)
+    .addOut(hydra.manages, manages => {
+      manages.addOut(hydra.property, rdf.type)
+      manages.addOut(hydra.object, dataCube.Source)
+    })
+
+  return dataset
 }
