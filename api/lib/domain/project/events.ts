@@ -1,13 +1,13 @@
 export interface ProjectEvents {
   ProjectCreated: {
-    name: string;
-  };
+    name: string
+  }
   ProjectRenamed: {
-    name: string;
-  };
-  ProjectArchived: object;
+    name: string
+  }
+  ProjectArchived: object
   FactTableSourceSelected: {
-    sourceId: string;
-    tableName: string;
-  };
+    sourceId: string
+    tableName: string
+  }
 }

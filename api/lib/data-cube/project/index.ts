@@ -7,16 +7,16 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
 
-export function getProjectId (projectGuid: string = uuid()) {
+export function getProjectId(projectGuid: string = uuid()) {
   return `${process.env.BASE_URI}project/${projectGuid}`
 }
 
-export function initExisting (req, res, next) {
+export function initExisting(req, res, next) {
   res.locals.projectId = getProjectId(req.params.projectId)
   next()
 }
 
-export function create (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export function create(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -33,7 +33,7 @@ export function create (req: express.DataCubeRequest, res: express.DataCubeRespo
     .catch(next)
 }
 
-export async function createOrUpdate (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function createOrUpdate(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -58,13 +58,13 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
     }).catch(next)
 }
 
-export async function getFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function getFactTable(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   getFactTableId(getProjectId(req.params.projectId))
     .then(value => res.redirect(value, 303))
     .catch(next)
 }
 
-export async function archive (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function archive(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   res.locals.projectId = `/project/${req.params.projectId}`
   let aggregateRoot = await projects.load(res.locals.projectId)
 

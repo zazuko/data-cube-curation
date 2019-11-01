@@ -4,12 +4,12 @@ import SparqlHttp from 'sparql-http-client'
 declare module 'express' {
 
   interface DataCubeRequest extends Request {
-    sparql: SparqlHttp;
-    graph: any;
+    sparql: SparqlHttp
+    graph: any
   }
 
   interface DataCubeResponse extends Response {
-    graph(dataset: any): void;
-    setLink(url: string, rel: string): void;
+    graph(dataset: any): void
+    setLink(url: string, rel: string): void
   }
 }

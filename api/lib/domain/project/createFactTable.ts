@@ -5,8 +5,8 @@ import { sources } from '../../storage/repository'
 import { errorFactory } from '../error-helper'
 
 interface CreateFactTableCommand {
-  sourceId: string;
-  tableName: string;
+  sourceId: string
+  tableName: string
 }
 
 export const selectFactTableSource = mutate<Project, CreateFactTableCommand>(async (project, command, emitter) => {

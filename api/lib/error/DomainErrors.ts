@@ -3,11 +3,11 @@ import { ErrorMapper } from 'http-problem-details-mapper'
 import { ProblemDocument } from 'http-problem-details'
 
 export class AggregateNotFoundErrorMapper extends ErrorMapper {
-  public constructor () {
+  public constructor() {
     super(error.AggregateNotFoundError)
   }
 
-  public mapError (error: error.AggregateNotFoundError) {
+  public mapError(error: error.AggregateNotFoundError) {
     return new ProblemDocument({
       status: 404,
       title: 'Resource not found',
@@ -18,11 +18,11 @@ export class AggregateNotFoundErrorMapper extends ErrorMapper {
 }
 
 export class ConcurrencyErrorMapper extends ErrorMapper {
-  public constructor () {
+  public constructor() {
     super(error.ConcurrencyError)
   }
 
-  public mapError (error: error.ConcurrencyError) {
+  public mapError(error: error.ConcurrencyError) {
     return new ProblemDocument({
       status: 409,
       title: error.message,
@@ -33,11 +33,11 @@ export class ConcurrencyErrorMapper extends ErrorMapper {
 }
 
 export class DomainErrorMapper extends ErrorMapper {
-  public constructor () {
+  public constructor() {
     super(error.DomainError)
   }
 
-  public mapError (error: error.DomainError) {
+  public mapError(error: error.DomainError) {
     return new ProblemDocument({
       status: 400,
       title: error.title,

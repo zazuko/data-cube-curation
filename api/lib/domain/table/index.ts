@@ -2,14 +2,14 @@ import { initialize, Entity } from '@tpluscode/fun-ddr'
 import { TableEvents } from './events'
 
 export interface Table extends Entity {
-  sourceId: string;
-  projectId: string;
+  sourceId: string
+  projectId: string
 }
 
 interface CreateTableCommand {
-  sourceId: string;
-  projectId: string;
-  tableName: string;
+  sourceId: string
+  projectId: string
+  tableName: string
 }
 
 export const createTable = initialize<Table, CreateTableCommand>((cmd, emitter) => {

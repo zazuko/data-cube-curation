@@ -9,7 +9,7 @@ const defaultS3Options = {
   Bucket: process.env.AWS_S3_BUCKET,
 }
 
-export async function saveFile (path: string, contents: string) {
+export async function saveFile(path: string, contents: string) {
   const upload = s3.upload({
     ...defaultS3Options,
     Body: contents,
@@ -19,14 +19,14 @@ export async function saveFile (path: string, contents: string) {
   return upload.promise()
 }
 
-export async function deleteFile (path: string) {
+export async function deleteFile(path: string) {
   return s3.deleteObject({
     ...defaultS3Options,
     Key: path,
   }).promise()
 }
 
-export async function loadFile (path: string) {
+export async function loadFile(path: string) {
   const file = await s3.getObject({
     ...defaultS3Options,
     Key: path,

@@ -6,25 +6,25 @@ export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
   private __variables: string[] = ['*']
   private __patterns: string[] = []
 
-  public variables (...variables: string[]) {
+  public variables(...variables: string[]) {
     this.__variables = variables
     return this
   }
 
-  protected _executeInternal (client: SparqlHttp, query: string) {
+  protected _executeInternal(client: SparqlHttp, query: string) {
     return client.selectQuery(query)
       .then(this._checkResponse)
       .then(response => response.json())
       .then(json => json.results.bindings)
   }
 
-  public where (...patterns: string[]) {
+  public where(...patterns: string[]) {
     this.__patterns = [ ...this.__patterns, ...patterns ]
 
     return this
   }
 
-  protected _buildQueryInternal (): string {
+  protected _buildQueryInternal(): string {
     const variables = this.__variables.map(v => v.replace(/^\??/, '?')).join(' ')
 
     return `SELECT ${variables}

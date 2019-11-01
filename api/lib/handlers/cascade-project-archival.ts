@@ -5,7 +5,7 @@ import { dataCube } from '../namespaces'
 import { getClient } from '../read-graphs/sparqlClient'
 import { sources, tables } from '../storage/repository'
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteSourcesOfProject (ev) {
+handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteSourcesOfProject(ev) {
   select('source')
     .where(`?source dataCube:project <${ev.id}> ; a dataCube:Source .`)
     .prefixes({
@@ -22,7 +22,7 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteSourc
     .catch(console.error)
 })
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteTablesOfProject (ev) {
+handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteTablesOfProject(ev) {
   select('table')
     .where(`?table dataCube:project <${ev.id}> ; a dataCube:Table .`)
     .prefixes({
@@ -39,7 +39,7 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteTable
     .catch(console.error)
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSource (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSource(ev) {
   if (ev.data.types.includes('Source')) {
     deleteInsert(`
       ?source ?p0 ?o0 .

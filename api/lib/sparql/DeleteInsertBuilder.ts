@@ -6,30 +6,30 @@ export class DeleteInsertBuilder extends Builder<Response> {
   private __deleteGraph: string[] = []
   private __insertGraph: string[] = []
 
-  protected _executeInternal (client: SparqlHttp, query: string) {
+  protected _executeInternal(client: SparqlHttp, query: string) {
     return client.updateQuery(query)
       .then(this._checkResponse)
   }
 
-  public delete (...graph: string[]) {
+  public delete(...graph: string[]) {
     this.__deleteGraph = [ ...this.__deleteGraph, ...graph ]
 
     return this
   }
 
-  public insert (...graph: string[]) {
+  public insert(...graph: string[]) {
     this.__insertGraph = [ ...this.__insertGraph, ...graph ]
 
     return this
   }
 
-  public where (...patterns: string[]) {
+  public where(...patterns: string[]) {
     this.__patterns = [ ...this.__patterns, ...patterns ]
 
     return this
   }
 
-  protected _buildQueryInternal () {
+  protected _buildQueryInternal() {
     let where = this.__patterns
     if (where.length === 0) {
       where = this.__deleteGraph

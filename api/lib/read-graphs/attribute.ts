@@ -5,7 +5,7 @@ import { dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { AttributeEvents } from '../domain/attribute/events'
 
-handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttributeToReadModel (ev) {
+handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttributeToReadModel(ev) {
   const builder = insertData(`
       <${ev.id}> a dataCube:Attribute , dataCube:ColumnAttribute ;
         dataCube:table <${ev.data.tableId}> ;
@@ -29,7 +29,7 @@ handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttribut
     .catch(console.error)
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel(ev) {
   if (ev.data.types.includes('Attribute')) {
     deleteInsert(`
       ?attribute ?p0 ?o0 .`
@@ -47,7 +47,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   }
 })
 
-export async function getTableAttributes (tableId: string) {
+export async function getTableAttributes(tableId: string) {
   const collection = $rdf.dataset()
 
   await collection.import(await construct()
@@ -92,7 +92,7 @@ export async function getTableAttributes (tableId: string) {
   return collection
 }
 
-export async function getSingleAttribute (attributeId: string) {
+export async function getSingleAttribute(attributeId: string) {
   const attribute = $rdf.dataset()
 
   await attribute.import(await construct()

@@ -1,6 +1,6 @@
 export interface TableEvents {
   FactTableCreated: {
-    projectId: string;
-    sourceId: string;
-  };
+    projectId: string
+    sourceId: string
+  }
 }

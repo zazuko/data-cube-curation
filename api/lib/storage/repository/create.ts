@@ -18,7 +18,7 @@ const context = {
   archived: { '@id': 'archived', '@type': expand('xsd:boolean') },
 }
 
-export function createRepository<T extends Entity> (frame: object, specialisedContext?: object): Repository<T> {
+export function createRepository<T extends Entity>(frame: object, specialisedContext?: object): Repository<T> {
   return new SparqlGraphRepository<T>(
     sparqlClient,
     base,

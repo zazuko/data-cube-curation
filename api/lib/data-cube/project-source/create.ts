@@ -9,7 +9,7 @@ const parserOptions = {
   delimiter: ';',
 }
 
-export function parseCsv (req, res, next) {
+export function parseCsv(req, res, next) {
   parse(
     req.body,
     parserOptions,
@@ -24,7 +24,7 @@ export function parseCsv (req, res, next) {
     })
 }
 
-export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function createSourceHandler(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const project = await projects.load(`/project/${req.params.projectId}`)
 
   const contentDispositionPattern = /attachment; filename="(.+)"/

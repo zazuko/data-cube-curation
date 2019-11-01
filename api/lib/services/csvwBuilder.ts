@@ -2,7 +2,7 @@ import cf from 'clownface'
 import $rdf from 'rdf-ext'
 import { csvw, rdf, dataCube, schema } from '../namespaces'
 
-function addDialect (csvwGraph: any) {
+function addDialect(csvwGraph: any) {
   csvwGraph.addOut(csvw.dialect, dialect => {
     dialect.addOut(csvw.header, true)
     dialect.addOut(csvw.delimiter, ';')
@@ -10,7 +10,7 @@ function addDialect (csvwGraph: any) {
   })
 }
 
-function createColumn (csvwGraph: any, column: any, attribute?: any) {
+function createColumn(csvwGraph: any, column: any, attribute?: any) {
   let csvwColumn = csvwGraph.blankNode()
     .addOut(csvw.title, column.out(schema.name).value)
 
@@ -27,7 +27,7 @@ function createColumn (csvwGraph: any, column: any, attribute?: any) {
   return csvwColumn.addOut(csvw.propertyUrl, attribute.out(rdf.predicate).value)
 }
 
-export function buildCsvw (tableDataset: any, tableId: string) {
+export function buildCsvw(tableDataset: any, tableId: string) {
   const tableContext = cf(tableDataset, $rdf.namedNode(tableId))
   const csvwGraph = cf($rdf.dataset(), $rdf.namedNode(`${tableId}/csvw`))
   csvwGraph.addOut(rdf.type, csvw.CsvwMapping)
@@ -41,7 +41,7 @@ export function buildCsvw (tableDataset: any, tableId: string) {
       .toArray()
 
     tableSchema.addList(csvw.column, columnsAndAttributes
-      .reduce(function matchColumnsToAttributes (previousValue, column) {
+      .reduce(function matchColumnsToAttributes(previousValue, column) {
         const attributes = tableContext.in(dataCube.table).has(dataCube.column, column)
         if (attributes.values.length > 0) {
           return [...previousValue, ...attributes.map(attribute => ({

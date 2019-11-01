@@ -65,7 +65,7 @@ const columnMappedWithLanguage = `${mappedColumn}
       dataCube:language "en" .
 `
 
-function createGraph (ntriples: string) {
+function createGraph(ntriples: string) {
   return async () => {
     const dataset = rdf.dataset()
     const stream = stringToStream(`

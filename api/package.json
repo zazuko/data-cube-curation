@@ -60,6 +60,7 @@
     "@types/sparql-http-client": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
+    "@zazuko/eslint-config": "https://github.com/zazuko/eslint-config",
     "alcaeus": "^0.9.2",
     "commander": "^3.0.2",
     "dotenv-cli": "^2.0.1",

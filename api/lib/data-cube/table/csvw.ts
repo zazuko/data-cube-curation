@@ -3,7 +3,7 @@ import { getTableId } from './index'
 import { getTableAndSource } from '../../read-graphs/table/csvw'
 import { buildCsvw } from '../../services/csvwBuilder'
 
-export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse) {
+export async function get(req: express.DataCubeRequest, res: express.DataCubeResponse) {
   const tableId = getTableId(req)
   const tableDataset = await getTableAndSource(tableId)
 

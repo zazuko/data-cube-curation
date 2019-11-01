@@ -26,7 +26,7 @@ const selectedScenarios = scenarios
     return true
   })
 
-function parseScenarios () {
+function parseScenarios() {
   return new Promise((resolve, reject) => {
     console.log(`\n------\n   Compiling test scenarios\n------\n`)
     const childProcess = spawn('hypertest-compiler', ['test'], { stdio: 'inherit' })
@@ -41,7 +41,7 @@ function parseScenarios () {
   })
 }
 
-function runScenarios () {
+function runScenarios() {
   return selectedScenarios.reduce((promise, [scenario, path]) => {
     return promise.then(() => {
       return new Promise(async (resolve, reject) => {

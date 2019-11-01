@@ -3,7 +3,7 @@ import { construct } from '../../sparql'
 import { api, dataCube } from '../../namespaces'
 import { exists, getProject } from '../../read-graphs/project'
 
-async function placeholderRepresentation (req: express.DataCubeRequest, res: express.DataCubeResponse) {
+async function placeholderRepresentation(req: express.DataCubeRequest, res: express.DataCubeResponse) {
   const placeholderUri = res.locals.projectId.replace(/\/project/, '/_project')
 
   const query = construct()
@@ -20,11 +20,11 @@ async function placeholderRepresentation (req: express.DataCubeRequest, res: exp
   res.graph(await query.execute(req.sparql))
 }
 
-export async function getExistingProject (req: express.DataCubeRequest, res: express.DataCubeResponse) {
+export async function getExistingProject(req: express.DataCubeRequest, res: express.DataCubeResponse) {
   return res.graph(await getProject(res.locals.projectId))
 }
 
-export async function get (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function get(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   res.locals.projectId = res.locals.projectId || `/project/${req.params.projectId}`
 
   if (await exists(res.locals.projectId) === false) {

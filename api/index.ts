@@ -12,7 +12,7 @@ import frontend from './frontend'
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
 
-function logger (req, res, next) {
+function logger(req, res, next) {
   process.stdout.write(`${req.method} ${req.url} `)
 
   res.on('finish', () => {
@@ -22,7 +22,7 @@ function logger (req, res, next) {
   next()
 }
 
-function hydraMiddleware () {
+function hydraMiddleware() {
   const options: Record<string, unknown> = {
     debug: true,
     sparqlEndpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,

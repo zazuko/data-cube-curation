@@ -3,7 +3,7 @@ import $rdf from 'rdf-ext'
 import cf from 'clownface'
 import { api, rdf, rdfs, dataCube } from '../../namespaces'
 
-export async function duplicateNameErrorResponse (req: express.Request, res: express.DataCubeResponse) {
+export async function duplicateNameErrorResponse(req: express.Request, res: express.DataCubeResponse) {
   const graph = cf($rdf.dataset(), api.duplicateSourceError)
 
   graph.addOut(rdfs.label, 'Could not create source')

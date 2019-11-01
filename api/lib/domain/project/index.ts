@@ -7,14 +7,14 @@ import { SourceEvents } from '../source/events'
 export { selectFactTableSource } from './createFactTable'
 
 export interface Project extends Entity {
-  name: string;
-  archived: 'true' | 'false';
-  factTableSource?: string;
+  name: string
+  archived: 'true' | 'false'
+  factTableSource?: string
 }
 
 interface CreateCommand {
-  uriSlug?: string;
-  name: string;
+  uriSlug?: string
+  name: string
 }
 
 export const createProject = initialize<Project, CreateCommand>(function (createCommand, emitter) {
@@ -31,7 +31,7 @@ export const createProject = initialize<Project, CreateCommand>(function (create
 })
 
 interface RenameCommand {
-  newName: string;
+  newName: string
 }
 
 export const renameProject = mutate<Project, RenameCommand>(function (state, renameCommand, emitter) {
@@ -48,10 +48,10 @@ export const renameProject = mutate<Project, RenameCommand>(function (state, ren
 })
 
 interface UploadSourceCommand {
-  fileName: string;
-  type: 'csv' | 'excel';
-  columns: string[];
-  sample: string[][];
+  fileName: string
+  type: 'csv' | 'excel'
+  columns: string[]
+  sample: string[][]
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {

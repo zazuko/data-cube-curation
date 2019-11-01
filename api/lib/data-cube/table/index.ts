@@ -7,11 +7,11 @@ import { projects, tables, attributes } from '../../storage/repository'
 import { addAttribute } from '../../domain/table/addAttribute'
 import { getTableAttributes } from '../../read-graphs/attribute'
 
-export function getTableId (req: express.Request) {
+export function getTableId(req: express.Request) {
   return `${getProjectId(req.params.projectId)}/table/${req.params.tableName}`
 }
 
-export async function createFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function createFactTable(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const projectId = getProjectId(req.params.projectId)
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
@@ -38,7 +38,7 @@ export async function createFactTable (req: express.DataCubeRequest, res: expres
     .catch(next)
 }
 
-export async function addAttributeHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function addAttributeHandler(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const tableId = getTableId(req)
   const variables = buildVariables(req, {
     name: expand('schema:name'),
@@ -73,7 +73,7 @@ export async function addAttributeHandler (req: express.DataCubeRequest, res: ex
     .catch(next)
 }
 
-export async function getAttributes (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export async function getAttributes(req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   const tableId = getTableId(req)
   getTableAttributes(tableId)
     .then(dataset => {

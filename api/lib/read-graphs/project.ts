@@ -34,7 +34,7 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
     .catch(console.error)
 })
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseFactTableResource (ev) {
+handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseFactTableResource(ev) {
   insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
     .prefixes({
       dataCube,
@@ -43,11 +43,11 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseF
     .catch(console.error)
 })
 
-export function exists (id: string) {
+export function exists(id: string) {
   return ask(`<${id}> ?p ?o`).execute(getClient())
 }
 
-export function getProject (id: string): Promise<any> {
+export function getProject(id: string): Promise<any> {
   return construct()
     .prefixes({
       api,

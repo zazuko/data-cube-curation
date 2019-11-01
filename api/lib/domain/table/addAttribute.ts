@@ -7,11 +7,11 @@ import { existsInTableSource } from '../../read-graphs/table'
 import { errorFactory } from '../error-helper'
 
 interface AddAttributeCommand {
-  name: string;
-  columnId: string;
-  predicate: string;
-  datatype?: string;
-  language?: string;
+  name: string
+  columnId: string
+  predicate: string
+  datatype?: string
+  language?: string
 }
 
 export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async (table, command, emitter) => {

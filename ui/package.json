@@ -31,6 +31,7 @@
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
+    "@zazuko/eslint-config": "https://github.com/zazuko/eslint-config",
     "babel-core": "7.0.0-bridge.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",

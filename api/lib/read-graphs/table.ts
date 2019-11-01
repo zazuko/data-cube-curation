@@ -8,7 +8,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
+handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples(ev) {
   insertData(`
     <${ev.id}>
       a dataCube:Table, dataCube:FactTable ;
@@ -23,7 +23,7 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactT
     .catch(console.error)
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable(ev) {
   if (ev.data.types.includes('Table')) {
     deleteInsert(`
       ?table ?p0 ?o0 .`
@@ -40,7 +40,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable 
   }
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributes (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributes(ev) {
   if (ev.data.types.includes('Table')) {
     const hydraCollection = await getTableAttributes(ev.id)
 
@@ -53,7 +53,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   }
 })
 
-export function getFactTableId (projectId: string) {
+export function getFactTableId(projectId: string) {
   return select('factTable')
     .where(`<${projectId}> dataCube:factTable ?factTable .`)
     .prefixes({
@@ -63,7 +63,7 @@ export function getFactTableId (projectId: string) {
     .then(bindings => bindings[0].factTable.value)
 }
 
-export function existsInTableSource (tableId: string, columnId: string): Promise<boolean> {
+export function existsInTableSource(tableId: string, columnId: string): Promise<boolean> {
   return ask(`
     <${tableId}> dataCube:source ?source .
     ?source dataCube:column <${columnId}> .
@@ -74,7 +74,7 @@ export function existsInTableSource (tableId: string, columnId: string): Promise
     .execute(getClient())
 }
 
-export function getTableSourceId (tableId: string) {
+export function getTableSourceId(tableId: string) {
   return select('source')
     .where(`<${tableId}> a dataCube:Table; dataCube:source ?source .`)
     .prefixes({
