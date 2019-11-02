@@ -11,7 +11,10 @@ const projectFrame = {
 export const projects = createRepository<Project>(projectFrame)
 
 const sourceContext = {
-  columns: 'column',
+  columns: {
+    '@id': 'column',
+    '@container': '@list',
+  },
   project: { '@id': 'project', '@type': '@id' },
 }
 const sourceFrame = {
