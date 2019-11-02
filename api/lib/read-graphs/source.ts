@@ -2,15 +2,16 @@ import { SourceEvents } from '../domain/source/events'
 import { handle } from '@tpluscode/fun-ddr'
 import { getClient } from './sparqlClient'
 import { insertData } from '../sparql'
-import { dataCube, schema } from '../namespaces'
+import { dataCube, schema, xsd, dtype } from '../namespaces'
 
 handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
-  const columns = ev.data.columns.map(name => `
+  const columns = ev.data.columns.map((name, index) => `
     <${ev.id}> dataCube:column <${ev.id}/${name}>  .
 
     <${ev.id}/${name}> 
       a dataCube:Column ; 
-      schema:name "${name}" .
+      schema:name "${name}" ;
+      dtype:order "${index}"^^xsd:int .
     `)
 
   insertData(`
@@ -25,6 +26,8 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
     .prefixes({
       dataCube,
       schema,
+      dtype,
+      xsd,
     })
     .execute(getClient())
     .catch(console.error)
