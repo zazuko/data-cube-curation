@@ -13,6 +13,7 @@ const scenarios = Object.entries({
   Entrypoint: '',
   CreateDataCubeProject: '',
   CreateProjectFactTable: 'project/fact-table-test',
+  'DimensionTable/Create': 'project/dimension-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
 })

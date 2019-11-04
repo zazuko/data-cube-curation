@@ -23,6 +23,22 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactT
     .catch(console.error)
 })
 
+handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function createDimensionTableTriples (ev) {
+  insertData(`
+    <${ev.id}>
+      a dataCube:Table, dataCube:DimensionTable;
+      dataCube:source <${ev.data.sourceId}>;
+      dataCube:project <${ev.data.projectId}> ;
+      dataCube:identifierTemplate "${ev.data.identifierTemplate}" .
+  `)
+    .prefixes({
+      schema,
+      dataCube,
+    })
+    .execute(getClient())
+    .catch(console.error)
+})
+
 handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
     deleteInsert(`

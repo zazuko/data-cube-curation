@@ -161,13 +161,14 @@ dataCube:Project
       hydra:writeable false
     ] ,
     [
-      hydra:property dataCube:dimensionTables ;
+      hydra:property api:dimensionTables ;
       hydra:title "The project's dimension tables" ;
       hydra:writeable false
     ] .
 
-dataCube:dimensionTables
+api:dimensionTables
   a hydra:Link ;
+  rdfs:range api:DimensionTableCollection ;
   hydra:supportedOperation
     api:CreateDimensionTable .
 
@@ -343,23 +344,20 @@ dataCube:Column
 ## Table
 
 dataCube:FactTable
-  a hydra:Class ;
+  rdfs:subClassOf dataCube:Table ;
   hydra:title "Project's fact table" ;
   hydra:supportedOperation
-    api:GetFactTable ;
+    api:GetFactTable .
+
+dataCube:DimensionTable
+  rdfs:subClassOf dataCube:Table ;
+  hydra:title "Project's dimension table" ;
   hydra:supportedProperty
     [
-      hydra:property dataCube:project ;
-      hydra:title "The project which contains this fact table" ;
-      hydra:writeable false
-    ] ,
-    [
-      hydra:property dataCube:source ;
-      hydra:title "The previously uploaded source (CSV etc)"
-    ] ,
-    [
-      hydra:property schema:name ;
-      hydra:title "Table name"
+      hydra:property dataCube:identifierTemplate ;
+      hydra:title "Table identifier" ;
+      hydra:description "A URL Template which can contain column names as variables" ;
+      hydra:required true
     ] .
 
 dataCube:Table
@@ -368,8 +366,19 @@ dataCube:Table
   hydra:description "Models the output of transforming source data into the data cube structure" ;
   hydra:supportedProperty
     [
+      hydra:property dataCube:project ;
+      hydra:title "The project which contains this fact table" ;
+      hydra:writeable false
+    ] ,
+    [
+      hydra:property schema:name ;
+      hydra:title "Table name" ;
+      hydra:required true
+    ] ,
+    [
       hydra:property dataCube:source ;
-      hydra:title "The tables's source"
+      hydra:title "The tables's source" ;
+      hydra:required true
     ] ,
     [
       hydra:property api:csvwMetadata ;

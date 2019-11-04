@@ -4,12 +4,12 @@ import { ProjectEvents } from './events'
 import { sources } from '../../storage/repository'
 import { errorFactory } from '../error-helper'
 
-interface CreateFactTableCommand {
+export interface TableCommand {
   sourceId: string;
   tableName: string;
 }
 
-export const selectFactTableSource = mutate<Project, CreateFactTableCommand>(async (project, command, emitter) => {
+export const selectFactTableSource = mutate<Project, TableCommand>(async (project, command, emitter) => {
   const DomainError = errorFactory(project, 'Cannot initialise fact table')
 
   if (project.factTableSource) {
