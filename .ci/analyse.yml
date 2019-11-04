@@ -31,12 +31,12 @@ run:
       apt-get update; apt-get install -y default-jre
       curl -s http://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-$FUSEKI_VERSION.tar.gz | tar -xz
       ( cd ./apache-jena-fuseki-$FUSEKI_VERSION; ./fuseki-server > /dev/null ) &
-      sleep 10
+      until $(curl --output /dev/null --silent --head --fail http://localhost:3030); do sleep 5; done
       curl 'http://localhost:3030/$/datasets' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'dbName=data-cube-e2e&dbType=mem'
       curl 'http://localhost:3030/$/datasets' -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data 'dbName=data-cube-read&dbType=mem'
       cd repo
       npm ci --unsafe-perm
       cp ./api/.env.local ./api/.env
       npm run start:api > /dev/null &
-      sleep 20
+      until $(curl --output /dev/null --silent --head --fail http://localhost:5678); do sleep 5; done
       npm run test:analyse
