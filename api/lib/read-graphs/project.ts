@@ -62,7 +62,7 @@ export async function getProject (id: string) {
       schema:name ?name ;
       api:sources ?sources ;
       dataCube:factTable ?factTable ;
-      api:dimensionTables ?dimensionTables .
+      api:tables ?tables .
 
     ?sources
         a hydra:Collection ;
@@ -74,7 +74,7 @@ export async function getProject (id: string) {
     BIND (<${id}> as ?project)
     BIND (<${id}/sources> as ?sources)
     BIND (<${id}/fact-table> as ?factTable)
-    BIND (<${id}/dimension-tables> as ?dimensionTables)
+    BIND (<${id}/tables> as ?tables)
 
     ?project
         schema:name ?name ;

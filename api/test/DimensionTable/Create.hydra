@@ -1,6 +1,7 @@
 PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
@@ -33,7 +34,7 @@ With Operation schema:CreateAction {
         Expect Property api:sources {
             Expect Operation api:AddSource
         }
-        Expect Property api:dimensionTables {
+        Expect Property api:tables {
             Expect Operation api:CreateDimensionTable
         }
     }
@@ -72,6 +73,10 @@ With Operation api:CreateDimensionTable {
 
 With Class dataCube:DimensionTable {
     Expect Property dataCube:source
-    Expect Property dataCube:project
+    Expect Link dataCube:project {
+        Expect Link api:tables {
+            Expect Property hydra:totalItems 1
+        }
+    }
     Expect Property dataCube:identifierTemplate "http://example.com/station/{station_id}"
 }

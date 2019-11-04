@@ -1,12 +1,13 @@
 import { handle, CoreEvents } from '@tpluscode/fun-ddr'
-import { ask, deleteInsert, insertData, select } from '../sparql'
-import { dataCube, schema } from '../namespaces'
+import { ask, construct, deleteInsert, insertData, select } from '../sparql'
+import { dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
 import { getTableAttributes } from './attribute'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
+import $rdf from 'rdf-ext'
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
   insertData(`
@@ -98,4 +99,49 @@ export function getTableSourceId (tableId: string) {
     })
     .execute(getClient())
     .then(bindings => bindings[0].source.value.replace(process.env.BASE_URI, ''))
+}
+
+export async function getProjectTables (projectId: string) {
+  const collection = $rdf.dataset()
+
+  await collection.import(await construct()
+    .graph(`
+      <${projectId}/tables> 
+        a hydra:Collection ;
+        hydra:member ?table ;
+        hydra:totalItems ?count .
+        
+      ?table ?p ?o .
+    `)
+    .where(`
+      OPTIONAL {
+        ?table dataCube:project <${projectId}> .
+        ?table a dataCube:Table .
+        ?table ?p ?o .
+      }`)
+    .where(`{
+      SELECT (COUNT(?table) as ?count) WHERE {
+        OPTIONAL {
+          ?table 
+            a dataCube:Table ;
+            dataCube:project <${projectId}> .
+        }
+      }
+    }`)
+    .prefixes({
+      dataCube,
+      hydra,
+    })
+    .execute(getClient()))
+
+  await collection.import(await construct()
+    .graph(`
+      <${projectId}/tables> hydra:manages [
+        hydra:property rdf:type ;
+        hydra:object dataCube:Table
+      ] `)
+    .prefixes({ hydra, dataCube, rdf })
+    .execute(getClient()))
+
+  return collection
 }
