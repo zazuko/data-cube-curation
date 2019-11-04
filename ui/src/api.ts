@@ -1,4 +1,5 @@
 import { Hydra } from 'alcaeus'
+import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
@@ -64,6 +65,20 @@ const rdf = Hydra.mediaTypeProcessors.RDF as any
 rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 
+export class APIError extends Error {
+  details: any;
+  response: IHydraResponse;
+
+  constructor (details: any, response: IHydraResponse) {
+    const message = details.title || 'Unkown error'
+
+    super(message)
+
+    this.details = details
+    this.response = response
+  }
+}
+
 export class Client {
   url: string;
   projects: ProjectsClient;
@@ -123,8 +138,9 @@ class ProjectsClient {
     const response = await operation.invoke(JSON.stringify(data))
     const id = response.xhr.headers.get('Location')
 
-    if (!id) {
-      throw new Error('Error creating project')
+    if (response.xhr.status !== 201 || !id) {
+      const details = await response.xhr.json()
+      throw new APIError(details, response)
     }
 
     return id
