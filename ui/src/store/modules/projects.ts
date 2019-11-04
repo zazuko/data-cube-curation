@@ -51,7 +51,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       const id = await client.projects.create(name)
       dispatch('loadOne', id)
     } catch (error) {
-      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+      commit('storeError', error.details, { root: true })
     }
   },
 
@@ -60,7 +60,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       await client.projects.delete(project)
       commit('removeOne', project)
     } catch (error) {
-      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+      commit('storeError', error.details, { root: true })
     }
   },
 
@@ -70,7 +70,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       // Reload project to get the new source
       dispatch('loadOne', project.id)
     } catch (error) {
-      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+      commit('storeError', error.details.title, { root: true })
     }
   }
 }
