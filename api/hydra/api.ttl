@@ -159,7 +159,17 @@ dataCube:Project
       hydra:property dataCube:factTable ;
       hydra:title "The project's output Fact Table" ;
       hydra:writeable false
+    ] ,
+    [
+      hydra:property dataCube:dimensionTables ;
+      hydra:title "The project's dimension tables" ;
+      hydra:writeable false
     ] .
+
+dataCube:dimensionTables
+  a hydra:Link ;
+  hydra:supportedOperation
+    api:CreateDimensionTable .
 
 dataCube:factTable
   a hydra:Link ;
@@ -451,6 +461,21 @@ api:CreateFactTable
     )
   ] .
 
+api:CreateDimensionTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Create a Dimension Table" ;
+  hydra:expects dataCube:DimensionTable ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#createDimensionTable>
+      ]
+    )
+  ] .
+
 ## /End Table
 
 ## dataCube:Attribute
@@ -570,6 +595,7 @@ api:Error
 </_project/:projectId> api:project </project/:projectId> .
 </project/:projectId/sources> a api:Sources .
 </project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
+</project/:projectId> api:dimensionTables </project/:projectId/dimension-tables> .
 </project/:projectId/fact-table> a dataCube:FactTable .
 </project/:projectId/table/:tableName> a dataCube:Table .
 </project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .
