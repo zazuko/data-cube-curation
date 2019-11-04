@@ -18,7 +18,7 @@
           </b-table-column>
           <b-table-column field label="">
             <div class="buttons">
-              <b-button icon-left="pencil"></b-button>
+              <b-button icon-left="pencil" v-if="props.row.actions.edit" />
               <b-button icon-left="trash-can-outline" v-if="props.row.actions.delete" @click="deleteProject(props.row)" />
             </div>
           </b-table-column>

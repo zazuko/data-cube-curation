@@ -20,6 +20,7 @@ const API_SOURCES = expand('dataCube:api/sources')
 const OP_PROJECTS_GET = expand('dataCube:api/GetDataCubeProjects')
 const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
 const OP_PROJECT_DELETE = expand('dataCube:api/DeleteProject')
+const OP_PROJECT_EDIT = expand('dataCube:api/ReplaceProject')
 const OP_SOURCES_CREATE = expand('dataCube:api/AddSource')
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
@@ -29,7 +30,8 @@ const ProjectMixin = {
     return class extends Base {
       get actions () {
         return {
-          delete: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_DELETE) || null
+          delete: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_DELETE) || null,
+          edit: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_EDIT) || null
         }
       }
 
