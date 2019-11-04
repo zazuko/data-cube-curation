@@ -5,7 +5,7 @@ import { ProjectId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
 
 const initialState: ProjectsState = {
-  projects: { isLoading: true }
+  projects: { isLoading: true, data: null, error: null }
 }
 
 const getters: GetterTree<ProjectsState, RootState> = {
@@ -91,7 +91,6 @@ const mutations: MutationTree<ProjectsState> = {
     if (!state.projects.data) return
 
     Vue.delete(state.projects.data, project.id)
-    state.projects.data = Object.assign({}, state.projects.data, {})
   },
 
   loadingError (state, error) {
