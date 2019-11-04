@@ -104,3 +104,9 @@ export async function getProject (id: string) {
 
   return dataset
 }
+
+export async function hasSource (projectId: string, sourceId: string) {
+  return ask(`
+    <${projectId}> a dataCube:Project; dataCube:source: <${sourceId}> . 
+  `).execute(getClient())
+}
