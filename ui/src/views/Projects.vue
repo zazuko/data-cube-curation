@@ -49,7 +49,7 @@ import ProjectForm from '../components/project/ProjectForm.vue'
   }
 })
 export default class Projects extends Vue {
-  get projects (): Project[] {
+  get projects (): RemoteData<Project[]> {
     return this.$store.getters['projects/list']
   }
 
