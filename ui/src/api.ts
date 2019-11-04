@@ -19,6 +19,7 @@ const API_PROJECTS = expand('dataCube:api/projects')
 const API_SOURCES = expand('dataCube:api/sources')
 const OP_PROJECTS_GET = expand('dataCube:api/GetDataCubeProjects')
 const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
+const OP_PROJECT_DELETE = expand('dataCube:api/DeleteProject')
 const OP_SOURCES_CREATE = expand('dataCube:api/AddSource')
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
@@ -26,6 +27,12 @@ type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 const ProjectMixin = {
   Mixin<B extends Constructor> (Base: B) {
     return class extends Base {
+      get actions () {
+        return {
+          delete: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_DELETE) || null
+        }
+      }
+
       get name () {
         return this.get(PROP_NAME)
       }
@@ -146,6 +153,17 @@ class ProjectsClient {
     return id
   }
 
+  async delete (project: any): Promise<true> {
+    const response = await project.actions.delete.invoke()
+
+    if (response.xhr.status !== 204) {
+      const details = await response.xhr.json()
+      throw new APIError(details, response)
+    }
+
+    return true
+  }
+
   async get (id: string) {
     const response = await Hydra.loadResource(id)
     return getOrThrow(response, 'root')
@@ -192,6 +210,10 @@ class FixturesClient {
     },
 
     async create () {
+      throw new Error('Not implemented')
+    },
+
+    async delete () {
       throw new Error('Not implemented')
     },
 

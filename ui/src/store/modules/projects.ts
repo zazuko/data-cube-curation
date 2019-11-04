@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { ProjectsState, RootState } from '@/store/types'
 import { ProjectId, Project, RemoteData } from '@/types'
@@ -54,6 +55,15 @@ const actions: ActionTree<ProjectsState, RootState> = {
     }
   },
 
+  async delete ({ dispatch, commit }, project) {
+    try {
+      await client.projects.delete(project)
+      commit('removeOne', project)
+    } catch (error) {
+      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+    }
+  },
+
   async uploadSource ({ dispatch }, { project, file }) {
     // TODO: Handle error?
     const response = await client.projects.createSource(project, file)
@@ -75,6 +85,13 @@ const mutations: MutationTree<ProjectsState> = {
   storeOne (state, project: Project) {
     state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
     state.projects.isLoading = false
+  },
+
+  removeOne (state, project: Project) {
+    if (!state.projects.data) return
+
+    Vue.delete(state.projects.data, project.id)
+    state.projects.data = Object.assign({}, state.projects.data, {})
   },
 
   loadingError (state, error) {
