@@ -1,6 +1,6 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
-import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
+import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
 import { Project, ProjectId } from './types'
@@ -30,8 +30,9 @@ const ProjectMixin = {
     return class extends Base {
       get actions () {
         return {
-          delete: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_DELETE) || null,
-          edit: this.operations.find((op) => op.supportedOperation.id === OP_PROJECT_EDIT) || null
+          delete: findOperation(this, OP_PROJECT_DELETE),
+          edit: findOperation(this, OP_PROJECT_EDIT),
+          createSource: this.sourcesCollection && findOperation(this.sourcesCollection, OP_SOURCES_CREATE)
         }
       }
 
@@ -40,11 +41,11 @@ const ProjectMixin = {
       }
 
       get sourcesCollection () {
-        return this[API_SOURCES] as ICollection | null
+        return this.get<Collection>(API_SOURCES)
       }
 
       get sources () {
-        if (!this.sourcesCollection) { return [] }
+        if (!this.sourcesCollection) return []
 
         return this.sourcesCollection.members
       }
@@ -131,7 +132,7 @@ class ProjectsClient {
     const resource = await this.resource()
     const operation = getOperation(resource, OP_PROJECTS_GET)
     const response = await operation.invoke('')
-    const projectsCollection = getOrThrow(response, 'root') as ICollection
+    const projectsCollection = getOrThrow(response, 'root') as Collection
 
     return projectsCollection.members || []
   }
@@ -172,7 +173,7 @@ class ProjectsClient {
   }
 
   async createSource (project: any, file: File) {
-    const operation = getOperation(project.sourcesCollection, OP_SOURCES_CREATE)
+    const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`
@@ -191,8 +192,12 @@ function getOrThrow (obj: any, prop: string) {
   return value
 }
 
+function findOperation (resource: HydraResource, operationId: string) {
+  return resource.operations.find((op: IOperation) => op.supportedOperation.id === operationId) || null
+}
+
 function getOperation (resource: HydraResource, operationId: string) {
-  const operation = resource.operations.find((op: IOperation) => op.supportedOperation.id === operationId)
+  const operation = findOperation(resource, operationId)
 
   if (!operation) {
     throw new Error(`Operation ${operationId} not found on ${resource.id}`)

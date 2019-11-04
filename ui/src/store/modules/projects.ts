@@ -64,11 +64,14 @@ const actions: ActionTree<ProjectsState, RootState> = {
     }
   },
 
-  async uploadSource ({ dispatch }, { project, file }) {
-    // TODO: Handle error?
-    const response = await client.projects.createSource(project, file)
-    // Reload project to get the new source
-    dispatch('loadOne', project.id)
+  async uploadSource ({ dispatch, commit }, { project, file }) {
+    try {
+      await client.projects.createSource(project, file)
+      // Reload project to get the new source
+      dispatch('loadOne', project.id)
+    } catch (error) {
+      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+    }
   }
 }
 

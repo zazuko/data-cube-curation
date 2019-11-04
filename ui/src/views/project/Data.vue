@@ -1,10 +1,10 @@
 <template>
   <div class="input-data">
-    <b-field class="file">
+    <b-field class="file" v-if="project.actions.createSource">
       <b-upload @input="uploadSource" accept=".csv">
         <a class="button is-primary">
           <b-icon icon="upload"></b-icon>
-          <span>Upload CSV</span>
+          <span>{{ project.actions.createSource.title }}</span>
         </a>
       </b-upload>
     </b-field>
