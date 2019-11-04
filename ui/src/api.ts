@@ -1,4 +1,5 @@
 import { Hydra } from 'alcaeus'
+import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
@@ -64,6 +65,20 @@ const rdf = Hydra.mediaTypeProcessors.RDF as any
 rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 
+export class APIError extends Error {
+  details: any;
+  response: IHydraResponse;
+
+  constructor (details: any, response: IHydraResponse) {
+    const message = details.title || 'Unkown error'
+
+    super(message)
+
+    this.details = details
+    this.response = response
+  }
+}
+
 export class Client {
   url: string;
   projects: ProjectsClient;
@@ -112,6 +127,25 @@ class ProjectsClient {
     return projectsCollection.members || []
   }
 
+  async create (name: string): Promise<ProjectId> {
+    const data = {
+      '@type': TYPE_PROJECT,
+      [PROP_NAME]: name
+    }
+
+    const resource = await this.resource()
+    const operation = getOperation(resource, OP_PROJECTS_CREATE)
+    const response = await operation.invoke(JSON.stringify(data))
+    const id = response.xhr.headers.get('Location')
+
+    if (response.xhr.status !== 201 || !id) {
+      const details = await response.xhr.json()
+      throw new APIError(details, response)
+    }
+
+    return id
+  }
+
   async get (id: string) {
     const response = await Hydra.loadResource(id)
     return getOrThrow(response, 'root')
@@ -155,6 +189,10 @@ class FixturesClient {
 
     async get (id: string) {
       return projectsFixtures.find((p: Project) => p.id === id)
+    },
+
+    async create () {
+      throw new Error('Not implemented')
     },
 
     async createSource () {

@@ -41,3 +41,8 @@ export interface Rule {
   columns: string[];
   transform: string;
 }
+
+export interface ErrorMessage {
+  title: string;
+  message: string;
+}

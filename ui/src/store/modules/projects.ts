@@ -45,6 +45,15 @@ const actions: ActionTree<ProjectsState, RootState> = {
     }
   },
 
+  async create ({ dispatch, commit }, name) {
+    try {
+      const id = await client.projects.create(name)
+      dispatch('loadOne', id)
+    } catch (error) {
+      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+    }
+  },
+
   async uploadSource ({ dispatch }, { project, file }) {
     // TODO: Handle error?
     const response = await client.projects.createSource(project, file)
