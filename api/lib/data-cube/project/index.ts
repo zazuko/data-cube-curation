@@ -7,6 +7,8 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
 
+export { getTables } from './getTables'
+
 export function getProjectId (projectGuid: string = uuid()) {
   return `${process.env.BASE_URI}project/${projectGuid}`
 }

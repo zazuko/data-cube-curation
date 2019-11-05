@@ -35,9 +35,14 @@ With Class dataCube:Project {
     }
 
     Expect Link dataCube:factTable
+    Expect Link api:tables
 }
 
 With Link api:sources {
+    Expect Status 200
+}
+
+With Link api:tables {
     Expect Status 200
 }
 

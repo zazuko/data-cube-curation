@@ -61,7 +61,8 @@ export async function getProject (id: string) {
     ?project a ?projectType ;
       schema:name ?name ;
       api:sources ?sources ;
-      dataCube:factTable ?factTable .
+      dataCube:factTable ?factTable ;
+      api:tables ?tables .
 
     ?sources
         a hydra:Collection ;
@@ -73,6 +74,7 @@ export async function getProject (id: string) {
     BIND (<${id}> as ?project)
     BIND (<${id}/sources> as ?sources)
     BIND (<${id}/fact-table> as ?factTable)
+    BIND (<${id}/tables> as ?tables)
 
     ?project
         schema:name ?name ;
@@ -101,4 +103,10 @@ export async function getProject (id: string) {
     })
 
   return dataset
+}
+
+export async function hasSource (projectId: string, sourceId: string) {
+  return ask(`
+    <${projectId}> a dataCube:Project; dataCube:source: <${sourceId}> . 
+  `).execute(getClient())
 }

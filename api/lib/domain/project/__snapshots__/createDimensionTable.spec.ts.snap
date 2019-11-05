@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`project create dimension table creates a dataCube:Table aggregate 1`] = `
+Object {
+  "@id": "/project/test/table/Table%20One",
+  "@type": "Table",
+  "identifierTemplate": "/dimension/{column}",
+  "projectId": "/project/test",
+  "sourceId": "/project/test/source",
+}
+`;
+
+exports[`project create dimension table publishes an event 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "@id": "/project/test/table/Table%20One",
+      "@type": "Table",
+      "identifierTemplate": "/dimension/{column}",
+      "projectId": "/project/test",
+      "sourceId": "/project/test/source",
+    },
+    "name": "DimensionTableCreated",
+  },
+]
+`;
