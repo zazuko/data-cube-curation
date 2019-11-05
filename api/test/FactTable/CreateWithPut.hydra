@@ -44,7 +44,7 @@ With Operation api:AddSource {
         Content-Type "text/csv"
         Content-Disposition 'attachment; filename="single-column.csv"'
 
-        <<< "bodies/single-column.csv"
+        <<< "../bodies/single-column.csv"
     } => {
         Expect Status 201
     }
