@@ -156,15 +156,13 @@ class ProjectsClient {
     return id
   }
 
-  async delete (project: any): Promise<true> {
+  async delete (project: any): Promise<void> {
     const response = await project.actions.delete.invoke()
 
     if (response.xhr.status !== 204) {
       const details = await response.xhr.json()
       throw new APIError(details, response)
     }
-
-    return true
   }
 
   async get (id: string) {
