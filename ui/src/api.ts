@@ -2,7 +2,6 @@ import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
-import projectsFixtures from './projects-fixtures'
 import { Project, ProjectId } from './types'
 
 prefixes.dataCube = 'https://rdf-cube-curation.described.at/'
@@ -204,35 +203,4 @@ function getOperation (resource: HydraResource, operationId: string) {
   return operation
 }
 
-class FixturesClient {
-  projects = {
-    async list () {
-      return projectsFixtures
-    },
-
-    async get (id: string) {
-      return projectsFixtures.find((p: Project) => p.id === id)
-    },
-
-    async create () {
-      throw new Error('Not implemented')
-    },
-
-    async delete () {
-      throw new Error('Not implemented')
-    },
-
-    async createSource () {
-      throw new Error('Not implemented')
-    }
-  };
-}
-
-let theClient
-if (process.env.VUE_APP_USE_FIXTURES === 'true') {
-  theClient = new FixturesClient()
-} else {
-  theClient = new Client(apiURL)
-}
-
-export const client = theClient
+export const client = new Client(apiURL)
