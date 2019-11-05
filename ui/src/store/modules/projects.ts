@@ -51,7 +51,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       const id = await client.projects.create(name)
       dispatch('loadOne', id)
     } catch (error) {
-      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+      commit('storeError', error.details, { root: true })
     }
   },
 
@@ -60,15 +60,18 @@ const actions: ActionTree<ProjectsState, RootState> = {
       await client.projects.delete(project)
       commit('removeOne', project)
     } catch (error) {
-      commit('storeError', { title: error.details.title, detail: error.details.detail }, { root: true })
+      commit('storeError', error.details, { root: true })
     }
   },
 
-  async uploadSource ({ dispatch }, { project, file }) {
-    // TODO: Handle error?
-    const response = await client.projects.createSource(project, file)
-    // Reload project to get the new source
-    dispatch('loadOne', project.id)
+  async uploadSource ({ dispatch, commit }, { project, file }) {
+    try {
+      await client.projects.createSource(project, file)
+      // Reload project to get the new source
+      dispatch('loadOne', project.id)
+    } catch (error) {
+      commit('storeError', error.details.title, { root: true })
+    }
   }
 }
 
