@@ -6,6 +6,10 @@ export interface Table extends Entity {
   projectId: string;
 }
 
+export interface DimensionTable extends Table {
+  identifierTemplate: string;
+}
+
 interface CreateTableCommand {
   sourceId: string;
   projectId: string;

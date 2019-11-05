@@ -3,6 +3,7 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
+PREFIX dtype: <http://www.linkedmodel.org/schema/dtype#>
 
 CONSTRUCT
 {
@@ -26,9 +27,10 @@ WHERE
     {
         rdf:type
         schema:name
+        dtype:order
     }
 
-    ?column ?columnProp ?o .
+    OPTIONAL { ?column ?columnProp ?o . }
 
     {
         SELECT (COUNT(?column) as ?count)

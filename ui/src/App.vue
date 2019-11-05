@@ -15,6 +15,36 @@
 
     <main class="main">
       <router-view/>
+
+      <div class="errors">
+        <b-message v-for="(error, index) in errors" :key="index" :title="error.title" type="is-danger" has-icon aria-close-label="Dismiss" @close="dismissError(error)">
+          {{ error.detail }}
+        </b-message>
+      </div>
     </main>
   </div>
 </template>
+
+<style scoped>
+  .errors {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+  }
+</style>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import { ErrorMessage } from './types'
+
+@Component
+export default class AppView extends Vue {
+  get errors () {
+    return this.$store.state.errors
+  }
+
+  dismissError (error: ErrorMessage) {
+    this.$store.dispatch('dismissError', error)
+  }
+}
+</script>

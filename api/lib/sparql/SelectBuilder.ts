@@ -2,7 +2,7 @@ import { Term } from 'rdf-js'
 import SparqlHttp from 'sparql-http-client'
 import { Builder } from './Builder'
 
-export class SelectBuilder extends Builder<Record<string, Term>[]> {
+export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
   private __variables: string[] = ['*']
   private __patterns: string[] = []
 

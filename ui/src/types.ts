@@ -11,8 +11,8 @@ export interface Project {
 
 export interface RemoteData<T> {
   isLoading: boolean;
-  data?: T;
-  error?: string;
+  data: T | null;
+  error: string | null;
 }
 
 export interface Source {
@@ -40,4 +40,9 @@ export interface Rule {
   property: string;
   columns: string[];
   transform: string;
+}
+
+export interface ErrorMessage {
+  title: string;
+  message: string;
 }

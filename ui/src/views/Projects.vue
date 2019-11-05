@@ -18,8 +18,8 @@
           </b-table-column>
           <b-table-column field label="">
             <div class="buttons">
-              <b-button icon-left="pencil"></b-button>
-              <b-button icon-left="trash-can-outline"></b-button>
+              <b-button icon-left="pencil" v-if="props.row.actions.edit" />
+              <b-button icon-left="trash-can-outline" v-if="props.row.actions.delete" @click="deleteProject(props.row)" />
             </div>
           </b-table-column>
         </template>
@@ -49,7 +49,7 @@ import ProjectForm from '../components/project/ProjectForm.vue'
   }
 })
 export default class Projects extends Vue {
-  get projects (): Project[] {
+  get projects (): RemoteData<Project[]> {
     return this.$store.getters['projects/list']
   }
 
@@ -73,6 +73,19 @@ export default class Projects extends Vue {
         }
       },
       hasModalCard: true
+    })
+  }
+
+  deleteProject (project: Project) {
+    this.$buefy.dialog.confirm({
+      title: 'Delete project',
+      message: 'Are you sure you want to delete this project?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: () => {
+        this.$store.dispatch('projects/delete', project)
+      }
     })
   }
 }

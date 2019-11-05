@@ -7,6 +7,8 @@ import { projects, tables, attributes } from '../../storage/repository'
 import { addAttribute } from '../../domain/table/addAttribute'
 import { getTableAttributes } from '../../read-graphs/attribute'
 
+export { createDimensionTable } from './createDimensionTable'
+
 export function getTableId (req: express.Request) {
   return `${getProjectId(req.params.projectId)}/table/${req.params.tableName}`
 }

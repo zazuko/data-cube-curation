@@ -6,6 +6,7 @@ import CsvwParser from 'rdf-parser-csvw'
 import { loadSourceSample } from '../../services/sourceSamples'
 import { getTableSourceId } from '../../read-graphs/table'
 import { buildCsvw } from '../../services/csvwBuilder'
+import { NotFoundError } from '../../error'
 
 export async function parseSample (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   try {
@@ -14,6 +15,11 @@ export async function parseSample (req: express.DataCubeRequest, res: express.Da
     const tableDataset = await getTableAndSource(tableId)
     const csvwMetadata = buildCsvw(tableDataset, tableId)
     const sampleCsv = loadSourceSample(sourceId)
+
+    if (!sampleCsv) {
+      next(new NotFoundError('Could not find sample csv'))
+      return
+    }
 
     const parser = new CsvwParser({
       metadata: csvwMetadata,

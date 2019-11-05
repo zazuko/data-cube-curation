@@ -19,7 +19,7 @@ export class ConstructBuilder extends Builder<any> {
 
   public _executeInternal (client: SparqlHttp, query: string) {
     return client.constructQuery(query)
-      .then(this._checkResponse)
+      .then(r => this._checkResponse<any>(r))
       .then(response => response.quadStream())
   }
 

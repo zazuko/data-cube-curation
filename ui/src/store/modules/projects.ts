@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { ProjectsState, RootState } from '@/store/types'
 import { ProjectId, Project, RemoteData } from '@/types'
@@ -5,7 +6,7 @@ import { client, OP_PROJECTS_CREATE } from '../../api'
 import { IOperation } from 'alcaeus/types/Resources'
 
 const initialState: ProjectsState = {
-  projects: { isLoading: true },
+  projects: { isLoading: true, data: null, error: null },
   createOperation: null
 }
 
@@ -49,17 +50,32 @@ const actions: ActionTree<ProjectsState, RootState> = {
     }
   },
 
-  async create ({ dispatch }, name) {
-    const id = await client.projects.create(name)
-
-    dispatch('loadOne', id)
+  async create ({ dispatch, commit }, name) {
+    try {
+      const id = await client.projects.create(name)
+      dispatch('loadOne', id)
+    } catch (error) {
+      commit('storeError', error.details, { root: true })
+    }
   },
 
-  async uploadSource ({ dispatch }, { project, file }) {
-    // TODO: Handle error?
-    const response = await client.projects.createSource(project, file)
-    // Reload project to get the new source
-    dispatch('loadOne', project.id)
+  async delete ({ dispatch, commit }, project) {
+    try {
+      await client.projects.delete(project)
+      commit('removeOne', project)
+    } catch (error) {
+      commit('storeError', error.details, { root: true })
+    }
+  },
+
+  async uploadSource ({ dispatch, commit }, { project, file }) {
+    try {
+      await client.projects.createSource(project, file)
+      // Reload project to get the new source
+      dispatch('loadOne', project.id)
+    } catch (error) {
+      commit('storeError', error.details.title, { root: true })
+    }
   }
 }
 
@@ -80,6 +96,12 @@ const mutations: MutationTree<ProjectsState> = {
   storeOne (state, project: Project) {
     state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
     state.projects.isLoading = false
+  },
+
+  removeOne (state, project: Project) {
+    if (!state.projects.data) return
+
+    Vue.delete(state.projects.data, project.id)
   },
 
   loadingError (state, error) {

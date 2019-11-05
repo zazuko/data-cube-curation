@@ -1,0 +1,82 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+            // Expect Method "PUT"
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        // Expect Operation "DELETE"
+
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Dimension table project" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property api:tables {
+            Expect Operation api:CreateDimensionTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="single-column.csv"'
+
+        <<< "../bodies/single-column.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:CreateDimensionTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/fact-table-test/source/single-column.csv> ;
+           schema:name "Stations" ;
+           dataCube:identifierTemplate "http://example.com/station/{station_id}" .
+        ```
+    } => {
+        Expect Status 201
+        Expect Header Location [tableId]
+
+        Follow [tableId]
+    }
+}
+
+With Class dataCube:DimensionTable {
+    Expect Property dataCube:source
+    Expect Link dataCube:project {
+        Expect Link api:tables {
+            Expect Property hydra:totalItems 1
+        }
+    }
+    Expect Property dataCube:identifierTemplate "http://example.com/station/{station_id}"
+}

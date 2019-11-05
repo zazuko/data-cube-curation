@@ -1,5 +1,6 @@
 import { Hydra } from 'alcaeus'
-import { HydraResource, ICollection, IOperation } from 'alcaeus/types/Resources'
+import { IHydraResponse } from 'alcaeus/types/HydraResponse'
+import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
 import projectsFixtures from './projects-fixtures'
 import { Project, ProjectId } from './types'
@@ -18,6 +19,8 @@ const API_PROJECTS = expand('dataCube:api/projects')
 const API_SOURCES = expand('dataCube:api/sources')
 const OP_PROJECTS_GET = expand('dataCube:api/GetDataCubeProjects')
 export const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
+const OP_PROJECT_DELETE = expand('dataCube:api/DeleteProject')
+const OP_PROJECT_EDIT = expand('dataCube:api/ReplaceProject')
 const OP_SOURCES_CREATE = expand('dataCube:api/AddSource')
 
 type Constructor<T = {}> = new (...args: any[]) => HydraResource;
@@ -25,23 +28,26 @@ type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 const ProjectMixin = {
   Mixin<B extends Constructor> (Base: B) {
     return class extends Base {
+      get actions () {
+        return {
+          delete: findOperation(this, OP_PROJECT_DELETE),
+          edit: findOperation(this, OP_PROJECT_EDIT),
+          createSource: this.sourcesCollection && findOperation(this.sourcesCollection, OP_SOURCES_CREATE)
+        }
+      }
+
       get name () {
         return this.get(PROP_NAME)
       }
 
       get sourcesCollection () {
-        return this[API_SOURCES] as ICollection | null
+        return this.get<Collection>(API_SOURCES)
       }
 
       get sources () {
-        if (!this.sourcesCollection) { return [] }
+        if (!this.sourcesCollection) return []
 
-        // TODO: Alcaeus doesn't assign the correct type to these objects
-        // so they don't get applied the proper Mixin.
-        return this.sourcesCollection.members.map((source) => ({
-          ...source,
-          name: source.get(PROP_NAME)
-        }))
+        return this.sourcesCollection.members
       }
     }
   },
@@ -68,6 +74,20 @@ const SourceMixin = {
 const rdf = Hydra.mediaTypeProcessors.RDF as any
 rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
+
+export class APIError extends Error {
+  details: any;
+  response: IHydraResponse;
+
+  constructor (details: any, response: IHydraResponse) {
+    const message = details.title || 'Unkown error'
+
+    super(message)
+
+    this.details = details
+    this.response = response
+  }
+}
 
 export class Client {
   url: string;
@@ -112,7 +132,7 @@ class ProjectsClient {
     const resource = await this.resource()
     const operation = getOperation(resource, OP_PROJECTS_GET)
     const response = await operation.invoke('')
-    const projectsCollection = getOrThrow(response, 'root') as ICollection
+    const projectsCollection = getOrThrow(response, 'root') as Collection
 
     return projectsCollection.members || []
   }
@@ -128,11 +148,21 @@ class ProjectsClient {
     const response = await operation.invoke(JSON.stringify(data))
     const id = response.xhr.headers.get('Location')
 
-    if (!id) {
-      throw new Error('Error creating project')
+    if (response.xhr.status !== 201 || !id) {
+      const details = await response.xhr.json()
+      throw new APIError(details, response)
     }
 
     return id
+  }
+
+  async delete (project: any): Promise<void> {
+    const response = await project.actions.delete.invoke()
+
+    if (response.xhr.status !== 204) {
+      const details = await response.xhr.json()
+      throw new APIError(details, response)
+    }
   }
 
   async get (id: string) {
@@ -141,7 +171,7 @@ class ProjectsClient {
   }
 
   async createSource (project: any, file: File) {
-    const operation = getOperation(project.sourcesCollection, OP_SOURCES_CREATE)
+    const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`
@@ -160,8 +190,12 @@ function getOrThrow (obj: any, prop: string) {
   return value
 }
 
+function findOperation (resource: HydraResource, operationId: string) {
+  return resource.operations.find((op: IOperation) => op.supportedOperation.id === operationId) || null
+}
+
 function getOperation (resource: HydraResource, operationId: string) {
-  const operation = resource.operations.find((op: IOperation) => op.supportedOperation.id === operationId)
+  const operation = findOperation(resource, operationId)
 
   if (!operation) {
     throw new Error(`Operation ${operationId} not found on ${resource.id}`)
@@ -181,6 +215,10 @@ class FixturesClient {
     },
 
     async create () {
+      throw new Error('Not implemented')
+    },
+
+    async delete () {
       throw new Error('Not implemented')
     },
 
