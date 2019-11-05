@@ -70,6 +70,7 @@ With Operation api:CreateFactTable {
 }
 
 With Class dataCube:Table {
-        Expect Property dataCube:source
-        Expect Property dataCube:project
+    Expect Property schema:name "Observation"
+    Expect Property dataCube:source
+    Expect Property dataCube:project
 }

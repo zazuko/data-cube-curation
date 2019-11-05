@@ -72,6 +72,7 @@ With Operation api:PostFactTable {
 }
 
 With Class dataCube:FactTable {
+    Expect Property schema:name "Observation"
     Expect Property dataCube:source
     Expect Link dataCube:project {
         Expect Link api:tables {

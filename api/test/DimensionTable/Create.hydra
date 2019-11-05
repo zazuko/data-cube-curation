@@ -73,6 +73,7 @@ With Operation api:CreateDimensionTable {
 }
 
 With Class dataCube:DimensionTable {
+    Expect Property schema:name "Stations"
     Expect Property dataCube:source
     Expect Link dataCube:project {
         Expect Link api:tables {
