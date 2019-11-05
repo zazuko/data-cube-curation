@@ -5,7 +5,7 @@
     </header>
     <section class="modal-card-body">
       <alcaeus-form ref="form" :operation.prop="operation"
-                    no-legend no-submit-button no-reset-button no-clear-button></alcaeus-form>
+                    no-legend no-submit-button no-reset-button no-clear-button no-labels></alcaeus-form>
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
