@@ -11,8 +11,8 @@ export interface Project {
 
 export interface RemoteData<T> {
   isLoading: boolean;
-  data?: T;
-  error?: string;
+  data: T | null;
+  error: string | null;
 }
 
 export interface Source {
