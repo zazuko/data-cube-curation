@@ -347,7 +347,7 @@ dataCube:Column
 
 dataCube:FactTable
   rdfs:subClassOf dataCube:Table ;
-  hydra:title "Project's fact table" ;
+  hydra:title "Project's table" ;
   hydra:supportedOperation
     api:GetFactTable .
 
