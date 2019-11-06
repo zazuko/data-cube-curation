@@ -1,4 +1,5 @@
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
@@ -11,7 +12,8 @@ CONSTRUCT {
         hydra:totalItems ?count .
 
     ?source
-        schema:name ?name .
+        schema:name ?name ;
+        api:sample ?sample .
 }
 WHERE {
     BIND (<${this.locals.projectId}/sources> as ?collection)
@@ -21,6 +23,8 @@ WHERE {
         ?source a dataCube:Source ;
                 dataCube:project ?project ;
                 schema:name ?name .
+
+        BIND (iri(CONCAT(replace(str(?source), "/source/", "/source-sample/"))) as ?sample)
     }
 
     {

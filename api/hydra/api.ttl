@@ -286,7 +286,29 @@ dataCube:Source
       hydra:title "Project" ;
       hydra:description "The project this source belongs to" ;
       hydra:writeable false
+    ] ,
+    [
+      hydra:property api:sample ;
+      hydra:title "Collection of sample row data" ;
+      hydra:writeable false
     ] .
+
+api:sample a hydra:Link ;
+  hydra:supportedOperation _:GetSourceSample .
+
+_:GetSourceSample
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Sample source rows" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project-source/sample#getSampleRows>
+      ]
+    )
+  ] .
 
 dataCube:project a hydra:Link .
 api:csvwMetadata a hydra:Link ;
@@ -632,4 +654,5 @@ api:Error
 </project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
 </project/:projectId/table/:tableName> api:preview </project/:projectId/table/:tableName/preview> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
+</project/:projectId/source/:sourceId> api:sample </project/:projectId/source-sample/:sourceId> .
 </project/:projectId/table/:tableName> api:csvwMetadata </project/:projectId/table/:tableName/csvw> .
