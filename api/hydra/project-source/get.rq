@@ -1,10 +1,12 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 CONSTRUCT
 {
-    ?source ?prop ?value .
+    ?source ?prop ?value ;
+            api:sample ?sample .
 }
 WHERE
 {
@@ -19,5 +21,6 @@ WHERE
 
     OPTIONAL {
         ?source ?prop ?value .
+        BIND (iri(CONCAT(replace(str(?source), "/source/", "/source-sample/"))) as ?sample)
     }
 }

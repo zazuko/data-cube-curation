@@ -11,7 +11,7 @@ export async function deleteFile (path: string) {
 }
 
 export function loadFile (path: string) {
-  if (!existsSync(path)) {
+  if (!existsSync(`${process.env.STORAGE_FILESYSTEM_PATH}/${path}`)) {
     return null
   }
 
