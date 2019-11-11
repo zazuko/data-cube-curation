@@ -70,7 +70,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       // Reload project to get the new source
       dispatch('loadOne', project.id)
     } catch (error) {
-      commit('storeError', error.details.title, { root: true })
+      commit('storeError', error.details, { root: true })
     }
   }
 }
