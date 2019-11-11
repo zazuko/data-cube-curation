@@ -5,6 +5,7 @@ import { Source } from '../source'
 import { SourceEvents } from '../source/events'
 
 export { selectFactTableSource } from './createFactTable'
+export { unselectFactTable } from './unselectFactTable'
 export { addDimensionTable } from './createDimensionTable'
 
 export interface Project extends Entity {

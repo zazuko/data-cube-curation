@@ -9,6 +9,7 @@ import { getTableAttributes } from '../../read-graphs/attribute'
 
 export { get } from './get'
 export { createTable } from './createDimensionTable'
+export { archive } from './archive'
 
 export function getTableId (req: express.Request) {
   return `${getProjectId(req.params.projectId)}/table/${req.params.tableName}`
