@@ -4,6 +4,7 @@ import { TableEvents } from './events'
 export interface Table extends Entity {
   sourceId: string;
   projectId: string;
+  tableName: string;
 }
 
 export interface DimensionTable extends Table {
@@ -22,6 +23,7 @@ export const createTable = initialize<Table, CreateTableCommand>((cmd, emitter) 
   emitter.emit<TableEvents, 'FactTableCreated'>('FactTableCreated', {
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
+    tableName: cmd.tableName,
   })
 
   return {
@@ -29,5 +31,6 @@ export const createTable = initialize<Table, CreateTableCommand>((cmd, emitter) 
     '@type': 'Table',
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
+    tableName: cmd.tableName,
   }
 })

@@ -22,6 +22,7 @@ describe('table', () => {
       '@type': 'Table',
       sourceId: 'unimportant/source',
       projectId: 'unimportant/project',
+      tableName: 'Example',
     }
   })
 

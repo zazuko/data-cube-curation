@@ -172,6 +172,7 @@ api:tables
   rdfs:range api:TableCollection ;
   hydra:supportedOperation
     api:CreateDimensionTable ,
+    api:PostFactTable ,
     api:GetTables .
 
 dataCube:factTable
@@ -460,7 +461,7 @@ api:GetFactTable
 api:CreateFactTable
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "PUT" ;
-  hydra:title "Create a Fact Table for a data cube project" ;
+  hydra:title "Create a Fact Table" ;
   hydra:expects dataCube:FactTable ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
@@ -468,6 +469,21 @@ api:CreateFactTable
       [
         a code:EcmaScript ;
         code:link <file:lib/data-cube/table#createFactTable>
+      ]
+    )
+  ] .
+
+api:PostFactTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Create a Fact Table" ;
+  hydra:expects dataCube:FactTable ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#createTable>
       ]
     )
   ] .
@@ -482,7 +498,7 @@ api:CreateDimensionTable
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#createDimensionTable>
+        code:link <file:lib/data-cube/table#createTable>
       ]
     )
   ] .

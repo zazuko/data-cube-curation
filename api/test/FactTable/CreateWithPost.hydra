@@ -28,14 +28,14 @@ With Operation schema:CreateAction {
         ```
         @prefix schema: <http://schema.org/> .
 
-        <> schema:name "Dimension table project" .
+        <> schema:name "Fact table project" .
         ```
     } => {
         Expect Property api:sources {
             Expect Operation api:AddSource
         }
         Expect Property api:tables {
-            Expect Operation api:CreateDimensionTable
+            Expect Operation api:PostFactTable
         }
     }
 }
@@ -51,7 +51,7 @@ With Operation api:AddSource {
     }
 }
 
-With Operation api:CreateDimensionTable {
+With Operation api:PostFactTable {
     Invoke {
         Content-Type "text/turtle"
 
@@ -59,10 +59,9 @@ With Operation api:CreateDimensionTable {
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/fact-table-test/source/single-column.csv> ;
-           schema:name "Stations" ;
-           dataCube:identifierTemplate "http://example.com/station/{station_id}" ;
-           a dataCube:DimensionTable .
+        <> dataCube:source <project/fact-table-post-test/source/single-column.csv> ;
+           schema:name "Observation" ;
+           a dataCube:FactTable .
         ```
     } => {
         Expect Status 201
@@ -72,13 +71,12 @@ With Operation api:CreateDimensionTable {
     }
 }
 
-With Class dataCube:DimensionTable {
-    Expect Property schema:name "Stations"
+With Class dataCube:FactTable {
+    Expect Property schema:name "Observation"
     Expect Property dataCube:source
     Expect Link dataCube:project {
         Expect Link api:tables {
             Expect Property hydra:totalItems 1
         }
     }
-    Expect Property dataCube:identifierTemplate "http://example.com/station/{station_id}"
 }
