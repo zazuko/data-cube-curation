@@ -3,9 +3,10 @@ export type ResourceId = string;
 
 export interface Project {
   id: ResourceId;
+  actions: Record<string, any>,
   name: string | null;
   sources: Source[];
-  tables: Table[];
+  tables: RemoteData<Table[]>;
 }
 
 export interface RemoteData<T> {
@@ -21,8 +22,10 @@ export interface Source {
   data: any[];
 }
 
+export type TableType = 'fact' | 'dimension'
+
 export interface Table {
-  type: 'fact' | 'dimension';
+  type: TableType;
   id: ResourceId;
   name: string;
   color: string;

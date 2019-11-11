@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ActionTree, MutationTree, GetterTree } from 'vuex'
+import { ActionTree, MutationTree, GetterTree, ActionContext } from 'vuex'
 import { ProjectsState, RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
@@ -72,6 +72,34 @@ const actions: ActionTree<ProjectsState, RootState> = {
     } catch (error) {
       commit('storeError', error.details, { root: true })
     }
+  },
+
+  async loadTables (context, project) {
+    await handleAPIError(context, async () => {
+      const tables = await client.projects.getTables(project)
+
+      context.commit('storeTables', { project, tables })
+    })
+  },
+
+  async createTable (context, { project, table }) {
+    await handleAPIError(context, async () => {
+      await client.projects.createTable(project, table)
+      // Reload tables to get the new one
+      context.dispatch('loadTables', project)
+    })
+  }
+}
+
+async function handleAPIError (context: ActionContext<ProjectsState, RootState>, f: () => Promise<any>): Promise<any> {
+  try {
+    return await f()
+  } catch (error) {
+    if (error.details) {
+      context.commit('storeError', error.details, { root: true })
+    } else {
+      throw error
+    }
   }
 }
 
@@ -88,6 +116,12 @@ const mutations: MutationTree<ProjectsState> = {
   storeOne (state, project: Project) {
     state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
     state.projects.isLoading = false
+  },
+
+  storeTables (state, { project, tables }) {
+    if (!state.projects.data) throw new Error('Project not loaded')
+
+    state.projects.data[project.id].tables = { isLoading: false, data: tables, error: null }
   },
 
   removeOne (state, project: Project) {

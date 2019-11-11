@@ -76,6 +76,10 @@ export default class ProjectDataView extends Vue {
     return remoteProject.data
   }
 
+  get tables (): Table[] {
+    return this.project.tables.data || []
+  }
+
   uploadSource (file: File) {
     this.$store.dispatch('projects/uploadSource', {
       project: this.project,
