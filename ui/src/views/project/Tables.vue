@@ -1,10 +1,10 @@
 <template>
   <div class="output-tables">
-    <b-field>
+    <div class="buttons">
       <b-button type="is-primary" icon-left="plus" @click="createTable">
         Add table
       </b-button>
-    </b-field>
+    </div>
 
     <section class="tables-list">
       <article class="card" v-for="(table, index) in project.tables" :key="index">
