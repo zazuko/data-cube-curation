@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "start:api": "(cd api; npm run start)",
+    "start:ui": "(cd ui; npm run serve)",
     "postinstall": "lerna bootstrap",
     "jest": "lerna run jest --stream --no-prefix",
     "test": "lerna run test --stream --no-prefix",
