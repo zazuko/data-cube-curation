@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, Table, Rule, Source } from '../../types'
+import { Project, Table, Source } from '../../types'
 import TableTag from '../TableTag.vue'
 
 @Component
@@ -39,8 +39,7 @@ function emptyProject (): Project {
     id: '',
     name: '',
     tables: [],
-    sources: [],
-    rules: []
+    sources: []
   }
 }
 </script>
