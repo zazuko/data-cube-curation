@@ -5,7 +5,6 @@ import ProjectsView from './views/Projects.vue'
 import ProjectView from './views/Project.vue'
 import ProjectDataView from './views/project/Data.vue'
 import ProjectTablesView from './views/project/Tables.vue'
-import ProjectRulesView from './views/project/Rules.vue'
 
 Vue.use(Router)
 
@@ -38,11 +37,6 @@ export default new Router({
           path: 'tables',
           name: 'project/tables',
           component: ProjectTablesView
-        },
-        {
-          path: 'rules',
-          name: 'project/rules',
-          component: ProjectRulesView
         }
       ]
     }
