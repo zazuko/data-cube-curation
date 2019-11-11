@@ -9,7 +9,7 @@ import { api, hydra, rdf } from '../../namespaces'
 
 function buildCollectionGraph (collectionId: string, currentPageUrl: string, nextPageUrl: string, rows: string[][]) {
   const dataset = $rdf.dataset()
-  const collection = cf(dataset).node($rdf.namedNode(collectionId))
+  const collection = cf({ dataset }).node($rdf.namedNode(collectionId))
 
   collection.addOut(rdf.type, hydra.Collection)
 

@@ -4,7 +4,7 @@ import cf from 'clownface'
 import { api, rdf, rdfs, dataCube } from '../../namespaces'
 
 export async function duplicateNameErrorResponse (req: express.Request, res: express.DataCubeResponse) {
-  const graph = cf($rdf.dataset(), api.duplicateSourceError)
+  const graph = cf({ dataset: $rdf.dataset(), term: api.duplicateSourceError })
 
   graph.addOut(rdfs.label, 'Could not create source')
   graph.addOut(rdfs.comment, 'The selected file has already been uploaded to the project.')
