@@ -7,6 +7,7 @@ import { projects, tables, attributes } from '../../storage/repository'
 import { addAttribute } from '../../domain/table/addAttribute'
 import { getTableAttributes } from '../../read-graphs/attribute'
 
+export { get } from './get'
 export { createTable } from './createDimensionTable'
 
 export function getTableId (req: express.Request) {

@@ -453,18 +453,9 @@ api:GetTable
   hydra:method "GET" ;
   hydra:returns dataCube:Table ;
   code:implementedBy [
-    a hydra-box:middlewareChain ;
-    code:arguments (
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/express#getRequestedId>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/table/get.rq>
-      ]
-    )
-  ] .
+                     a code:EcmaScript ;
+                     code:link <file:lib/data-cube/table#get>
+                     ] .
 
 api:GetFactTable
   a hydra:SupportedOperation, hydra-box:View ;
