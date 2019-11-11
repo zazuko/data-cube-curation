@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { ProjectsState, RootState } from '@/store/types'
-import { ProjectId, Project, RemoteData } from '@/types'
+import { ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
 
 const initialState: ProjectsState = {
@@ -16,7 +16,7 @@ const getters: GetterTree<ProjectsState, RootState> = {
     }
   },
 
-  one (state): (id: ProjectId) => RemoteData<Project> {
+  one (state): (id: ResourceId) => RemoteData<Project> {
     return (id) => {
       const project = (state.projects.data || {})[id]
       return {
@@ -77,7 +77,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
 
 const mutations: MutationTree<ProjectsState> = {
   storeAll (state, projects: Project[]) {
-    const emptyData: Record<ProjectId, Project> = {}
+    const emptyData: Record<ResourceId, Project> = {}
     state.projects.data = projects.reduce((acc, project) => {
       acc[project.id] = project
       return acc

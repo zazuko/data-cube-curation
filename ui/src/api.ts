@@ -2,7 +2,7 @@ import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
 import { expand, prefixes } from '@zazuko/rdf-vocabularies'
-import { Project, ProjectId } from './types'
+import { Project, ResourceId, RemoteData } from './types'
 
 prefixes.dataCube = 'https://rdf-cube-curation.described.at/'
 
@@ -136,7 +136,7 @@ class ProjectsClient {
     return projectsCollection.members || []
   }
 
-  async create (name: string): Promise<ProjectId> {
+  async create (name: string): Promise<ResourceId> {
     const data = {
       '@type': TYPE_PROJECT,
       [PROP_NAME]: name

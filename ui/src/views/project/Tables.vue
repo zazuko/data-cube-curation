@@ -62,7 +62,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ProjectId, Table } from '../../types'
+import { Project, ResourceId, Table } from '../../types'
 import TableForm from '../../components/project/TableForm.vue'
 
 @Component({
@@ -71,7 +71,7 @@ import TableForm from '../../components/project/TableForm.vue'
   }
 })
 export default class ProjectTablesView extends Vue {
-  get projectId (): ProjectId {
+  get projectId (): ResourceId {
     return this.$route.params.id
   }
 

@@ -1,8 +1,8 @@
 
-export type ProjectId = string;
+export type ResourceId = string;
 
 export interface Project {
-  id: ProjectId;
+  id: ResourceId;
   name: string | null;
   sources: Source[];
   tables: Table[];
@@ -15,16 +15,19 @@ export interface RemoteData<T> {
 }
 
 export interface Source {
-  id: string;
+  id: ResourceId;
   name: string;
   columns: any[];
   data: any[];
 }
 
 export interface Table {
-  id: string;
+  type: 'fact' | 'dimension';
+  id: ResourceId;
   name: string;
   color: string;
+  sourceId: ResourceId;
+  identifierTemplate: string | null;
   properties: Property[];
 }
 
