@@ -298,7 +298,7 @@ api:sample a hydra:Link ;
   hydra:supportedOperation _:GetSourceSample .
 
 _:GetSourceSample
-  a hydra:SupportedOperation, hydra-box:View ;
+  a hydra:SupportedOperation, hydra-box:View, schema:ViewAction ;
   hydra:method "GET" ;
   hydra:title "Sample source rows" ;
   code:implementedBy [
