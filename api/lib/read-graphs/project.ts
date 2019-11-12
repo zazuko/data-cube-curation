@@ -6,6 +6,8 @@ import { ask, construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, schema, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
+import { projects } from '../storage/repository'
+import { unselectFactTable } from '../domain/project'
 
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
   insertData(`
@@ -38,6 +40,29 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseFactTableResource (ev) {
   insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
+    .prefixes({
+      dataCube,
+    })
+    .execute(getClient())
+    .catch(console.error)
+})
+
+handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProjectEntity (ev) {
+  if (ev.data.isFactTable) {
+    const project = await projects
+      .load(ev.data.projectId)
+
+    project.mutation(unselectFactTable)(null as never)
+      .commit(projects)
+      .catch(console.error)
+  }
+})
+
+handle<ProjectEvents, 'FactTableUnselected'>('FactTableUnselected', function removeFactTableLink (ev) {
+  deleteInsert(`<${ev.id}> dataCube:factTable ?table`)
+    .where(`
+      ?table a dataCube:Table ; dataCube:source <${ev.data.previousSourceId}> .
+    `)
     .prefixes({
       dataCube,
     })
@@ -94,7 +119,7 @@ export async function getProject (id: string) {
         }
   }`).execute(getClient()))
 
-  cf(dataset)
+  cf({ dataset })
     .has(rdf.type, dataCube.Project)
     .out(api.sources)
     .addOut(hydra.manages, manages => {

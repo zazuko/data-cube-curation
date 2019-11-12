@@ -1,11 +1,11 @@
 import express from 'express'
+import { asyncMiddleware } from 'middleware-async'
 import { getProjectId } from '../project'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { projects, tables } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { addDimensionTable, selectFactTableSource } from '../../domain/project'
-import { asyncRoute } from '../../express'
 import { DomainError } from '@tpluscode/fun-ddr'
 
 async function loadProject (projectId: string) {
@@ -51,7 +51,7 @@ async function createFactTable (req: express.DataCubeRequest, projectId: string)
     .then(() => `${projectId}/table/${tableName.value}`)
 }
 
-export const createTable = asyncRoute(async (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) => {
+export const createTable = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
   let promiseTable: Promise<string>
   const projectId = getProjectId(req.params.projectId)
   const { type } = buildVariables(req, {

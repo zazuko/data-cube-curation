@@ -10,4 +10,8 @@ export interface TableEvents {
     tableName: string;
     identifierTemplate: string;
   };
+  TableArchived: {
+    projectId: string;
+    isFactTable: boolean;
+  };
 }

@@ -10,4 +10,7 @@ export interface ProjectEvents {
     sourceId: string;
     tableName: string;
   };
+  FactTableUnselected: {
+    previousSourceId: string;
+  };
 }

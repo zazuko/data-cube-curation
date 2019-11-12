@@ -421,7 +421,8 @@ dataCube:Table
       hydra:writeable false
     ] ;
   hydra:supportedOperation
-    api:GetTable .
+    api:GetTable ,
+    _:DeleteTable .
 
 api:preview a hydra:Link ;
   hydra:supportedOperation api:GetPreview .
@@ -453,18 +454,9 @@ api:GetTable
   hydra:method "GET" ;
   hydra:returns dataCube:Table ;
   code:implementedBy [
-    a hydra-box:middlewareChain ;
-    code:arguments (
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/express#getRequestedId>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/table/get.rq>
-      ]
-    )
-  ] .
+                     a code:EcmaScript ;
+                     code:link <file:lib/data-cube/table#get>
+                     ] .
 
 api:GetFactTable
   a hydra:SupportedOperation, hydra-box:View ;
@@ -479,6 +471,20 @@ api:GetFactTable
       ]
     )
   ] .
+
+_:DeleteTable
+  a hydra:SupportedOperation, hydra-box:View, schema:DeleteAction ;
+  hydra:method "DELETE" ;
+  hydra:title "Delete table" ;
+  code:implementedBy [
+                       a hydra-box:middlewareChain ;
+                       code:arguments (
+                                        [
+                                          a code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#archive>
+                                        ]
+                                      )
+                     ] .
 
 api:CreateFactTable
   a hydra:SupportedOperation, hydra-box:View ;

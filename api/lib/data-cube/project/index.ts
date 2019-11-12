@@ -57,7 +57,7 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
 
   aggregateRoot.commit(projects)
     .then(() => {
-      setTimeout(() => getExistingProject(req, res), 50)
+      setTimeout(() => getExistingProject(req, res, next), 50)
     }).catch(next)
 }
 
