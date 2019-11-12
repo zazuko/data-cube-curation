@@ -14,7 +14,8 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactT
     <${ev.id}>
       a dataCube:Table, dataCube:FactTable ;
       dataCube:source <${ev.data.sourceId}>;
-      dataCube:project <${ev.data.projectId}> .
+      dataCube:project <${ev.data.projectId}> ;
+      schema:name "${ev.data.tableName}" .
   `)
     .prefixes({
       schema,
@@ -30,6 +31,7 @@ handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function c
       a dataCube:Table, dataCube:DimensionTable;
       dataCube:source <${ev.data.sourceId}>;
       dataCube:project <${ev.data.projectId}> ;
+      schema:name "${ev.data.tableName}" ;
       dataCube:identifierTemplate "${ev.data.identifierTemplate}" .
   `)
     .prefixes({
@@ -77,7 +79,13 @@ export function getFactTableId (projectId: string) {
       dataCube,
     })
     .execute(getClient())
-    .then(bindings => bindings[0].factTable.value)
+    .then(bindings => {
+      if (bindings.length === 0) {
+        return null
+      }
+
+      return bindings[0].factTable.value
+    })
 }
 
 export function existsInTableSource (tableId: string, columnId: string): Promise<boolean> {

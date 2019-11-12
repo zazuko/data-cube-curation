@@ -13,7 +13,7 @@
       </template>
     </b-navbar>
 
-    <main class="main">
+    <main class="main section">
       <router-view/>
 
       <div class="errors">

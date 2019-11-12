@@ -7,6 +7,7 @@ Object {
   "identifierTemplate": "/dimension/{column}",
   "projectId": "/project/test",
   "sourceId": "/project/test/source",
+  "tableName": "Table One",
 }
 `;
 
@@ -19,6 +20,7 @@ Array [
       "identifierTemplate": "/dimension/{column}",
       "projectId": "/project/test",
       "sourceId": "/project/test/source",
+      "tableName": "Table One",
     },
     "name": "DimensionTableCreated",
   },

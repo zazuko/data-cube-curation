@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, Table, Rule, Source } from '../../types'
+import { Project, Table, Source } from '../../types'
 import '@hydrofoil/alcaeus-forms/alcaeus-form'
 import { IOperation } from 'alcaeus/types/Resources'
 

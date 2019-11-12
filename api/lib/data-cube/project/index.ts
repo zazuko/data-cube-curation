@@ -1,11 +1,13 @@
 import uuid from 'uuid/v4'
 import express from 'express'
+import asyncMiddleware from 'middleware-async'
 import { createProject, renameProject, archiveProject } from '../../domain/project'
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
+import { NotFoundError } from '../../error'
 
 export { getTables } from './getTables'
 
@@ -35,7 +37,7 @@ export function create (req: express.DataCubeRequest, res: express.DataCubeRespo
     .catch(next)
 }
 
-export async function createOrUpdate (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const createOrUpdate = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -56,17 +58,24 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
 
   aggregateRoot.commit(projects)
     .then(() => {
-      setTimeout(() => getExistingProject(req, res), 50)
+      setTimeout(() => getExistingProject(req, res, next), 50)
     }).catch(next)
-}
+})
 
-export async function getFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const getFactTable = asyncMiddleware(async (req, res, next) => {
   getFactTableId(getProjectId(req.params.projectId))
-    .then(value => res.redirect(value, 303))
-    .catch(next)
-}
+    .then(value => {
+      if (!value) {
+        next(new NotFoundError())
+        return
+      }
 
-export async function archive (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+      return res.redirect(value, 303)
+    })
+    .catch(next)
+})
+
+export const archive = asyncMiddleware(async (req, res, next) => {
   res.locals.projectId = `/project/${req.params.projectId}`
   let aggregateRoot = await projects.load(res.locals.projectId)
 
@@ -84,4 +93,4 @@ export async function archive (req: express.DataCubeRequest, res: express.DataCu
       next()
     })
     .catch(next)
-}
+})

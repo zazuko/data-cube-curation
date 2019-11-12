@@ -14,11 +14,6 @@
             <a :href="href" @click="navigate">Output tables</a>
           </li>
         </router-link>
-        <router-link :to="{ name: 'project/rules' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
-          <li :class="[isActive && 'is-active']">
-            <a :href="href" @click="navigate">Mapping rules</a>
-          </li>
-        </router-link>
       </ul>
     </div>
 

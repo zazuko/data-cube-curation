@@ -1,13 +1,13 @@
 <template>
   <div class="input-data">
-    <b-field class="file" v-if="project.actions.createSource">
-      <b-upload @input="uploadSource" accept=".csv">
+    <div class="buttons">
+      <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource">
         <a class="button is-primary">
           <b-icon icon="upload"></b-icon>
           <span>{{ project.actions.createSource.title }}</span>
         </a>
       </b-upload>
-    </b-field>
+    </div>
 
     <div v-for="source in project.sources" :key="source.id" class="sources-list">
       <article class="card">
@@ -28,8 +28,8 @@
                 <template slot="header">
                   {{ column.label }}
                   <b-taglist>
-                    <TableTag v-for="rule in columnRules(column)" :key="rule.id" :table="rule.table">
-                      {{ rule.table.name }} > {{ rule.property }}
+                    <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="attribute.table">
+                      {{ attribute.table.name }} > {{ attribute.property }}
                     </TableTag>
                   </b-taglist>
                 </template>
@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import TableTag from '../../components/TableTag.vue'
-import { Project, ProjectId, Rule, Table, Source } from '../../types'
+import { Project, ProjectId, Table, Source } from '../../types'
 
 @Component({
   components: {
@@ -83,16 +83,9 @@ export default class ProjectDataView extends Vue {
     })
   }
 
-  columnRules (column: any) {
-    const columnId = column.field
-    const rules = this.project.rules.filter((rule) => rule.columns.includes(columnId))
-    return rules.map((rule) => {
-      const table = this.project.tables.find(({ id }) => id === rule.table)
-      return {
-        ...rule,
-        table
-      }
-    })
+  columnAttributes (column: any) {
+    // TODO
+    return []
   }
 }
 </script>

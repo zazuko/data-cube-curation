@@ -1,37 +1,75 @@
 import express from 'express'
+import { asyncMiddleware } from 'middleware-async'
 import { getProjectId } from '../project'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { projects, tables } from '../../storage/repository'
 import { NotFoundError } from '../../error'
-import { addDimensionTable } from '../../domain/project'
-import { asyncRoute } from '../../express'
+import { addDimensionTable, selectFactTableSource } from '../../domain/project'
+import { DomainError } from '@tpluscode/fun-ddr'
 
-export const createDimensionTable = asyncRoute(async (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) => {
-  const projectId = getProjectId(req.params.projectId)
+async function loadProject (projectId: string) {
+  const project = await projects.load(projectId)
+  if (!project.state) {
+    throw new NotFoundError('Project was not found')
+  }
+
+  return project
+}
+
+async function createDimensionTable (req: express.DataCubeRequest, projectId: string): Promise<string> {
   const variables = buildVariables(req, {
     identifierTemplate: expand('dataCube:identifierTemplate'),
     source: expand('dataCube:source'),
     name: expand('schema:name'),
   })
 
-  const project = await projects.load(projectId)
-  if (!project.state) {
-    next(new NotFoundError('Project was not found'))
-    return
-  }
-
+  const project = await loadProject(projectId)
   const table = await project.factory(addDimensionTable)({
     sourceId: variables.source.value,
     tableName: variables.name.value,
     identifierTemplate: variables.identifierTemplate.value,
   })
 
-  table
+  return table
     .commit(tables)
-    .then(table => {
+    .then(created => `${process.env.BASE_URI}${created['@id']}`)
+}
+
+async function createFactTable (req: express.DataCubeRequest, projectId: string) {
+  const { sourceId, tableName } = buildVariables(req, {
+    sourceId: expand('dataCube:source'),
+    tableName: expand('schema:name'),
+  })
+
+  const project = await loadProject(projectId)
+  return project.mutation(selectFactTableSource)({
+    sourceId: sourceId.value,
+    tableName: tableName.value,
+  })
+    .commit(projects)
+    .then(() => `${projectId}/table/${tableName.value}`)
+}
+
+export const createTable = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
+  let promiseTable: Promise<string>
+  const projectId = getProjectId(req.params.projectId)
+  const { type } = buildVariables(req, {
+    type: expand('rdf:type'),
+  })
+
+  if (type.value === expand('dataCube:DimensionTable')) {
+    promiseTable = createDimensionTable(req, projectId)
+  } else if (type.value === expand('dataCube:FactTable')) {
+    promiseTable = createFactTable(req, projectId)
+  } else {
+    throw new DomainError(projectId, 'Cannot create table', 'Missing or unrecognized table type')
+  }
+
+  promiseTable
+    .then(tableId => {
       res.status(201)
-      res.setHeader('Location', `${process.env.BASE_URI}${table['@id']}`)
+      res.setHeader('Location', tableId)
       next()
     })
     .catch(next)

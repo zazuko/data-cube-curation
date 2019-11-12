@@ -33,6 +33,7 @@ export const addDimensionTable = factory<Project, CreateDimensionTableCommand, T
     projectId: project['@id'],
     '@type': 'Table',
     sourceId: cmd.sourceId,
+    tableName: cmd.tableName,
     identifierTemplate: cmd.identifierTemplate,
   }
 

@@ -1,8 +1,7 @@
 import parse from 'csv-parse'
-import express from 'express'
+import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
-import { duplicateNameErrorResponse } from './error-duplicate-name'
 
 const parserOptions = {
   to: 100,
@@ -24,7 +23,7 @@ export function parseCsv (req, res, next) {
     })
 }
 
-export async function createSourceHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const createSourceHandler = asyncMiddleware(async (req, res, next) => {
   const project = await projects.load(`/project/${req.params.projectId}`)
 
   const contentDispositionPattern = /attachment; filename="(.+)"/
@@ -53,11 +52,5 @@ export async function createSourceHandler (req: express.DataCubeRequest, res: ex
       res.setHeader('Location', `${process.env.BASE_URI}${source['@id']}`)
       next()
     })
-    .catch((e: Error) => {
-      if (e.message.includes('It has already been modified')) {
-        duplicateNameErrorResponse(req, res)
-      } else {
-        next(e)
-      }
-    })
-}
+    .catch(next)
+})

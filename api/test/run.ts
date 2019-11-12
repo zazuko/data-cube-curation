@@ -12,8 +12,12 @@ program.parse(process.argv)
 const scenarios = Object.entries({
   Entrypoint: '',
   CreateDataCubeProject: '',
-  CreateProjectFactTable: 'project/fact-table-test',
+  'FactTable/CreateWithPut': 'project/fact-table-test',
+  'FactTable/CreateWithPost': 'project/fact-table-post-test',
+  'FactTable/CreateAndDelete': 'project/fact-table-post-test',
+  'FactTable/GetWhenItDoesNotExist': 'project/fact-table-404',
   'DimensionTable/Create': 'project/dimension-table-test',
+  'DimensionTable/CreateAndDelete': 'project/dimension-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
 })

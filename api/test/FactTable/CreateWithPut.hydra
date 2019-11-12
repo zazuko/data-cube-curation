@@ -44,7 +44,7 @@ With Operation api:AddSource {
         Content-Type "text/csv"
         Content-Disposition 'attachment; filename="single-column.csv"'
 
-        <<< "bodies/single-column.csv"
+        <<< "../bodies/single-column.csv"
     } => {
         Expect Status 201
     }
@@ -70,6 +70,7 @@ With Operation api:CreateFactTable {
 }
 
 With Class dataCube:Table {
-        Expect Property dataCube:source
-        Expect Property dataCube:project
+    Expect Property schema:name "Observation"
+    Expect Property dataCube:source
+    Expect Property dataCube:project
 }

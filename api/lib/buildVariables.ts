@@ -37,6 +37,8 @@ export function buildVariables<T extends Record<string, string>> (req: express.D
     const name = mapping[0] as keyof T
     const property = mapping[1]
 
+    locals[name] = new Variable()
+
     req.graph.match(null, property).toArray().map(t => t.object).forEach((term) => {
       if (locals[name]) {
         locals[name].push(term)

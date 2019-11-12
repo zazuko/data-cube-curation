@@ -6,7 +6,6 @@ export interface Project {
   name: string | null;
   sources: Source[];
   tables: Table[];
-  rules: Rule[];
 }
 
 export interface RemoteData<T> {
@@ -32,14 +31,6 @@ export interface Table {
 export interface Property {
   name: string;
   type: string | null;
-}
-
-export interface Rule {
-  id: string;
-  table: string;
-  property: string;
-  columns: string[];
-  transform: string;
 }
 
 export interface ErrorMessage {

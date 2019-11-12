@@ -172,6 +172,7 @@ api:tables
   rdfs:range api:TableCollection ;
   hydra:supportedOperation
     api:CreateDimensionTable ,
+    api:PostFactTable ,
     api:GetTables .
 
 dataCube:factTable
@@ -286,7 +287,29 @@ dataCube:Source
       hydra:title "Project" ;
       hydra:description "The project this source belongs to" ;
       hydra:writeable false
+    ] ,
+    [
+      hydra:property api:sample ;
+      hydra:title "Collection of sample row data" ;
+      hydra:writeable false
     ] .
+
+api:sample a hydra:Link ;
+  hydra:supportedOperation _:GetSourceSample .
+
+_:GetSourceSample
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "GET" ;
+  hydra:title "Sample source rows" ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project-source/sample#getSampleRows>
+      ]
+    )
+  ] .
 
 dataCube:project a hydra:Link .
 api:csvwMetadata a hydra:Link ;
@@ -398,7 +421,8 @@ dataCube:Table
       hydra:writeable false
     ] ;
   hydra:supportedOperation
-    api:GetTable .
+    api:GetTable ,
+    _:DeleteTable .
 
 api:preview a hydra:Link ;
   hydra:supportedOperation api:GetPreview .
@@ -430,18 +454,9 @@ api:GetTable
   hydra:method "GET" ;
   hydra:returns dataCube:Table ;
   code:implementedBy [
-    a hydra-box:middlewareChain ;
-    code:arguments (
-      [
-        a code:EcmaScript ;
-        code:link <file:lib/express#getRequestedId>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/table/get.rq>
-      ]
-    )
-  ] .
+                     a code:EcmaScript ;
+                     code:link <file:lib/data-cube/table#get>
+                     ] .
 
 api:GetFactTable
   a hydra:SupportedOperation, hydra-box:View ;
@@ -457,10 +472,24 @@ api:GetFactTable
     )
   ] .
 
+_:DeleteTable
+  a hydra:SupportedOperation, hydra-box:View, schema:DeleteAction ;
+  hydra:method "DELETE" ;
+  hydra:title "Delete table" ;
+  code:implementedBy [
+                       a hydra-box:middlewareChain ;
+                       code:arguments (
+                                        [
+                                          a code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#archive>
+                                        ]
+                                      )
+                     ] .
+
 api:CreateFactTable
   a hydra:SupportedOperation, hydra-box:View ;
   hydra:method "PUT" ;
-  hydra:title "Create a Fact Table for a data cube project" ;
+  hydra:title "Create a Fact Table" ;
   hydra:expects dataCube:FactTable ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
@@ -468,6 +497,21 @@ api:CreateFactTable
       [
         a code:EcmaScript ;
         code:link <file:lib/data-cube/table#createFactTable>
+      ]
+    )
+  ] .
+
+api:PostFactTable
+  a hydra:SupportedOperation, hydra-box:View ;
+  hydra:method "POST" ;
+  hydra:title "Create a Fact Table" ;
+  hydra:expects dataCube:FactTable ;
+  code:implementedBy [
+    a hydra-box:middlewareChain ;
+    code:arguments (
+      [
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/table#createTable>
       ]
     )
   ] .
@@ -482,7 +526,7 @@ api:CreateDimensionTable
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#createDimensionTable>
+        code:link <file:lib/data-cube/table#createTable>
       ]
     )
   ] .
@@ -632,4 +676,5 @@ api:Error
 </project/:projectId/table/:tableName> api:attributes </project/:projectId/table/:tableName/attributes> .
 </project/:projectId/table/:tableName> api:preview </project/:projectId/table/:tableName/preview> .
 </project/:projectId/source/:sourceId> a dataCube:Source .
+</project/:projectId/source/:sourceId> api:sample </project/:projectId/source-sample/:sourceId> .
 </project/:projectId/table/:tableName> api:csvwMetadata </project/:projectId/table/:tableName/csvw> .

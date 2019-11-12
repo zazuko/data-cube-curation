@@ -28,8 +28,8 @@ function createColumn (csvwGraph: any, column: any, attribute?: any) {
 }
 
 export function buildCsvw (tableDataset: any, tableId: string) {
-  const tableContext = cf(tableDataset, $rdf.namedNode(tableId))
-  const csvwGraph = cf($rdf.dataset(), $rdf.namedNode(`${tableId}/csvw`))
+  const tableContext = cf({ dataset: tableDataset, term: $rdf.namedNode(tableId) })
+  const csvwGraph = cf({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${tableId}/csvw`) })
   csvwGraph.addOut(rdf.type, csvw.CsvwMapping)
 
   addDialect(csvwGraph)
