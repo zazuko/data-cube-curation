@@ -1,4 +1,5 @@
 import express from 'express'
+import asyncMiddleware from 'middleware-async'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { getProjectId } from '../project'
@@ -15,7 +16,7 @@ export function getTableId (req: express.Request) {
   return `${getProjectId(req.params.projectId)}/table/${req.params.tableName}`
 }
 
-export async function createFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const createFactTable = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
   const projectId = getProjectId(req.params.projectId)
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
@@ -40,9 +41,9 @@ export async function createFactTable (req: express.DataCubeRequest, res: expres
       next()
     })
     .catch(next)
-}
+})
 
-export async function addAttributeHandler (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const addAttributeHandler = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
   const tableId = getTableId(req)
   const variables = buildVariables(req, {
     name: expand('schema:name'),
@@ -75,13 +76,13 @@ export async function addAttributeHandler (req: express.DataCubeRequest, res: ex
       next()
     })
     .catch(next)
-}
+})
 
-export async function getAttributes (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const getAttributes = asyncMiddleware(async (req, res: express.DataCubeResponse, next) => {
   const tableId = getTableId(req)
   getTableAttributes(tableId)
     .then(dataset => {
       res.graph(dataset)
     })
     .catch(next)
-}
+})

@@ -1,4 +1,5 @@
 import express from 'express'
+import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
 import { getTableId } from './index'
 import { getTableAndSource } from '../../read-graphs/table/csvw'
@@ -8,7 +9,7 @@ import { getTableSourceId } from '../../read-graphs/table'
 import { buildCsvw } from '../../services/csvwBuilder'
 import { NotFoundError } from '../../error'
 
-export async function parseSample (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export const parseSample = asyncMiddleware(async (req, res: express.DataCubeResponse, next) => {
   try {
     const tableId = getTableId(req)
     const sourceId = await getTableSourceId(tableId)
@@ -41,4 +42,4 @@ export async function parseSample (req: express.DataCubeRequest, res: express.Da
   } catch (e) {
     next(e)
   }
-}
+})
