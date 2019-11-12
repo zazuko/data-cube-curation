@@ -2,7 +2,7 @@
   <div id="projects-page">
     <h2 class="title is-2">My projects</h2>
 
-    <div class="actions">
+    <div class="buttons">
       <b-button type="is-primary" icon-left="plus" @click="addProject">
         New project
       </b-button>

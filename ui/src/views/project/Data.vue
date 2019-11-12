@@ -1,13 +1,13 @@
 <template>
   <div class="input-data">
-    <b-field class="file" v-if="project.actions.createSource">
-      <b-upload @input="uploadSource" accept=".csv">
+    <div class="buttons">
+      <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource">
         <a class="button is-primary">
           <b-icon icon="upload"></b-icon>
           <span>{{ project.actions.createSource.title }}</span>
         </a>
       </b-upload>
-    </b-field>
+    </div>
 
     <div v-for="source in project.sources" :key="source.id" class="sources-list">
       <article class="card">
