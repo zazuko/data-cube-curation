@@ -10,7 +10,6 @@ program.option('--grep <pattern>', 'RegExp to filter the test cases')
 program.parse(process.argv)
 
 const scenarios = Object.entries({
-  Entrypoint: '',
   CreateDataCubeProject: '',
   'FactTable/CreateWithPut': 'project/fact-table-test',
   'FactTable/CreateWithPost': 'project/fact-table-post-test',
@@ -20,6 +19,7 @@ const scenarios = Object.entries({
   'DimensionTable/CreateAndDelete': 'project/dimension-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
+  Entrypoint: '',
 })
 
 const selectedScenarios = scenarios
@@ -55,7 +55,7 @@ function runScenarios () {
 
         const childProcess = spawn(
           `hydra-validator`,
-          [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`],
+          [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`, '--strict'],
           { stdio: 'inherit' })
 
         childProcess.on('exit', code => {
