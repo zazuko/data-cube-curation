@@ -1,0 +1,67 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+
+With Class api:Entrypoint {
+    Expect Property api:projects {
+        Expect Operation api:CreateProject {
+            Invoke {
+                Content-Type "text/turtle"
+
+                ```
+                @prefix schema: <http://schema.org/> .
+
+                <> schema:name "Project with difficult names" .
+                ```
+            } => {
+                Expect Status 201
+                Expect Header Location [projectUri]
+
+                Follow [projectUri]
+            }
+        }
+    }
+}
+
+With Class dataCube:Project {
+    Expect Property api:sources {
+        Expect Operation api:AddSource
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="name & columns to be slügified.csv"'
+
+        <<< "../bodies/name-and-columns-to-be-slugified.csv"
+    } => {
+        Expect Status 201
+        Expect Header Location [sourceUri]
+
+        Follow [sourceUri]
+    }
+}
+
+With Class dataCube:Source {
+    Expect Property api:columns {
+        Expect Type hydra:Collection
+
+        Expect Property hydra:totalItems 2
+
+        Expect Property hydra:member {
+            When Property schema:name Equals "with space"
+
+            Expect Type dataCube:Column
+        }
+
+        Expect Property hydra:member {
+            When Property schema:name Equals "with umlaut ü"
+
+            Expect Type dataCube:Column
+        }
+    }
+
+    Expect Property schema:name "name & columns to be slügified.csv"
+}

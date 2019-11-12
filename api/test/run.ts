@@ -19,6 +19,7 @@ const scenarios = Object.entries({
   'DimensionTable/CreateAndDelete': 'project/dimension-table-test',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
+  'Source/WithNamesToEscape': '',
   Entrypoint: '',
 })
 
