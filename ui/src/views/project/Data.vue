@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import TableTag from '../../components/TableTag.vue'
-import { Project, ProjectId, Table, Source } from '../../types'
+import { Project, ResourceId, Table, Source } from '../../types'
 
 @Component({
   components: {
@@ -66,7 +66,7 @@ import { Project, ProjectId, Table, Source } from '../../types'
   }
 })
 export default class ProjectDataView extends Vue {
-  get projectId (): ProjectId {
+  get projectId (): ResourceId {
     return this.$route.params.id
   }
 
@@ -74,6 +74,10 @@ export default class ProjectDataView extends Vue {
     const remoteProject = this.$store.getters['projects/one'](this.projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
+  }
+
+  get tables (): Table[] {
+    return this.project.tables.data || []
   }
 
   uploadSource (file: File) {

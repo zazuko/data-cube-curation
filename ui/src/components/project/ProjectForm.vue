@@ -20,9 +20,14 @@ import { Prop, Component, Vue } from 'vue-property-decorator'
 import { Project, Table, Source } from '../../types'
 import TableTag from '../TableTag.vue'
 
+interface ProjectFormData {
+  id?: string;
+  name: string;
+}
+
 @Component
 export default class extends Vue {
-  @Prop({ default: emptyProject }) project: Project;
+  @Prop({ default: emptyProject }) project: ProjectFormData;
   @Prop() save: (project: Project) => any;
 
   get title () {
@@ -34,12 +39,9 @@ export default class extends Vue {
   }
 }
 
-function emptyProject (): Project {
+function emptyProject (): ProjectFormData {
   return {
-    id: '',
-    name: '',
-    tables: [],
-    sources: []
+    name: ''
   }
 }
 </script>
