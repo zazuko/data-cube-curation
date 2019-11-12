@@ -79,7 +79,13 @@ export function getFactTableId (projectId: string) {
       dataCube,
     })
     .execute(getClient())
-    .then(bindings => bindings[0].factTable.value)
+    .then(bindings => {
+      if (bindings.length === 0) {
+        return null
+      }
+
+      return bindings[0].factTable.value
+    })
 }
 
 export function existsInTableSource (tableId: string, columnId: string): Promise<boolean> {

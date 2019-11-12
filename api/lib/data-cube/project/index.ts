@@ -6,6 +6,7 @@ import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
+import { NotFoundError } from '../../error'
 
 export { getTables } from './getTables'
 
@@ -62,7 +63,14 @@ export async function createOrUpdate (req: express.DataCubeRequest, res: express
 
 export async function getFactTable (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
   getFactTableId(getProjectId(req.params.projectId))
-    .then(value => res.redirect(value, 303))
+    .then(value => {
+      if (!value) {
+        next(new NotFoundError())
+        return
+      }
+
+      return res.redirect(value, 303)
+    })
     .catch(next)
 }
 
