@@ -39,5 +39,5 @@ run:
       npm ci --unsafe-perm
       cp ./api/.env.local ./api/.env
       npm run start:api > /dev/null &
-      wait-on --timeout 20000 http://localhost:5678
+      wait-on --timeout 40000 http://localhost:5678
       npm run test:analyse
