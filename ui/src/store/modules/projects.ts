@@ -1,94 +1,90 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree, ActionContext } from 'vuex'
-import { ProjectsState, RootState } from '@/store/types'
+import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
 
+interface ProjectsState {
+  projectsList: RemoteData<Project[]>;
+  projects: Record<ResourceId, RemoteData<Project>>;
+}
+
 const initialState: ProjectsState = {
-  projects: { isLoading: true, data: null, error: null }
+  projectsList: { isLoading: true, data: null, error: null },
+  projects: {}
 }
 
 const getters: GetterTree<ProjectsState, RootState> = {
-  list (state): RemoteData<Project[]> {
-    return {
-      ...state.projects,
-      data: Object.values(state.projects.data || {})
-    }
+  list (state) {
+    return state.projectsList
   },
 
   one (state): (id: ResourceId) => RemoteData<Project> {
     return (id) => {
-      const project = (state.projects.data || {})[id]
-      return {
-        ...state.projects,
-        data: project
-      }
+      return state.projects[id] || { isLoading: true, data: null, error: null }
     }
   }
 }
 
 const actions: ActionTree<ProjectsState, RootState> = {
-  async loadAll ({ commit }) {
-    try {
+  async loadAll (context) {
+    await handleAPIError(context, async () => {
       const projects = await client.projects.list()
-      commit('storeAll', projects)
-    } catch (error) {
-      commit('loadingError', error)
-    }
+      context.commit('storeAll', projects)
+    })
   },
 
-  async loadOne ({ commit }, id) {
-    try {
+  async loadOne (context, id) {
+    await handleAPIError(context, async () => {
       const project = await client.projects.get(id)
-      commit('storeOne', project)
-    } catch (error) {
-      commit('loadingError', error)
-    }
+      context.commit('storeOne', project)
+    })
   },
 
-  async create ({ dispatch, commit }, name) {
-    try {
+  async create (context, name) {
+    await handleAPIError(context, async () => {
       const id = await client.projects.create(name)
-      dispatch('loadOne', id)
-    } catch (error) {
-      commit('storeError', error.details, { root: true })
-    }
+      context.dispatch('loadAll', id)
+    })
   },
 
-  async delete ({ dispatch, commit }, project) {
-    try {
+  async delete (context, project) {
+    await handleAPIError(context, async () => {
       await client.projects.delete(project)
-      commit('removeOne', project)
-    } catch (error) {
-      commit('storeError', error.details, { root: true })
+      context.commit('removeOne', project)
+    })
+  }
+}
+
+async function handleAPIError (context: ActionContext<ProjectsState, RootState>, f: () => Promise<any>): Promise<any> {
+  try {
+    return await f()
+  } catch (error) {
+    if (error.details) {
+      context.commit('storeError', error.details, { root: true })
+    } else {
+      throw error
     }
   }
 }
 
 const mutations: MutationTree<ProjectsState> = {
   storeAll (state, projects: Project[]) {
-    const emptyData: Record<ResourceId, Project> = {}
-    state.projects.data = projects.reduce((acc, project) => {
-      acc[project.id] = project
-      return acc
-    }, emptyData)
-    state.projects.isLoading = false
+    state.projectsList = { isLoading: false, data: projects, error: null }
   },
 
   storeOne (state, project: Project) {
-    state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
-    state.projects.isLoading = false
+    Vue.set(state.projects, project.id, { isloading: false, data: project, error: null })
   },
 
   removeOne (state, project: Project) {
-    if (!state.projects.data) return
+    if (!state.projectsList.data) return
 
-    Vue.delete(state.projects.data, project.id)
-  },
+    // Delete from projects list
+    state.projectsList.data = state.projectsList.data.filter((p) => p.id !== project.id)
 
-  loadingError (state, error) {
-    state.projects.isLoading = false
-    state.projects.error = 'Error: could not load projects'
+    // Delete from projects
+    Vue.delete(state.projects, project.id)
   }
 }
 
