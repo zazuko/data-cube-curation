@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import { ActionTree, MutationTree, GetterTree, ActionContext } from 'vuex'
+import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
+import { handleAPIError } from '../common'
 
 interface ProjectsState {
   projectsList: RemoteData<Project[]>;
@@ -53,18 +54,6 @@ const actions: ActionTree<ProjectsState, RootState> = {
       await client.projects.delete(project)
       context.commit('removeOne', project)
     })
-  }
-}
-
-async function handleAPIError (context: ActionContext<ProjectsState, RootState>, f: () => Promise<any>): Promise<any> {
-  try {
-    return await f()
-  } catch (error) {
-    if (error.details) {
-      context.commit('storeError', error.details, { root: true })
-    } else {
-      throw error
-    }
   }
 }
 

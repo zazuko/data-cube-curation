@@ -3,6 +3,7 @@ import { ActionTree, MutationTree, GetterTree, ActionContext } from 'vuex'
 import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData, Source } from '@/types'
 import { client } from '../../api'
+import { handleAPIError } from '../common'
 
 interface SourcesState {
   // Sources are stored per-project, indexed by projectId
@@ -36,18 +37,6 @@ const actions: ActionTree<SourcesState, RootState> = {
       // Reload tables to get the new one
       context.dispatch('loadForProject', project)
     })
-  }
-}
-
-async function handleAPIError (context: ActionContext<SourcesState, RootState>, f: () => Promise<any>): Promise<any> {
-  try {
-    return await f()
-  } catch (error) {
-    if (error.details) {
-      context.commit('storeError', error.details, { root: true })
-    } else {
-      throw error
-    }
   }
 }
 
