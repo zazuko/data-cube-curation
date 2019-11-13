@@ -13,7 +13,9 @@
       <article class="card">
         <header class="card-header">
           <h2 class="card-header-title">{{ source.name }}</h2>
-          <b-button icon-left="trash-can-outline"></b-button>
+          <div class="card-header-icon">
+            <b-button icon-left="trash-can-outline" v-if="source.actions.delete"></b-button>
+          </div>
         </header>
         <section class="card-content">
           <b-table

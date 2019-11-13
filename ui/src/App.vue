@@ -25,6 +25,12 @@
   </div>
 </template>
 
+<style>
+  .card-header-icon {
+    cursor: inherit;
+  }
+</style>
+
 <style scoped>
   .errors {
     position: fixed;
