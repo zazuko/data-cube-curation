@@ -5,7 +5,6 @@ export interface Project {
   id: ResourceId;
   actions: Record<string, any>,
   name: string | null;
-  sources: Source[];
 }
 
 export interface RemoteData<T> {
@@ -18,7 +17,6 @@ export interface Source {
   id: ResourceId;
   name: string;
   columns: any[];
-  data: any[];
 }
 
 export type TableType = 'fact' | 'dimension'

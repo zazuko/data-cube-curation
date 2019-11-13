@@ -28,7 +28,7 @@
 
       <b-field label="Source CSV file">
         <b-select v-model="table.sourceId" placeholder="Select a source" required>
-          <option v-for="source in project.sources" :key="source.id" :value="source.id">
+          <option v-for="source in sources" :key="source.id" :value="source.id">
             {{ source.name }}
           </option>
         </b-select>
@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project } from '../../types'
+import { TableType, ResourceId, Project, Source } from '../../types'
 
 interface TableFormData {
   id?: ResourceId,
@@ -62,6 +62,7 @@ interface TableFormData {
 export default class TableForm extends Vue {
   @Prop({ default: emptyTable }) readonly table: TableFormData;
   @Prop() readonly project: Project;
+  @Prop() readonly sources: Source[];
   @Prop() readonly save: (table: TableFormData) => void;
 
   mounted () {

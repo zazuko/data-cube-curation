@@ -15,3 +15,17 @@ export function getOperation (resource: HydraResource, operationId: string) {
 
   return operation
 }
+
+export function findOperationByType (resource: HydraResource, operationType: string) {
+  return resource.operations.find((op: IOperation) => op.supportedOperation.types.includes(operationType)) || null
+}
+
+export function getOperationByType (resource: HydraResource, operationType: string) {
+  const operation = findOperationByType(resource, operationType)
+
+  if (!operation) {
+    throw new Error(`Operation with type ${operationType} not found on ${resource.id}`)
+  }
+
+  return operation
+}

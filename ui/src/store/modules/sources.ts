@@ -31,10 +31,11 @@ const actions: ActionTree<SourcesState, RootState> = {
     })
   },
 
-  async create (context, { project, source }) {
+  async upload (context, { project, file }) {
     await handleAPIError(context, async () => {
-      const id = await client.projects.createSource(project, source)
-      // Reload tables to get the new one
+      const id = await client.projects.createSource(project, file)
+
+      // Reload sources to get the new one
       context.dispatch('loadForProject', project)
     })
   }

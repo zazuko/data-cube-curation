@@ -103,10 +103,15 @@ export default class ProjectTablesView extends Vue {
 
   created () {
     this.$store.dispatch('tables/loadForProject', this.project)
+    this.$store.dispatch('sources/loadForProject', this.project)
   }
 
   get tables (): RemoteData<Table[]> {
     return this.$store.getters['tables/forProject'](this.project.id)
+  }
+
+  get sources (): RemoteData<Table[]> {
+    return this.$store.getters['sources/forProject'](this.project.id)
   }
 
   createTable () {
@@ -115,6 +120,7 @@ export default class ProjectTablesView extends Vue {
       component: TableForm,
       props: {
         project: this.project,
+        sources: this.sources.data, // TODO: Handle loading?
         save: (table: Table) => {
           this.$store.dispatch('tables/create', { project: this.project, table })
           modal.close()
@@ -130,6 +136,7 @@ export default class ProjectTablesView extends Vue {
       component: TableForm,
       props: {
         project: this.project,
+        sources: this.sources.data, // TODO: Handle loading?
         table,
         save: (table: Table) => {
           modal.close()
