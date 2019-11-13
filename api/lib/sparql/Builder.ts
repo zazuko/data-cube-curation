@@ -1,5 +1,6 @@
 import { NamedNode } from 'rdf-js'
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
+import authHeader from './authentication'
 
 function buildPrefixes (prefixes: Record<string, (term: string) => NamedNode>) {
   return Object.entries(prefixes)
@@ -36,14 +37,22 @@ export abstract class Builder<T> {
   }
 
   public execute (client: SparqlHttp) {
-    const query = this.build()
+    const query = this.build().trim()
 
     console.log(query)
+    let requestInit
+    if (authHeader) {
+      requestInit = {
+        headers: {
+          authorization: authHeader,
+        },
+      }
+    }
 
-    return this._executeInternal(client, query)
+    return this._executeInternal(client, query, requestInit)
   }
 
-  protected abstract _executeInternal(client: SparqlHttp, query: string): Promise<T>
+  protected abstract _executeInternal(client: SparqlHttp, query: string, options: QueryRequestInit): Promise<T>
 
   protected abstract _buildQueryInternal(): string
 

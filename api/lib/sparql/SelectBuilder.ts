@@ -11,8 +11,8 @@ export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
     return this
   }
 
-  protected _executeInternal (client: SparqlHttp, query: string) {
-    return client.selectQuery(query)
+  protected _executeInternal (client: SparqlHttp, query: string, options) {
+    return client.selectQuery(query, options)
       .then(this._checkResponse)
       .then(response => response.json())
       .then(json => json.results.bindings)

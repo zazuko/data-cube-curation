@@ -23,11 +23,20 @@ function logger (req, res, next) {
 }
 
 function hydraMiddleware () {
+  let authentication
+  if (process.env.SPARQL_ENDPOINT_USERNAME && process.env.SPARQL_ENDPOINT_PASSWORD) {
+    authentication = {
+      user: process.env.SPARQL_ENDPOINT_USERNAME,
+      password: process.env.SPARQL_ENDPOINT_PASSWORD,
+    }
+  }
+
   const options: Record<string, unknown> = {
     debug: true,
     sparqlEndpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,
     sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
+    authentication,
   }
 
   return hydraBox.fromUrl('/api', 'file://' + path.join(__dirname, 'hydra/api.ttl'), options)
