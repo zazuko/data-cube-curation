@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex, { StoreOptions, ActionTree, MutationTree } from 'vuex'
 import { RootState } from './types'
 import projects from './modules/projects'
+import tables from './modules/tables'
 
 Vue.use(Vuex)
 
@@ -29,7 +30,8 @@ const store: StoreOptions<RootState> = {
   actions,
   mutations,
   modules: {
-    projects
+    projects,
+    tables
   }
 }
 

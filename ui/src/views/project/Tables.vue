@@ -6,7 +6,7 @@
       </b-button>
     </div>
 
-    <Loader class="tables-list" :data="project.tables" v-slot="{ data: tables }">
+    <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
       <article class="card" v-for="table in tables" :key="table.id">
         <header class="card-header" :style="{'background-color': table.color}">
           <h3 class="card-header-title">{{ table.name }}</h3>
@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table } from '../../types'
+import { Project, ResourceId, Table, RemoteData } from '@/types'
 import Loader from '../../components/Loader.vue'
 import TableForm from '../../components/project/TableForm.vue'
 
@@ -94,18 +94,19 @@ import TableForm from '../../components/project/TableForm.vue'
   }
 })
 export default class ProjectTablesView extends Vue {
-  get projectId (): ResourceId {
-    return this.$route.params.id
-  }
-
   get project (): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId)
+    const projectId = this.$route.params.id
+    const remoteProject = this.$store.getters['projects/one'](projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
   }
 
   created () {
-    this.$store.dispatch('projects/loadTables', this.project)
+    this.$store.dispatch('tables/loadForProject', this.project)
+  }
+
+  get tables (): RemoteData<Table[]> {
+    return this.$store.getters['tables/forProject'](this.project.id)
   }
 
   createTable () {
@@ -115,7 +116,7 @@ export default class ProjectTablesView extends Vue {
       props: {
         project: this.project,
         save: (table: Table) => {
-          this.$store.dispatch('projects/createTable', { project: this.project, table })
+          this.$store.dispatch('tables/create', { project: this.project, table })
           modal.close()
         }
       },
