@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { RemoteData } from '../types'
+import { RemoteData, ResourceId } from '../types'
 import Loader from '../components/Loader.vue'
 
 @Component({
@@ -34,7 +34,7 @@ import Loader from '../components/Loader.vue'
   }
 })
 export default class ProjectView extends Vue {
-  get projectId (): string {
+  get projectId (): ResourceId {
     return this.$route.params.id
   }
 

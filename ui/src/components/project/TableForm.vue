@@ -1,39 +1,42 @@
 <template>
-  <form action="" class="modal-card" @submit="save">
+  <form action="" class="modal-card" @submit.prevent="save(table)">
     <header class="modal-card-head">
       <h3 class="modal-card-title">{{ title }}</h3>
     </header>
     <section class="modal-card-body">
+      <b-field>
+        <b-radio v-model="table.type" native-value="fact" :disabled="!project.actions.createFactTable">
+          Fact table
+        </b-radio>
+        <b-radio v-model="table.type" native-value="dimension" :disabled="!project.actions.createDimensionTable">
+          Dimension table
+        </b-radio>
+      </b-field>
+
       <b-field label="Name">
-        <b-input type="text" :value="table.name" placeholder="" required></b-input>
+        <b-input type="text" v-model="table.name" required />
       </b-field>
 
-      <b-field label="Color">
-        <b-input type="text" :value="table.color" placeholder="" required></b-input>
+      <b-field label="Display color">
+        <div class="control has-icons-right is-clearfix">
+          <input type="text" v-model="table.color" class="input" disabled>
+          <span class="icon is-right" :style="{ color: table.color }">
+            <i class="mdi mdi-circle mdi-24px"></i>
+          </span>
+        </div>
       </b-field>
 
-      <b-field label="Properties">
-        <b-table :data="table.properties">
-          <template slot-scope="props">
-            <b-table-column label="Name">
-              <b-input :value="props.row.name" />
-            </b-table-column>
-            <b-table-column label="Type">
-              <b-autocomplete v-model="props.row.type" :data="dataTypes" open-on-focus />
-            </b-table-column>
-            <b-table-column label="">
-              <button class="delete is-medium" @click="deleteProperty(props.index)" />
-            </b-table-column>
-          </template>
-          <template slot="empty">
-            No properties
-          </template>
-          <template slot="footer">
-            <b-button icon-left="plus" @click="addProperty">Add property</b-button>
-          </template>
-        </b-table>
+      <b-field label="Source CSV file">
+        <b-select v-model="table.sourceId" placeholder="Select a source" required>
+          <option v-for="source in project.sources" :key="source.id" :value="source.id">
+            {{ source.name }}
+          </option>
+        </b-select>
       </b-field>
 
+      <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
+        <b-input type="text" v-model="table.identifierTemplate" placeholder="http://example.org/{column_id}" required />
+      </b-field>
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -44,21 +47,31 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Table } from '../../types'
+import { TableType, ResourceId, Project } from '../../types'
+
+interface TableFormData {
+  id?: ResourceId,
+  type: TableType,
+  name: string,
+  color: string,
+  identifierTemplate: string,
+  sourceId: ResourceId,
+}
 
 @Component
 export default class TableForm extends Vue {
-  @Prop({ default: emptyTable }) readonly table: Table;
-  @Prop({ default: [] }) readonly tables: Table[];
+  @Prop({ default: emptyTable }) readonly table: TableFormData;
+  @Prop() readonly project: Project;
+  @Prop() readonly save: (table: TableFormData) => void;
 
-  get dataTypes () {
-    const basicTypes = [
-      'xsd:int',
-      'xsd:gYearMonth'
-    ]
-    const tableTypes = this.tables.map((t) => t.name)
-
-    return basicTypes.concat(tableTypes).sort()
+  mounted () {
+    if (!this.table.type) {
+      if (this.project.actions.createFactTable) {
+        this.table.type = 'fact'
+      } else {
+        this.table.type = 'dimension'
+      }
+    }
   }
 
   get title () {
@@ -68,31 +81,15 @@ export default class TableForm extends Vue {
       return 'Create table'
     }
   }
-
-  addProperty () {
-    this.table.properties.push({
-      name: '',
-      type: ''
-    })
-  }
-
-  deleteProperty (index: number) {
-    this.table.properties.splice(index, 1)
-  }
-
-  save () {
-    this.$buefy.dialog.alert({
-      message: 'Not implemented yet'
-    })
-  }
 }
 
 function emptyTable () {
   return {
-    id: '',
+    type: '',
     name: '',
     color: '',
-    properties: []
+    identifierTemplate: '',
+    sourceId: ''
   }
 }
 </script>

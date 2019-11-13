@@ -1,9 +1,9 @@
-import { ProjectId, Project, RemoteData, ErrorMessage } from '../types'
+import { ResourceId, Project, RemoteData, ErrorMessage } from '../types'
 
 export interface RootState {
   errors: ErrorMessage[];
 }
 
 export interface ProjectsState {
-  projects: RemoteData<Record<ProjectId, Project>>;
+  projects: RemoteData<Record<ResourceId, Project>>;
 }
