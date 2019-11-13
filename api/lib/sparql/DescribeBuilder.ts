@@ -10,8 +10,8 @@ export class DescribeBuilder extends Builder<any> {
     this.__variables = [idOrVariable, ...additionalVariables]
   }
 
-  public _executeInternal (client: SparqlHttp, query: string) {
-    return client.constructQuery(query)
+  public _executeInternal (client: SparqlHttp, query: string, options) {
+    return client.constructQuery(query, options)
       .then(r => this._checkResponse<any>(r))
       .then(response => response.quadStream())
   }

@@ -4,8 +4,8 @@ import { Builder } from './Builder'
 export class AskBuilder extends Builder<boolean> {
   private __patterns: string[] = []
 
-  public _executeInternal (client: SparqlHttp, query: string) {
-    return client.selectQuery(query)
+  public _executeInternal (client: SparqlHttp, query: string, options) {
+    return client.selectQuery(query, options)
       .then(this._checkResponse)
       .then(response => response.json())
       .then(json => json.boolean)
