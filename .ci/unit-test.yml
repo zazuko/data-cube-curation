@@ -22,5 +22,6 @@ run:
     - -euxc
     - |
       cd repo
+      cat api/test/bodies/name-and-columns-to-be-slugified.csv
       npm ci --unsafe-perm
       npm run jest
