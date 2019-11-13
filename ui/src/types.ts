@@ -6,7 +6,6 @@ export interface Project {
   actions: Record<string, any>,
   name: string | null;
   sources: Source[];
-  tables: RemoteData<Table[]>;
 }
 
 export interface RemoteData<T> {
