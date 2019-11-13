@@ -54,6 +54,14 @@ const actions: ActionTree<ProjectsState, RootState> = {
       await client.projects.delete(project)
       context.commit('removeOne', project)
     })
+  },
+
+  async loadSources (context, project) {
+    await handleAPIError(context, async () => {
+      const sources = await client.projects.getSources(project)
+
+      context.commit('storeSources', { project, sources })
+    })
   }
 }
 

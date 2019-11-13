@@ -1,12 +1,13 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
-import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
+import { HydraResource, Collection, IOperation, IPartialCollectionView } from 'alcaeus/types/Resources'
 import { Project, ResourceId, Table } from '../types'
-import { findOperation, getOperation } from './common'
+import { findOperation, getOperation, getOperationByType } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
 import * as TableMixin from './resources/table'
+import * as ColumnMixin from './resources/column'
 
 const apiURL = process.env.VUE_APP_API_URL
 
@@ -14,6 +15,7 @@ const rdf = Hydra.mediaTypeProcessors.RDF as any
 rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 rdf.resourceFactory.mixins.push(TableMixin)
+rdf.resourceFactory.mixins.push(ColumnMixin)
 
 export class APIError extends Error {
   details: any;
@@ -101,15 +103,6 @@ class ProjectsClient {
     return getOrThrow(response, 'root')
   }
 
-  async createSource (project: any, file: File) {
-    const operation = project.actions.createSource
-    const headers = {
-      'Content-Type': 'text/csv',
-      'Content-Disposition': `attachment; filename="${file.name}"`
-    }
-    await operation.invoke(file, headers)
-  }
-
   async getTables (project: any) {
     const operation = project.actions.getTables
     const response = await operation.invoke(operation)
@@ -147,15 +140,46 @@ class ProjectsClient {
     return invokeCreateOperation(operation, data)
   }
 
+  async createSource (project: any, file: File) {
+    const operation = project.actions.createSource
+    const headers = {
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="${file.name}"`
+    }
+    return invokeCreateOperation(operation, file, headers)
+  }
+
   async getSources (project: any) {
-    // Not currently async, but will be because I have to load each of them
-    // individually
-    return project.sourcesCollection.members
+    const response = await Hydra.loadResource(project.sourcesCollection.id) // No GET operation on the collection
+    const sourcesCollection = getOrThrow(response, 'root') as Collection
+    const incompleteSources = sourcesCollection.members
+
+    const sources = Promise.all(incompleteSources.map(async (incompleteSource: any) => {
+      const operation = getOperation(incompleteSource, URI.OP_SOURCE_GET)
+      const response = await operation.invoke('')
+      return getOrThrow(response, 'root')
+    }))
+
+    return sources
+  }
+
+  async getSourceSampleData (source: any) {
+    const collection = source.sampleCollection
+    const operation = getOperationByType(collection, URI.TYPE_OP_VIEW)
+    const response = await operation.invoke('')
+    const loadedCollection = getOrThrow(response, 'root')
+    const rows = loadedCollection.members.map((row: HydraResource) => {
+      return row[URI.API_CELLS]
+    })
+
+    return rows
   }
 }
 
-async function invokeCreateOperation (operation: IOperation, data: Record<string, any>): Promise<ResourceId> {
-  const response = await operation.invoke(JSON.stringify(data))
+async function invokeCreateOperation (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<ResourceId> {
+  const serializedData = data instanceof File ? data : JSON.stringify(data)
+
+  const response = await operation.invoke(serializedData, headers)
   const id = response.xhr.headers.get('Location')
 
   if (response.xhr.status !== 201 || !id) {
