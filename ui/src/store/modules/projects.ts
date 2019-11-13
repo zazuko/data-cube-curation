@@ -131,8 +131,6 @@ const mutations: MutationTree<ProjectsState> = {
   },
 
   loadingError (state, error) {
-    console.error(error)
-
     state.projects.isLoading = false
     state.projects.error = 'Error: could not load projects'
   }
