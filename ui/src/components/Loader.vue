@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <component :is="tag">
     <div class="content has-text-grey has-text-centered" v-if="data.isLoading">
       <p>Loading...</p>
     </div>
@@ -9,7 +9,7 @@
     </div>
 
     <slot v-if="isReady" v-bind:data="data.data"></slot>
-  </div>
+  </component>
 </template>
 
 <script lang="ts">
@@ -19,6 +19,7 @@ import { RemoteData } from '../types'
 @Component
 export default class Loader extends Vue {
   @Prop() data: RemoteData<any>;
+  @Prop({ default: 'div' }) readonly tag: string;
 
   get isReady () {
     return !this.data.isLoading && !this.data.error
