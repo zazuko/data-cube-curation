@@ -9,8 +9,8 @@
       </b-upload>
     </div>
 
-    <div v-for="source in project.sources" :key="source.id" class="sources-list">
-      <article class="card">
+    <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
+      <article class="card" v-for="source in sources" :key="source.id">
         <header class="card-header">
           <h2 class="card-header-title">{{ source.name }}</h2>
           <div class="card-header-icon">
@@ -46,7 +46,7 @@
           </b-button>
         </footer>
       </article>
-    </div>
+    </Loader>
   </div>
 </template>
 
@@ -60,30 +60,37 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import TableTag from '../../components/TableTag.vue'
-import { Project, ResourceId, Table, Source } from '../../types'
+import { Project, ResourceId, Table, Source, RemoteData } from '@/types'
+import Loader from '@/components/Loader.vue'
 
 @Component({
   components: {
-    TableTag
+    TableTag,
+    Loader
   }
 })
 export default class ProjectDataView extends Vue {
-  get projectId (): ResourceId {
-    return this.$route.params.id
-  }
-
   get project (): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId)
+    const projectId = this.$route.params.id
+    const remoteProject = this.$store.getters['projects/one'](projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
   }
 
-  get tables (): Table[] {
-    return this.project.tables.data || []
+  created () {
+    this.$store.dispatch('sources/loadForProject', this.project)
+  }
+
+  get sources (): RemoteData<Source[]> {
+    return this.$store.getters['sources/forProject'](this.project.id)
+  }
+
+  get tables (): RemoteData<Table[]> {
+    return this.$store.getters['tables/forProject'](this.project.id)
   }
 
   uploadSource (file: File) {
-    this.$store.dispatch('projects/uploadSource', {
+    this.$store.dispatch('sources/upload', {
       project: this.project,
       file
     })

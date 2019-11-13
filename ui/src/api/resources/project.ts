@@ -27,12 +27,6 @@ export function Mixin<B extends Constructor> (Base: B) {
       return this.get<Collection>(URI.API_SOURCES)
     }
 
-    get sources () {
-      if (!this.sourcesCollection) return []
-
-      return this.sourcesCollection.members
-    }
-
     get tablesCollection () {
       return this.get<Collection>(URI.API_TABLES)
     }
