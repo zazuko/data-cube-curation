@@ -2,11 +2,18 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: data-cube-curation
-resources:
-  - ingress.yaml
 
 commonLabels:
   app.kubernetes.io/name: data-cube-curation
 
-bases:
-  - server
+resources:
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+
+configMapGenerator:
+- name: data-cube-curation
+  literals:
+    - base_uri=https://datacube.zazukoians.org/
+    - aws_s3_bucket=data-cube-curation
+    - aws_s3_endpoint=fra1.digitaloceanspaces.com

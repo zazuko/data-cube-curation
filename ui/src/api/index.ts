@@ -146,6 +146,12 @@ class ProjectsClient {
     }
     return invokeCreateOperation(operation, data)
   }
+
+  async getSources (project: any) {
+    // Not currently async, but will be because I have to load each of them
+    // individually
+    return project.sourcesCollection.members
+  }
 }
 
 async function invokeCreateOperation (operation: IOperation, data: Record<string, any>): Promise<ResourceId> {

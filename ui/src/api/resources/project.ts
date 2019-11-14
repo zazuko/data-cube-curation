@@ -1,13 +1,10 @@
 
 import { HydraResource, Collection } from 'alcaeus/types/Resources'
-import { RemoteData, Table } from '@/types'
 import { findOperation, Constructor } from '../common'
 import * as URI from '../uris'
 
 export function Mixin<B extends Constructor> (Base: B) {
   return class extends Base {
-    tables: RemoteData<Table[]> = { isLoading: true, data: null, error: null }
-
     get actions () {
       return {
         delete: findOperation(this, URI.OP_PROJECT_DELETE),
@@ -25,12 +22,6 @@ export function Mixin<B extends Constructor> (Base: B) {
 
     get sourcesCollection () {
       return this.get<Collection>(URI.API_SOURCES)
-    }
-
-    get sources () {
-      if (!this.sourcesCollection) return []
-
-      return this.sourcesCollection.members
     }
 
     get tablesCollection () {

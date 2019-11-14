@@ -6,8 +6,8 @@ export class DeleteInsertBuilder extends Builder<Response> {
   private __deleteGraph: string[] = []
   private __insertGraph: string[] = []
 
-  protected _executeInternal (client: SparqlHttp, query: string) {
-    return client.updateQuery(query)
+  protected _executeInternal (client: SparqlHttp, query: string, options) {
+    return client.updateQuery(query, options)
       .then(this._checkResponse)
   }
 
