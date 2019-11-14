@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import { NotFoundError } from './lib/error'
 import { httpProblemMiddleware } from './lib/error/middleware'
-import frontend from './frontend'
+import frontend, { rootRedirect } from './frontend'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
@@ -49,6 +49,7 @@ Promise.resolve().then(async () => {
 
   if (process.env.NODE_ENV === 'production') {
     app.use('/app', frontend)
+    app.use('/', rootRedirect)
   }
   app.use(logger)
   app.use(cors({
