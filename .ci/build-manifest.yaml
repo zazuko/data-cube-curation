@@ -1,0 +1,22 @@
+---
+platform: linux
+
+inputs:
+- name: repo
+- name: image
+
+outputs:
+- name: manifest
+
+params:
+  REGISTRY: ((project.registry))
+
+run:
+  path: /bin/sh
+  args:
+  - -cxeu
+  - |
+    DIGEST=$(cat image/digest)
+    cd repo/k8s
+    kustomize edit set image data-cube-curation=$REGISTRY@$DIGEST
+    kustomize build > ../../manifest/manifest.yaml

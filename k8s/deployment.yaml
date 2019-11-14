@@ -16,6 +16,17 @@ spec:
         imagePullPolicy: Always
 
         env:
+        - name: PORT
+          value: "3000"
+        - name: STORAGE
+          value: s3
+
+        - name: BASE_URI
+          valueFrom:
+            configMapKeyRef:
+              name: data-cube-curation
+              key: base_uri
+
         - name: SPARQL_ENDPOINT
           valueFrom:
             secretKeyRef:
@@ -46,21 +57,7 @@ spec:
             secretKeyRef:
               name: data-cube-curation
               key: sparql_endpoint_password
-        - name: PORT
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: port
-        - name: BASE_URI
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: base_uri
-        - name: STORAGE
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: storage
+
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -73,12 +70,12 @@ spec:
               key: aws_secret_access_key
         - name: AWS_S3_ENDPOINT
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: data-cube-curation
               key: aws_s3_endpoint
         - name: AWS_S3_BUCKET
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               name: data-cube-curation
               key: aws_s3_bucket
 
