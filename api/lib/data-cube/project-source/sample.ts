@@ -1,4 +1,4 @@
-import express from 'express'
+import { Request, Response } from 'express'
 import { asyncMiddleware } from 'middleware-async'
 import $rdf from 'rdf-ext'
 import cf from 'clownface'
@@ -27,7 +27,7 @@ function buildCollectionGraph (collectionId: string, currentPageUrl: string, nex
   return dataset
 }
 
-export const getSampleRows = asyncMiddleware(async (req: express.DataCubeRequest, res: express.DataCubeResponse, next) => {
+export const getSampleRows = asyncMiddleware(async (req: Request, res: Response, next) => {
   const { sourceId } = getSourceIdFromRoute(req)
   const collectionId = sourceId.replace('/source/', '/source-sample/')
   const limit = Number.parseInt(req.query.limit) || 5

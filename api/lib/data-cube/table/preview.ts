@@ -9,7 +9,7 @@ import { getTableSourceId } from '../../read-graphs/table'
 import { buildCsvw } from '../../services/csvwBuilder'
 import { NotFoundError } from '../../error'
 
-export const parseSample = asyncMiddleware(async (req, res: express.DataCubeResponse, next) => {
+export const parseSample = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
   try {
     const tableId = getTableId(req)
     const sourceId = await getTableSourceId(tableId)

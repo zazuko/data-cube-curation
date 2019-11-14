@@ -16,7 +16,7 @@ export function getTableId (req: express.Request) {
   return `${getProjectId(req.params.projectId)}/table/${req.params.tableName}`
 }
 
-export const createFactTable = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
+export const createFactTable = asyncMiddleware(async (req: express.Request, res, next) => {
   const projectId = getProjectId(req.params.projectId)
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
@@ -43,7 +43,7 @@ export const createFactTable = asyncMiddleware(async (req: express.DataCubeReque
     .catch(next)
 })
 
-export const addAttributeHandler = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
+export const addAttributeHandler = asyncMiddleware(async (req: express.Request, res, next) => {
   const tableId = getTableId(req)
   const variables = buildVariables(req, {
     name: expand('schema:name'),
@@ -78,7 +78,7 @@ export const addAttributeHandler = asyncMiddleware(async (req: express.DataCubeR
     .catch(next)
 })
 
-export const getAttributes = asyncMiddleware(async (req, res: express.DataCubeResponse, next) => {
+export const getAttributes = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
   const tableId = getTableId(req)
   getTableAttributes(tableId)
     .then(dataset => {

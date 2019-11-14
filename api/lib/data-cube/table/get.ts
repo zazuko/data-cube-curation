@@ -6,7 +6,7 @@ import { getClient } from '../../read-graphs/sparqlClient'
 import { NotFoundError } from '../../error'
 import { api, dataCube } from '../../namespaces'
 
-export const get = asyncMiddleware(async (req, res: express.DataCubeResponse) => {
+export const get = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = getTableId(req)
   const tableExists = await ask(`<${tableId}> a dataCube:Table`)
     .prefixes({ dataCube })
