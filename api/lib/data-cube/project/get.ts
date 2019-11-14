@@ -25,7 +25,7 @@ export const getExistingProject = asyncMiddleware(async (req, res: express.DataC
   return res.graph(await getProject(res.locals.projectId))
 })
 
-export const get = asyncMiddleware(async (req, res, next) => {
+export const get = asyncMiddleware(async (req, res: express.DataCubeResponse, next) => {
   res.locals.projectId = res.locals.projectId || `/project/${req.params.projectId}`
 
   if (await exists(res.locals.projectId) === false) {
