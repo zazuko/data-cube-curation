@@ -47,9 +47,10 @@ Promise.resolve().then(async () => {
 
   const app = express()
 
+  app.enable('trust proxy')
   if (process.env.NODE_ENV === 'production') {
     app.use('/app', frontend)
-    app.use('/', rootRedirect)
+    app.get('/', rootRedirect)
   }
   app.use(logger)
   app.use(cors({
