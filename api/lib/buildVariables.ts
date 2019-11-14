@@ -32,7 +32,7 @@ class Variable {
   }
 }
 
-export function buildVariables<T extends Record<string, string>> (req: express.DataCubeRequest, mappings: T): Record<keyof T, ReadOnlyVariable> {
+export function buildVariables<T extends Record<string, string>> (req: express.Request, mappings: T): Record<keyof T, ReadOnlyVariable> {
   return Object.entries(mappings).reduce((locals, mapping) => {
     const name = mapping[0] as keyof T
     const property = mapping[1]
