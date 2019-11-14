@@ -5,12 +5,16 @@ import dotenvExpand from 'dotenv-expand'
 
 dotenvExpand(dotenv.config())
 
+interface Summary {
+  failures: string[];
+  successCount: number;
+}
+
 program.option('--grep <pattern>', 'RegExp to filter the test cases')
 
 program.parse(process.argv)
 
 const scenarios = Object.entries({
-  Entrypoint: '',
   CreateDataCubeProject: '',
   'FactTable/CreateWithPut': 'project/fact-table-test',
   'FactTable/CreateWithPost': 'project/fact-table-post-test',
@@ -20,6 +24,8 @@ const scenarios = Object.entries({
   'DimensionTable/CreateAndDelete': 'project/dimension-table-created-deleted',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
+  'Source/WithNamesToEscape': '',
+  Entrypoint: '',
 })
 
 const selectedScenarios = scenarios
@@ -46,32 +52,55 @@ function parseScenarios () {
   })
 }
 
-function runScenarios () {
+function runScenarios (): Promise<Summary> {
+  const summary: Summary = {
+    failures: [],
+    successCount: 0,
+  }
+
   return selectedScenarios.reduce((promise, [scenario, path]) => {
-    return promise.then(() => {
-      return new Promise(async (resolve, reject) => {
+    return promise.then(summary => {
+      return new Promise(async resolve => {
         const command = `hydra-validator e2e --docs test/${scenario}.hydra.json ${process.env.BASE_URI}${path}`
         console.log(`\n------\n   ${command}\n------\n`)
 
         const childProcess = spawn(
           `hydra-validator`,
-          [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`],
+          [`e2e`, `--docs`, `test/${scenario}.hydra.json`, `${process.env.BASE_URI}${path}`, '--strict'],
           { stdio: 'inherit' })
 
         childProcess.on('exit', code => {
-          if (code === 0) {
-            resolve()
+          if (code !== 0) {
+            summary.failures.push(scenario)
+          } else {
+            summary.successCount += 1
           }
 
-          reject(new Error('Last scenario failed. Stopping'))
+          resolve(summary)
         })
       })
     })
-  }, Promise.resolve())
+  }, Promise.resolve(summary))
+}
+
+function summary (summary: Summary) {
+  console.log(`\n------\n   Summary\n------\n`)
+
+  const total = summary.failures.length + summary.successCount
+  console.log(`${summary.successCount}/${total} scenarios succeeded.`)
+
+  if (summary.failures.length > 0) {
+    console.log(`\n------\n   Failed scenarios\n------\n`)
+
+    summary.failures.sort().forEach(failure => {
+      console.log(`  - ${failure}`)
+    })
+  }
 }
 
 parseScenarios()
   .then(runScenarios)
+  .then(summary)
   .catch(e => {
     console.error(e)
     process.exit(1)
