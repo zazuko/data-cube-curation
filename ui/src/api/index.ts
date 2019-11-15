@@ -2,7 +2,7 @@ import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation, IPartialCollectionView } from 'alcaeus/types/Resources'
 import { Project, ResourceId, Table } from '../types'
-import { findOperation, getOperation, getOperationByType } from './common'
+import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
@@ -42,10 +42,9 @@ export class Client {
     this.projects = new ProjectsClient(this)
   }
 
-  async entrypoint () {
+  async entrypoint (): Promise<HydraResource> {
     if (!this.cachedEntrypoint) {
-      const response = await Hydra.loadResource(this.url)
-      this.cachedEntrypoint = getOrThrow(response, 'root')
+      this.cachedEntrypoint = await loadResource(this.url)
     }
 
     return this.cachedEntrypoint
@@ -55,33 +54,31 @@ export class Client {
 // TODO: Can we generate this from API description somehow?
 class ProjectsClient {
   api: Client;
-  cachedResource: HydraResource;
 
   constructor (api: Client) {
     this.api = api
   }
 
-  async resource () {
-    if (!this.cachedResource) {
-      const entrypoint = await this.api.entrypoint()
-      this.cachedResource = getOrThrow(entrypoint, URI.API_PROJECTS)
-    }
-
-    return this.cachedResource
+  async projectsCollection (): Promise<Collection | null> {
+    const entrypoint = await this.api.entrypoint()
+    return entrypoint.get<Collection>(URI.API_PROJECTS)
   }
 
   async list () {
-    const resource = await this.resource()
-    const operation = getOperation(resource, URI.OP_PROJECTS_GET)
-    const response = await operation.invoke('')
-    const projectsCollection = getOrThrow(response, 'root') as Collection
+    const projectsCollection = await this.projectsCollection()
 
-    return projectsCollection.members || []
+    if (!projectsCollection) throw new Error('No projects collection on entrypoint')
+
+    const loadedCollection = await loadResource<Collection>(projectsCollection.id)
+    return loadedCollection.members
   }
 
   async create (name: string): Promise<ResourceId> {
-    const resource = await this.resource()
-    const operation = getOperation(resource, URI.OP_PROJECTS_CREATE)
+    const projectsCollection = await this.projectsCollection()
+
+    if (!projectsCollection) throw new Error('No projects collection on entrypoint')
+
+    const operation = getOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
     const data = {
       '@type': URI.TYPE_PROJECT,
       [URI.PROP_NAME]: name
@@ -99,15 +96,11 @@ class ProjectsClient {
   }
 
   async get (id: string) {
-    const response = await Hydra.loadResource(id)
-    return getOrThrow(response, 'root')
+    return loadResource(id)
   }
 
   async getTables (project: any) {
-    const operation = project.actions.getTables
-    const response = await operation.invoke(operation)
-    const collection = getOrThrow(response, 'root') as Collection
-
+    const collection = await loadResource<Collection>(project.tablesCollection.id)
     return collection.members
   }
 
@@ -150,30 +143,36 @@ class ProjectsClient {
   }
 
   async getSources (project: any) {
-    const response = await Hydra.loadResource(project.sourcesCollection.id) // No GET operation on the collection
-    const sourcesCollection = getOrThrow(response, 'root') as Collection
+    const sourcesCollection = await loadResource<Collection>(project.sourcesCollection.id)
     const incompleteSources = sourcesCollection.members
 
-    const sources = Promise.all(incompleteSources.map(async (incompleteSource: any) => {
-      const operation = getOperation(incompleteSource, URI.OP_SOURCE_GET)
-      const response = await operation.invoke('')
-      return getOrThrow(response, 'root')
-    }))
+    const sources = Promise.all(incompleteSources.map(async (incompleteSource: any) =>
+      loadResource(incompleteSource.id)
+    ))
 
     return sources
   }
 
   async getSourceSampleData (source: any) {
-    const collection = source.sampleCollection
-    const operation = getOperationByType(collection, URI.TYPE_OP_VIEW)
-    const response = await operation.invoke('')
-    const loadedCollection = getOrThrow(response, 'root')
+    const loadedCollection = await loadResource<Collection>(source.sampleCollection.id)
     const rows = loadedCollection.members.map((row: HydraResource) => {
       return row[URI.API_CELLS]
     })
 
     return rows
   }
+}
+
+async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {
+  const response = await Hydra.loadResource(id)
+  const resource = response.root
+
+  if (response.xhr.status !== 200 || !resource) {
+    const details = await response.xhr.json()
+    throw new APIError(details, response)
+  }
+
+  return resource as T
 }
 
 async function invokeCreateOperation (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<ResourceId> {
@@ -188,16 +187,6 @@ async function invokeCreateOperation (operation: IOperation, data: Record<string
   }
 
   return id
-}
-
-function getOrThrow (obj: any, prop: string) {
-  const value = obj[prop]
-
-  if (!prop) {
-    throw new Error(`No ${prop} found in ${obj}`)
-  }
-
-  return value
 }
 
 export const client = new Client(apiURL)
