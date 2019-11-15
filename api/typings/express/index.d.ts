@@ -9,6 +9,5 @@ declare module 'express' {
 
   interface Response {
     graph(dataset: any): void;
-    setLink(url: string, rel: string): void;
   }
 }
