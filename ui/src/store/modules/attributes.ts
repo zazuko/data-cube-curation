@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { ResourceId, RemoteData, Table, Attribute } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import Remote from '@/remote'
 
 interface AttributesState {
   // Attributes are stored per table, indexed by tableId
@@ -17,7 +18,7 @@ const initialState: AttributesState = {
 const getters: GetterTree<AttributesState, RootState> = {
   forTable (state): (projectId: ResourceId) => RemoteData<Attribute[]> {
     return (tableId) => {
-      return state.attributes[tableId] || { isLoading: true, data: null, error: null }
+      return state.attributes[tableId] || Remote.loading()
     }
   }
 }
@@ -42,7 +43,7 @@ const actions: ActionTree<AttributesState, RootState> = {
 
 const mutations: MutationTree<AttributesState> = {
   storeForTable (state, { table, attributes }) {
-    const data = { isLoading: false, data: attributes, error: null }
+    const data = Remote.loaded(attributes)
     Vue.set(state.attributes, table.id, data)
   }
 }

@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import Remote from '@/remote'
 
 interface ProjectsState {
   projectsList: RemoteData<Project[]>;
@@ -11,7 +12,7 @@ interface ProjectsState {
 }
 
 const initialState: ProjectsState = {
-  projectsList: { isLoading: true, data: null, error: null },
+  projectsList: Remote.loading(),
   projects: {}
 }
 
@@ -22,7 +23,7 @@ const getters: GetterTree<ProjectsState, RootState> = {
 
   one (state): (id: ResourceId) => RemoteData<Project> {
     return (id) => {
-      return state.projects[id] || { isLoading: true, data: null, error: null }
+      return state.projects[id] || Remote.loading()
     }
   }
 }
@@ -67,11 +68,11 @@ const actions: ActionTree<ProjectsState, RootState> = {
 
 const mutations: MutationTree<ProjectsState> = {
   storeAll (state, projects: Project[]) {
-    state.projectsList = { isLoading: false, data: projects, error: null }
+    state.projectsList = Remote.loaded(projects)
   },
 
   storeOne (state, project: Project) {
-    Vue.set(state.projects, project.id, { isloading: false, data: project, error: null })
+    Vue.set(state.projects, project.id, Remote.loaded(project))
   },
 
   removeOne (state, project: Project) {
