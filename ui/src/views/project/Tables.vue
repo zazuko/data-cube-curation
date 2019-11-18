@@ -7,49 +7,7 @@
     </div>
 
     <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
-      <article class="card" v-for="table in tables" :key="table.id">
-        <header class="card-header" :style="{'background-color': table.color}">
-          <h3 class="card-header-title">{{ table.name }}</h3>
-          <span class="card-header-icon" v-if="table.isFact"><b-tag>Fact table</b-tag></span>
-        </header>
-        <section class="card-content">
-          <p v-if="!table.isFact">
-            Identifier template: <code>{{ table.identifierTemplate }}</code>
-          </p>
-
-          <h4 class="is-4">Properties:</h4>
-          <table class="table is-fullwidth">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Source column</th>
-                <th>Property</th>
-                <th>Type</th>
-                <th>Language</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="attribute in table.attributes" :key="attribute.id">
-                <td>{{ attribute.name }}</td>
-                <td>{{ attribute.column }}</td>
-                <td>{{ attribute.predicate }}</td>
-                <td>{{ attribute.type }}</td>
-                <td>{{ attribute.language }}</td>
-              </tr>
-              <tr v-if="table.attributes.length < 1">
-                <td colspan="6" class="has-text-grey">No properties yet</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <footer class="card-footer">
-          <div class="buttons has-addons">
-            <b-button icon-left="pencil" v-if="table.actions.edit" @click="editTable(table)" />
-            <b-button icon-left="trash-can-outline" v-if="table.actions.delete" @click="deleteTable(table)" />
-          </div>
-        </footer>
-      </article>
-
+      <TableItem v-for="table in tables" :key="table.id" :table="table" />
       <div v-if="tables.length < 1" class="content has-text-grey">
         <p>No table yet</p>
       </div>
@@ -58,16 +16,12 @@
 </template>
 
 <style scoped>
-  .tables-list {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: flex-start;
+  .tables-list > .card {
+    margin-bottom: 1rem;
   }
 
-  .tables-list > .card {
-    margin-right: 1rem;
-    margin-bottom: 1rem;
+  .tables-list > .card > .card-content {
+    overflow-x: scroll;
   }
 
   .tables-list > .card > .card-footer {
@@ -85,10 +39,12 @@
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { Project, ResourceId, Table, RemoteData } from '@/types'
 import Loader from '../../components/Loader.vue'
+import TableItem from '../../components/project/TableItem.vue'
 import TableForm from '../../components/project/TableForm.vue'
 
 @Component({
   components: {
+    TableItem,
     TableForm,
     Loader
   }
@@ -102,8 +58,8 @@ export default class ProjectTablesView extends Vue {
   }
 
   created () {
-    this.$store.dispatch('tables/loadForProject', this.project)
     this.$store.dispatch('sources/loadForProject', this.project)
+    this.$store.dispatch('tables/loadForProject', this.project)
   }
 
   get tables (): RemoteData<Table[]> {

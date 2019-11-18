@@ -1,4 +1,6 @@
 
+import { Collection } from 'alcaeus/types/Resources'
+
 export type ResourceId = string;
 
 export interface Project {
@@ -16,7 +18,13 @@ export interface RemoteData<T> {
 export interface Source {
   id: ResourceId;
   name: string;
-  columns: any[];
+  columns: Column[];
+}
+
+export interface Column {
+  id: ResourceId;
+  name: string;
+  actions: Record<string, any>;
 }
 
 export type TableType = 'fact' | 'dimension'
@@ -28,12 +36,16 @@ export interface Table {
   color: string;
   sourceId: ResourceId;
   identifierTemplate: string | null;
-  properties: Property[];
+  attributesCollection: Collection | null;
 }
 
-export interface Property {
-  name: string;
-  type: string | null;
+export interface Attribute {
+  id: ResourceId,
+  name: string,
+  predicateId: ResourceId,
+  columnId: ResourceId,
+  type: ResourceId | null,
+  language: ResourceId | null,
 }
 
 export interface ErrorMessage {

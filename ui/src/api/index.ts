@@ -1,13 +1,14 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
-import { HydraResource, Collection, IOperation, IPartialCollectionView } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table } from '../types'
+import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
+import { Project, ResourceId, Table, Attribute } from '../types'
 import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
 import * as TableMixin from './resources/table'
 import * as ColumnMixin from './resources/column'
+import * as AttributeMixin from './resources/attribute'
 
 const apiURL = process.env.VUE_APP_API_URL
 
@@ -16,6 +17,7 @@ rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 rdf.resourceFactory.mixins.push(TableMixin)
 rdf.resourceFactory.mixins.push(ColumnMixin)
+rdf.resourceFactory.mixins.push(AttributeMixin)
 
 export class APIError extends Error {
   details: any;
@@ -101,7 +103,13 @@ class ProjectsClient {
 
   async getTables (project: any) {
     const collection = await loadResource<Collection>(project.tablesCollection.id)
-    return collection.members
+    const incompleteTables = collection.members
+
+    const tables = Promise.all(incompleteTables.map(async (incompleteTable: any) =>
+      loadResource(incompleteTable.id)
+    ))
+
+    return tables
   }
 
   async createTable (project: Project, table: Table): Promise<string> {
@@ -160,6 +168,24 @@ class ProjectsClient {
     })
 
     return rows
+  }
+
+  async getAttributes (table: any) {
+    const collection = await loadResource<Collection>(table.attributesCollection.id)
+    return collection.members
+  }
+
+  async createAttribute (table: any, attribute: Attribute) {
+    const operation = table.actions.createAttribute
+    const data = {
+      '@type': URI.TYPE_ATTRIBUTE,
+      [URI.PROP_NAME]: attribute.name,
+      [URI.PROP_PREDICATE]: attribute.predicateId,
+      [URI.PROP_COLUMN]: attribute.columnId,
+      [URI.PROP_TYPE]: attribute.type,
+      [URI.PROP_LANGUAGE]: attribute.language
+    }
+    return invokeCreateOperation(operation, data)
   }
 }
 

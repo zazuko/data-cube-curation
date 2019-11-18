@@ -5,6 +5,7 @@ import projects from './modules/projects'
 import tables from './modules/tables'
 import sources from './modules/sources'
 import sourcesData from './modules/sources-data'
+import attributes from './modules/attributes'
 
 Vue.use(Vuex)
 
@@ -35,7 +36,8 @@ const store: StoreOptions<RootState> = {
     projects,
     tables,
     sources,
-    sourcesData
+    sourcesData,
+    attributes
   }
 }
 
