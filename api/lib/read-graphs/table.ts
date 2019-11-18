@@ -10,7 +10,7 @@ import { Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
-  insertData(`
+  return insertData(`
     <${ev.id}>
       a dataCube:Table, dataCube:FactTable ;
       dataCube:source <${ev.data.sourceId}>;
@@ -22,11 +22,10 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactT
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
 handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function createDimensionTableTriples (ev) {
-  insertData(`
+  return insertData(`
     <${ev.id}>
       a dataCube:Table, dataCube:DimensionTable;
       dataCube:source <${ev.data.sourceId}>;
@@ -39,12 +38,11 @@ handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function c
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
 handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
-    deleteInsert(`
+    return deleteInsert(`
       ?table ?p0 ?o0 .`
     )
       .where(`
@@ -55,7 +53,6 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable 
         dataCube,
       })
       .execute(getClient())
-      .catch(console.error)
   }
 })
 
@@ -63,12 +60,14 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   if (ev.data.types.includes('Table')) {
     const hydraCollection = await getTableAttributes(ev.id)
 
-    hydraCollection.match(null, expand('hydra:member')).toArray()
+    const deletions = hydraCollection.match(null, expand('hydra:member')).toArray()
       .map((quad: Quad) => quad.object.value)
-      .forEach(async (attributeId: string) => {
+      .map(async (attributeId: string) => {
         const aggregate = await attributes.load(attributeId)
-        aggregate.delete().commit(attributes).catch(console.error)
+        return aggregate.delete().commit(attributes)
       })
+
+    await Promise.all(deletions)
   }
 })
 

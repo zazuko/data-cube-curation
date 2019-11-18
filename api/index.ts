@@ -5,18 +5,28 @@ import url from 'url'
 import express from 'express'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
+import debug from 'debug'
 import { NotFoundError } from './lib/error'
 import { httpProblemMiddleware } from './lib/error/middleware'
 import frontend, { rootRedirect } from './frontend'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
+debug.enable(process.env.DEBUG)
 
-function logger (req, res, next) {
-  process.stdout.write(`${req.method} ${req.url} `)
+const dataCubeLogger = debug('dataCube')
+const requestLogger = dataCubeLogger.extend('request')
+const requestErrorLogger = requestLogger.extend('error')
+const headersLogger = requestLogger.extend('headers')
+function logger (req: express.Request, res, next) {
+  requestLogger(`${req.method} ${req.url}`)
+
+  if (headersLogger.enabled) {
+    headersLogger(`${Object.entries(req.headers).map(([header, value]) => `${header}: '${value}'`).join('\n')}`)
+  }
 
   res.on('finish', () => {
-    process.stdout.write(`${res.statusCode}\n`)
+    requestLogger(`Status ${res.statusCode}`)
   })
 
   next()
@@ -61,12 +71,12 @@ Promise.resolve().then(async () => {
     next(new NotFoundError())
   })
   app.use(function (err, req, res, next) {
-    console.log(err)
+    requestErrorLogger('Request failed: %o', err)
     next(err)
   })
   app.use(httpProblemMiddleware)
 
   app.listen((process.env.PORT || url.parse(baseUrl).port), () => {
-    console.log(`listening at ${baseUrl}`)
+    dataCubeLogger(`listening at ${baseUrl}`)
   })
-}).catch(err => console.error(err))
+}).catch(err => dataCubeLogger.extend('error')('Failed to start: %O', err))

@@ -1,14 +1,16 @@
 import SparqlHttp from 'sparql-http-client'
 import { Builder } from './Builder'
 
-export class DeleteInsertBuilder extends Builder<Response> {
+export class DeleteInsertBuilder extends Builder<void> {
   private __patterns: string[] = []
   private __deleteGraph: string[] = []
   private __insertGraph: string[] = []
 
   protected _executeInternal (client: SparqlHttp, query: string, options) {
     return client.updateQuery(query, options)
-      .then(this._checkResponse)
+  }
+
+  protected async _getResult () {
   }
 
   public delete (...graph: string[]) {

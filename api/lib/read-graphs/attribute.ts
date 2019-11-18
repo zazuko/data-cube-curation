@@ -20,18 +20,17 @@ handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttribut
     builder.graph(`<${ev.id}> dataCube:language "${ev.data.language}"`)
   }
 
-  builder.prefixes({
+  return builder.prefixes({
     dataCube,
     rdf,
     schema,
   })
     .execute(getClient())
-    .catch(console.error)
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function deleteAttributeReadModel (ev) {
   if (ev.data.types.includes('Attribute')) {
-    deleteInsert(`
+    return deleteInsert(`
       ?attribute ?p0 ?o0 .`
     )
       .where(`
@@ -43,7 +42,6 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
         dataCube,
       })
       .execute(getClient())
-      .catch(console.error)
   }
 })
 

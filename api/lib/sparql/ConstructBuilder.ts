@@ -17,10 +17,12 @@ export class ConstructBuilder extends Builder<any> {
     return this
   }
 
-  public _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options) {
     return client.constructQuery(query, options)
-      .then(r => this._checkResponse<any>(r))
-      .then(response => response.quadStream())
+  }
+
+  protected _getResult (response: any) {
+    return response.quadStream()
   }
 
   protected _buildQueryInternal () {

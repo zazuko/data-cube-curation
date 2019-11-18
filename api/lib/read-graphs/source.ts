@@ -15,7 +15,7 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
       dtype:order "${index}"^^xsd:int .
     `)
 
-  insertData(`
+  return insertData(`
     <${ev.data.projectId}> dataCube:source <${ev.id}> .
     <${ev.id}>
       a dataCube:Source, dataCube:CsvSource ;
@@ -31,5 +31,4 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
       xsd,
     })
     .execute(getClient())
-    .catch(console.error)
 })

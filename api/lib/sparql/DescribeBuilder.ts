@@ -12,8 +12,10 @@ export class DescribeBuilder extends Builder<any> {
 
   public _executeInternal (client: SparqlHttp, query: string, options) {
     return client.constructQuery(query, options)
-      .then(r => this._checkResponse<any>(r))
-      .then(response => response.quadStream())
+  }
+
+  protected _getResult (response: any) {
+    return response.quadStream()
   }
 
   public where (...patterns: string[]) {

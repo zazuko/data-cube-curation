@@ -1,6 +1,10 @@
 import { NamedNode } from 'rdf-js'
 import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
+import debug from 'debug'
 import authHeader from './authentication'
+
+const logQuery = debug('SPARQL:query')
+const logQueryError = logQuery.extend('error')
 
 function buildPrefixes (prefixes: Record<string, (term: string) => NamedNode>) {
   return Object.entries(prefixes)
@@ -36,10 +40,10 @@ export abstract class Builder<T> {
       ${this._buildQueryInternal()}`
   }
 
-  public execute (client: SparqlHttp) {
+  public execute (client: SparqlHttp): Promise<T> {
     const query = this.build().trim()
 
-    console.log(query)
+    logQuery('executing %s', query)
     let requestInit
     if (authHeader) {
       requestInit = {
@@ -50,17 +54,24 @@ export abstract class Builder<T> {
     }
 
     return this._executeInternal(client, query, requestInit)
+      .then(this.__checkResponse(query))
+      .then(this._getResult)
   }
 
-  protected abstract _executeInternal(client: SparqlHttp, query: string, options: QueryRequestInit): Promise<T>
+  protected abstract _executeInternal(client: SparqlHttp, query: string, options: QueryRequestInit): Promise<Response>
+
+  protected abstract _getResult(response: Response): Promise<T>
 
   protected abstract _buildQueryInternal(): string
 
-  protected _checkResponse<T extends Response> (response: T) {
-    if (response.ok) {
-      return response
-    }
+  private __checkResponse (query: string) {
+    return function assertSuccessfulResponse (response: Response) {
+      if (response.ok) {
+        return response
+      }
 
-    throw new Error(response.statusText)
+      logQueryError('Failed query %s', query)
+      throw new Error(response.statusText)
+    }
   }
 }
