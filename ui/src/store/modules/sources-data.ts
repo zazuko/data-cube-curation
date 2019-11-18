@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData, Source } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import Remote from '@/remote'
 
 interface SourcesDataState {
   // Source sample data are stored per-source, indexed by sourceId
@@ -17,7 +18,7 @@ const initialState: SourcesDataState = {
 const getters: GetterTree<SourcesDataState, RootState> = {
   forSource (state): (sourceId: ResourceId) => RemoteData<string[][]> {
     return (sourceId) => {
-      return state.data[sourceId] || { isLoading: true, data: null, error: null }
+      return state.data[sourceId] || Remote.loading()
     }
   }
 }
@@ -34,7 +35,7 @@ const actions: ActionTree<SourcesDataState, RootState> = {
 
 const mutations: MutationTree<SourcesDataState> = {
   storeForSource (state, { source, rows }) {
-    const data = { isLoading: false, data: rows, error: null }
+    const data = Remote.loaded(rows)
     Vue.set(state.data, source.id, data)
   }
 }
