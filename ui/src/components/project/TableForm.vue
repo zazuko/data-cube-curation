@@ -73,6 +73,10 @@ export default class TableForm extends Vue {
         this.table.type = 'dimension'
       }
     }
+
+    if (!this.table.sourceId && this.sources.length === 1) {
+      this.table.sourceId = this.sources[0].id
+    }
   }
 
   get title () {
