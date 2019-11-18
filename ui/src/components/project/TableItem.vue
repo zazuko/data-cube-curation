@@ -95,10 +95,6 @@ export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly table: Table
 
-  created () {
-    this.$store.dispatch('attributes/loadForTable', this.table)
-  }
-
   get attributes () {
     return this.$store.getters['attributes/forTable'](this.table.id)
   }

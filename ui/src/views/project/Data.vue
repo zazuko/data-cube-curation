@@ -9,11 +9,13 @@
       </b-upload>
     </div>
 
-    <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
-      <SourceItem v-for="source in sources" :key="source.id" :source="source" :tables="tables" />
-      <p v-if="sources.length < 1" class="has-text-grey">
-        No sources yet
-      </p>
+    <Loader :data="tables" v-slot="{ data: tables }">
+      <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
+          <SourceItem v-for="source in sources" :key="source.id" :source="source" :tables="tables" />
+          <p v-if="sources.length < 1" class="has-text-grey">
+            No sources yet
+          </p>
+      </Loader>
     </Loader>
   </div>
 </template>
@@ -47,10 +49,6 @@ export default class ProjectDataView extends Vue {
     const remoteProject = this.$store.getters['projects/one'](projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
-  }
-
-  created () {
-    this.$store.dispatch('sources/loadForProject', this.project)
   }
 
   get sources (): RemoteData<Source[]> {

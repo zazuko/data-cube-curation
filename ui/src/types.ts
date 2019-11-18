@@ -41,12 +41,13 @@ export interface Table {
 }
 
 export interface Attribute {
-  id: ResourceId,
-  name: string,
-  predicateId: ResourceId,
-  columnId: ResourceId,
-  type: ResourceId | null,
-  language: ResourceId | null,
+  id: ResourceId;
+  name: string;
+  predicateId: ResourceId;
+  columnId: ResourceId;
+  type: ResourceId | null;
+  language: ResourceId | null;
+  tableId: ResourceId;
 }
 
 export interface ErrorMessage {

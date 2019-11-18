@@ -33,6 +33,11 @@ export function Mixin<B extends Constructor> (Base: B) {
     get language () {
       return this.get(URI.PROP_LANGUAGE)
     }
+
+    get tableId () {
+      const table = getOrThrow<HydraResource>(this, URI.PROP_TABLE)
+      return table.id
+    }
   }
 }
 

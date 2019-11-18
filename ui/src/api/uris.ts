@@ -20,6 +20,7 @@ export const PROP_PREDICATE = expand('rdf:predicate')
 export const PROP_COLUMN = expand('dataCube:column')
 export const PROP_TYPE = expand('rdf:type')
 export const PROP_LANGUAGE = expand('dataCube:language')
+export const PROP_TABLE = expand('dataCube:table')
 
 export const API_PROJECTS = expand('dataCube:api/projects')
 export const API_SOURCES = expand('dataCube:api/sources')
