@@ -5,7 +5,7 @@ export type ResourceId = string;
 
 export interface Project {
   id: ResourceId;
-  actions: Record<string, any>,
+  actions: Record<string, any>;
   name: string | null;
 }
 
@@ -37,6 +37,7 @@ export interface Table {
   sourceId: ResourceId;
   identifierTemplate: string | null;
   attributesCollection: Collection | null;
+  actions: Record<string, any>;
 }
 
 export interface Attribute {

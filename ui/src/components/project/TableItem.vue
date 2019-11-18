@@ -66,8 +66,8 @@
     </section>
     <footer class="card-footer">
       <div class="card-actions">
-        <b-button type="is-white" icon-left="pencil" v-if="table.actions.edit" @click="editTable(table)" />
-        <b-button type="is-white" icon-left="trash-can-outline" v-if="table.actions.delete" @click="deleteTable(table)" />
+        <b-button type="is-white" icon-left="pencil" v-if="table.actions.edit" @click="editTable(table)" :title="table.actions.edit.title" />
+        <b-button type="is-white" icon-left="trash-can-outline" v-if="table.actions.delete" @click="deleteTable(table)" :title="table.actions.delete.title" />
       </div>
     </footer>
   </article>
@@ -92,6 +92,7 @@ import AttributeForm from './AttributeForm.vue'
   }
 })
 export default class extends Vue {
+  @Prop() readonly project: Project
   @Prop() readonly table: Table
 
   created () {
@@ -115,6 +116,19 @@ export default class extends Vue {
     const column = this.source.data.columns.find((column: Column) => column.id === id)
 
     return Remote.loaded(column)
+  }
+
+  deleteTable (table: Table) {
+    this.$buefy.dialog.confirm({
+      title: this.table.actions.delete.title,
+      message: 'Are you sure you want to delete this table?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: () => {
+        this.$store.dispatch('tables/delete', { project: this.project, table: this.table })
+      }
+    })
   }
 
   createAttribute () {

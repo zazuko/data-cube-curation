@@ -88,13 +88,8 @@ class ProjectsClient {
     return invokeCreateOperation(operation, data)
   }
 
-  async delete (project: any): Promise<void> {
-    const response = await project.actions.delete.invoke()
-
-    if (response.xhr.status !== 204) {
-      const details = await response.xhr.json()
-      throw new APIError(details, response)
-    }
+  async delete (project: Project): Promise<void> {
+    return invokeDeleteOperation(project.actions.delete)
   }
 
   async get (id: string) {
@@ -139,6 +134,10 @@ class ProjectsClient {
       [URI.PROP_SOURCE]: table.sourceId
     }
     return invokeCreateOperation(operation, data)
+  }
+
+  async deleteTable (table: Table): Promise<void> {
+    return invokeDeleteOperation(table.actions.delete)
   }
 
   async createSource (project: any, file: File) {
@@ -213,6 +212,15 @@ async function invokeCreateOperation (operation: IOperation, data: Record<string
   }
 
   return id
+}
+
+async function invokeDeleteOperation (operation: IOperation): Promise<void> {
+  const response = await operation.invoke('')
+
+  if (response.xhr.status !== 204) {
+    const details = await response.xhr.json()
+    throw new APIError(details, response)
+  }
 }
 
 export const client = new Client(apiURL)
