@@ -1,12 +1,14 @@
 import SparqlHttp from 'sparql-http-client'
 import { Builder } from './Builder'
 
-export class InsertDataBuilder extends Builder<Response> {
+export class InsertDataBuilder extends Builder<void> {
   private __data: string[] = []
 
   protected _executeInternal (client: SparqlHttp, query: string, options) {
     return client.updateQuery(query, options)
-      .then(this._checkResponse)
+  }
+
+  protected async _getResult () {
   }
 
   public graph (...graph: string[]) {

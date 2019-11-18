@@ -9,8 +9,8 @@ import { TableEvents } from '../domain/table/events'
 import { projects } from '../storage/repository'
 import { unselectFactTable } from '../domain/project'
 
-handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
-  insertData(`
+handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
+  await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" .
   `)
     .prefixes({
@@ -18,33 +18,29 @@ handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', ev => {
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
-handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', ev => {
-  deleteInsert(`<${ev.id}> schema:name ?currentName .`)
+handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async ev => {
+  await deleteInsert(`<${ev.id}> schema:name ?currentName .`)
     .insert(`<${ev.id}> schema:name "${ev.data.name}" .`)
     .prefixes({
       schema,
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
 handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
-  deleteInsert(`<${ev.id}> ?p ?o .`)
+  return deleteInsert(`<${ev.id}> ?p ?o .`)
     .execute(getClient())
-    .catch(console.error)
 })
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function initialiseFactTableResource (ev) {
-  insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
+handle<TableEvents, 'FactTableCreated'>('FactTableCreated', async function initialiseFactTableResource (ev) {
+  await insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
     .prefixes({
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
 handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProjectEntity (ev) {
@@ -52,14 +48,13 @@ handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProje
     const project = await projects
       .load(ev.data.projectId)
 
-    project.mutation(unselectFactTable)(null as never)
+    await project.mutation(unselectFactTable)(null as never)
       .commit(projects)
-      .catch(console.error)
   }
 })
 
 handle<ProjectEvents, 'FactTableUnselected'>('FactTableUnselected', function removeFactTableLink (ev) {
-  deleteInsert(`<${ev.id}> dataCube:factTable ?table`)
+  return deleteInsert(`<${ev.id}> dataCube:factTable ?table`)
     .where(`
       ?table a dataCube:Table ; dataCube:source <${ev.data.previousSourceId}> .
     `)
@@ -67,7 +62,6 @@ handle<ProjectEvents, 'FactTableUnselected'>('FactTableUnselected', function rem
       dataCube,
     })
     .execute(getClient())
-    .catch(console.error)
 })
 
 export function exists (id: string) {
@@ -133,5 +127,7 @@ export async function getProject (id: string) {
 export async function hasSource (projectId: string, sourceId: string) {
   return ask(`
     <${projectId}> a dataCube:Project; dataCube:source: <${sourceId}> . 
-  `).execute(getClient())
+  `)
+    .prefixes({ dataCube })
+    .execute(getClient())
 }

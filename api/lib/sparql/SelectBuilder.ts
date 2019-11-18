@@ -13,9 +13,11 @@ export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
 
   protected _executeInternal (client: SparqlHttp, query: string, options) {
     return client.selectQuery(query, options)
-      .then(this._checkResponse)
-      .then(response => response.json())
-      .then(json => json.results.bindings)
+  }
+
+  protected async _getResult (response: SparqlHttp.SelectResponse & Response) {
+    const json = await response.json()
+    return json.results.bindings
   }
 
   public where (...patterns: string[]) {
