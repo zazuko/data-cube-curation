@@ -1,6 +1,3 @@
-# TODO: get rid of base and provide from env variables
-@base <http://localhost:5678/> .
-
 @prefix api: <https://rdf-cube-curation.described.at/api/> .
 @prefix dataCube: <https://rdf-cube-curation.described.at/> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
