@@ -19,6 +19,18 @@ const getters: GetterTree<SourcesState, RootState> = {
     return (projectId) => {
       return state.sources[projectId] || { isLoading: true, data: null, error: null }
     }
+  },
+
+  one (state, getters): (projectId: ResourceId, sourceId: ResourceId) => RemoteData<Source> {
+    return (projectId, sourceId) => {
+      const projectSources = getters.forProject(projectId)
+      const source = (projectSources.data || []).find((s: Source) => s.id === sourceId)
+
+      return {
+        ...projectSources,
+        data: source
+      }
+    }
   }
 }
 

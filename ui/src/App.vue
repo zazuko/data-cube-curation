@@ -29,6 +29,15 @@
   .card-header-icon {
     cursor: inherit;
   }
+
+  .card-footer .card-actions {
+    flex-grow: 1;
+    text-align: right;
+  }
+
+  .card-footer .card-actions .button {
+    margin-left: -1px;
+  }
 </style>
 
 <style scoped>

@@ -19,3 +19,13 @@ export function getOperation (resource: HydraResource, operationId: string) {
 export function findOperationByType (resource: HydraResource, operationType: string) {
   return resource.operations.find((op: IOperation) => op.supportedOperation.types.includes(operationType)) || null
 }
+
+export function getOrThrow<T> (resource: HydraResource, property: string): T {
+  const value = resource.get(property)
+
+  if (!value) {
+    throw new Error(`Property ${property} not defined on ${resource}`)
+  }
+
+  return value as T
+}

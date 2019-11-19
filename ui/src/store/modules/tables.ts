@@ -37,6 +37,14 @@ const actions: ActionTree<TablesState, RootState> = {
       // Reload tables to get the new one
       context.dispatch('loadForProject', project)
     })
+  },
+
+  async delete (context, { project, table }) {
+    await handleAPIError(context, async () => {
+      await client.projects.deleteTable(table)
+      // Reload tables
+      context.dispatch('loadForProject', project)
+    })
   }
 }
 
