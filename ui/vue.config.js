@@ -9,6 +9,8 @@ module.exports = {
       .loader('raw-loader')
       .end()
 
+    // Disable auto-prefetching because it was prefetching all the ontologies
+    // of the rdf-vocabularies dependency.
     config.plugins.delete('prefetch')
   }
 }
