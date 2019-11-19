@@ -26,8 +26,9 @@ export function Mixin<B extends Constructor> (Base: B) {
       return predicate.id
     }
 
-    get type () {
-      return this.get(URI.PROP_TYPE)
+    get dataTypeId () {
+      const dataType = this.get<HydraResource>(URI.PROP_DATATYPE)
+      return dataType ? dataType.id : null
     }
 
     get language () {

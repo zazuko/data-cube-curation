@@ -22,13 +22,13 @@
       </b-field>
 
       <b-field label="Type">
-        <b-input type="text" v-model="attribute.type" :disabled="attribute.language !== ''" />
+        <b-input type="text" v-model="attribute.dataTypeId" :disabled="attribute.language !== ''" />
       </b-field>
 
       <b-field label="Language">
         <b-autocomplete
           v-model="attribute.language"
-          :disabled="attribute.type !== ''"
+          :disabled="attribute.dataTypeId !== ''"
           :data="languages"
         />
       </b-field>
@@ -50,7 +50,7 @@ interface AttributeFormData {
   name: string,
   columnId: ResourceId,
   predicateId: ResourceId,
-  type: string,
+  dataTypeId: string,
   language: string
 }
 
@@ -91,7 +91,7 @@ function emptyAttribute () {
     name: '',
     columnId: '',
     predicateId: '',
-    type: '',
+    dataTypeId: '',
     language: ''
   }
 }
