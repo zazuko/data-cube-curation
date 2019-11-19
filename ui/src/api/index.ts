@@ -115,6 +115,13 @@ class ProjectsClient {
     }
   }
 
+  async createTableWithAttributes (project: Project, table: Table, attributes: Attribute[]): Promise<string> {
+    const tableId = await this.createTable(project, table)
+    const loadedTable = await loadResource(tableId)
+    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(loadedTable, attribute)))
+    return tableId
+  }
+
   async createDimensionTable (project: Project, table: Table): Promise<ResourceId> {
     const operation = project.actions.createFactTable
     const data = {

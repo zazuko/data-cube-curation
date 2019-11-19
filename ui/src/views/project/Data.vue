@@ -11,7 +11,7 @@
 
     <Loader :data="tables" v-slot="{ data: tables }">
       <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
-          <SourceItem v-for="source in sources" :key="source.id" :source="source" :tables="tables" />
+          <SourceItem v-for="source in sources" :key="source.id" :project="project" :source="source" :tables="tables" />
           <p v-if="sources.length < 1" class="has-text-grey">
             No sources yet
           </p>

@@ -50,6 +50,14 @@ const actions: ActionTree<TablesState, RootState> = {
       // Reload tables
       context.dispatch('loadForProject', project)
     })
+  },
+
+  async createWithAttributes (context, { project, table, attributes }) {
+    await handleAPIError(context, async () => {
+      await client.projects.createTableWithAttributes(project, table, attributes)
+      // Reload tables
+      context.dispatch('loadForProject', project)
+    })
   }
 }
 
