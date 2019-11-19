@@ -1,13 +1,13 @@
 <template>
   <article class="card">
-    <header class="card-header">
+    <header class="card-header has-background-light">
       <h2 class="card-header-title">{{ source.name }}</h2>
       <div class="card-header-icon">
         <b-button icon-left="trash-can-outline" v-if="source.actions.delete"></b-button>
       </div>
     </header>
     <section class="card-content">
-      <table class="table is-fullwidth is-bordered is-striped is-narrowed">
+      <table class="table is-fullwidth is-bordered is-striped is-narrowed source-table">
         <thead>
           <tr>
             <th v-for="column in source.columns" :key="column.id">
@@ -37,6 +37,14 @@
     </footer>
   </article>
 </template>
+
+<style scoped>
+.source-table > tbody > tr > td {
+  font-family: monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+</style>
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
