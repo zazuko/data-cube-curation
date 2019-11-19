@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RemoteData, ResourceId } from '../types'
 import Loader from '../components/Loader.vue'
 

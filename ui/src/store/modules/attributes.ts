@@ -16,9 +16,22 @@ const initialState: AttributesState = {
 }
 
 const getters: GetterTree<AttributesState, RootState> = {
-  forTable (state): (projectId: ResourceId) => RemoteData<Attribute[]> {
+  forTable (state): (tableId: ResourceId) => RemoteData<Attribute[]> {
     return (tableId) => {
       return state.attributes[tableId] || Remote.loading()
+    }
+  },
+
+  forTables (state, getters): (tables: Table[]) => RemoteData<Attribute[]> {
+    return (tables) => {
+      const tablesAttributes = tables.map((table) => {
+        return getters.forTable(table.id)
+      })
+
+      const isLoading = tablesAttributes.reduce((acc, d) => acc || d.isLoading, false)
+      const data = tablesAttributes.reduce((acc, d) => acc.concat(d.data || []), [])
+
+      return { isLoading: isLoading, data: data, error: null }
     }
   }
 }

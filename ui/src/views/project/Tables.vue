@@ -57,11 +57,6 @@ export default class ProjectTablesView extends Vue {
     return remoteProject.data
   }
 
-  created () {
-    this.$store.dispatch('sources/loadForProject', this.project)
-    this.$store.dispatch('tables/loadForProject', this.project)
-  }
-
   get tables (): RemoteData<Table[]> {
     return this.$store.getters['tables/forProject'](this.project.id)
   }

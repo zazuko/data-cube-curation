@@ -29,6 +29,10 @@ const actions: ActionTree<TablesState, RootState> = {
       const tables = await client.projects.getTables(project)
 
       context.commit('storeForProject', { project, tables })
+
+      tables.forEach((table) => {
+        context.dispatch('attributes/loadForTable', table, { root: true })
+      })
     })
   },
 

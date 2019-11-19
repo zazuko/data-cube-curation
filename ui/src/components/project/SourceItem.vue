@@ -13,8 +13,8 @@
             <th v-for="column in source.columns" :key="column.id">
               {{ column.name }}
               <b-taglist>
-                <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="attribute.table">
-                  {{ attribute.table.name }} > {{ attribute.property }}
+                <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
+                  {{ getTable(attribute.tableId).name }} > {{ attribute.name }}
                 </TableTag>
               </b-taglist>
             </th>
@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData } from '@/types'
+import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column } from '@/types'
 import TableTag from '@/components/TableTag.vue'
 import Loader from '@/components/Loader.vue'
 
@@ -62,9 +62,22 @@ export default class extends Vue {
     return this.$store.getters['sourcesData/forSource'](this.source.id)
   }
 
-  columnAttributes (column: any) {
-    // TODO
-    return []
+  get sourceAttributes (): RemoteData<Attribute[]> {
+    return this.$store.getters['attributes/forTables'](this.tables)
+  }
+
+  getTable (id: ResourceId): Table {
+    const table = this.tables.find((table) => table.id === id)
+
+    if (!table) throw new Error(`Table with ID ${id} not found`)
+
+    return table
+  }
+
+  columnAttributes (column: Column) {
+    if (this.sourceAttributes.isLoading || !this.sourceAttributes.data) return []
+
+    return this.sourceAttributes.data.filter((attribute) => attribute.columnId === column.id)
   }
 }
 </script>
