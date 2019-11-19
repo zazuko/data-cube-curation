@@ -17,7 +17,7 @@ async function loadProject (projectId: string) {
   return project
 }
 
-async function createDimensionTable (req: express.DataCubeRequest, projectId: string): Promise<string> {
+async function createDimensionTable (req: express.Request, projectId: string): Promise<string> {
   const variables = buildVariables(req, {
     identifierTemplate: expand('dataCube:identifierTemplate'),
     source: expand('dataCube:source'),
@@ -36,7 +36,7 @@ async function createDimensionTable (req: express.DataCubeRequest, projectId: st
     .then(created => `${process.env.BASE_URI}${created['@id']}`)
 }
 
-async function createFactTable (req: express.DataCubeRequest, projectId: string) {
+async function createFactTable (req: express.Request, projectId: string) {
   const { sourceId, tableName } = buildVariables(req, {
     sourceId: expand('dataCube:source'),
     tableName: expand('schema:name'),
@@ -51,7 +51,7 @@ async function createFactTable (req: express.DataCubeRequest, projectId: string)
     .then(() => `${projectId}/table/${tableName.value}`)
 }
 
-export const createTable = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
+export const createTable = asyncMiddleware(async (req: express.Request, res, next) => {
   let promiseTable: Promise<string>
   const projectId = getProjectId(req.params.projectId)
   const { type } = buildVariables(req, {

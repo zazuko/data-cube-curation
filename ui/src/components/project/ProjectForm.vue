@@ -21,9 +21,14 @@ import { Project, Table, Source } from '../../types'
 import '@hydrofoil/alcaeus-forms/alcaeus-form'
 import { IOperation } from 'alcaeus/types/Resources'
 
+interface ProjectFormData {
+  id?: string;
+  name: string;
+}
+
 @Component
 export default class extends Vue {
-  @Prop() project: Project;
+  @Prop() project: ProjectFormData;
   @Prop() save: (project: Project) => any;
   @Prop() operation: IOperation
 }

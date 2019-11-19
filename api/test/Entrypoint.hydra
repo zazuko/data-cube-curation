@@ -3,17 +3,6 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
 
-With Class api:Installation {
-    Expect Operation api:InstallOperation {
-        Invoke {
-            Expect Status 201
-            Expect Header Location [entrypoint]
-
-            Follow [entrypoint]
-        }
-    }
-}
-
 With Class api:Entrypoint {
     Expect Property hydra:title "Data Cube Curation"
     Expect Link api:projects

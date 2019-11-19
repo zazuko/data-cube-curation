@@ -4,11 +4,13 @@ import { Builder } from './Builder'
 export class AskBuilder extends Builder<boolean> {
   private __patterns: string[] = []
 
-  public _executeInternal (client: SparqlHttp, query: string) {
-    return client.selectQuery(query)
-      .then(this._checkResponse)
-      .then(response => response.json())
-      .then(json => json.boolean)
+  protected _executeInternal (client: SparqlHttp, query: string, options) {
+    return client.selectQuery(query, options)
+  }
+
+  protected async _getResult (response: SparqlHttp.SelectResponse & Response) {
+    const json = await response.json()
+    return json.boolean
   }
 
   public where (...patterns: string[]) {

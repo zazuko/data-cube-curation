@@ -1,11 +1,12 @@
 
-export type ProjectId = string;
+import { Collection } from 'alcaeus/types/Resources'
+
+export type ResourceId = string;
 
 export interface Project {
-  id: ProjectId;
+  id: ResourceId;
+  actions: Record<string, any>;
   name: string | null;
-  sources: Source[];
-  tables: Table[];
 }
 
 export interface RemoteData<T> {
@@ -15,22 +16,37 @@ export interface RemoteData<T> {
 }
 
 export interface Source {
-  id: string;
+  id: ResourceId;
   name: string;
-  columns: any[];
-  data: any[];
+  columns: Column[];
 }
+
+export interface Column {
+  id: ResourceId;
+  name: string;
+  actions: Record<string, any>;
+}
+
+export type TableType = 'fact' | 'dimension'
 
 export interface Table {
-  id: string;
+  type: TableType;
+  id: ResourceId;
   name: string;
   color: string;
-  properties: Property[];
+  sourceId: ResourceId;
+  identifierTemplate: string | null;
+  attributesCollection: Collection | null;
+  actions: Record<string, any>;
 }
 
-export interface Property {
-  name: string;
-  type: string | null;
+export interface Attribute {
+  id: ResourceId,
+  name: string,
+  predicateId: ResourceId,
+  columnId: ResourceId,
+  type: ResourceId | null,
+  language: ResourceId | null,
 }
 
 export interface ErrorMessage {

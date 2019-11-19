@@ -1,81 +1,74 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
-import { ProjectsState, RootState } from '@/store/types'
-import { ProjectId, Project, RemoteData } from '@/types'
-import { client, OP_PROJECTS_CREATE } from '../../api'
+import { RootState } from '@/store/types'
+import { ResourceId, Project, RemoteData } from '@/types'
+import { client } from '@/api'
+import { handleAPIError } from '../common'
+import Remote from '@/remote'
 import { IOperation } from 'alcaeus/types/Resources'
+import { OP_PROJECTS_CREATE } from '@/api/uris'
+
+interface ProjectsState {
+  projectsList: RemoteData<Project[]>;
+  projects: Record<ResourceId, RemoteData<Project>>;
+  createOperation: IOperation | null
+}
 
 const initialState: ProjectsState = {
-  projects: { isLoading: true, data: null, error: null },
+  projectsList: Remote.loading(),
+  projects: {},
   createOperation: null
 }
 
 const getters: GetterTree<ProjectsState, RootState> = {
-  list (state): RemoteData<Project[]> {
-    return {
-      ...state.projects,
-      data: Object.values(state.projects.data || {})
-    }
+  list (state) {
+    return state.projectsList
   },
 
-  one (state): (id: ProjectId) => RemoteData<Project> {
+  one (state): (id: ResourceId) => RemoteData<Project> {
     return (id) => {
-      const project = (state.projects.data || {})[id]
-      return {
-        ...state.projects,
-        data: project
-      }
+      return state.projects[id] || Remote.loading()
     }
   }
 }
 
 const actions: ActionTree<ProjectsState, RootState> = {
-  async loadAll ({ commit }) {
-    try {
+  async loadAll (context) {
+    await handleAPIError(context, async () => {
       const projects = await client.projects.list()
-      const operations = await client.projects.operations()
-      commit('storeAll', projects)
-      commit('storeOperations', operations)
-    } catch (error) {
-      commit('loadingError', error)
-    }
+      const operations = (await client.projects.projectsCollection())!.operations
+      context.commit('storeAll', projects)
+      context.commit('storeOperations', operations)
+    })
   },
 
-  async loadOne ({ commit }, id) {
-    try {
+  async loadOne (context, id) {
+    await handleAPIError(context, async () => {
       const project = await client.projects.get(id)
-      commit('storeOne', project)
-    } catch (error) {
-      commit('loadingError', error)
-    }
+      context.commit('storeOne', project)
+    })
   },
 
-  async create ({ dispatch, commit }, name) {
-    try {
+  async create (context, name) {
+    await handleAPIError(context, async () => {
       const id = await client.projects.create(name)
-      dispatch('loadOne', id)
-    } catch (error) {
-      commit('storeError', error.details, { root: true })
-    }
+      context.dispatch('loadAll', id)
+    })
   },
 
-  async delete ({ dispatch, commit }, project) {
-    try {
+  async delete (context, project) {
+    await handleAPIError(context, async () => {
       await client.projects.delete(project)
-      commit('removeOne', project)
-    } catch (error) {
-      commit('storeError', error.details, { root: true })
-    }
+      context.commit('removeOne', project)
+    })
   },
 
-  async uploadSource ({ dispatch, commit }, { project, file }) {
-    try {
-      await client.projects.createSource(project, file)
-      // Reload project to get the new source
-      dispatch('loadOne', project.id)
-    } catch (error) {
-      commit('storeError', error.details.title, { root: true })
-    }
+  async loadSources (context, project) {
+    await handleAPIError(context, async () => {
+      const sources = await client.projects.getSources(project)
+
+      context.commit('storeSources', { project, sources })
+    })
   }
 }
 
@@ -85,30 +78,21 @@ const mutations: MutationTree<ProjectsState> = {
   },
 
   storeAll (state, projects: Project[]) {
-    const emptyData: Record<ProjectId, Project> = {}
-    state.projects.data = projects.reduce((acc, project) => {
-      acc[project.id] = project
-      return acc
-    }, emptyData)
-    state.projects.isLoading = false
+    state.projectsList = Remote.loaded(projects)
   },
 
   storeOne (state, project: Project) {
-    state.projects.data = Object.assign({}, state.projects.data, { [project.id]: project })
-    state.projects.isLoading = false
+    Vue.set(state.projects, project.id, Remote.loaded(project))
   },
 
   removeOne (state, project: Project) {
-    if (!state.projects.data) return
+    if (!state.projectsList.data) return
 
-    Vue.delete(state.projects.data, project.id)
-  },
+    // Delete from projects list
+    state.projectsList.data = state.projectsList.data.filter((p) => p.id !== project.id)
 
-  loadingError (state, error) {
-    console.error(error)
-
-    state.projects.isLoading = false
-    state.projects.error = 'Error: could not load projects'
+    // Delete from projects
+    Vue.delete(state.projects, project.id)
   }
 }
 

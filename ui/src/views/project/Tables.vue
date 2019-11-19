@@ -1,52 +1,27 @@
 <template>
   <div class="output-tables">
-    <div class="buttons">
+    <div class="buttons" v-if="project.actions.createDimensionTable || project.actions.createFactTable">
       <b-button type="is-primary" icon-left="plus" @click="createTable">
-        Add table
+        Create table
       </b-button>
     </div>
 
-    <section class="tables-list">
-      <article class="card" v-for="(table, index) in project.tables" :key="index">
-        <header class="card-header" :style="{'background-color': table.color}">
-          <h3 class="card-header-title">{{ table.name }}</h3>
-        </header>
-        <section class="card-content">
-          <table class="table">
-            <tbody>
-              <tr v-for="(property, index) in table.properties" :key="index">
-                <th>{{ property.name }}</th>
-                <td>{{ property.type }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <footer class="card-footer">
-          <div class="buttons has-addons">
-            <b-button icon-left="pencil" @click="editTable(table)" />
-            <b-button icon-left="trash-can-outline" />
-          </div>
-        </footer>
-      </article>
-    </section>
+    <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
+      <TableItem v-for="table in tables" :key="table.id" :table="table" :project="project" />
+      <div v-if="tables.length < 1" class="content has-text-grey">
+        <p>No table yet</p>
+      </div>
+    </Loader>
   </div>
 </template>
 
-<style>
-  .tables-list {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-
+<style scoped>
   .tables-list > .card {
-    margin-right: 1rem;
     margin-bottom: 1rem;
   }
 
   .tables-list > .card > .card-content {
-    padding: 0;
+    overflow-x: scroll;
   }
 
   .tables-list > .card > .card-footer {
@@ -62,45 +37,81 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ProjectId, Table } from '../../types'
+import { Project, ResourceId, Table, RemoteData } from '@/types'
+import Loader from '../../components/Loader.vue'
+import TableItem from '../../components/project/TableItem.vue'
 import TableForm from '../../components/project/TableForm.vue'
 
 @Component({
   components: {
-    TableForm
+    TableItem,
+    TableForm,
+    Loader
   }
 })
 export default class ProjectTablesView extends Vue {
-  get projectId (): ProjectId {
-    return this.$route.params.id
-  }
-
   get project (): Project {
-    const remoteProject = this.$store.getters['projects/one'](this.projectId)
+    const projectId = this.$route.params.id
+    const remoteProject = this.$store.getters['projects/one'](projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
   }
 
+  created () {
+    this.$store.dispatch('sources/loadForProject', this.project)
+    this.$store.dispatch('tables/loadForProject', this.project)
+  }
+
+  get tables (): RemoteData<Table[]> {
+    return this.$store.getters['tables/forProject'](this.project.id)
+  }
+
+  get sources (): RemoteData<Table[]> {
+    return this.$store.getters['sources/forProject'](this.project.id)
+  }
+
   createTable () {
-    this.$buefy.modal.open({
+    const modal = this.$buefy.modal.open({
       parent: this,
       component: TableForm,
       props: {
-        tables: this.project.tables
+        project: this.project,
+        sources: this.sources.data, // TODO: Handle loading?
+        save: (table: Table) => {
+          this.$store.dispatch('tables/create', { project: this.project, table })
+          modal.close()
+        }
       },
       hasModalCard: true
     })
   }
 
   editTable (table: Table) {
-    this.$buefy.modal.open({
+    const modal = this.$buefy.modal.open({
       parent: this,
       component: TableForm,
       props: {
-        tables: this.project.tables,
-        table
+        project: this.project,
+        sources: this.sources.data, // TODO: Handle loading?
+        table,
+        save: (table: Table) => {
+          modal.close()
+        }
       },
       hasModalCard: true
+    })
+  }
+
+  deleteTable (table: Table) {
+    this.$buefy.dialog.confirm({
+      title: 'Delete table',
+      message: 'Are you sure you want to delete this table?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: () => {
+        this.$store.dispatch('tables/delete', table)
+      }
     })
   }
 }

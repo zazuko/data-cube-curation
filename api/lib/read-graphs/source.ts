@@ -1,3 +1,4 @@
+import slug from 'url-slug'
 import { SourceEvents } from '../domain/source/events'
 import { handle } from '@tpluscode/fun-ddr'
 import { getClient } from './sparqlClient'
@@ -6,15 +7,15 @@ import { dataCube, schema, xsd, dtype } from '../namespaces'
 
 handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
   const columns = ev.data.columns.map((name, index) => `
-    <${ev.id}> dataCube:column <${ev.id}/${name}>  .
+    <${ev.id}> dataCube:column <${ev.id}/${slug(name)}>  .
 
-    <${ev.id}/${name}> 
+    <${ev.id}/${slug(name)}> 
       a dataCube:Column ; 
       schema:name "${name}" ;
       dtype:order "${index}"^^xsd:int .
     `)
 
-  insertData(`
+  return insertData(`
     <${ev.data.projectId}> dataCube:source <${ev.id}> .
     <${ev.id}>
       a dataCube:Source, dataCube:CsvSource ;
@@ -30,5 +31,4 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
       xsd,
     })
     .execute(getClient())
-    .catch(console.error)
 })

@@ -1,4 +1,5 @@
 import { factory } from '@tpluscode/fun-ddr'
+import slug from 'url-slug'
 import { Source } from '../source'
 import { SourceEvents } from '../source/events'
 import { Project } from './index'
@@ -11,7 +12,7 @@ interface UploadSourceCommand {
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {
-  const sourceId = `${project['@id']}/source/${command.fileName}`
+  const sourceId = `${project['@id']}/source/${slug(command.fileName)}`
 
   emitter.emit<SourceEvents, 'SourceUploaded'>('SourceUploaded', {
     fileName: command.fileName,

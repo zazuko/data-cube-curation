@@ -46,6 +46,7 @@ ENV HOST 0.0.0.0
 
 ENTRYPOINT []
 
+ENV DEBUG=*:error,dataCube:request,dataCube
 ENV PORT=8080
 EXPOSE $PORT
 

@@ -58,7 +58,7 @@ With Operation api:CreateFactTable {
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/fact-table-test/source/single-column.csv> ;
+        <> dataCube:source <project/fact-table-test/source/single-column-csv> ;
            schema:name "Observation" .
         ```
     } => {

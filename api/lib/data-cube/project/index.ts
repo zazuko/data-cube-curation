@@ -20,7 +20,7 @@ export function initExisting (req, res, next) {
   next()
 }
 
-export function create (req: express.DataCubeRequest, res: express.DataCubeResponse, next: express.NextFunction) {
+export function create (req: express.Request, res: express.Response, next: express.NextFunction) {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -37,7 +37,7 @@ export function create (req: express.DataCubeRequest, res: express.DataCubeRespo
     .catch(next)
 }
 
-export const createOrUpdate = asyncMiddleware(async (req: express.DataCubeRequest, res, next) => {
+export const createOrUpdate = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })

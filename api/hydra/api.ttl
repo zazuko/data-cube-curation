@@ -9,7 +9,6 @@
 @prefix schema: <http://schema.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 ## Entrypoint
 
@@ -29,7 +28,7 @@
     dataCube:ColumnAttribute ,
     dataCube:Attribute ,
     api:AttributeCollection ,
-    api:TableCollection.
+    api:TableCollection .
 
 api:Entrypoint a hydra:Class ;
   hydra:title "The root of the API" ;
@@ -298,7 +297,7 @@ api:sample a hydra:Link ;
   hydra:supportedOperation _:GetSourceSample .
 
 _:GetSourceSample
-  a hydra:SupportedOperation, hydra-box:View ;
+  a hydra:SupportedOperation, hydra-box:View, schema:ViewAction ;
   hydra:method "GET" ;
   hydra:title "Sample source rows" ;
   code:implementedBy [
