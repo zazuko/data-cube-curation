@@ -13,18 +13,24 @@
         </b-radio>
       </b-field>
 
-      <b-field label="Name">
-        <b-input type="text" v-model="table.name" required />
-      </b-field>
-
-      <b-field label="Display color">
-        <div class="control has-icons-right is-clearfix">
-          <input type="text" v-model="table.color" class="input" disabled>
-          <span class="icon is-right" :style="{ color: table.color }">
-            <i class="mdi mdi-circle mdi-24px"></i>
-          </span>
+      <div class="columns">
+        <div class="column">
+        <b-field label="Name">
+          <b-input type="text" v-model="table.name" required />
+        </b-field>
         </div>
-      </b-field>
+
+        <div class="column is-3">
+          <b-field label="Display color">
+            <div class="control has-icons-right is-clearfix">
+              <input type="text" v-model="table.color" class="input" disabled>
+              <span class="icon is-right" :style="{ color: table.color }">
+                <i class="mdi mdi-circle mdi-24px"></i>
+              </span>
+            </div>
+          </b-field>
+        </div>
+      </div>
 
       <b-field label="Source CSV file">
         <b-select v-model="table.sourceId" placeholder="Select a source" required>
