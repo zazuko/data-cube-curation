@@ -18,7 +18,7 @@ export const PROP_SOURCE = expand('dataCube:source')
 export const PROP_IDENTIFIER_TEMPLATE = expand('dataCube:identifierTemplate')
 export const PROP_PREDICATE = expand('rdf:predicate')
 export const PROP_COLUMN = expand('dataCube:column')
-export const PROP_TYPE = expand('rdf:type')
+export const PROP_DATATYPE = expand('dataCube:datatype')
 export const PROP_LANGUAGE = expand('dataCube:language')
 export const PROP_TABLE = expand('dataCube:table')
 

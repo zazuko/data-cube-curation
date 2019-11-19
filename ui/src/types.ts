@@ -45,8 +45,8 @@ export interface Attribute {
   name: string;
   predicateId: ResourceId;
   columnId: ResourceId;
-  type: ResourceId | null;
-  language: ResourceId | null;
+  dataTypeId: ResourceId | null;
+  language: string | null;
   tableId: ResourceId;
 }
 

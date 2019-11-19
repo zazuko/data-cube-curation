@@ -181,7 +181,7 @@ class ProjectsClient {
       [URI.PROP_NAME]: attribute.name,
       [URI.PROP_PREDICATE]: attribute.predicateId,
       [URI.PROP_COLUMN]: attribute.columnId,
-      [URI.PROP_TYPE]: attribute.type,
+      [URI.PROP_DATATYPE]: attribute.dataTypeId,
       [URI.PROP_LANGUAGE]: attribute.language
     }
     return invokeCreateOperation(operation, data)
