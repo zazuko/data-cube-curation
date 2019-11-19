@@ -3,6 +3,7 @@ import path from 'path'
 import hydraBox from 'hydra-box'
 import url from 'url'
 import express from 'express'
+import replace from 'replace-in-file'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import debug from 'debug'
@@ -32,7 +33,7 @@ function logger (req: express.Request, res, next) {
   next()
 }
 
-function hydraMiddleware () {
+async function hydraMiddleware () {
   let authentication
   if (process.env.SPARQL_ENDPOINT_USERNAME && process.env.SPARQL_ENDPOINT_PASSWORD) {
     authentication = {
@@ -49,7 +50,14 @@ function hydraMiddleware () {
     authentication,
   }
 
-  return hydraBox.fromUrl('/api', 'file://' + path.join(__dirname, 'hydra/api.ttl'), options)
+  const apiDocsPath = path.join(__dirname, 'hydra/api.ttl')
+  await replace({
+    files: apiDocsPath,
+    from: /@base <.+>/,
+    to: `@base <${process.env.BASE_URI}>`,
+  })
+
+  return hydraBox.fromUrl('/api', 'file://' + apiDocsPath, options)
 }
 
 Promise.resolve().then(async () => {
@@ -76,7 +84,8 @@ Promise.resolve().then(async () => {
   })
   app.use(httpProblemMiddleware)
 
-  app.listen((process.env.PORT || url.parse(baseUrl).port), () => {
-    dataCubeLogger(`listening at ${baseUrl}`)
+  const port = process.env.PORT || url.parse(baseUrl).port
+  app.listen(port, () => {
+    dataCubeLogger(`listening at port ${port}`)
   })
 }).catch(err => dataCubeLogger.extend('error')('Failed to start: %O', err))
