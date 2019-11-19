@@ -37,7 +37,7 @@
                       {{ column.name }}
                     </Loader>
                     <td>{{ attribute.predicateId }}</td>
-                    <td>{{ attribute.type }}</td>
+                    <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
                     <td>
                       <b-button v-if="attribute.actions.delete" icon="trash-can-outline" />
