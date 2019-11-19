@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column } from '@/types'
+import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, AttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
 import AttributeForm from './AttributeForm.vue'
@@ -135,7 +135,7 @@ export default class extends Vue {
         table: this.table,
         // TODO: Handle source not loaded
         source: this.source.data,
-        save: (attribute: Attribute) => {
+        save: (attribute: AttributeFormData) => {
           this.$store.dispatch('attributes/create', { table: this.table, attribute })
           modal.close()
         }

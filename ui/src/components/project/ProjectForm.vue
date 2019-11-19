@@ -17,18 +17,13 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, Table, Source } from '../../types'
+import { Project, Table, Source, ProjectFormData } from '@/types'
 import TableTag from '../TableTag.vue'
-
-interface ProjectFormData {
-  id?: string;
-  name: string;
-}
 
 @Component
 export default class extends Vue {
   @Prop({ default: emptyProject }) project: ProjectFormData;
-  @Prop() save: (project: Project) => any;
+  @Prop() save: (project: ProjectFormData) => void;
 
   get title () {
     if (this.project.id) {

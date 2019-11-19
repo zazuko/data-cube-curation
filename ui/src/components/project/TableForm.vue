@@ -47,16 +47,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source } from '../../types'
-
-interface TableFormData {
-  id?: ResourceId,
-  type: TableType,
-  name: string,
-  color: string,
-  identifierTemplate: string,
-  sourceId: ResourceId,
-}
+import { TableType, ResourceId, Project, Source, TableFormData } from '@/types'
 
 @Component
 export default class TableForm extends Vue {
