@@ -5,7 +5,7 @@
     </header>
     <section class="modal-card-body">
       <alcaeus-form ref="form" :operation.prop="operation"
-                    no-legend no-labels no-shadow
+                    no-legend no-labels
                     no-submit-button no-reset-button no-clear-button></alcaeus-form>
     </section>
     <footer class="modal-card-foot">
