@@ -6,12 +6,24 @@ import tables from './modules/tables'
 import sources from './modules/sources'
 import sourcesData from './modules/sources-data'
 import attributes from './modules/attributes'
+import { IOperation } from 'alcaeus/types/Resources'
+import { invokeCreateOperation, invokeDeleteOperation } from '@/api'
+import { handleAPIError } from '@/store/common'
 
 Vue.use(Vuex)
 
 const actions: ActionTree<RootState, RootState> = {
   dismissError ({ commit }, error) {
     commit('removeError', error)
+  },
+  async invokeOperation (context, { operation, body }: { operation: IOperation, body: any }) {
+    await handleAPIError(context, () => {
+      if (operation.method === 'DELETE') {
+        return invokeDeleteOperation(operation)
+      }
+
+      return invokeCreateOperation(operation, body)
+    })
   }
 }
 

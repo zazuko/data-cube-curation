@@ -19,7 +19,7 @@
           <b-table-column field label="">
             <div class="buttons">
               <b-button icon-left="pencil" v-if="props.row.actions.edit" />
-              <b-button icon-left="trash-can-outline" v-if="props.row.actions.delete" @click="deleteProject(props.row)" />
+              <b-button icon-left="trash-can-outline" v-if="props.row.actions.delete" @click="deleteProject(props.row, props.row.actions.delete)" />
             </div>
           </b-table-column>
         </template>
@@ -40,12 +40,13 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Project, RemoteData } from '../types'
 import Loader from '../components/Loader.vue'
-import ProjectForm from '../components/project/ProjectForm.vue'
+import OperationForm from '../components/project/OperationForm.vue'
+import { IOperation } from 'alcaeus/types/Resources'
 
 @Component({
   components: {
     Loader,
-    ProjectForm
+    OperationForm
   }
 })
 export default class Projects extends Vue {
@@ -64,11 +65,12 @@ export default class Projects extends Vue {
   addProject () {
     const modal = this.$buefy.modal.open({
       parent: this,
-      component: ProjectForm,
+      component: OperationForm,
       props: {
         operation: this.createOperation,
-        save: (project: Project) => {
-          this.$store.dispatch('projects/create', project)
+        save: async (operation: IOperation, project: any) => {
+          await this.$store.dispatch('invokeOperation', { operation, body: project })
+          await this.$store.dispatch('projects/loadAll')
           modal.close()
         }
       },
@@ -76,15 +78,16 @@ export default class Projects extends Vue {
     })
   }
 
-  deleteProject (project: Project) {
+  deleteProject (project: Project, operation: IOperation) {
     this.$buefy.dialog.confirm({
       title: 'Delete project',
       message: 'Are you sure you want to delete this project?',
       confirmText: 'Delete',
       type: 'is-danger',
       hasIcon: true,
-      onConfirm: () => {
-        this.$store.dispatch('projects/delete', project)
+      onConfirm: async () => {
+        await this.$store.dispatch('invokeOperation', { operation })
+        this.$store.commit('projects/removeOne', project)
       }
     })
   }

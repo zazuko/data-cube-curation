@@ -49,20 +49,6 @@ const actions: ActionTree<ProjectsState, RootState> = {
     })
   },
 
-  async create (context, name) {
-    await handleAPIError(context, async () => {
-      const id = await client.projects.create(name)
-      context.dispatch('loadAll', id)
-    })
-  },
-
-  async delete (context, project) {
-    await handleAPIError(context, async () => {
-      await client.projects.delete(project)
-      context.commit('removeOne', project)
-    })
-  },
-
   async loadSources (context, project) {
     await handleAPIError(context, async () => {
       const sources = await client.projects.getSources(project)

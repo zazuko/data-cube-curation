@@ -75,23 +75,6 @@ class ProjectsClient {
     return loadedCollection.members
   }
 
-  async create (name: string): Promise<ResourceId> {
-    const projectsCollection = await this.projectsCollection()
-
-    if (!projectsCollection) throw new Error('No projects collection on entrypoint')
-
-    const operation = getOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
-    const data = {
-      '@type': URI.TYPE_PROJECT,
-      [URI.PROP_NAME]: name
-    }
-    return invokeCreateOperation(operation, data)
-  }
-
-  async delete (project: Project): Promise<void> {
-    return invokeDeleteOperation(project.actions.delete)
-  }
-
   async get (id: string) {
     return loadResource(id)
   }
@@ -200,7 +183,7 @@ async function loadResource<T extends HydraResource = HydraResource> (id: Resour
   return resource as T
 }
 
-async function invokeCreateOperation (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<ResourceId> {
+export async function invokeCreateOperation (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<ResourceId> {
   const serializedData = data instanceof File ? data : JSON.stringify(data)
 
   const response = await operation.invoke(serializedData, headers)
@@ -214,7 +197,7 @@ async function invokeCreateOperation (operation: IOperation, data: Record<string
   return id
 }
 
-async function invokeDeleteOperation (operation: IOperation): Promise<void> {
+export async function invokeDeleteOperation (operation: IOperation): Promise<void> {
   const response = await operation.invoke('')
 
   if (response.xhr.status !== 204) {
