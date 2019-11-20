@@ -1,5 +1,3 @@
-const webpack = require('webpack')
-
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/app' : '/',
   transpileDependencies: ['alcaeus'],
@@ -13,24 +11,27 @@ module.exports = {
 
     config.plugin('prefetch').tap(options => {
       options[0].fileBlacklist = options[0].fileBlacklist || []
-      options[0].fileBlacklist.push(/vocab-\w+\.js$/)
+      options[0].fileBlacklist.push(/vocab-\w+/)
       return options
     })
-  },
-  configureWebpack: {
-    plugins: [
-      new webpack.NamedChunksPlugin((chunk) => {
-        const vocabModule = [...chunk._modules].find(m => /rdf-vocabularies\/ontologies$/.test(m.context))
 
-        if (vocabModule) {
-          const matchVocabName = vocabModule.id.match(/(\w+)\.nq$/)
-          if (matchVocabName) {
-            return 'vocab-' + matchVocabName[1]
+    // plugin only present in production build. need to check
+    if (config.plugins.has('named-chunks')) {
+      config.plugin('named-chunks').tap(([defaultName]) => {
+        return [(chunk) => {
+          const vocabModule = [...chunk._modules].find(m => /rdf-vocabularies\/ontologies$/.test(m.context))
+
+          if (vocabModule && vocabModule.resource) {
+            const matchVocabName = vocabModule.resource.match(/(\w+)\.nq$/)
+            if (matchVocabName) {
+              return 'vocab-' + matchVocabName[1]
+            }
           }
-        }
 
-        return chunk.name
+          // use vue's default names for other chunks
+          return defaultName(chunk)
+        }]
       })
-    ]
+    }
   }
 }
