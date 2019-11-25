@@ -62,10 +62,10 @@
                 <b-input v-model="attribute.predicateId" required />
               </td>
               <td>
-                <b-input v-model="attribute.typeId" />
+                <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
               </td>
               <td>
-                <b-input v-model="attribute.language" />
+                <b-input v-model="attribute.language" :disabled="!!attribute.dataTypeId" />
               </td>
               <td>
                 <b-button type="is-white" icon-left="close-circle-outline" title="Remove attribute" @click="removeAttribute(attribute)" />
