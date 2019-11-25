@@ -15,8 +15,7 @@ It will automatically start Fuseki in a docker container and create two datasets
 The same script can be used to reset the triplestore:
 
 ```
-cd fuseki
-./setup-fuseki.sh
+npm run setup:fuseki
 ```
 
 Once that's done run from the repository root:
