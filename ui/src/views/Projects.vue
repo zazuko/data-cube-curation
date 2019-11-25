@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Project, RemoteData } from '../types'
+import { Project, RemoteData, ProjectFormData } from '@/types'
 import Loader from '../components/Loader.vue'
 import ProjectForm from '../components/project/ProjectForm.vue'
 
@@ -62,7 +62,7 @@ export default class Projects extends Vue {
       parent: this,
       component: ProjectForm,
       props: {
-        save: (project: Project) => {
+        save: (project: ProjectFormData) => {
           this.$store.dispatch('projects/create', project.name)
           modal.close()
         }

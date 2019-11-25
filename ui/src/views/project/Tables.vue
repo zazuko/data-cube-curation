@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, RemoteData } from '@/types'
+import { Project, ResourceId, Table, RemoteData, TableFormData } from '@/types'
 import Loader from '../../components/Loader.vue'
 import TableItem from '../../components/project/TableItem.vue'
 import TableForm from '../../components/project/TableForm.vue'
@@ -72,7 +72,7 @@ export default class ProjectTablesView extends Vue {
       props: {
         project: this.project,
         sources: this.sources.data, // TODO: Handle loading?
-        save: (table: Table) => {
+        save: (table: TableFormData) => {
           this.$store.dispatch('tables/create', { project: this.project, table })
           modal.close()
         }
@@ -89,7 +89,7 @@ export default class ProjectTablesView extends Vue {
         project: this.project,
         sources: this.sources.data, // TODO: Handle loading?
         table,
-        save: (table: Table) => {
+        save: (table: TableFormData) => {
           modal.close()
         }
       },

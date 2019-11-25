@@ -42,17 +42,8 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Table, ResourceId, Source } from '../../types'
+import { Table, ResourceId, Source, AttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
-
-interface AttributeFormData {
-  id?: ResourceId,
-  name: string,
-  columnId: ResourceId,
-  predicateId: ResourceId,
-  dataTypeId: string,
-  language: string
-}
 
 @Component({
   components: {

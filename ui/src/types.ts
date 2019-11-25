@@ -9,6 +9,11 @@ export interface Project {
   name: string | null;
 }
 
+export interface ProjectFormData {
+  id?: string;
+  name: string;
+}
+
 export interface RemoteData<T> {
   isLoading: boolean;
   data: T | null;
@@ -40,6 +45,15 @@ export interface Table {
   actions: Record<string, any>;
 }
 
+export interface TableFormData {
+  id?: ResourceId,
+  type: TableType,
+  name: string,
+  color: string,
+  identifierTemplate: string,
+  sourceId: ResourceId,
+}
+
 export interface Attribute {
   id: ResourceId;
   name: string;
@@ -48,6 +62,15 @@ export interface Attribute {
   dataTypeId: ResourceId | null;
   language: string | null;
   tableId: ResourceId;
+}
+
+export interface AttributeFormData {
+  id?: ResourceId,
+  name: string,
+  columnId: ResourceId,
+  predicateId: ResourceId,
+  dataTypeId: string,
+  language: string
 }
 
 export interface ErrorMessage {
