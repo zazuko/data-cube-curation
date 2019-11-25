@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@zazuko/rdf-vocabularies": "2019.10.22",
-    "alcaeus": "^0.10",
+    "alcaeus": "^0.10.3",
     "buefy": "^0.8.6",
     "core-js": "^3.3.6",
     "vue": "^2.6.10",
