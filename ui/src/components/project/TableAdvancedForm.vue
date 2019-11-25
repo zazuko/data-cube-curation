@@ -62,7 +62,7 @@
                 <b-input v-model="attribute.predicateId" required />
               </td>
               <td>
-                <b-input v-model="attribute.typeId" />
+                <b-input v-model="attribute.dataTypeId" />
               </td>
               <td>
                 <b-input v-model="attribute.language" />
