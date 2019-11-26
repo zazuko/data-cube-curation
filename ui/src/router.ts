@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 import ProjectsView from './views/Projects.vue'
 import ProjectView from './views/Project.vue'
-import ProjectDataView from './views/project/Data.vue'
+import ProjectSourcesView from './views/project/Sources.vue'
 import ProjectTablesView from './views/project/Tables.vue'
 
 Vue.use(Router)
@@ -25,13 +24,13 @@ export default new Router({
     {
       path: '/projects/:id',
       name: 'project',
-      redirect: { name: 'project/data' },
+      redirect: { name: 'project/sources' },
       component: ProjectView,
       children: [
         {
-          path: 'data',
-          name: 'project/data',
-          component: ProjectDataView
+          path: 'sources',
+          name: 'project/sources',
+          component: ProjectSourcesView
         },
         {
           path: 'tables',
