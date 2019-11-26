@@ -14,6 +14,7 @@
     "alcaeus": "^0.10.3",
     "buefy": "^0.8.6",
     "core-js": "^3.3.6",
+    "debug": "^4.1.1",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.3.0",
@@ -21,6 +22,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.5",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^4.0.5",
     "@vue/cli-plugin-e2e-cypress": "^4.0.5",

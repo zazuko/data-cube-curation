@@ -1,5 +1,8 @@
 import { HydraResource, IOperation } from 'alcaeus/types/Resources'
+import debug from 'debug'
 import { ResourceId } from '@/types'
+
+const log = debug('api')
 
 export type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 
@@ -9,7 +12,7 @@ export function findOperation (resource: HydraResource, idOrType: ResourceId): I
   })
 
   if (matches.length > 1) {
-    console.warn(`More than one match for operation ${idOrType} on ${resource.id}`)
+    log(`More than one match for operation ${idOrType} on ${resource.id}`)
   }
 
   return matches[0] || null
