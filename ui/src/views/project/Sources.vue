@@ -1,5 +1,5 @@
 <template>
-  <div class="input-data">
+  <div class="input-sources">
     <div class="buttons">
       <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource">
         <a class="button is-primary">
@@ -43,7 +43,7 @@ import SourceItem from '@/components/project/SourceItem.vue'
     SourceItem
   }
 })
-export default class ProjectDataView extends Vue {
+export default class extends Vue {
   get project (): Project {
     const projectId = this.$route.params.id
     const remoteProject = this.$store.getters['projects/one'](projectId)
