@@ -4,6 +4,7 @@ import ProjectsView from './views/Projects.vue'
 import ProjectView from './views/Project.vue'
 import ProjectSourcesView from './views/project/Sources.vue'
 import ProjectTablesView from './views/project/Tables.vue'
+import ProjectPreviewView from './views/project/Preview.vue'
 
 Vue.use(Router)
 
