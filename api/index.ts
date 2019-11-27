@@ -9,13 +9,13 @@ import { NotFoundError } from './lib/error'
 import { httpProblemMiddleware } from './lib/error/middleware'
 import frontend, { rootRedirect } from './frontend'
 import hydraMiddleware from './lib/hydra-box'
+import { log } from './lib/log'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
 debug.enable(process.env.DEBUG)
 
-const dataCubeLogger = debug('dataCube')
-const requestLogger = dataCubeLogger.extend('request')
+const requestLogger = log.extend('request')
 const requestErrorLogger = requestLogger.extend('error')
 const headersLogger = requestLogger.extend('headers')
 function logger (req: express.Request, res, next) {
@@ -58,6 +58,6 @@ Promise.resolve().then(async () => {
 
   const port = process.env.PORT || url.parse(baseUrl).port
   app.listen(port, () => {
-    dataCubeLogger(`listening at port ${port}`)
+    log(`listening at port ${port}`)
   })
-}).catch(err => dataCubeLogger.extend('error')('Failed to start: %O', err))
+}).catch(err => log.extend('error')('Failed to start: %O', err))
