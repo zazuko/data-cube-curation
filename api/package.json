@@ -44,7 +44,7 @@
     "express-http-problem-details": "^0.1.5",
     "http-problem-details": "^0.1.4",
     "http-problem-details-mapper": "^0.1.3",
-    "hydra-box": "^0.4.1",
+    "hydra-box": "git+https://github.com/zazuko/hydra-box.git#upload-limit",
     "isstream": "^0.1.2",
     "md5": "^2.2.1",
     "middleware-async": "^1.0.2",

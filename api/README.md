@@ -56,3 +56,11 @@ AWS_S3_BUCKET=data-cube-curation
 ```
 
 In the case of Digital Ocean, the `AWS_S3_BUCKET` is also the Space's name.
+
+### Limiting the size of uploaded files
+
+By default the server will accept files up to `5MB`.
+
+```dotenv
+EXPRESS_UPLOAD_LIMIT=20MB
+```
