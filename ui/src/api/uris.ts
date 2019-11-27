@@ -29,6 +29,8 @@ export const API_SOURCE_COLUMNS = expand('dataCube:api/columns')
 export const API_SOURCE_SAMPLE = expand('dataCube:api/sample')
 export const API_CELLS = expand('dataCube:api/cells')
 export const API_ATTRIBUTES = expand('dataCube:api/attributes')
+export const API_PREVIEW = expand('dataCube:api/preview')
+export const API_CSVW = expand('dataCube:api/csvwMetadata')
 
 export const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
 export const OP_PROJECT_DELETE = expand('dataCube:api/DeleteProject')

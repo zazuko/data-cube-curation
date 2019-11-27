@@ -42,6 +42,8 @@ export interface Table {
   sourceId: ResourceId;
   identifierTemplate: string | null;
   attributesCollection: Collection | null;
+  mapping: any;
+  preview: any;
   actions: Record<string, any>;
 }
 

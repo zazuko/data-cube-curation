@@ -42,6 +42,14 @@ export function Mixin<B extends Constructor> (Base: B) {
     get attributesCollection () {
       return this.get<Collection>(URI.API_ATTRIBUTES)
     }
+
+    get preview () {
+      return this.get(URI.API_PREVIEW)
+    }
+
+    get mapping () {
+      return this.get(URI.API_CSVW)
+    }
   }
 }
 
