@@ -22,6 +22,7 @@ export default async function (apiPath: string) {
     sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
     authentication,
+    uploadLimit: process.env.EXPRESS_UPLOAD_LIMIT || '5MB',
   }
 
   const apiDocsFile = createReadStream(apiPath)
