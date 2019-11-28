@@ -14,7 +14,7 @@ export function getClient () {
     updateUrl: process.env.READ_MODEL_SPARQL_UPDATE_ENDPOINT || process.env.READ_MODEL_SPARQL_ENDPOINT,
     fetch: rdfFetch,
     defaultHeaders,
-  } as any)
+  })
 
   return sparqlClient
 }

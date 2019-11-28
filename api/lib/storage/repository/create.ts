@@ -15,7 +15,7 @@ const sparqlClient = new SparqlHttp({
   updateUrl: process.env.SPARQL_UPDATE_ENDPOINT || process.env.SPARQL_ENDPOINT,
   fetch: rdfFetch,
   defaultHeaders,
-} as any)
+})
 
 const context = {
   '@vocab': 'https://rdf-cube-curation.described.at/',
