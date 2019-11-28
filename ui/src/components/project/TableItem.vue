@@ -2,7 +2,30 @@
   <article class="card">
     <header class="card-header" :style="{'background-color': table.color}">
       <h3 class="card-header-title">{{ table.name }}</h3>
-      <span class="card-header-icon" v-if="table.isFact"><b-tag>Fact table</b-tag></span>
+      <div class="card-header-icon">
+        <b-tag v-if="table.isFact">Fact table</b-tag>
+
+        <b-dropdown position="is-bottom-left">
+          <button class="button is-text" slot="trigger">
+            <b-icon icon="dots-horizontal"></b-icon>
+          </button>
+          <b-dropdown-item v-if="table.mapping" @click="showMapping(table)">
+            View mapping
+          </b-dropdown-item>
+          <b-dropdown-item v-if="table.preview" @click="showPreview(table)">
+            Preview mapped data
+          </b-dropdown-item>
+          <hr class="dropdown-divider">
+          <b-dropdown-item v-if="table.actions.edit" @click="editTable(table)">
+            <b-icon icon="pencil" />
+            {{ table.actions.edit.title }}
+          </b-dropdown-item>
+          <b-dropdown-item v-if="table.actions.delete" @click="deleteTable(table)" class="has-text-danger">
+            <b-icon icon="trash-can-outline" />
+            {{ table.actions.delete.title }}
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
     </header>
     <section class="card-content">
       <table class="table is-fullwidth">
@@ -37,7 +60,7 @@
                       {{ column.name }}
                     </Loader>
                     <td>{{ attribute.predicateId }}</td>
-                    <td>{{ attribute.type }}</td>
+                    <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
                     <td>
                       <b-button v-if="attribute.actions.delete" icon="trash-can-outline" />
@@ -64,12 +87,6 @@
         </tbody>
       </table>
     </section>
-    <footer class="card-footer">
-      <div class="card-actions">
-        <b-button type="is-white" icon-left="pencil" v-if="table.actions.edit" @click="editTable(table)" :title="table.actions.edit.title" />
-        <b-button type="is-white" icon-left="trash-can-outline" v-if="table.actions.delete" @click="deleteTable(table)" :title="table.actions.delete.title" />
-      </div>
-    </footer>
   </article>
 </template>
 
@@ -81,10 +98,12 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column } from '@/types'
+import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, AttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
 import AttributeForm from './AttributeForm.vue'
+import TableMapping from './TableMapping.vue'
+import TablePreview from './TablePreview.vue'
 
 @Component({
   components: {
@@ -94,10 +113,6 @@ import AttributeForm from './AttributeForm.vue'
 export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly table: Table
-
-  created () {
-    this.$store.dispatch('attributes/loadForTable', this.table)
-  }
 
   get attributes () {
     return this.$store.getters['attributes/forTable'](this.table.id)
@@ -139,11 +154,29 @@ export default class extends Vue {
         table: this.table,
         // TODO: Handle source not loaded
         source: this.source.data,
-        save: (attribute: Attribute) => {
+        save: (attribute: AttributeFormData) => {
           this.$store.dispatch('attributes/create', { table: this.table, attribute })
           modal.close()
         }
       },
+      hasModalCard: true
+    })
+  }
+
+  showMapping (table: Table) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: TableMapping,
+      props: { table },
+      hasModalCard: true
+    })
+  }
+
+  showPreview (table: Table) {
+    this.$buefy.modal.open({
+      parent: this,
+      component: TablePreview,
+      props: { table },
       hasModalCard: true
     })
   }

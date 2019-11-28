@@ -12,9 +12,11 @@
     "sourceMap": true,
     "strictPropertyInitialization": false,
     "baseUrl": ".",
+    "typeRoots": ["./types", "./node_modules/@types"],
     "types": [
       "webpack-env",
-      "jest"
+      "jest",
+      "vue-highlightjs"
     ],
     "paths": {
       "@/*": [
@@ -36,6 +38,7 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "types"
   ]
 }

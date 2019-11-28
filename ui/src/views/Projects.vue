@@ -38,7 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Project, RemoteData } from '../types'
+import { Project, RemoteData, ProjectFormData } from '@/types'
 import Loader from '../components/Loader.vue'
 import OperationForm from '../components/project/OperationForm.vue'
 import { IOperation } from 'alcaeus/types/Resources'

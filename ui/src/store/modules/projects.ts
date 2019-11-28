@@ -46,6 +46,9 @@ const actions: ActionTree<ProjectsState, RootState> = {
     await handleAPIError(context, async () => {
       const project = await client.projects.get(id)
       context.commit('storeOne', project)
+
+      context.dispatch('tables/loadForProject', project, { root: true })
+      context.dispatch('sources/loadForProject', project, { root: true })
     })
   },
 

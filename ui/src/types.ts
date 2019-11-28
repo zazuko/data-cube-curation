@@ -9,6 +9,11 @@ export interface Project {
   name: string | null;
 }
 
+export interface ProjectFormData {
+  id?: string;
+  name: string;
+}
+
 export interface RemoteData<T> {
   isLoading: boolean;
   data: T | null;
@@ -37,16 +42,37 @@ export interface Table {
   sourceId: ResourceId;
   identifierTemplate: string | null;
   attributesCollection: Collection | null;
+  mapping: any;
+  preview: any;
   actions: Record<string, any>;
 }
 
-export interface Attribute {
-  id: ResourceId,
+export interface TableFormData {
+  id?: ResourceId,
+  type: TableType,
   name: string,
-  predicateId: ResourceId,
+  color: string,
+  identifierTemplate: string,
+  sourceId: ResourceId,
+}
+
+export interface Attribute {
+  id: ResourceId;
+  name: string;
+  predicateId: ResourceId;
+  columnId: ResourceId;
+  dataTypeId: ResourceId | null;
+  language: string | null;
+  tableId: ResourceId;
+}
+
+export interface AttributeFormData {
+  id?: ResourceId,
+  name: string,
   columnId: ResourceId,
-  type: ResourceId | null,
-  language: ResourceId | null,
+  predicateId: ResourceId,
+  dataTypeId: string,
+  language: string
 }
 
 export interface ErrorMessage {

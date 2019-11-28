@@ -29,6 +29,10 @@ const actions: ActionTree<TablesState, RootState> = {
       const tables = await client.projects.getTables(project)
 
       context.commit('storeForProject', { project, tables })
+
+      tables.forEach((table) => {
+        context.dispatch('attributes/loadForTable', table, { root: true })
+      })
     })
   },
 
@@ -43,6 +47,14 @@ const actions: ActionTree<TablesState, RootState> = {
   async delete (context, { project, table }) {
     await handleAPIError(context, async () => {
       await client.projects.deleteTable(table)
+      // Reload tables
+      context.dispatch('loadForProject', project)
+    })
+  },
+
+  async createWithAttributes (context, { project, table, attributes }) {
+    await handleAPIError(context, async () => {
+      await client.projects.createTableWithAttributes(project, table, attributes)
       // Reload tables
       context.dispatch('loadForProject', project)
     })

@@ -1,5 +1,5 @@
 <template>
-  <div class="input-data">
+  <div class="input-sources">
     <div class="buttons">
       <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource">
         <a class="button is-primary">
@@ -9,11 +9,13 @@
       </b-upload>
     </div>
 
-    <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
-      <SourceItem v-for="source in sources" :key="source.id" :source="source" :tables="tables" />
-      <p v-if="sources.length < 1" class="has-text-grey">
-        No sources yet
-      </p>
+    <Loader :data="tables" v-slot="{ data: tables }">
+      <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
+          <SourceItem v-for="source in sources" :key="source.id" :project="project" :source="source" :tables="tables" />
+          <p v-if="sources.length < 1" class="has-text-grey">
+            No sources yet
+          </p>
+      </Loader>
     </Loader>
   </div>
 </template>
@@ -41,16 +43,12 @@ import SourceItem from '@/components/project/SourceItem.vue'
     SourceItem
   }
 })
-export default class ProjectDataView extends Vue {
+export default class extends Vue {
   get project (): Project {
     const projectId = this.$route.params.id
     const remoteProject = this.$store.getters['projects/one'](projectId)
     // Assume project is loaded because we're in a nested view
     return remoteProject.data
-  }
-
-  created () {
-    this.$store.dispatch('sources/loadForProject', this.project)
   }
 
   get sources (): RemoteData<Source[]> {

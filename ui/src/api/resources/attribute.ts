@@ -26,12 +26,18 @@ export function Mixin<B extends Constructor> (Base: B) {
       return predicate.id
     }
 
-    get type () {
-      return this.get(URI.PROP_TYPE)
+    get dataTypeId () {
+      const dataType = this.get<HydraResource>(URI.PROP_DATATYPE)
+      return dataType ? dataType.id : null
     }
 
     get language () {
       return this.get(URI.PROP_LANGUAGE)
+    }
+
+    get tableId () {
+      const table = getOrThrow<HydraResource>(this, URI.PROP_TABLE)
+      return table.id
     }
   }
 }

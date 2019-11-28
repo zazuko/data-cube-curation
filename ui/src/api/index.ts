@@ -98,6 +98,13 @@ class ProjectsClient {
     }
   }
 
+  async createTableWithAttributes (project: Project, table: Table, attributes: Attribute[]): Promise<string> {
+    const tableId = await this.createTable(project, table)
+    const loadedTable = await loadResource(tableId)
+    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(loadedTable, attribute)))
+    return tableId
+  }
+
   async createDimensionTable (project: Project, table: Table): Promise<ResourceId> {
     const operation = project.actions.createFactTable
     const data = {
@@ -164,7 +171,7 @@ class ProjectsClient {
       [URI.PROP_NAME]: attribute.name,
       [URI.PROP_PREDICATE]: attribute.predicateId,
       [URI.PROP_COLUMN]: attribute.columnId,
-      [URI.PROP_TYPE]: attribute.type,
+      [URI.PROP_DATATYPE]: attribute.dataTypeId,
       [URI.PROP_LANGUAGE]: attribute.language
     }
     return invokeCreateOperation(operation, data)

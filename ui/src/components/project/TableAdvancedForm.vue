@@ -1,0 +1,157 @@
+<template>
+  <form action="" class="modal-card" @submit.prevent="save(table, attributes)">
+    <header class="modal-card-head">
+      <h3 class="modal-card-title">Create table from columns</h3>
+    </header>
+    <section class="modal-card-body">
+      <b-field>
+        <b-radio v-model="table.type" native-value="fact" :disabled="!project.actions.createFactTable">
+          Fact table
+        </b-radio>
+        <b-radio v-model="table.type" native-value="dimension" :disabled="!project.actions.createDimensionTable">
+          Dimension table
+        </b-radio>
+      </b-field>
+
+      <div class="columns">
+        <div class="column">
+        <b-field label="Name">
+          <b-input type="text" v-model="table.name" required />
+        </b-field>
+        </div>
+
+        <div class="column is-3">
+          <b-field label="Display color">
+            <div class="control has-icons-right is-clearfix">
+              <input type="text" v-model="table.color" class="input" disabled>
+              <span class="icon is-right" :style="{ color: table.color }">
+                <i class="mdi mdi-circle mdi-24px"></i>
+              </span>
+            </div>
+          </b-field>
+        </div>
+      </div>
+
+      <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
+        <b-input type="text" v-model="table.identifierTemplate" placeholder="http://example.org/{column_id}" required />
+      </b-field>
+
+      <b-field label="Properties">
+        <table class="table is-narrow">
+          <thead>
+            <tr>
+              <th>CSV Column</th>
+              <th>Name</th>
+              <th>Property</th>
+              <th>Type</th>
+              <th>Language</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(attribute, index) in attributes" :key="index">
+              <td>
+                <b-select v-model="attribute.columnId" expanded required>
+                  <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
+                </b-select>
+              </td>
+              <td>
+                <b-input v-model="attribute.name" required />
+              </td>
+              <td>
+                <b-input v-model="attribute.predicateId" required />
+              </td>
+              <td>
+                <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
+              </td>
+              <td>
+                <b-input v-model="attribute.language" :disabled="!!attribute.dataTypeId" />
+              </td>
+              <td>
+                <b-button type="is-white" icon-left="close-circle-outline" title="Remove attribute" @click="removeAttribute(attribute)" />
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6">
+                <b-button type="is-white" icon-left="plus-circle-outline" title="Add attribute" @click="addAttribute" />
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </b-field>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button" type="button" @click="$parent.close()">Cancel</button>
+      <button class="button is-primary">Save</button>
+    </footer>
+  </form>
+</template>
+
+<style scoped>
+.modal-card {
+  width: 100%;
+}
+</style>
+
+<script lang="ts">
+import { Prop, Component, Vue } from 'vue-property-decorator'
+import { TableType, ResourceId, Project, Source, Attribute, TableFormData, AttributeFormData } from '@/types'
+
+@Component
+export default class TableForm extends Vue {
+  @Prop() readonly project: Project
+  @Prop() readonly source: Source
+  @Prop() readonly columns: ResourceId[]
+  @Prop() readonly save: (table: TableFormData, attributes: AttributeFormData[]) => void
+  table: TableFormData = emptyTable()
+  attributes: AttributeFormData[] = []
+
+  mounted () {
+    if (!this.table.type) {
+      if (this.project.actions.createFactTable) {
+        this.table.type = 'fact'
+      } else {
+        this.table.type = 'dimension'
+      }
+    }
+
+    this.table.sourceId = this.source.id
+
+    this.attributes = this.columns.map((columnId) => emptyAttribute({ columnId: columnId }))
+  }
+
+  addAttribute () {
+    this.attributes.push(emptyAttribute())
+  }
+
+  removeAttribute (attribute: AttributeFormData) {
+    this.attributes.splice(this.attributes.indexOf(attribute), 1)
+  }
+}
+
+function emptyTable () {
+  const tableType: TableType = 'fact'
+
+  return {
+    type: tableType,
+    name: '',
+    color: '',
+    identifierTemplate: '',
+    sourceId: ''
+  }
+}
+
+function emptyAttribute (attrs = {}) {
+  return {
+    name: '',
+    predicateId: '',
+    dataTypeId: '',
+    language: '',
+    columnId: '',
+    ...attrs
+  }
+}
+
+</script>

@@ -1,5 +1,9 @@
 import aws from 'aws-sdk'
 import { Readable } from 'stream'
+import { isReadable } from 'isstream'
+import { log } from '../log'
+
+const logError = log.extend('s3').extend('error')
 
 const s3 = new aws.S3({
   endpoint: process.env.AWS_S3_ENDPOINT,
@@ -32,5 +36,18 @@ export async function loadFile (path: string) {
     Key: path,
   }).promise()
 
-  return file.Body as Readable
+  if (file.Body instanceof Buffer) {
+    const readable = new Readable()
+    readable._read = () => { }
+    readable.push(file.Body)
+    readable.push(null)
+    return readable
+  }
+
+  if (isReadable(file.Body)) {
+    return file.Body as Readable
+  }
+
+  logError('Could not read file "%s" from S3. It was neither Buffer or Readable', path)
+  return null
 }
