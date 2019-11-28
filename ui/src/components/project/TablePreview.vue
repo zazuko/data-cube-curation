@@ -48,9 +48,9 @@ export default class extends Vue {
       const response = await this.table.preview.load()
       const preview = [...response]
       const formattedPreview = JSON.stringify(preview, null, 2)
-      this.preview = Remote.loaded(formattedPreview)
+      return Remote.loaded(formattedPreview)
     } catch (e) {
-      this.preview = Remote.error(e)
+      return Remote.error(e)
     }
   }
 }

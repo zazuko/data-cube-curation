@@ -28,6 +28,7 @@
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { prefixes } from '@zazuko/rdf-vocabularies'
 import { Table, RemoteData } from '@/types'
+import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
 
@@ -45,8 +46,8 @@ export default class extends Vue {
   }
 
   async loadMapping () {
-    return this.table.mapping.load().then(async response => {
-      const resource = response.root
+    return this.table.mapping.load().then(async (response: IHydraResponse) => {
+      const resource = response.root as any // `any` because `HydraResource.compact`'s type is not callable
       if (resource) {
         const mapping = await resource.compact({ csvw: prefixes.csvw })
         const formattedMapping = JSON.stringify(mapping, null, 2)
@@ -54,7 +55,7 @@ export default class extends Vue {
       } else {
         return Remote.error('Could not load mapping')
       }
-    }).catch(e => Remote.error(e))
+    }).catch((e: any) => Remote.error(e))
   }
 }
 </script>

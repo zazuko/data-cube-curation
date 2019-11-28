@@ -7,6 +7,7 @@ import * as URI from '../uris'
 export function Mixin<B extends Constructor> (Base: B) {
   return class extends Base {
     attributes = [];
+    color: string;
 
     constructor (...args: any[]) {
       super(...args)
