@@ -64,7 +64,7 @@
     "@types/node": "^11.13.9",
     "@types/isstream": "^0.1.0",
     "@types/set-link": "^1.0.0",
-    "@types/sparql-http-client": "^1.1.1",
+    "@types/sparql-http-client": "^1.2",
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "alcaeus": "^0.10",
