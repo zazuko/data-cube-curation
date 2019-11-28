@@ -62,7 +62,7 @@ export interface Attribute {
   predicateId: ResourceId;
   columnId: ResourceId;
   dataTypeId: ResourceId | null;
-  language: string | null;
+  language: string | null;
   tableId: ResourceId;
 }
 
