@@ -37,13 +37,17 @@ export class DeleteInsertBuilder extends Builder<void> {
       where = this.__deleteGraph
     }
 
+    const deleteClause = `DELETE {
+      ${this.__deleteGraph.join('\n')}
+    }`
+
+    const insertClause = `INSERT {
+      ${this.__insertGraph.join('\n')}
+    }`
+
     return `
-      DELETE {
-        ${this.__deleteGraph.join('\n')}
-      }
-      INSERT {
-        ${this.__insertGraph.join('\n')}
-      }
+      ${this.__deleteGraph.length > 0 ? deleteClause : ''}
+      ${this.__insertGraph.length > 0 ? insertClause : ''}
       WHERE {
         ${where.join('\n')}
       }
