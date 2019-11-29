@@ -6,13 +6,20 @@ import { selectFactTableSource } from '../../domain/project'
 import { projects, tables, attributes } from '../../storage/repository'
 import { addAttribute } from '../../domain/table/addAttribute'
 import { getTableAttributes } from '../../read-graphs/attribute'
+import { getTableId } from '../../read-graphs/table/links'
+import { NotFoundError } from '../../error'
+import { getProjectId } from '../../read-graphs/project/links'
 
 export { get } from './get'
 export { createTable } from './createDimensionTable'
 export { archive } from './archive'
 
 export const createFactTable = asyncMiddleware(async (req: express.Request, res, next) => {
-  const projectId = req.resourceId.replace(/\/fact-table$/, '')
+  const projectId = await getProjectId(req.resourceId)
+  if (!projectId) {
+    throw new NotFoundError()
+  }
+
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
     name: expand('schema:name'),
@@ -39,7 +46,11 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res,
 })
 
 export const addAttributeHandler = asyncMiddleware(async (req: express.Request, res, next) => {
-  const tableId = req.resourceId.replace(/\/attributes/, '')
+  const tableId = await getTableId(req.resourceId)
+  if (!tableId) {
+    throw new NotFoundError()
+  }
+
   const variables = buildVariables(req, {
     name: expand('schema:name'),
     predicate: expand('rdf:predicate'),
@@ -74,7 +85,11 @@ export const addAttributeHandler = asyncMiddleware(async (req: express.Request, 
 })
 
 export const getAttributes = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
-  const tableId = req.resourceId.replace(/\/attributes/, '')
+  const tableId = await getTableId(req.resourceId)
+  if (!tableId) {
+    throw new NotFoundError()
+  }
+
   getTableAttributes(tableId)
     .then(dataset => {
       res.graph(dataset)

@@ -6,6 +6,7 @@ import { projects, tables } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { addDimensionTable, selectFactTableSource } from '../../domain/project'
 import { DomainError } from '@tpluscode/fun-ddr'
+import { getProjectId } from '../../read-graphs/project/links'
 
 async function loadProject (projectId: string) {
   const project = await projects.load(projectId)
@@ -52,7 +53,11 @@ async function createFactTable (req: express.Request, projectId: string) {
 
 export const createTable = asyncMiddleware(async (req: express.Request, res, next) => {
   let promiseTable: Promise<string>
-  const projectId = req.resourceId.replace(/\/tables$/, '')
+  const projectId = await getProjectId(req.resourceId)
+  if (!projectId) {
+    throw new NotFoundError()
+  }
+
   const { type } = buildVariables(req, {
     type: expand('rdf:type'),
   })

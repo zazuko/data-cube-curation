@@ -3,6 +3,8 @@ import parse from 'csv-parse'
 import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
+import { NotFoundError } from '../../error'
+import { getProjectId } from '../../read-graphs/project/links'
 
 const parserOptions = {
   to: 100,
@@ -25,7 +27,12 @@ export function parseCsv (req, res, next) {
 }
 
 export const createSourceHandler = asyncMiddleware(async (req: Request, res, next) => {
-  const project = await projects.load(req.resourceId.replace(/\/sources$/, ''))
+  const projectId = await getProjectId(req.resourceId)
+  if (!projectId) {
+    throw new NotFoundError()
+  }
+
+  const project = await projects.load(projectId)
 
   const contentDispositionPattern = /attachment; filename="(.+)"/
   const contentDisposition: string = req.headers['content-disposition']

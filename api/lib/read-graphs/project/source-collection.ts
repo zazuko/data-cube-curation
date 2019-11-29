@@ -3,12 +3,12 @@ import { getClient } from '../sparqlClient'
 import { api, dataCube, hydra, rdf, schema } from '../../namespaces'
 import $rdf = require('rdf-ext');
 
-export async function getSourceCollection (projectId: string) {
+export async function getSourceCollection (sourcesCollectionId: string) {
   const dataset = $rdf.dataset()
 
   await dataset.import(await construct()
     .graph(`
-      ?collection
+      <${sourcesCollectionId}>
           a hydra:Collection ;
           hydra:member ?source ;
           hydra:totalItems ?count .
@@ -17,8 +17,7 @@ export async function getSourceCollection (projectId: string) {
           schema:name ?name ;
           api:sample ?sample .`)
     .where(`
-      BIND (<${projectId}/sources> as ?collection)
-      BIND (<${projectId}> as ?project)
+      <${sourcesCollectionId}> dataCube:project ?project .
   
       OPTIONAL {
           ?source a dataCube:Source ;
@@ -30,9 +29,8 @@ export async function getSourceCollection (projectId: string) {
   
       {
           SELECT (COUNT(?source) as ?count) WHERE {
-              BIND (<${projectId}> as ?project)
-  
-              ?source dataCube:project ?project .
+              <${sourcesCollectionId}> dataCube:project ?project .
+              ?source dataCube:project ?project; a dataCube:Source .
           }
       }`)
     .prefixes({ hydra, dataCube, api, schema })
@@ -40,15 +38,15 @@ export async function getSourceCollection (projectId: string) {
 
   await dataset.import(await construct()
     .graph(`
-      ?collection
+      <${sourcesCollectionId}>
         hydra:manages [
             hydra:property rdf:type ;
             hydra:object dataCube:Source
         ] , [
-            hydra:subject <${projectId}> ;
+            hydra:subject ?project ;
             hydra:property dataCube:source
         ].`)
-    .where(`BIND (<${projectId}/sources> as ?collection)`)
+    .where(`<${sourcesCollectionId}> dataCube:project ?project .`)
     .prefixes({ hydra, dataCube, rdf })
     .execute(getClient()))
 

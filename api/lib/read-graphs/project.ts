@@ -12,6 +12,9 @@ import { unselectFactTable } from '../domain/project'
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
   await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" .
+    <${ev.id}/tables> dataCube:project <${ev.id}> .
+    <${ev.id}/sources> dataCube:project <${ev.id}> .
+    <${ev.id}/fact-table> dataCube:project <${ev.id}> .
   `)
     .prefixes({
       schema,

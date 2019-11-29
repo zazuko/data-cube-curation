@@ -52,8 +52,7 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
 })
 
 export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {
-  const projectId = req.resourceId.replace(/\/fact-table$/, '')
-  getFactTableId(projectId)
+  getFactTableId(req.resourceId)
     .then(value => {
       if (!value) {
         next(new NotFoundError())

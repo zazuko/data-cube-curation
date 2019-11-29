@@ -1,4 +1,5 @@
 import { handle, CoreEvents } from '@tpluscode/fun-ddr'
+import { DomainEvent } from '@tpluscode/fun-ddr/lib'
 import { ask, construct, deleteInsert, insertData, select } from '../sparql'
 import { dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
@@ -8,6 +9,21 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
+
+function addTableLinks (ev: DomainEvent) {
+  return insertData(`
+    <${ev.id}/csvw> dataCube:table <${ev.id}> .  
+    <${ev.id}/attributes> dataCube:table <${ev.id}> .  
+    <${ev.id}/preview> dataCube:table <${ev.id}> .  
+  `)
+    .prefixes({
+      dataCube,
+    })
+    .execute(getClient())
+}
+
+handle<TableEvents, 'FactTableCreated'>('FactTableCreated', addTableLinks)
+handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', addTableLinks)
 
 handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
   return insertData(`
@@ -71,9 +87,11 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   }
 })
 
-export function getFactTableId (projectId: string) {
+export function getFactTableId (factTableCanonicalId: string) {
   return select('factTable')
-    .where(`<${projectId}> dataCube:factTable ?factTable .`)
+    .where(`
+        <${factTableCanonicalId}> dataCube:project ?project. 
+        ?project dataCube:factTable ?factTable .`)
     .prefixes({
       dataCube,
     })
@@ -108,30 +126,32 @@ export function getTableSourceId (tableId: string) {
     .then(bindings => bindings[0].source.value.replace(process.env.BASE_URI, ''))
 }
 
-export async function getProjectTables (projectId: string) {
+export async function getProjectTables (collectionId: string) {
   const collection = $rdf.dataset()
 
   await collection.import(await construct()
     .graph(`
-      <${projectId}/tables> 
+      <${collectionId}> 
         a hydra:Collection ;
         hydra:member ?table ;
         hydra:totalItems ?count .
         
       ?table ?p ?o .
     `)
+    .where(`<${collectionId}> dataCube:project ?project .`)
     .where(`
       OPTIONAL {
-        ?table dataCube:project <${projectId}> .
+        ?table dataCube:project ?project .
         ?table a dataCube:Table .
         ?table ?p ?o .
       }`)
     .where(`{
       SELECT (COUNT(?table) as ?count) WHERE {
+        <${collectionId}> dataCube:project ?project .
         OPTIONAL {
           ?table 
             a dataCube:Table ;
-            dataCube:project <${projectId}> .
+            dataCube:project ?project .
         }
       }
     }`)
@@ -143,7 +163,7 @@ export async function getProjectTables (projectId: string) {
 
   await collection.import(await construct()
     .graph(`
-      <${projectId}/tables> hydra:manages [
+      <${collectionId}> hydra:manages [
         hydra:property rdf:type ;
         hydra:object dataCube:Table
       ] `)
