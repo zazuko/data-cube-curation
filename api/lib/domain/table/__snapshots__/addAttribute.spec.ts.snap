@@ -7,7 +7,6 @@ Array [
       "columnId": "source/column",
       "datatype": undefined,
       "language": undefined,
-      "name": "foo-bar",
       "predicate": "http://schema.org/name",
       "tableId": "example/table",
     },
@@ -18,12 +17,11 @@ Array [
 
 exports[`table add attribute return expected state 1`] = `
 Object {
-  "@id": "example/table/attribute/foo-bar",
+  "@id": StringMatching /example\\\\/table\\\\/attribute\\\\/\\.\\+/,
   "@type": "Attribute",
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#string",
   "language": undefined,
-  "name": "foo-bar",
   "predicate": "http://schema.org/name",
   "tableId": "example/table",
 }
