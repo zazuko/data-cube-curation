@@ -5,7 +5,7 @@ export interface ProjectEvents {
   ProjectRenamed: {
     name: string;
   };
-  ProjectArchived: object;
+  ProjectArchived: null;
   FactTableSourceSelected: {
     sourceId: string;
     tableName: string;
