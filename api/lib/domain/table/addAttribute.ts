@@ -1,4 +1,5 @@
 import { factory } from '@tpluscode/fun-ddr'
+import uuid from 'uuid'
 import { Table } from './index'
 import { Attribute } from '../attribute'
 import { AttributeEvents } from '../attribute/events'
@@ -7,7 +8,6 @@ import { existsInTableSource } from '../../read-graphs/table'
 import { errorFactory } from '../error-helper'
 
 interface AddAttributeCommand {
-  name: string;
   columnId: string;
   predicate: string;
   datatype?: string;
@@ -17,9 +17,6 @@ interface AddAttributeCommand {
 export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
 
-  if (!command.name) {
-    throw new DomainError('Name missing')
-  }
   if (!command.predicate) {
     throw new DomainError('Predicate missing')
   }
@@ -33,10 +30,9 @@ export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async
     throw new DomainError("Column not found or it does not belong to the table's source")
   }
 
-  const attributeId = `${table['@id']}/attribute/${encodeURIComponent(command.name)}`
+  const attributeId = `${table['@id']}/attribute/${uuid()}`
 
   emitter.emit<AttributeEvents, 'AttributeAdded'>('AttributeAdded', {
-    name: command.name,
     tableId: table['@id'],
     columnId: command.columnId,
     predicate: command.predicate,
@@ -48,7 +44,6 @@ export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async
     '@id': attributeId,
     '@type': 'Attribute',
     tableId: table['@id'],
-    name: command.name,
     column: command.columnId,
     predicate: command.predicate,
     datatype: command.datatype || expand('xsd:string'),

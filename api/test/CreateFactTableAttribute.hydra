@@ -95,7 +95,6 @@ With Operation api:AddAttributeMappedFromSingleColumn {
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
         <> dataCube:column <project/add-attribute-test/source/single-column-csv/station-id> ;
-           schema:name "Identifier" ;
            rdf:predicate <http://schema.org/identifier> .
         ```
     } => {

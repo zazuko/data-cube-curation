@@ -547,11 +547,6 @@ dataCube:Attribute a hydra:Class ;
     api:GetAttribute ;
   hydra:supportedProperty
     [
-      hydra:property schema:name ;
-      hydra:title "Name for this attribute";
-      hydra:required true
-    ] ,
-    [
       hydra:property rdf:predicate ;
       hydra:title "Predicate URI for mapped value" ;
       hydra:required true

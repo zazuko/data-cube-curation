@@ -10,7 +10,6 @@ handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttribut
       <${ev.id}> a dataCube:Attribute , dataCube:ColumnAttribute ;
         dataCube:table <${ev.data.tableId}> ;
         dataCube:column <${ev.data.columnId}> ;
-        schema:name "${ev.data.name}" ;
         rdf:predicate <${ev.data.predicate}> .
   `)
 

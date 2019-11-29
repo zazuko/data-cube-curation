@@ -68,7 +68,6 @@ export const addAttributeHandler = asyncMiddleware(async (req: express.Request, 
   }
 
   const attribute = await aggregate.factory(addAttribute)({
-    name: variables.name && variables.name.value,
     predicate: variables.predicate && variables.predicate.value,
     datatype: variables.datatype && variables.datatype.value,
     columnId: variables.columnId && variables.columnId.value,
