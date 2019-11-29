@@ -4,7 +4,7 @@ import { Project } from './index'
 
 export const archiveProject = mutate<Project, never>(function (state, cmd, emitter) {
   if (state.archived === 'false') {
-    emitter.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', {})
+    emitter.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', null)
   }
 
   return {

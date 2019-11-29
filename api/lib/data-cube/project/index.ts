@@ -1,3 +1,4 @@
+import { emitImmediate } from '@tpluscode/fun-ddr/lib/events'
 import uuid from 'uuid/v4'
 import express from 'express'
 import asyncMiddleware from 'middleware-async'
@@ -8,6 +9,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
+import { ProjectEvents } from '../../domain/project/events'
 
 export { getTables } from './getTables'
 
@@ -79,7 +81,12 @@ export const archive = asyncMiddleware(async (req, res, next) => {
   res.locals.projectId = `/project/${req.params.projectId}`
   let aggregateRoot = await projects.load(res.locals.projectId)
 
-  if (!aggregateRoot.state) {
+  if (!await aggregateRoot.state) {
+    emitImmediate<ProjectEvents, 'ProjectArchived'>(
+      res.locals.projectId,
+      'ProjectArchived',
+      null
+    )
     res.status(404)
     next()
     return
