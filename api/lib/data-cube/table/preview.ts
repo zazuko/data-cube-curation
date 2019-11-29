@@ -1,7 +1,6 @@
 import express from 'express'
 import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
-import { getTableId } from './index'
 import { getTableAndSource } from '../../read-graphs/table/csvw'
 import CsvwParser from 'rdf-parser-csvw'
 import { loadSourceSample } from '../../services/sourceSamples'
@@ -11,7 +10,7 @@ import { NotFoundError } from '../../error'
 
 export const parseSample = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
   try {
-    const tableId = getTableId(req)
+    const tableId = req.resourceId.replace(/\/preview$/, '')
     const sourceId = await getTableSourceId(tableId)
     const tableDataset = await getTableAndSource(tableId)
     const csvwMetadata = buildCsvw(tableDataset, tableId)

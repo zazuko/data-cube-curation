@@ -227,8 +227,8 @@ api:AddSource
         code:link <file:lib/data-cube/project-source/create#createSourceHandler>
       ]
       [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project-source/get#get>
       ]
     )
   ] .
@@ -243,11 +243,7 @@ api:GetProjectSources
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initExisting>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source-collection/get.rq>, <file:hydra/project-source-collection/get.manages-block.rq>
+        code:link <file:lib/data-cube/project/sources-collection#get>
       ]
     )
   ] .
@@ -320,11 +316,7 @@ api:GetDataCubeSource
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source#initExisting>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+        code:link <file:lib/data-cube/project-source/get#get>
       ]
     )
   ] .

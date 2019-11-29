@@ -5,7 +5,7 @@ import { api, dataCube } from '../../namespaces'
 import { exists, getProject } from '../../read-graphs/project'
 
 export const placeholderRepresentation = asyncMiddleware(async (req: Request, res: Response) => {
-  const placeholderUri = res.locals.projectId.replace(/\/project/, '/_project')
+  const placeholderUri = req.resourceId.replace(/\/project/, '/_project')
 
   const query = construct()
     .prefixes({
@@ -14,7 +14,7 @@ export const placeholderRepresentation = asyncMiddleware(async (req: Request, re
     })
     .graph(`
       <${placeholderUri}> a api:ProjectPlaceholder ;
-        api:project </project/${req.params.projectId}> .
+        api:project <${req.resourceId}> .
     `)
 
   res.setLink(placeholderUri, 'canonical')
@@ -22,13 +22,11 @@ export const placeholderRepresentation = asyncMiddleware(async (req: Request, re
 })
 
 export const getExistingProject = asyncMiddleware(async (req: Request, res: Response) => {
-  return res.graph(await getProject(res.locals.projectId))
+  return res.graph(await getProject(req.resourceId))
 })
 
 export const get = asyncMiddleware(async (req: Request, res: Response, next) => {
-  res.locals.projectId = res.locals.projectId || `/project/${req.params.projectId}`
-
-  if (await exists(res.locals.projectId) === false) {
+  if (await exists(req.resourceId) === false) {
     return placeholderRepresentation(req, res, next).catch(next)
   }
 

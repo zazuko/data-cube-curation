@@ -3,7 +3,6 @@ import { asyncMiddleware } from 'middleware-async'
 import $rdf from 'rdf-ext'
 import cf from 'clownface'
 import { loadSampleRows } from '../../services/sourceSamples'
-import { getSourceIdFromRoute } from './index'
 import { NotFoundError } from '../../error'
 import { api, hydra, rdf } from '../../namespaces'
 
@@ -28,8 +27,8 @@ function buildCollectionGraph (collectionId: string, currentPageUrl: string, nex
 }
 
 export const getSampleRows = asyncMiddleware(async (req: Request, res: Response, next) => {
-  const { sourceId } = getSourceIdFromRoute(req)
-  const collectionId = sourceId.replace('/source/', '/source-sample/')
+  const collectionId = req.resourceId
+  const sourceId = req.resourcePath.replace('source-sample', 'source')
   const limit = Number.parseInt(req.query.limit) || 5
   const offset = Number.parseInt(req.query.offset) || 0
 

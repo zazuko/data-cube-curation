@@ -1,5 +1,4 @@
-import uuid from 'uuid/v4'
-import express from 'express'
+import { Request, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
 import { createProject, renameProject, archiveProject } from '../../domain/project'
 import { projects } from '../../storage/repository'
@@ -11,16 +10,7 @@ import { NotFoundError } from '../../error'
 
 export { getTables } from './getTables'
 
-export function getProjectId (projectGuid: string = uuid()) {
-  return `${process.env.BASE_URI}project/${projectGuid}`
-}
-
-export function initExisting (req, res, next) {
-  res.locals.projectId = getProjectId(req.params.projectId)
-  next()
-}
-
-export function create (req: express.Request, res: express.Response, next: express.NextFunction) {
+export function create (req: Request, res: Response, next) {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -37,12 +27,11 @@ export function create (req: express.Request, res: express.Response, next: expre
     .catch(next)
 }
 
-export const createOrUpdate = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
+export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response, next) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
-  res.locals.projectId = `/project/${req.params.projectId}`
-  let aggregateRoot = await projects.load(res.locals.projectId)
+  let aggregateRoot = await projects.load(req.resourceId)
 
   const renameCommand = {
     newName: projectName.value,
@@ -62,8 +51,9 @@ export const createOrUpdate = asyncMiddleware(async (req: express.Request, res: 
     }).catch(next)
 })
 
-export const getFactTable = asyncMiddleware(async (req, res, next) => {
-  getFactTableId(getProjectId(req.params.projectId))
+export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {
+  const projectId = req.resourceId.replace(/\/fact-table$/, '')
+  getFactTableId(projectId)
     .then(value => {
       if (!value) {
         next(new NotFoundError())
@@ -75,9 +65,8 @@ export const getFactTable = asyncMiddleware(async (req, res, next) => {
     .catch(next)
 })
 
-export const archive = asyncMiddleware(async (req, res, next) => {
-  res.locals.projectId = `/project/${req.params.projectId}`
-  let aggregateRoot = await projects.load(res.locals.projectId)
+export const archive = asyncMiddleware(async (req: Request, res, next) => {
+  let aggregateRoot = await projects.load(req.resourceId)
 
   if (!aggregateRoot.state) {
     res.status(404)

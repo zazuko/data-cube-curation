@@ -1,6 +1,5 @@
 import express from 'express'
 import { asyncMiddleware } from 'middleware-async'
-import { getProjectId } from '../project'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { projects, tables } from '../../storage/repository'
@@ -53,7 +52,7 @@ async function createFactTable (req: express.Request, projectId: string) {
 
 export const createTable = asyncMiddleware(async (req: express.Request, res, next) => {
   let promiseTable: Promise<string>
-  const projectId = getProjectId(req.params.projectId)
+  const projectId = req.resourceId.replace(/\/tables$/, '')
   const { type } = buildVariables(req, {
     type: expand('rdf:type'),
   })

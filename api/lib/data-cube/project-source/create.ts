@@ -1,3 +1,4 @@
+import { Request } from 'express'
 import parse from 'csv-parse'
 import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
@@ -23,8 +24,8 @@ export function parseCsv (req, res, next) {
     })
 }
 
-export const createSourceHandler = asyncMiddleware(async (req, res, next) => {
-  const project = await projects.load(`/project/${req.params.projectId}`)
+export const createSourceHandler = asyncMiddleware(async (req: Request, res, next) => {
+  const project = await projects.load(req.resourceId.replace(/\/sources$/, ''))
 
   const contentDispositionPattern = /attachment; filename="(.+)"/
   const contentDisposition: string = req.headers['content-disposition']
