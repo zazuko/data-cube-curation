@@ -36,6 +36,7 @@
     "cors": "^2.8.5",
     "csv-parse": "^4.4.3",
     "debug": "^4.1.1",
+    "detect-csv": "^1.1.0",
     "dotenv": "^8.0.0",
     "dotenv-expand": "^5.1.0",
     "eventemitter3": "^4.0.0",

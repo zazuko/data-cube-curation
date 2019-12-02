@@ -1,0 +1,59 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+
+With Class api:Entrypoint {
+    Expect Property api:projects {
+        Expect Operation api:CreateProject {
+            Invoke {
+                Content-Type "text/turtle"
+
+                ```
+                @prefix schema: <http://schema.org/> .
+
+                <> schema:name "Project where source is comma-delimited" .
+                ```
+            } => {
+                Expect Status 201
+                Expect Header Location [projectUri]
+
+                Follow [projectUri]
+            }
+        }
+    }
+}
+
+With Class dataCube:Project {
+    Expect Property api:sources {
+        Expect Operation api:AddSource
+    }
+
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="really-comma-separated.csv"'
+
+        <<< "../bodies/really-comma-separated.csv"
+    } => {
+        Expect Status 201
+        Expect Header Location [sourceUri]
+
+        Follow [sourceUri]
+    }
+}
+
+With Class dataCube:Source {
+    Expect Property api:columns {
+        Expect Type hydra:Collection
+
+        Expect Property hydra:totalItems 2
+    }
+}

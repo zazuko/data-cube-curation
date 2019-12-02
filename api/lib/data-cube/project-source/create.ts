@@ -1,17 +1,24 @@
 import { Request } from 'express'
 import parse from 'csv-parse'
+import detect from 'detect-csv'
 import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
 
-const parserOptions = {
-  to: 100,
-  delimiter: ';',
-}
-
 export function parseCsv (req, res, next) {
+  let delimiter = ','
+  const detectedCsvFormat = detect(req.body)
+  if (detectedCsvFormat) {
+    delimiter = detectedCsvFormat.delimiter
+  }
+
+  const parserOptions = {
+    to: 100,
+    delimiter,
+  }
+
   parse(
     req.body,
     parserOptions,
