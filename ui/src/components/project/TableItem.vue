@@ -45,7 +45,6 @@
               <table class="table is-fullwidth">
                 <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Source column</th>
                     <th>Property</th>
                     <th>Type</th>
@@ -55,7 +54,6 @@
                 </thead>
                 <Loader tag="tbody" :data="attributes" v-slot="{ data: attributes }">
                   <tr v-for="attribute in attributes" :key="attribute.id">
-                    <td>{{ attribute.name }}</td>
                     <Loader tag="td" :data="getColumn(attribute.columnId)" v-slot="{ data: column }">
                       {{ column.name }}
                     </Loader>

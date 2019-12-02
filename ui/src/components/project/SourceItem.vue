@@ -21,7 +21,7 @@
               </b-field>
               <b-taglist>
                 <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
-                  {{ getTable(attribute.tableId).name }} > {{ attribute.name }}
+                  {{ getTable(attribute.tableId).name }} > {{ attribute.predicateId }}
                 </TableTag>
               </b-taglist>
             </th>

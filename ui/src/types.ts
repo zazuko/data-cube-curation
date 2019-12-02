@@ -58,7 +58,6 @@ export interface TableFormData {
 
 export interface Attribute {
   id: ResourceId;
-  name: string;
   predicateId: ResourceId;
   columnId: ResourceId;
   dataTypeId: ResourceId | null;
@@ -68,7 +67,6 @@ export interface Attribute {
 
 export interface AttributeFormData {
   id?: ResourceId,
-  name: string,
   columnId: ResourceId,
   predicateId: ResourceId,
   dataTypeId: string,

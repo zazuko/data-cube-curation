@@ -185,7 +185,6 @@ class ProjectsClient {
     const operation = table.actions.createAttribute
     const data = {
       '@type': URI.TYPE_ATTRIBUTE,
-      [URI.PROP_NAME]: attribute.name,
       [URI.PROP_PREDICATE]: attribute.predicateId,
       [URI.PROP_COLUMN]: attribute.columnId,
       [URI.PROP_DATATYPE]: attribute.dataTypeId,
