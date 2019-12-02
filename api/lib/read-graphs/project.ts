@@ -12,10 +12,18 @@ import { unselectFactTable } from '../domain/project'
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
   await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" .
+    <${ev.id}/tables> dataCube:project <${ev.id}> .
+    <${ev.id}/sources> dataCube:project <${ev.id}> .
+    <${ev.id}/fact-table> dataCube:project <${ev.id}> .
+    <${ev.id}> 
+        api:tables <${ev.id}/tables> ;
+        api:sources <${ev.id}/sources> ;
+        api:factTable <${ev.id}/fact-table> .
   `)
     .prefixes({
       schema,
       dataCube,
+      api,
     })
     .execute(getClient())
 })
@@ -81,6 +89,7 @@ export async function getProject (id: string) {
       schema:name ?name ;
       api:sources ?sources ;
       dataCube:factTable ?factTable ;
+      api:factTable ?factTableCanonical ;
       api:tables ?tables .
 
     ?sources
@@ -91,16 +100,17 @@ export async function getProject (id: string) {
     ?source schema:name ?sourceName`)
     .where(`
     BIND (<${id}> as ?project)
-    BIND (<${id}/sources> as ?sources)
-    BIND (<${id}/fact-table> as ?factTable)
-    BIND (<${id}/tables> as ?tables)
 
     ?project
         schema:name ?name ;
-        a ?projectType .
+        a ?projectType ; 
+        api:sources ?sources ;
+        api:factTable ?factTableCanonical ;
+        api:tables ?tables .
 
     OPTIONAL
     {
+        ?project dataCube:factTable ?factTable .
         ?project dataCube:source ?source .
         ?source schema:name ?sourceName .
     }
@@ -113,13 +123,20 @@ export async function getProject (id: string) {
         }
   }`).execute(getClient()))
 
-  cf({ dataset })
+  const project = cf({ dataset })
     .has(rdf.type, dataCube.Project)
+
+  project
     .out(api.sources)
     .addOut(hydra.manages, manages => {
       manages.addOut(hydra.property, rdf.type)
       manages.addOut(hydra.object, dataCube.Source)
     })
+
+  const realFactTable = project.out(dataCube.factTable)
+  if (realFactTable.term) {
+    project.deleteOut(api.factTable)
+  }
 
   return dataset
 }

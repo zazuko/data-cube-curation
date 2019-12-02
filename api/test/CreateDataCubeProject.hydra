@@ -34,7 +34,7 @@ With Class dataCube:Project {
         Expect Operation api:AddSource
     }
 
-    Expect Link dataCube:factTable
+    Expect Link api:factTable
     Expect Link api:tables
 }
 

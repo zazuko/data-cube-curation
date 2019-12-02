@@ -153,7 +153,7 @@ dataCube:Project
       hydra:writeable false
     ] ,
     [
-      hydra:property dataCube:factTable ;
+      hydra:property api:factTable ;
       hydra:title "The project's output Fact Table" ;
       hydra:writeable false
     ] ,
@@ -171,7 +171,7 @@ api:tables
     api:PostFactTable ,
     api:GetTables .
 
-dataCube:factTable
+api:factTable
   a hydra:Link ;
   rdfs:range dataCube:FactTable ;
   hydra:supportedOperation
@@ -227,8 +227,8 @@ api:AddSource
         code:link <file:lib/data-cube/project-source/create#createSourceHandler>
       ]
       [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+        a code:EcmaScript ;
+        code:link <file:lib/data-cube/project-source/get#get>
       ]
     )
   ] .
@@ -243,11 +243,7 @@ api:GetProjectSources
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project#initExisting>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source-collection/get.rq>, <file:hydra/project-source-collection/get.manages-block.rq>
+        code:link <file:lib/data-cube/project/sources-collection#get>
       ]
     )
   ] .
@@ -320,11 +316,7 @@ api:GetDataCubeSource
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/project-source#initExisting>
-      ]
-      [
-        a hydra-box:SparqlQuery ;
-        hydra-box:source <file:hydra/project-source/get.rq>, <file:hydra/project-source/get.columns.rq>
+        code:link <file:lib/data-cube/project-source/get#get>
       ]
     )
   ] .
@@ -555,11 +547,6 @@ dataCube:Attribute a hydra:Class ;
     api:GetAttribute ;
   hydra:supportedProperty
     [
-      hydra:property schema:name ;
-      hydra:title "Name for this attribute";
-      hydra:required true
-    ] ,
-    [
       hydra:property rdf:predicate ;
       hydra:title "Predicate URI for mapped value" ;
       hydra:required true
@@ -664,7 +651,7 @@ api:Error
 </_project/:projectId> a api:ProjectPlaceholder .
 </_project/:projectId> api:project </project/:projectId> .
 </project/:projectId/sources> a api:Sources .
-</project/:projectId> dataCube:factTable </project/:projectId/fact-table> .
+</project/:projectId> api:factTable </project/:projectId/fact-table> .
 </project/:projectId> api:tables </project/:projectId/tables> .
 </project/:projectId/fact-table> a dataCube:FactTable .
 </project/:projectId/table/:tableName> a dataCube:Table .

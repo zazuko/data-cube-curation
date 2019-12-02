@@ -86,7 +86,10 @@ describe('table', () => {
       const result = await addAttribute(table, command)
 
       // then
-      await expect(result.state).resolves.toMatchSnapshot()
+      const state = await result.state
+      expect(state).toMatchSnapshot({
+        '@id': expect.stringMatching(new RegExp('example/table/attribute/.+')),
+      })
     })
 
     it('emits an event', async () => {

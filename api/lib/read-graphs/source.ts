@@ -3,7 +3,7 @@ import { SourceEvents } from '../domain/source/events'
 import { handle } from '@tpluscode/fun-ddr'
 import { getClient } from './sparqlClient'
 import { insertData } from '../sparql'
-import { dataCube, schema, xsd, dtype } from '../namespaces'
+import { dataCube, schema, xsd, dtype, api } from '../namespaces'
 
 handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
   const columns = ev.data.columns.map((name, index) => `
@@ -20,7 +20,9 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
     <${ev.id}>
       a dataCube:Source, dataCube:CsvSource ;
       dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.fileName}" .
+      schema:name "${ev.data.fileName}" ;
+      api:columns <${ev.id}/columns> .
+    <${ev.id}/columns> dataCube:source <${ev.id}> .
 
     ${columns.join('\n')}
   `)
@@ -29,6 +31,7 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
       schema,
       dtype,
       xsd,
+      api,
     })
     .execute(getClient())
 })

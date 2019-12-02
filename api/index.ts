@@ -10,6 +10,7 @@ import { httpProblemMiddleware } from './lib/error/middleware'
 import frontend, { rootRedirect } from './frontend'
 import hydraMiddleware from './lib/hydra-box'
 import { log } from './lib/log'
+import { resourceId } from './lib/express'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
@@ -46,6 +47,7 @@ Promise.resolve().then(async () => {
   app.use(cors({
     exposedHeaders: ['link', 'location'],
   }))
+  app.use(resourceId)
   app.use(await hydraMiddleware(path.join(__dirname, 'hydra/api.ttl')))
   app.use(function (req, res, next) {
     next(new NotFoundError())

@@ -34,7 +34,7 @@ With Operation schema:CreateAction {
         Expect Property api:sources {
             Expect Operation api:AddSource
         }
-        Expect Property dataCube:factTable {
+        Expect Property api:factTable {
             Expect Operation api:CreateFactTable
         }
     }
@@ -96,7 +96,6 @@ With Operation api:AddAttributeMappedFromSingleColumn {
         @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
         <> dataCube:column <project/attribute-datatype-test/source/single-column-csv/station-id> ;
-           schema:name "Identifier" ;
            rdf:predicate <http://schema.org/identifier> ;
            dataCube:datatype <http://www.w3.org/2001/XMLSchema#integer>.
         ```
