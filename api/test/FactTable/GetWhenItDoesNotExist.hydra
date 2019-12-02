@@ -26,7 +26,7 @@ With Operation schema:CreateAction {
         <> schema:name "Fact table project" .
         ```
     } => {
-        Expect Link dataCube:factTable {
+        Expect Link api:factTable {
             Expect Status 404
         }
     }

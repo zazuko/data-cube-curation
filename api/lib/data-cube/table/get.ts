@@ -18,15 +18,9 @@ export const get = asyncMiddleware(async (req: express.Request, res: express.Res
   const quadStream = await construct()
     .graph(`
       ?table ?p ?o .
-      ?table api:attributes ?attributes .
-      ?table api:preview ?preview .
-      ?table api:csvwMetadata ?csvw .
     `)
     .where(`
     BIND (<${tableId}> as ?table)
-    BIND (<${tableId}/attributes> as ?attributes)
-    BIND (<${tableId}/preview> as ?preview)
-    BIND (<${tableId}/csvw> as ?csvw)
 
     ?table
         a dataCube:Table ;

@@ -15,7 +15,7 @@ export function getSourceColumns (sourceId: string) {
       ?column ?columnProp ?o .`)
     .where(`
       BIND (<${sourceId}> as ?source)
-      BIND (<${sourceId}/columns> as ?columnsCollection)
+      ?source api:columns ?columnsCollection .
   
       ?source dataCube:column ?column .
   

@@ -1,7 +1,7 @@
 import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { DomainEvent } from '@tpluscode/fun-ddr/lib'
 import { ask, construct, deleteInsert, insertData, select } from '../sparql'
-import { dataCube, hydra, rdf, schema } from '../namespaces'
+import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
 import { getTableAttributes } from './attribute'
@@ -12,12 +12,17 @@ import $rdf from 'rdf-ext'
 
 function addTableLinks (ev: DomainEvent) {
   return insertData(`
+    <${ev.id}> 
+        api:csvwMetadata <${ev.id}/csvw> ;
+        api:attributes <${ev.id}/attributes> ;
+        api:preview <${ev.id}/preview> .
     <${ev.id}/csvw> dataCube:table <${ev.id}> .  
     <${ev.id}/attributes> dataCube:table <${ev.id}> .  
     <${ev.id}/preview> dataCube:table <${ev.id}> .  
   `)
     .prefixes({
       dataCube,
+      api,
     })
     .execute(getClient())
 }
