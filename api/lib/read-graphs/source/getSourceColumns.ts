@@ -1,14 +1,17 @@
+import cf from 'clownface'
+import $rdf from 'rdf-ext'
 import { construct } from '../../sparql'
 import { getClient } from '../sparqlClient'
 import { api, dataCube, dtype, hydra, rdf, schema } from '../../namespaces'
 
-export function getSourceColumns (sourceId: string) {
-  return construct()
+export async function getSourceColumns (sourceId: string) {
+  const dataset = $rdf.dataset()
+  await dataset.import(await construct()
     .graph(`
-      ?source api:columns ?columnsCollection .
+      ?source api:columns ?columnsCollection ;
+              dataCube:column ?column .
   
       ?columnsCollection
-          hydra:member ?column ;
           a hydra:Collection ;
           hydra:totalItems ?count .
   
@@ -44,5 +47,22 @@ export function getSourceColumns (sourceId: string) {
       hydra,
       api,
     })
-    .execute(getClient())
+    .execute(getClient()))
+
+  const graph = cf({ dataset })
+  const collection = graph.node($rdf.namedNode(`${sourceId}/columns`))
+
+  const columns = graph
+    .node($rdf.namedNode(`${sourceId}`)).out(dataCube.column)
+    .map(column => ({
+      column: column.term,
+      order: column.out(dtype.order).value || 0,
+    }))
+    .sort((left, right) => left.order - right.order)
+    .map(item => item.column)
+
+  // TODO: remove the explicit `?source dataCube:column ?column` triples
+  collection.addList(hydra.member, columns)
+
+  return dataset.toStream()
 }
