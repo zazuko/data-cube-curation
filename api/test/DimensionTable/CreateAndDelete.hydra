@@ -62,6 +62,7 @@ With Operation api:CreateDimensionTable {
         ```
     } => {
         Expect Status 201
+        Expect Header Location
     }
 }
 
