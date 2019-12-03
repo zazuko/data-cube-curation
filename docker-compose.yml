@@ -1,0 +1,46 @@
+
+version: "3"
+
+services:
+
+  fuseki:
+    build: fuseki
+    ports:
+      - 3030:3030
+    environment:
+      - ADMIN_PASSWORD=password
+      - ENABLE_DATA_WRITE=true
+      - ENABLE_UPDATE=true
+      - ENABLE_UPLOAD=true
+  datacube:
+    build: .
+    ports:
+      - "5678:5678"
+    depends_on:
+      - fuseki
+    environment:
+      PORT: 5678
+      BASE_URI: http://localhost:5678/
+      SPARQL_ENDPOINT: http://fuseki:3030/e2e/query
+      SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/e2e/update
+      READ_MODEL_SPARQL_ENDPOINT: http://fuseki:3030/read/query
+      READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/read/update
+      STORAGE_FILESYSTEM_PATH: /uploads
+    volumes:
+      - uploads:/uploads
+  analyzer:
+    image: "hydrofoil/hydra-analyser"
+    network_mode: "host"
+    depends_on:
+      - datacube
+    environment:
+      ENTRYPOINT_URL: "http://localhost:5678/"
+  e2e-tests:
+    build: api/test
+    network_mode: "host"
+    depends_on:
+      - datacube
+    environment:
+      BASE_URI: "http://localhost:5678/"
+volumes:
+  uploads:
