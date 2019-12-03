@@ -5,7 +5,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { selectFactTableSource } from '../../domain/project'
 import { projects, tables, attributes } from '../../storage/repository'
 import { addAttribute } from '../../domain/table/addAttribute'
-import { getTableAttributes } from '../../read-graphs/attribute'
+import { getSingleAttribute, getTableAttributes } from '../../read-graphs/attribute'
 import { getTableId } from '../../read-graphs/table/links'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
@@ -46,7 +46,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
   res.graph(await getRepresentation(tableId))
 })
 
-export const addAttributeHandler = asyncMiddleware(async (req: express.Request, res, next) => {
+export const addAttributeHandler = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = await getTableId(req.resourceId)
   if (!tableId) {
     throw new NotFoundError()
@@ -75,24 +75,18 @@ export const addAttributeHandler = asyncMiddleware(async (req: express.Request, 
     language: variables.language && variables.language.value,
   })
 
-  attribute.commit(attributes)
-    .then(newAttribute => {
-      res.status(201)
-      res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
-      next()
-    })
-    .catch(next)
+  const newAttribute = await attribute.commit(attributes)
+
+  res.status(201)
+  res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
+  res.graph(await getSingleAttribute(newAttribute['@id']))
 })
 
-export const getAttributes = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
+export const getAttributes = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = await getTableId(req.resourceId)
   if (!tableId) {
     throw new NotFoundError()
   }
 
-  getTableAttributes(tableId)
-    .then(dataset => {
-      res.graph(dataset)
-    })
-    .catch(next)
+  res.graph(await getTableAttributes(tableId))
 })

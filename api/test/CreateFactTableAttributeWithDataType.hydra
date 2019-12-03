@@ -2,6 +2,8 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
@@ -99,5 +101,14 @@ With Operation api:AddAttributeMappedFromSingleColumn {
     } => {
         Expect Status 201
         Expect Header Location
+
+        Expect Type dataCube:Attribute
+        Expect Property rdf:predicate {
+            Expect Id schema:identifier
+        }
+        Expect Property dataCube:column
+        Expect Property dataCube:datatype {
+            Expect Id xsd:integer
+        }
     }
 }
