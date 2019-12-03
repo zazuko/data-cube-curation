@@ -1,32 +1,8 @@
 import express from 'express'
 import asyncMiddleware from 'middleware-async'
-import { ask, construct } from '../../sparql'
-import { getClient } from '../../read-graphs/sparqlClient'
-import { NotFoundError } from '../../error'
-import { api, dataCube } from '../../namespaces'
+import { getRepresentation } from '../../read-graphs/table/index'
 
 export const get = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = req.resourceId
-  const tableExists = await ask(`<${tableId}> a dataCube:Table`)
-    .prefixes({ dataCube })
-    .execute(getClient())
-
-  if (!tableExists) {
-    throw new NotFoundError()
-  }
-
-  const quadStream = await construct()
-    .graph(`
-      ?table ?p ?o .
-    `)
-    .where(`
-    BIND (<${tableId}> as ?table)
-
-    ?table
-        a dataCube:Table ;
-        ?p ?o .`)
-    .prefixes({ dataCube, api })
-    .execute(getClient())
-
-  res.graph(quadStream)
+  res.graph(await getRepresentation(tableId))
 })

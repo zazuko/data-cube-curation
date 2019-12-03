@@ -65,9 +65,6 @@ With Operation api:PostFactTable {
         ```
     } => {
         Expect Status 201
-        Expect Header Location [tableId]
-
-        Follow [tableId]
     }
 }
 

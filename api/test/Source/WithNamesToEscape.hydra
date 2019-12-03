@@ -16,9 +16,6 @@ With Class api:Entrypoint {
                 ```
             } => {
                 Expect Status 201
-                Expect Header Location [projectUri]
-
-                Follow [projectUri]
             }
         }
     }
@@ -38,9 +35,6 @@ With Operation api:AddSource {
         <<< "../bodies/name-and-columns-to-be-slugified.csv"
     } => {
         Expect Status 201
-        Expect Header Location [sourceUri]
-
-        Follow [sourceUri]
     }
 }
 

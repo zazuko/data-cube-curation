@@ -13,6 +13,7 @@ export function getSource (sourceId: string) {
           rdf:type
           schema:name
           dataCube:project
+          api:columns
       }
   
       OPTIONAL {

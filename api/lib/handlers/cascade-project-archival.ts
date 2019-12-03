@@ -5,8 +5,8 @@ import { dataCube } from '../namespaces'
 import { getClient } from '../read-graphs/sparqlClient'
 import { sources, tables } from '../storage/repository'
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteSourcesOfProject (ev) {
-  return select('source')
+handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function deleteSourcesOfProject (ev) {
+  await select('source')
     .where(`?source dataCube:project <${ev.id}> ; a dataCube:Source .`)
     .prefixes({
       dataCube,
@@ -20,8 +20,8 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteSourc
     }))
 })
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', function deleteTablesOfProject (ev) {
-  return select('table')
+handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function deleteTablesOfProject (ev) {
+  await select('table')
     .where(`?table dataCube:project <${ev.id}> ; a dataCube:Table .`)
     .prefixes({
       dataCube,

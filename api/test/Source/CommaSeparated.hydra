@@ -16,9 +16,6 @@ With Class api:Entrypoint {
                 ```
             } => {
                 Expect Status 201
-                Expect Header Location [projectUri]
-
-                Follow [projectUri]
             }
         }
     }
@@ -44,9 +41,6 @@ With Operation api:AddSource {
         <<< "../bodies/really-comma-separated.csv"
     } => {
         Expect Status 201
-        Expect Header Location [sourceUri]
-
-        Follow [sourceUri]
     }
 }
 
