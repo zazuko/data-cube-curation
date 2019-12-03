@@ -40,16 +40,14 @@ const actions: ActionTree<AttributesState, RootState> = {
   async loadForTable (context, table: Table) {
     await handleAPIError(context, async () => {
       const attributes = await client.projects.getAttributes(table)
-
       context.commit('storeForTable', { table, attributes })
     })
   },
 
-  async create (context, { table, attribute }) {
+  async create (context, { table, attribute: attributeData }) {
     await handleAPIError(context, async () => {
-      const id = await client.projects.createAttribute(table, attribute)
-      // Reload to get the new one
-      context.dispatch('loadForTable', table)
+      const attribute = await client.projects.createAttribute(table, attributeData)
+      context.commit('storeInTable', { table, attribute })
     })
   }
 }
@@ -58,6 +56,14 @@ const mutations: MutationTree<AttributesState> = {
   storeForTable (state, { table, attributes }) {
     const data = Remote.loaded(attributes)
     Vue.set(state.attributes, table.id, data)
+  },
+
+  storeInTable (state, { table, attribute }) {
+    const tableAttributes = state.attributes[table.id]
+
+    if (!tableAttributes.data) throw new Error('Table attributes not loaded')
+
+    tableAttributes.data.push(attribute)
   }
 }
 

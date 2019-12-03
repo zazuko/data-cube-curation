@@ -46,10 +46,8 @@ const actions: ActionTree<SourcesState, RootState> = {
 
   async upload (context, { project, file }) {
     await handleAPIError(context, async () => {
-      const id = await client.projects.createSource(project, file)
-
-      // Reload sources to get the new one
-      context.dispatch('loadForProject', project)
+      const source = await client.projects.createSource(project, file)
+      context.commit('storeInProject', { project, source })
     })
   }
 }
@@ -58,6 +56,14 @@ const mutations: MutationTree<SourcesState> = {
   storeForProject (state, { project, sources }) {
     const data = Remote.loaded(sources)
     Vue.set(state.sources, project.id, data)
+  },
+
+  storeInProject (state, { project, source }) {
+    const projectSources = state.sources[project.id]
+
+    if (!projectSources.data) throw new Error('Project sources not loaded')
+
+    projectSources.data.push(source)
   }
 }
 

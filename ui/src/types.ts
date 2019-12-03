@@ -1,9 +1,9 @@
 
-import { Collection } from 'alcaeus/types/Resources'
+import { Collection, HydraResource } from 'alcaeus/types/Resources'
 
 export type ResourceId = string;
 
-export interface Project {
+export interface Project extends HydraResource {
   id: ResourceId;
   actions: Record<string, any>;
   name: string | null;
@@ -20,13 +20,13 @@ export interface RemoteData<T> {
   error: string | null;
 }
 
-export interface Source {
+export interface Source extends HydraResource {
   id: ResourceId;
   name: string;
   columns: Column[];
 }
 
-export interface Column {
+export interface Column extends HydraResource {
   id: ResourceId;
   name: string;
   actions: Record<string, any>;
@@ -34,7 +34,7 @@ export interface Column {
 
 export type TableType = 'fact' | 'dimension'
 
-export interface Table {
+export interface Table extends HydraResource {
   type: TableType;
   id: ResourceId;
   name: string;
@@ -56,7 +56,7 @@ export interface TableFormData {
   sourceId: ResourceId,
 }
 
-export interface Attribute {
+export interface Attribute extends HydraResource {
   id: ResourceId;
   predicateId: ResourceId;
   columnId: ResourceId;

@@ -1,7 +1,7 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Attribute } from '../types'
+import { Project, ResourceId, Table, Attribute, Source, TableFormData, AttributeFormData } from '@/types'
 import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
@@ -75,7 +75,7 @@ class ProjectsClient {
     return loadedCollection.members
   }
 
-  async create (name: string): Promise<ResourceId> {
+  async create (name: string): Promise<Project> {
     const projectsCollection = await this.projectsCollection()
 
     if (!projectsCollection) throw new Error('No projects collection on entrypoint')
@@ -85,7 +85,7 @@ class ProjectsClient {
       '@type': URI.TYPE_PROJECT,
       [URI.PROP_NAME]: name
     }
-    return invokeCreateOperation(operation, data)
+    return invokeCreateOperation<Project>(operation, data)
   }
 
   async delete (project: Project): Promise<void> {
@@ -107,53 +107,52 @@ class ProjectsClient {
     return tables
   }
 
-  async createTable (project: Project, table: Table): Promise<string> {
-    if (table.type === 'fact') {
-      return this.createFactTable(project, table)
+  async createTable (project: Project, tableData: TableFormData): Promise<Table> {
+    if (tableData.type === 'fact') {
+      return this.createFactTable(project, tableData)
     } else {
-      return this.createDimensionTable(project, table)
+      return this.createDimensionTable(project, tableData)
     }
   }
 
-  async createTableWithAttributes (project: Project, table: Table, attributes: Attribute[]): Promise<string> {
-    const tableId = await this.createTable(project, table)
-    const loadedTable = await loadResource(tableId)
-    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(loadedTable, attribute)))
-    return tableId
+  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: AttributeFormData[]): Promise<Table> {
+    const table = await this.createTable(project, tableData)
+    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(table, attribute)))
+    return table
   }
 
-  async createDimensionTable (project: Project, table: Table): Promise<ResourceId> {
+  async createDimensionTable (project: Project, tableData: TableFormData): Promise<Table> {
     const operation = project.actions.createFactTable
     const data = {
       '@type': URI.TYPE_DIMENSION_TABLE,
-      [URI.PROP_NAME]: table.name,
-      [URI.PROP_SOURCE]: table.sourceId,
-      [URI.PROP_IDENTIFIER_TEMPLATE]: table.identifierTemplate
+      [URI.PROP_NAME]: tableData.name,
+      [URI.PROP_SOURCE]: tableData.sourceId,
+      [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate
     }
-    return invokeCreateOperation(operation, data)
+    return invokeCreateOperation<Table>(operation, data)
   }
 
-  async createFactTable (project: Project, table: Table): Promise<ResourceId> {
+  async createFactTable (project: Project, tableData: TableFormData): Promise<Table> {
     const operation = project.actions.createDimensionTable
     const data = {
       '@type': URI.TYPE_FACT_TABLE,
-      [URI.PROP_NAME]: table.name,
-      [URI.PROP_SOURCE]: table.sourceId
+      [URI.PROP_NAME]: tableData.name,
+      [URI.PROP_SOURCE]: tableData.sourceId
     }
-    return invokeCreateOperation(operation, data)
+    return invokeCreateOperation<Table>(operation, data)
   }
 
   async deleteTable (table: Table): Promise<void> {
     return invokeDeleteOperation(table.actions.delete)
   }
 
-  async createSource (project: any, file: File) {
+  async createSource (project: any, file: File): Promise<Source> {
     const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`
     }
-    return invokeCreateOperation(operation, file, headers)
+    return invokeCreateOperation<Source>(operation, file, headers)
   }
 
   async getSources (project: any) {
@@ -181,16 +180,16 @@ class ProjectsClient {
     return collection.members
   }
 
-  async createAttribute (table: any, attribute: Attribute) {
+  async createAttribute (table: any, attributeData: AttributeFormData): Promise<Attribute> {
     const operation = table.actions.createAttribute
     const data = {
       '@type': URI.TYPE_ATTRIBUTE,
-      [URI.PROP_PREDICATE]: attribute.predicateId,
-      [URI.PROP_COLUMN]: attribute.columnId,
-      [URI.PROP_DATATYPE]: attribute.dataTypeId,
-      [URI.PROP_LANGUAGE]: attribute.language
+      [URI.PROP_PREDICATE]: attributeData.predicateId,
+      [URI.PROP_COLUMN]: attributeData.columnId,
+      [URI.PROP_DATATYPE]: attributeData.dataTypeId,
+      [URI.PROP_LANGUAGE]: attributeData.language
     }
-    return invokeCreateOperation(operation, data)
+    return invokeCreateOperation<Attribute>(operation, data)
   }
 }
 
@@ -206,18 +205,21 @@ async function loadResource<T extends HydraResource = HydraResource> (id: Resour
   return resource as T
 }
 
-async function invokeCreateOperation (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<ResourceId> {
+async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
   const serializedData = data instanceof File ? data : JSON.stringify(data)
 
   const response = await operation.invoke(serializedData, headers)
-  const id = response.xhr.headers.get('Location')
-
-  if (response.xhr.status !== 201 || !id) {
+  if (response.xhr.status !== 201) {
     const details = await response.xhr.json()
     throw new APIError(details, response)
   }
 
-  return id
+  const resource = response.root
+  if (!resource) {
+    throw new Error('Response does not contain created resource')
+  }
+
+  return resource as T
 }
 
 async function invokeDeleteOperation (operation: IOperation): Promise<void> {
