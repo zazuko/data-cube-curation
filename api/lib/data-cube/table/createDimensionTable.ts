@@ -7,6 +7,7 @@ import { NotFoundError } from '../../error'
 import { addDimensionTable, selectFactTableSource } from '../../domain/project'
 import { DomainError } from '@tpluscode/fun-ddr'
 import { getProjectId } from '../../read-graphs/project/links'
+import { getRepresentation } from '../../read-graphs/table/index'
 
 async function loadProject (projectId: string) {
   const project = await projects.load(projectId)
@@ -31,9 +32,10 @@ async function createDimensionTable (req: express.Request, projectId: string): P
     identifierTemplate: variables.identifierTemplate.value,
   })
 
-  return table
+  const tableAggregate = await table
     .commit(tables)
-    .then(created => `${process.env.BASE_URI}${created['@id']}`)
+
+  return `${process.env.BASE_URI}${tableAggregate['@id']}`
 }
 
 async function createFactTable (req: express.Request, projectId: string) {
@@ -43,16 +45,16 @@ async function createFactTable (req: express.Request, projectId: string) {
   })
 
   const project = await loadProject(projectId)
-  return project.mutation(selectFactTableSource)({
+  await project.mutation(selectFactTableSource)({
     sourceId: sourceId.value,
     tableName: tableName.value,
   })
     .commit(projects)
-    .then(() => `${projectId}/table/${tableName.value}`)
+
+  return `${projectId}/table/${tableName.value}`
 }
 
-export const createTable = asyncMiddleware(async (req: express.Request, res, next) => {
-  let promiseTable: Promise<string>
+export const createTable = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
   const projectId = await getProjectId(req.resourceId)
   if (!projectId) {
     throw new NotFoundError()
@@ -62,19 +64,16 @@ export const createTable = asyncMiddleware(async (req: express.Request, res, nex
     type: expand('rdf:type'),
   })
 
+  let tableId
   if (type.value === expand('dataCube:DimensionTable')) {
-    promiseTable = createDimensionTable(req, projectId)
+    tableId = await createDimensionTable(req, projectId)
   } else if (type.value === expand('dataCube:FactTable')) {
-    promiseTable = createFactTable(req, projectId)
+    tableId = await createFactTable(req, projectId)
   } else {
     throw new DomainError(projectId, 'Cannot create table', 'Missing or unrecognized table type')
   }
 
-  promiseTable
-    .then(tableId => {
-      res.status(201)
-      res.setHeader('Location', tableId)
-      next()
-    })
-    .catch(next)
+  res.status(201)
+  res.setHeader('Location', tableId)
+  res.graph(await getRepresentation(tableId))
 })

@@ -5,31 +5,29 @@ import { createProject, renameProject, archiveProject } from '../../domain/proje
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
-import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
 import { ProjectEvents } from '../../domain/project/events'
+import { getProject } from '../../read-graphs/project'
 
 export { getTables } from './getTables'
 
-export function create (req: Request, res: Response, next) {
+export const create = asyncMiddleware(async (req: Request, res: Response) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
 
-  createProject({
+  const project = await createProject({
     name: projectName.value,
   })
     .commit(projects)
-    .then((project) => {
-      res.status(201)
-      res.setHeader('Location', `${process.env.BASE_URI}${project['@id'].replace('/', '')}`)
-      next()
-    })
-    .catch(next)
-}
 
-export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response, next) => {
+  res.status(201)
+  res.setHeader('Location', `${process.env.BASE_URI}${project['@id'].replace('/', '')}`)
+  res.graph(await getProject(project['@id']))
+})
+
+export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -47,10 +45,8 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
     ? createProject(createCommand)
     : aggregateRoot.mutation(renameProject)(renameCommand)
 
-  aggregateRoot.commit(projects)
-    .then(() => {
-      setTimeout(() => getExistingProject(req, res, next), 50)
-    }).catch(next)
+  await aggregateRoot.commit(projects)
+  res.graph(await getProject(req.resourceId))
 })
 
 export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {
@@ -71,7 +67,7 @@ export const archive = asyncMiddleware(async (req: Request, res, next) => {
 
   if (!await aggregateRoot.state) {
     emitImmediate<ProjectEvents, 'ProjectArchived'>(
-      res.locals.projectId,
+      req.resourceId,
       'ProjectArchived',
       null
     )
@@ -80,12 +76,10 @@ export const archive = asyncMiddleware(async (req: Request, res, next) => {
     return
   }
 
-  aggregateRoot.mutation(archiveProject)(null as never)
+  await aggregateRoot.mutation(archiveProject)(null as never)
     .delete()
     .commit(projects)
-    .then(() => {
-      res.status(204)
-      next()
-    })
-    .catch(next)
+
+  res.status(204)
+  next()
 })

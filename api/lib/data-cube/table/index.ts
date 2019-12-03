@@ -9,12 +9,13 @@ import { getTableAttributes } from '../../read-graphs/attribute'
 import { getTableId } from '../../read-graphs/table/links'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
+import { getRepresentation } from '../../read-graphs/table/index'
 
 export { get } from './get'
 export { createTable } from './createDimensionTable'
 export { archive } from './archive'
 
-export const createFactTable = asyncMiddleware(async (req: express.Request, res, next) => {
+export const createFactTable = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const projectId = await getProjectId(req.resourceId)
   if (!projectId) {
     throw new NotFoundError()
@@ -32,17 +33,17 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res,
     return
   }
 
-  project.mutation(selectFactTableSource)({
+  await project.mutation(selectFactTableSource)({
     sourceId: variables.source.value,
     tableName: variables.name.value,
   })
     .commit(projects)
-    .then(() => {
-      res.status(201)
-      res.setHeader('Location', `${projectId}/table/${variables.name.value}`)
-      next()
-    })
-    .catch(next)
+
+  const tableId = `${projectId}/table/${variables.name.value}`
+
+  res.status(201)
+  res.setHeader('Location', tableId)
+  res.graph(await getRepresentation(tableId))
 })
 
 export const addAttributeHandler = asyncMiddleware(async (req: express.Request, res, next) => {

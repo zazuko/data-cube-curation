@@ -25,6 +25,7 @@ const scenarios = Object.entries({
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',
   'Source/WithNamesToEscape': '',
+  'Source/CommaSeparated': '',
   Entrypoint: '',
 })
 
@@ -96,6 +97,8 @@ function summary (summary: Summary) {
       console.log(`  - ${failure}`)
     })
   }
+
+  process.exit(summary.failures.length)
 }
 
 parseScenarios()

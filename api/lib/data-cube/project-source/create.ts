@@ -1,17 +1,25 @@
-import { Request } from 'express'
+import { Request, Response } from 'express'
 import parse from 'csv-parse'
+import detect from 'detect-csv'
 import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
-
-const parserOptions = {
-  to: 100,
-  delimiter: ';',
-}
+import { getRepresentation } from '../../read-graphs/source/index'
 
 export function parseCsv (req, res, next) {
+  let delimiter = ','
+  const detectedCsvFormat = detect(req.body)
+  if (detectedCsvFormat) {
+    delimiter = detectedCsvFormat.delimiter
+  }
+
+  const parserOptions = {
+    to: 100,
+    delimiter,
+  }
+
   parse(
     req.body,
     parserOptions,
@@ -26,7 +34,7 @@ export function parseCsv (req, res, next) {
     })
 }
 
-export const createSourceHandler = asyncMiddleware(async (req: Request, res, next) => {
+export const createSourceHandler = asyncMiddleware(async (req: Request, res: Response) => {
   const projectId = await getProjectId(req.resourceId)
   if (!projectId) {
     throw new NotFoundError()
@@ -54,11 +62,10 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res, nex
   const source = await project
     .factory(createSource)(createSourceCommand)
 
-  source.commit(sources)
-    .then((source) => {
-      res.status(201)
-      res.setHeader('Location', `${process.env.BASE_URI}${source['@id']}`)
-      next()
-    })
-    .catch(next)
+  const sourceAggregate = await source.commit(sources)
+  const sourceId = `${process.env.BASE_URI}${sourceAggregate['@id']}`
+
+  res.status(201)
+  res.setHeader('Location', sourceId)
+  res.graph((await getRepresentation(sourceId)).toStream())
 })

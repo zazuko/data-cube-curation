@@ -20,9 +20,7 @@ With Operation api:CreateProject {
         ```
     } => {
         Expect Status 201
-        Expect Header Location [projectUri]
-
-        Follow [projectUri]
+        Expect Header Location
     }
 }
 
@@ -55,9 +53,7 @@ With Operation api:AddSource {
         <<< "bodies/UBD0028.Daten_de.csv"
     } => {
         Expect Status 201
-        Expect Header Location [sourceUri]
-
-        Follow [sourceUri]
+        Expect Header Location
     }
 
     // Repeat the same should fail
