@@ -5,14 +5,14 @@ import { createProject, renameProject, archiveProject } from '../../domain/proje
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
-import { getExistingProject } from './get'
 import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
 import { ProjectEvents } from '../../domain/project/events'
+import { getProject } from '../../read-graphs/project'
 
 export { getTables } from './getTables'
 
-export const create = asyncMiddleware(async (req: Request, res: Response, next) => {
+export const create = asyncMiddleware(async (req: Request, res: Response) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -24,11 +24,10 @@ export const create = asyncMiddleware(async (req: Request, res: Response, next) 
 
   res.status(201)
   res.setHeader('Location', `${process.env.BASE_URI}${project['@id'].replace('/', '')}`)
-  req.resourceId = project['@id']
-  await getExistingProject(req, res, next)
+  res.graph(await getProject(project['@id']))
 })
 
-export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response, next) => {
+export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response) => {
   const { projectName } = buildVariables(req, {
     projectName: expand('schema:name'),
   })
@@ -47,7 +46,7 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
     : aggregateRoot.mutation(renameProject)(renameCommand)
 
   await aggregateRoot.commit(projects)
-  await getExistingProject(req, res, next)
+  res.graph(await getProject(req.resourceId))
 })
 
 export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {

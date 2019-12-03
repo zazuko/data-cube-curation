@@ -74,6 +74,6 @@ export const createTable = asyncMiddleware(async (req: express.Request, res: exp
   }
 
   res.status(201)
-  res.setHeader('Location', req.resourceId)
+  res.setHeader('Location', tableId)
   res.graph(await getRepresentation(tableId))
 })
