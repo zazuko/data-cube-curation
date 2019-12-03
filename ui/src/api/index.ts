@@ -31,6 +31,17 @@ export class APIError extends Error {
     this.details = details
     this.response = response
   }
+
+  static async fromResponse (response: IHydraResponse): Promise<APIError> {
+    let details
+    try {
+      details = await response.xhr.json()
+    } catch (e) {
+      details = {}
+    }
+
+    return new APIError(details, response)
+  }
 }
 
 export class Client {
@@ -195,11 +206,14 @@ class ProjectsClient {
 
 async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {
   const response = await Hydra.loadResource(id)
-  const resource = response.root
 
-  if (response.xhr.status !== 200 || !resource) {
-    const details = await response.xhr.json()
-    throw new APIError(details, response)
+  if (response.xhr.status !== 200) {
+    throw await APIError.fromResponse(response)
+  }
+
+  const resource = response.root
+  if (!resource) {
+    throw new Error('Response does not contain created resource')
   }
 
   return resource as T
@@ -210,8 +224,7 @@ async function invokeCreateOperation<T extends HydraResource = HydraResource> (o
 
   const response = await operation.invoke(serializedData, headers)
   if (response.xhr.status !== 201) {
-    const details = await response.xhr.json()
-    throw new APIError(details, response)
+    throw await APIError.fromResponse(response)
   }
 
   const resource = response.root
@@ -226,8 +239,7 @@ async function invokeDeleteOperation (operation: IOperation): Promise<void> {
   const response = await operation.invoke('')
 
   if (response.xhr.status !== 204) {
-    const details = await response.xhr.json()
-    throw new APIError(details, response)
+    throw await APIError.fromResponse(response)
   }
 }
 
