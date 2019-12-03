@@ -59,11 +59,10 @@ export default class extends Vue {
     return this.$store.getters['tables/forProject'](this.project.id)
   }
 
-  uploadSource (file: File) {
-    this.$store.dispatch('sources/upload', {
-      project: this.project,
-      file
-    })
+  async uploadSource (file: File) {
+    const loading = this.$buefy.loading.open({})
+    await this.$store.dispatch('sources/upload', { project: this.project, file })
+    loading.close()
   }
 }
 </script>

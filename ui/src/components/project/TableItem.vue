@@ -138,8 +138,10 @@ export default class extends Vue {
       confirmText: 'Delete',
       type: 'is-danger',
       hasIcon: true,
-      onConfirm: () => {
-        this.$store.dispatch('tables/delete', { project: this.project, table: this.table })
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('tables/delete', { project: this.project, table: this.table })
+        loading.close()
       }
     })
   }
@@ -152,8 +154,10 @@ export default class extends Vue {
         table: this.table,
         // TODO: Handle source not loaded
         source: this.source.data,
-        save: (attribute: AttributeFormData) => {
-          this.$store.dispatch('attributes/create', { table: this.table, attribute })
+        save: async (attribute: AttributeFormData) => {
+          const loading = this.$buefy.loading.open({})
+          await this.$store.dispatch('attributes/create', { table: this.table, attribute })
+          loading.close()
           modal.close()
         }
       },

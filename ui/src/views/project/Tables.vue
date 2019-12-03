@@ -72,8 +72,10 @@ export default class ProjectTablesView extends Vue {
       props: {
         project: this.project,
         sources: this.sources.data, // TODO: Handle loading?
-        save: (table: TableFormData) => {
-          this.$store.dispatch('tables/create', { project: this.project, table })
+        save: async (table: TableFormData) => {
+          const loading = this.$buefy.loading.open({})
+          await this.$store.dispatch('tables/create', { project: this.project, table })
+          loading.close()
           modal.close()
         }
       },
@@ -104,8 +106,10 @@ export default class ProjectTablesView extends Vue {
       confirmText: 'Delete',
       type: 'is-danger',
       hasIcon: true,
-      onConfirm: () => {
-        this.$store.dispatch('tables/delete', table)
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('tables/delete', table)
+        loading.close()
       }
     })
   }

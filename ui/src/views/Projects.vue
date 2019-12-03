@@ -62,8 +62,10 @@ export default class Projects extends Vue {
       parent: this,
       component: ProjectForm,
       props: {
-        save: (project: ProjectFormData) => {
-          this.$store.dispatch('projects/create', project.name)
+        save: async (project: ProjectFormData) => {
+          const loading = this.$buefy.loading.open({})
+          await this.$store.dispatch('projects/create', project.name)
+          loading.close()
           modal.close()
         }
       },
@@ -78,8 +80,10 @@ export default class Projects extends Vue {
       confirmText: 'Delete',
       type: 'is-danger',
       hasIcon: true,
-      onConfirm: () => {
-        this.$store.dispatch('projects/delete', project)
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('projects/delete', project)
+        loading.close()
       }
     })
   }

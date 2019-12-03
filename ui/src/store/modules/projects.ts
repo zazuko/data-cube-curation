@@ -48,8 +48,8 @@ const actions: ActionTree<ProjectsState, RootState> = {
 
   async create (context, name) {
     await handleAPIError(context, async () => {
-      const id = await client.projects.create(name)
-      context.dispatch('loadAll', id)
+      const project = await client.projects.create(name)
+      context.commit('storeOneInList', project)
     })
   },
 
@@ -72,6 +72,12 @@ const actions: ActionTree<ProjectsState, RootState> = {
 const mutations: MutationTree<ProjectsState> = {
   storeAll (state, projects: Project[]) {
     state.projectsList = Remote.loaded(projects)
+  },
+
+  storeOneInList (state, project: Project) {
+    if (!state.projectsList.data) throw new Error('Projects list not loaded')
+
+    state.projectsList.data.push(project)
   },
 
   storeOne (state, project: Project) {
