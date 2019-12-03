@@ -5,6 +5,8 @@ PREFIX csvw: <http://www.w3.org/ns/csvw#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
+ENTRYPOINT "project/attribute-datatype-test"
+
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
         Expect Operation schema:CreateAction {

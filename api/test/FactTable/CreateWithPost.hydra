@@ -3,6 +3,8 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
+ENTRYPOINT "project/fact-table-post-test"
+
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
         Expect Operation schema:CreateAction {
