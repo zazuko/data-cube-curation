@@ -12,10 +12,6 @@ export function Mixin<B extends Constructor> (Base: B) {
       }
     }
 
-    get name () {
-      return this.get(URI.PROP_NAME)
-    }
-
     get columnId (): ResourceId {
       const column = getOrThrow<HydraResource>(this, URI.PROP_COLUMN)
       return column.id

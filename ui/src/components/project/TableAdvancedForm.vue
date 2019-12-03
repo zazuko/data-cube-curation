@@ -41,7 +41,6 @@
           <thead>
             <tr>
               <th>CSV Column</th>
-              <th>Name</th>
               <th>Property</th>
               <th>Type</th>
               <th>Language</th>
@@ -54,9 +53,6 @@
                 <b-select v-model="attribute.columnId" expanded required>
                   <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
                 </b-select>
-              </td>
-              <td>
-                <b-input v-model="attribute.name" required />
               </td>
               <td>
                 <b-input v-model="attribute.predicateId" required />
@@ -145,7 +141,6 @@ function emptyTable () {
 
 function emptyAttribute (attrs = {}) {
   return {
-    name: '',
     predicateId: '',
     dataTypeId: '',
     language: '',

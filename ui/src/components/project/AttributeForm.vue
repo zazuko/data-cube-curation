@@ -7,10 +7,6 @@
       </h3>
     </header>
     <section class="modal-card-body">
-      <b-field label="Name">
-        <b-input type="text" v-model="attribute.name" required />
-      </b-field>
-
       <b-field label="Property">
         <b-input type="text" v-model="attribute.predicateId" required />
       </b-field>
@@ -79,7 +75,6 @@ export default class extends Vue {
 
 function emptyAttribute () {
   return {
-    name: '',
     columnId: '',
     predicateId: '',
     dataTypeId: '',
