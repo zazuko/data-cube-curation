@@ -4,9 +4,9 @@
   "scripts": {
     "start:api": "(cd api; npm run start)",
     "start:ui": "(cd ui; npm run serve)",
-    "setup:fuseki": "(cd fuseki; ./setup-fuseki.sh)",
-    "start:fuseki": "(cd fuseki; docker-compose up -d)",
-    "stop:fuseki": "(cd fuseki; docker-compose stop)",
+    "reset:fuseki": "docker-compose rm -f fuseki",
+    "start:fuseki": "docker-compose up -d fuseki",
+    "stop:fuseki": "docker-compose stop fuseki",
     "postinstall": "lerna bootstrap",
     "jest": "lerna run jest --stream --no-prefix",
     "test": "lerna run test --stream --no-prefix",
