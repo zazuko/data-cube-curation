@@ -14,7 +14,7 @@
 
 <#aggregates> rdf:type fuseki:Service ;
                 rdfs:label                        "Aggregate root repositories" ;
-                fuseki:name                       "e2e" ;     # http://host:port/e2e
+                fuseki:name                       "data-cube-e2e" ;     # http://host:port/e2e
                 fuseki:serviceQuery               "sparql" ;   # SPARQL query service
                 fuseki:serviceQuery               "query" ;    # SPARQL query service (alt name)
                 fuseki:serviceUpdate              "update" ;   # SPARQL update service
@@ -25,7 +25,7 @@
 
 <#read-model> rdf:type fuseki:Service ;
                   rdfs:label                        "Read model dataset" ;
-                  fuseki:name                       "read" ;       # http://host:port/read
+                  fuseki:name                       "data-cube-read" ;       # http://host:port/read
                   fuseki:serviceQuery               "sparql" ;   # SPARQL query service
                   fuseki:serviceQuery               "query" ;    # SPARQL query service (alt name)
                   fuseki:serviceUpdate              "update" ;   # SPARQL update service

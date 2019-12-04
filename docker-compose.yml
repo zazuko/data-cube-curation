@@ -21,10 +21,10 @@ services:
     environment:
       PORT: 5678
       BASE_URI: http://localhost:5678/
-      SPARQL_ENDPOINT: http://fuseki:3030/e2e/query
-      SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/e2e/update
-      READ_MODEL_SPARQL_ENDPOINT: http://fuseki:3030/read/query
-      READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/read/update
+      SPARQL_ENDPOINT: http://fuseki:3030/data-cube-e2e/query
+      SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-e2e/update
+      READ_MODEL_SPARQL_ENDPOINT: http://fuseki:3030/data-cube-read/query
+      READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-read/update
       STORAGE_FILESYSTEM_PATH: /uploads
     volumes:
       - uploads:/uploads
