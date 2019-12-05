@@ -49,13 +49,14 @@ export async function getTableAttributes (tableId: string) {
 
   await collection.import(await construct()
     .graph(`
-      <${tableId}/attributes>
+      ?attributes
         a hydra:Collection ;
         hydra:member ?attribute ;
         hydra:totalItems ?count .
 
       ?attribute ?p ?o .
     `)
+    .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
     .where(`
       OPTIONAL {
         ?attribute dataCube:table <${tableId}> .
@@ -79,10 +80,11 @@ export async function getTableAttributes (tableId: string) {
 
   await collection.import(await construct()
     .graph(`
-      <${tableId}/attributes> hydra:manages [
+      ?attributes hydra:manages [
         hydra:property rdf:type ;
         hydra:object dataCube:Attribute
       ] `)
+    .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
     .prefixes({ hydra, dataCube, rdf })
     .execute(getClient()))
 
