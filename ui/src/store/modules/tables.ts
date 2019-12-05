@@ -30,7 +30,7 @@ const actions: ActionTree<TablesState, RootState> = {
 
       context.commit('storeForProject', { project, tables })
 
-      tables.forEach((table) => {
+      tables.forEach((table: Table) => {
         context.dispatch('attributes/loadForTable', table, { root: true })
       })
     })
