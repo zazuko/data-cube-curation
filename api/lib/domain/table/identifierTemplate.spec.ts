@@ -10,6 +10,7 @@ const sourceColumns = parseGraph(`
   <http://foo.bar/column1> a dataCube:Column; schema:name "first_name" .
   <http://foo.bar/column2> a dataCube:Column; schema:name "last_name" .
   <http://foo.bar/column2> a dataCube:Column; schema:name "unused_column" .
+  <http://foo.bar/column-with-spaces-and-others> a dataCube:Column; schema:name "Fahrzeug größe" .
 `)
 
 describe('identifierTemplate', () => {
@@ -33,6 +34,19 @@ describe('identifierTemplate', () => {
       expect(result).toMatchObject([
         'http://foo.bar/column1',
         'http://foo.bar/column2',
+      ])
+    })
+
+    it('correctly matches percent-encoded names', async () => {
+      // given
+      getSourceColumnsMock.mockResolvedValueOnce(sourceColumns())
+
+      // when
+      const result = await extractColumnIds('source-id', 'http://x.y.z/{Fahrzeug%20gr%C3%B6%C3%9Fe}')
+
+      // then
+      expect(result).toMatchObject([
+        'http://foo.bar/column-with-spaces-and-others',
       ])
     })
 
