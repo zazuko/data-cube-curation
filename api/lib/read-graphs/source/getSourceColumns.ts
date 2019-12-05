@@ -10,32 +10,32 @@ export async function getSourceColumns (sourceId: string) {
     .graph(`
       ?source api:columns ?columnsCollection ;
               dataCube:column ?column .
-  
+
       ?columnsCollection
           a hydra:Collection ;
           hydra:totalItems ?count .
-  
+
       ?column ?columnProp ?o .`)
     .where(`
       BIND (<${sourceId}> as ?source)
       ?source api:columns ?columnsCollection .
-  
+
       ?source dataCube:column ?column .
-  
+
       VALUES ?columnProp
       {
           rdf:type
           schema:name
           dtype:order
       }
-  
+
       OPTIONAL { ?column ?columnProp ?o . }
-  
+
       {
           SELECT (COUNT(?column) as ?count)
           {
               BIND (<${sourceId}> as ?source)
-  
+
               ?source dataCube:column ?column .
           }
       }`)
@@ -64,5 +64,5 @@ export async function getSourceColumns (sourceId: string) {
   // TODO: remove the explicit `?source dataCube:column ?column` triples
   collection.addList(hydra.member, columns)
 
-  return dataset.toStream()
+  return dataset
 }

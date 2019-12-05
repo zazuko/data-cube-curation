@@ -3,17 +3,17 @@ import { addDimensionTable } from './createDimensionTable'
 import { Project } from './index'
 import { DomainError } from '@tpluscode/fun-ddr'
 import { hasSource } from '../../read-graphs/project'
-import { templateIsValid } from '../table/identifierTemplate'
+import { extractColumnIds } from '../table/identifierTemplate'
 
 jest.mock('../../read-graphs/project')
 jest.mock('../table/identifierTemplate')
 const projectHasSourceMock = hasSource as jest.Mock
-const templateIsValidMock = templateIsValid as jest.Mock
+const extractColumnIdsMock = extractColumnIds as jest.Mock
 
 describe('project', () => {
   beforeAll(() => {
-    projectHasSourceMock.mockReturnValue(true)
-    templateIsValidMock.mockResolvedValue(true)
+    projectHasSourceMock.mockResolvedValue(true)
+    extractColumnIdsMock.mockResolvedValue([])
   })
 
   describe('create dimension table', () => {
@@ -78,7 +78,7 @@ describe('project', () => {
         tableName: 'Test',
         identifierTemplate: '/dimension/{column}',
       }
-      projectHasSourceMock.mockReturnValueOnce(false)
+      projectHasSourceMock.mockResolvedValueOnce(false)
 
       // when
       const result = await addDimensionTable(project, command)
@@ -97,7 +97,7 @@ describe('project', () => {
         tableName: 'Test',
         identifierTemplate: '/dimension/{column}',
       }
-      templateIsValidMock.mockResolvedValueOnce(false)
+      extractColumnIdsMock.mockResolvedValueOnce(new Error())
 
       // when
       const result = await addDimensionTable(project, command)

@@ -7,7 +7,7 @@ export async function getRepresentation (sourceId: string) {
 
   await dataset.import(await getSource(sourceId))
 
-  await dataset.import(await getSourceColumns(sourceId))
+  await dataset.import((await getSourceColumns(sourceId)).toStream())
 
   return dataset
 }

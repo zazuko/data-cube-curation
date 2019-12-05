@@ -15,7 +15,7 @@ handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
     <${ev.id}/tables> dataCube:project <${ev.id}> .
     <${ev.id}/sources> dataCube:project <${ev.id}> .
     <${ev.id}/fact-table> dataCube:project <${ev.id}> .
-    <${ev.id}> 
+    <${ev.id}>
         api:tables <${ev.id}/tables> ;
         api:sources <${ev.id}/sources> ;
         api:factTable <${ev.id}/fact-table> .
@@ -103,7 +103,7 @@ export async function getProject (id: string) {
 
     ?project
         schema:name ?name ;
-        a ?projectType ; 
+        a ?projectType ;
         api:sources ?sources ;
         api:factTable ?factTableCanonical ;
         api:tables ?tables .
@@ -143,7 +143,7 @@ export async function getProject (id: string) {
 
 export async function hasSource (projectId: string, sourceId: string) {
   return ask(`
-    <${projectId}> a dataCube:Project; dataCube:source: <${sourceId}> . 
+    <${projectId}> a dataCube:Project; dataCube:source <${sourceId}> .
   `)
     .prefixes({ dataCube })
     .execute(getClient())
