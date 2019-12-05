@@ -18,7 +18,7 @@ export const parseSample = asyncMiddleware(async (req: express.Request, res: exp
   const sourceId = await getTableSourceId(tableId)
   const tableDataset = await getTableAndSource(tableId)
   const csvwMetadata = buildCsvw(tableDataset, tableId)
-  const sampleCsv = loadSourceSample(sourceId)
+  const sampleCsv = await loadSourceSample(sourceId)
 
   if (!sampleCsv) {
     next(new NotFoundError('Could not find sample csv'))
