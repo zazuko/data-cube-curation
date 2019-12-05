@@ -7,7 +7,7 @@ import { rdf, dataCube, schema } from '../../namespaces'
 export async function extractColumnIds (sourceId: string, template: string): Promise<string[] | Error> {
   let columnNames: string[]
   try {
-    columnNames = parse(template).expressions.map(ex => ex.params[0].name)
+    columnNames = parse(template).expressions.map(ex => ex.params[0].name).map(decodeURIComponent)
   } catch (e) {
     return e
   }
