@@ -11,7 +11,7 @@ import { getRepresentation } from '../../read-graphs/table/index'
 export { get } from './get'
 export { createTable } from './createDimensionTable'
 export { archive } from './archive'
-export { addValueAttributeHandler } from './attributes/addValueAttribute'
+export { addAttributeHandler, getAttributes } from './attributes'
 
 export const createFactTable = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const projectId = await getProjectId(req.resourceId)

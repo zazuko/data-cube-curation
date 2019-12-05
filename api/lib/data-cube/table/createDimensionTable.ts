@@ -54,7 +54,7 @@ async function createFactTable (req: express.Request, projectId: string) {
   return `${projectId}/table/${tableName.value}`
 }
 
-export const createTable = asyncMiddleware(async (req: express.Request, res: express.Response, next) => {
+export const createTable = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const projectId = await getProjectId(req.resourceId)
   if (!projectId) {
     throw new NotFoundError()

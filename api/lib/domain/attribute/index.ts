@@ -10,3 +10,11 @@ export interface ValueAttribute extends Attribute {
   datatype: string;
   language?: string;
 }
+
+export interface ReferenceAttribute extends Attribute {
+  referencedTableId: string;
+  columnMappings: {
+    sourceColumnId: string;
+    referencedColumnId: string;
+  }[];
+}

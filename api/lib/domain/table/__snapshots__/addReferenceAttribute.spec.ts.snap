@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`table add reference attribute emits an event 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "columnMappings": Array [
+        Object {
+          "referencedColumnId": "http://example.com/destination/column1",
+          "sourceColumnId": "http://example.com/source/column1",
+        },
+      ],
+      "predicate": "http://schema.org/name",
+      "referencedTableId": "table/other",
+      "tableId": "example/table",
+    },
+    "name": "ReferenceAttributeAdded",
+  },
+]
+`;
+
+exports[`table add reference attribute return expected state 1`] = `
+Object {
+  "@id": StringMatching /example\\\\/table\\\\/attribute\\\\/\\.\\+/,
+  "@type": Array [
+    "Attribute",
+    "ReferenceAttribute",
+  ],
+  "columnMappings": Array [
+    Object {
+      "referencedColumnId": "http://example.com/destination/column1",
+      "sourceColumnId": "http://example.com/source/column1",
+    },
+  ],
+  "predicate": "http://schema.org/name",
+  "referencedTableId": "table/other",
+  "tableId": "example/table",
+}
+`;

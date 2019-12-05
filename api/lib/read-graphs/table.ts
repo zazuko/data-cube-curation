@@ -12,13 +12,13 @@ import $rdf from 'rdf-ext'
 
 function addTableLinks (ev: DomainEvent) {
   return insertData(`
-    <${ev.id}> 
+    <${ev.id}>
         api:csvwMetadata <${ev.id}/csvw> ;
         api:attributes <${ev.id}/attributes> ;
         api:preview <${ev.id}/preview> .
-    <${ev.id}/csvw> dataCube:table <${ev.id}> .  
-    <${ev.id}/attributes> dataCube:table <${ev.id}> .  
-    <${ev.id}/preview> dataCube:table <${ev.id}> .  
+    <${ev.id}/csvw> dataCube:table <${ev.id}> .
+    <${ev.id}/attributes> dataCube:table <${ev.id}> .
+    <${ev.id}/preview> dataCube:table <${ev.id}> .
   `)
     .prefixes({
       dataCube,
@@ -68,7 +68,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable 
     )
       .where(`
         ?table ?p0 ?o0 .
-  
+
         FILTER ( ?table = <${ev.id}> )`)
       .prefixes({
         dataCube,
@@ -95,7 +95,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
 export function getFactTableId (factTableCanonicalId: string) {
   return select('factTable')
     .where(`
-        <${factTableCanonicalId}> dataCube:project ?project. 
+        <${factTableCanonicalId}> dataCube:project ?project.
         ?project dataCube:factTable ?factTable .`)
     .prefixes({
       dataCube,
@@ -121,14 +121,19 @@ export function existsInTableSource (tableId: string, columnId: string): Promise
     .execute(getClient())
 }
 
-export function getTableSourceId (tableId: string) {
-  return select('source')
+export async function getTableSourceId (tableId: string) {
+  const bindings = await select('source')
     .where(`<${tableId}> a dataCube:Table; dataCube:source ?source .`)
     .prefixes({
       dataCube,
     })
     .execute(getClient())
-    .then(bindings => bindings[0].source.value.replace(process.env.BASE_URI, ''))
+
+  if (bindings.length === 0) {
+    return null
+  }
+
+  return bindings[0].source.value.replace(process.env.BASE_URI, '')
 }
 
 export async function getProjectTables (collectionId: string) {
@@ -136,11 +141,11 @@ export async function getProjectTables (collectionId: string) {
 
   await collection.import(await construct()
     .graph(`
-      <${collectionId}> 
+      <${collectionId}>
         a hydra:Collection ;
         hydra:member ?table ;
         hydra:totalItems ?count .
-        
+
       ?table ?p ?o .
     `)
     .where(`<${collectionId}> dataCube:project ?project .`)
@@ -154,7 +159,7 @@ export async function getProjectTables (collectionId: string) {
       SELECT (COUNT(?table) as ?count) WHERE {
         <${collectionId}> dataCube:project ?project .
         OPTIONAL {
-          ?table 
+          ?table
             a dataCube:Table ;
             dataCube:project ?project .
         }

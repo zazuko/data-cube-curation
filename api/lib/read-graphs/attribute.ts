@@ -1,13 +1,14 @@
 import { CoreEvents, handle } from '@tpluscode/fun-ddr'
 import $rdf from 'rdf-ext'
 import { construct, deleteInsert, insertData } from '../sparql'
-import { dataCube, hydra, rdf, schema } from '../namespaces'
+import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { AttributeEvents } from '../domain/attribute/events'
+import './attribute/eventHandlers'
 
 handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function addAttributeToReadModel (ev) {
   const builder = insertData(`
-      <${ev.id}> a dataCube:Attribute , dataCube:ColumnAttribute ;
+      <${ev.id}> a dataCube:Attribute , dataCube:ValueAttribute ;
         dataCube:table <${ev.data.tableId}> ;
         dataCube:column <${ev.data.columnId}> ;
         rdf:predicate <${ev.data.predicate}> .
@@ -75,6 +76,7 @@ export async function getTableAttributes (tableId: string) {
     .prefixes({
       dataCube,
       hydra,
+      api,
     })
     .execute(getClient()))
 
@@ -85,7 +87,7 @@ export async function getTableAttributes (tableId: string) {
         hydra:object dataCube:Attribute
       ] `)
     .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
-    .prefixes({ hydra, dataCube, rdf })
+    .prefixes({ hydra, dataCube, rdf, api })
     .execute(getClient()))
 
   return collection
@@ -95,11 +97,19 @@ export async function getSingleAttribute (attributeId: string) {
   const attribute = $rdf.dataset()
 
   await attribute.import(await construct()
-    .graph(`?attribute ?p ?o`)
+    .graph(`
+      ?attribute ?p ?o .
+      ?attribute dataCube:columnMapping ?mapping .
+      ?mapping ?mappingO ?mappingP .
+    `)
     .where(`
       ?attribute a dataCube:Attribute ; ?p ?o .
 
       FILTER ( ?attribute = <${attributeId}> )`)
+    .where(`OPTIONAL {
+      ?attribute dataCube:columnMapping ?mapping .
+      ?mapping ?mappingO ?mappingP .
+    }`)
     .prefixes({
       dataCube,
     })

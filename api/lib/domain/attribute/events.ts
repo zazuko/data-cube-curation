@@ -6,4 +6,13 @@ export interface AttributeEvents {
     datatype: string;
     language: string;
   };
+  ReferenceAttributeAdded: {
+    tableId: string;
+    predicate: string;
+    referencedTableId: string;
+    columnMappings: {
+      sourceColumnId: string;
+      referencedColumnId: string;
+    }[];
+  };
 }

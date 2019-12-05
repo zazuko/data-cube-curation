@@ -5,7 +5,7 @@ import { getTableId } from '../../../read-graphs/table/links'
 import { NotFoundError } from '../../../error'
 import { buildVariables } from '../../../buildVariables'
 import { attributes, tables } from '../../../storage/repository'
-import { getSingleAttribute, getTableAttributes } from '../../../read-graphs/attribute'
+import { getSingleAttribute } from '../../../read-graphs/attribute'
 import { addValueAttribute } from '../../../domain/table/addValueAttribute'
 
 export const addValueAttributeHandler = asyncMiddleware(async (req: express.Request, res: express.Response) => {
@@ -41,13 +41,4 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
   res.status(201)
   res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
   res.graph(await getSingleAttribute(newAttribute['@id']))
-})
-
-export const getAttributes = asyncMiddleware(async (req: express.Request, res: express.Response) => {
-  const tableId = await getTableId(req.resourceId)
-  if (!tableId) {
-    throw new NotFoundError()
-  }
-
-  res.graph(await getTableAttributes(tableId))
 })
