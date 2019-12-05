@@ -1,5 +1,5 @@
 export interface AttributeEvents {
-  AttributeAdded: {
+  ValueAttributeAdded: {
     tableId: string;
     columnId: string;
     predicate: string;

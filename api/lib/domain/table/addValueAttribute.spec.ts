@@ -1,4 +1,4 @@
-import { addAttribute } from './addAttribute'
+import { addValueAttribute } from './addValueAttribute'
 import { Table } from './index'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource } from '../../read-graphs/table'
@@ -33,7 +33,7 @@ describe('table', () => {
       delete cmd.name
 
       // when
-      const result = await addAttribute(table, cmd)
+      const result = await addValueAttribute(table, cmd)
 
       // then
       await expect(result.error).resolves.toBeInstanceOf(Error)
@@ -45,7 +45,7 @@ describe('table', () => {
       delete cmd.columnId
 
       // when
-      const result = await addAttribute(table, cmd)
+      const result = await addValueAttribute(table, cmd)
 
       // then
       await expect(result.error).resolves.toBeInstanceOf(Error)
@@ -57,7 +57,7 @@ describe('table', () => {
       delete cmd.predicate
 
       // when
-      const result = await addAttribute(table, cmd)
+      const result = await addValueAttribute(table, cmd)
 
       // then
       await expect(result.error).resolves.toBeInstanceOf(Error)
@@ -72,7 +72,7 @@ describe('table', () => {
       }
 
       // when
-      const result = await addAttribute(table, cmd)
+      const result = await addValueAttribute(table, cmd)
 
       // then
       await expect(result.error).resolves.toBeInstanceOf(Error)
@@ -83,7 +83,7 @@ describe('table', () => {
       existsInTableSourceMock.mockResolvedValueOnce(true)
 
       // when
-      const result = await addAttribute(table, command)
+      const result = await addValueAttribute(table, command)
 
       // then
       const state = await result.state
@@ -97,7 +97,7 @@ describe('table', () => {
       existsInTableSourceMock.mockResolvedValueOnce(true)
 
       // when
-      const result = await addAttribute(table, command)
+      const result = await addValueAttribute(table, command)
 
       // then
       await expect(result.events).resolves.toMatchSnapshot()

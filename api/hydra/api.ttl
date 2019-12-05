@@ -557,7 +557,7 @@ dataCube:Attribute a hydra:Class ;
       hydra:writeable false
     ] .
 
-dataCube:ColumnAttribute rdfs:subclassOf dataCube:Attribute ;
+dataCube:ValueAttribute rdfs:subclassOf dataCube:Attribute ;
   hydra:supportedProperty
   [
     hydra:property dataCube:column ;
@@ -580,13 +580,13 @@ api:AddAttributeMappedFromSingleColumn
   hydra:method "POST" ;
   hydra:title "Creates a table attribute from column" ;
   hydra:description "Such an attribute will always map a single value into a literal" ;
-  hydra:expects dataCube:ColumnAttribute ;
+  hydra:expects dataCube:ValueAttribute ;
   code:implementedBy [
     a hydra-box:middlewareChain ;
     code:arguments (
       [
         a code:EcmaScript ;
-        code:link <file:lib/data-cube/table#addAttributeHandler>
+        code:link <file:lib/data-cube/table#addValueAttributeHandler>
       ]
     )
   ] .

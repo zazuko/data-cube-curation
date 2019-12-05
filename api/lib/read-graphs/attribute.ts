@@ -5,7 +5,7 @@ import { dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { AttributeEvents } from '../domain/attribute/events'
 
-handle<AttributeEvents, 'AttributeAdded'>('AttributeAdded', function addAttributeToReadModel (ev) {
+handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function addAttributeToReadModel (ev) {
   const builder = insertData(`
       <${ev.id}> a dataCube:Attribute , dataCube:ColumnAttribute ;
         dataCube:table <${ev.data.tableId}> ;
@@ -35,7 +35,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function deleteAttrib
       .where(`
         ?attribute a dataCube:Attribute .
         ?attribute ?p0 ?o0 .
-  
+
         FILTER ( ?attribute = <${ev.id}> )`)
       .prefixes({
         dataCube,
@@ -49,11 +49,11 @@ export async function getTableAttributes (tableId: string) {
 
   await collection.import(await construct()
     .graph(`
-      <${tableId}/attributes> 
+      <${tableId}/attributes>
         a hydra:Collection ;
         hydra:member ?attribute ;
         hydra:totalItems ?count .
-        
+
       ?attribute ?p ?o .
     `)
     .where(`
@@ -65,7 +65,7 @@ export async function getTableAttributes (tableId: string) {
     .where(`{
       SELECT (COUNT(?attribute) as ?count) WHERE {
         OPTIONAL {
-          ?attribute 
+          ?attribute
             a dataCube:Attribute ;
             dataCube:table <${tableId}> .
         }
@@ -96,7 +96,7 @@ export async function getSingleAttribute (attributeId: string) {
     .graph(`?attribute ?p ?o`)
     .where(`
       ?attribute a dataCube:Attribute ; ?p ?o .
-      
+
       FILTER ( ?attribute = <${attributeId}> )`)
     .prefixes({
       dataCube,
