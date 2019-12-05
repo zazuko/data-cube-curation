@@ -11,7 +11,6 @@ describe('table', () => {
   let table: Table
 
   const command = {
-    name: 'foo-bar',
     columnId: 'source/column',
     predicate: expand('schema:name'),
   }
@@ -26,19 +25,7 @@ describe('table', () => {
     }
   })
 
-  describe('add attribute', () => {
-    it('errors when name is missing', async () => {
-      // given
-      const cmd = { ...command }
-      delete cmd.name
-
-      // when
-      const result = await addValueAttribute(table, cmd)
-
-      // then
-      await expect(result.error).resolves.toBeInstanceOf(Error)
-    })
-
+  describe('add value attribute', () => {
     it('errors when column is missing', async () => {
       // given
       const cmd = { ...command }

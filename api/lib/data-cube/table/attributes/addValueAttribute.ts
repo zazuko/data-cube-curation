@@ -15,7 +15,6 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
   }
 
   const variables = buildVariables(req, {
-    name: expand('schema:name'),
     predicate: expand('rdf:predicate'),
     datatype: expand('dataCube:datatype'),
     language: expand('dataCube:language'),
