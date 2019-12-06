@@ -1,0 +1,15 @@
+language: node_js
+node_js: "13"
+
+services:
+  docker
+
+before_script:
+  - npm i -g wait-on
+  - docker-compose up -d datacube
+
+script:
+  - yarn run jest
+  - yarn run test
+  - docker-compose run analyzer
+  - docker-compose run e2e-tests
