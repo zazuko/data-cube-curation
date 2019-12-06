@@ -31,15 +31,11 @@ services:
   analyzer:
     image: "hydrofoil/hydra-analyser"
     network_mode: "host"
-    depends_on:
-      - datacube
     environment:
       ENTRYPOINT_URL: "http://localhost:5678/"
   e2e-tests:
     build: api/test
     network_mode: "host"
-    depends_on:
-      - datacube
     environment:
       BASE_URI: "http://localhost:5678/"
 volumes:
