@@ -6,17 +6,23 @@ services:
 
 jobs:
   include:
-    - before_script:
+    - env:
+        - JOB=analyzer
+      before_script:
         - npm i -g wait-on
         - docker-compose up -d datacube
         - wait-on --timeout http://localhost:5678
       script:
         - docker-compose run analyzer
-    - before_script:
+    - env:
+        - JOB=e2e
+      before_script:
         - npm i -g wait-on
         - docker-compose up -d datacube
         - wait-on --timeout http://localhost:5678
       script:
         - docker-compose run e2e-tests
-    - script:
+    - env:
+        - JOB=unit
+      script:
         - npm run test
