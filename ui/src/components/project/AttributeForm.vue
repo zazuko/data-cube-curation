@@ -22,11 +22,7 @@
       </b-field>
 
       <b-field label="Language">
-        <b-autocomplete
-          v-model="attribute.language"
-          :disabled="attribute.dataTypeId !== ''"
-          :data="languages"
-        />
+        <LanguageInput v-model="attribute.language" :disabled="attribute.dataTypeId !== ''" />
       </b-field>
     </section>
     <footer class="modal-card-foot">
@@ -40,10 +36,12 @@
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
 import { Table, ResourceId, Source, AttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
+import LanguageInput from '../LanguageInput.vue'
 
 @Component({
   components: {
-    TableTag
+    TableTag,
+    LanguageInput
   }
 })
 export default class extends Vue {
@@ -69,14 +67,6 @@ export default class extends Vue {
     if (!this.attribute.predicateId) {
       this.attribute.predicateId = columnId.split('/').slice(-1)[0]
     }
-  }
-
-  get languages () {
-    return [
-      '',
-      'fr',
-      'de'
-    ]
   }
 }
 

@@ -61,7 +61,7 @@
                 <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
               </td>
               <td>
-                <b-input v-model="attribute.language" :disabled="!!attribute.dataTypeId" />
+                <LanguageInput v-model="attribute.language" :disabled="!!attribute.dataTypeId" />
               </td>
               <td>
                 <b-button type="is-white" icon-left="close-circle-outline" title="Remove attribute" @click="removeAttribute(attribute)" />
@@ -94,8 +94,13 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { TableType, ResourceId, Project, Source, Attribute, TableFormData, AttributeFormData } from '@/types'
+import LanguageInput from '../LanguageInput.vue'
 
-@Component
+@Component({
+  components: {
+    LanguageInput
+  }
+})
 export default class TableForm extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly source: Source
