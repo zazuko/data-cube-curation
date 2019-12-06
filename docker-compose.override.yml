@@ -1,0 +1,8 @@
+
+version: "3"
+
+services:
+  datacube:
+    command: nodemon --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts
+    volumes:
+      - ./api:/api

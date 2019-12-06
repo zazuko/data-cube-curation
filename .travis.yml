@@ -9,17 +9,15 @@ jobs:
     - env:
         - JOB=analyzer
       before_script:
-        - npm i -g wait-on
-        - docker-compose up -d datacube
-        - wait-on --timeout http://localhost:5678
+        - docker-compose -f docker-compose.yml up -d datacube
+        - npx wait-on --timeout 30000 http://localhost:5678
       script:
         - docker-compose run analyzer
     - env:
         - JOB=e2e
       before_script:
-        - npm i -g wait-on
-        - docker-compose up -d datacube
-        - wait-on --timeout http://localhost:5678
+        - docker-compose -f docker-compose.yml up -d datacube
+        - npx wait-on --timeout 30000 http://localhost:5678
       script:
         - docker-compose run e2e-tests
     - env:
