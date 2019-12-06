@@ -16,6 +16,8 @@ services:
     build: .
     ports:
       - "5678:5678"
+      - "5679:5679"
+    command: nodemon --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts
     depends_on:
       - fuseki
     environment:
@@ -28,6 +30,7 @@ services:
       STORAGE_FILESYSTEM_PATH: /uploads
     volumes:
       - uploads:/uploads
+      - ./api:/api
   analyzer:
     image: "hydrofoil/hydra-analyser"
     network_mode: "host"
