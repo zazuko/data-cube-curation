@@ -8,7 +8,6 @@
     "start:fuseki": "docker-compose up -d fuseki",
     "stop:fuseki": "docker-compose stop fuseki",
     "postinstall": "lerna bootstrap",
-    "jest": "lerna run jest --stream --no-prefix",
     "test": "lerna run test --stream --no-prefix",
     "test:analyse": "lerna run test:analyse --stream --no-prefix",
     "version": "standard-changelog"
