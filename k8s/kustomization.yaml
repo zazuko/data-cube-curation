@@ -17,3 +17,4 @@ configMapGenerator:
     - base_uri=https://datacube.zazukoians.org/
     - aws_s3_bucket=data-cube-curation
     - aws_s3_endpoint=fra1.digitaloceanspaces.com
+    - debug=*:error,dataCube:request,dataCube
