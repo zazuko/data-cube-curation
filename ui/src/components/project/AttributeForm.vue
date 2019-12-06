@@ -7,14 +7,14 @@
       </h3>
     </header>
     <section class="modal-card-body">
-      <b-field label="Property">
-        <b-input type="text" v-model="attribute.predicateId" required />
-      </b-field>
-
       <b-field :label="columnLabel">
         <b-select v-model="attribute.columnId" expanded required>
           <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
         </b-select>
+      </b-field>
+
+      <b-field label="Property">
+        <b-input type="text" v-model="attribute.predicateId" required />
       </b-field>
 
       <b-field label="Type">
@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator'
+import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
 import { Table, ResourceId, Source, AttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 
@@ -62,6 +62,13 @@ export default class extends Vue {
 
   get columnLabel () {
     return `Column from ${this.source.name}`
+  }
+
+  @Watch('attribute.columnId')
+  populatePredicate (columnId: ResourceId) {
+    if (!this.attribute.predicateId) {
+      this.attribute.predicateId = columnId.split('/').slice(-1)[0]
+    }
   }
 
   get languages () {

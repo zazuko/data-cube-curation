@@ -16,7 +16,9 @@
     "types": [
       "webpack-env",
       "jest",
-      "vue-highlightjs"
+      "vue-highlightjs",
+      "rdf-dataset-ext",
+      "rdf-fetch"
     ],
     "paths": {
       "@/*": [

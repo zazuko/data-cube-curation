@@ -12,6 +12,8 @@ import * as AttributeMixin from './resources/attribute'
 
 const apiURL = process.env.VUE_APP_API_URL
 
+if (!apiURL) throw new Error('Missing `VUE_APP_API_URL` setting')
+
 const rdf = Hydra.mediaTypeProcessors.RDF as any
 rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
@@ -107,12 +109,12 @@ class ProjectsClient {
     return loadResource(id)
   }
 
-  async getTables (project: any) {
+  async getTables (project: any): Promise<Table[]> {
     const collection = await loadResource<Collection>(project.tablesCollection.id)
     const incompleteTables = collection.members
 
     const tables = Promise.all(incompleteTables.map(async (incompleteTable: any) =>
-      loadResource(incompleteTable.id)
+      loadResource<Table>(incompleteTable.id)
     ))
 
     return tables
