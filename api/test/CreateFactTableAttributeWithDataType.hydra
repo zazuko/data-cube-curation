@@ -104,6 +104,7 @@ With Operation api:AddValueAttribute {
         Expect Header Location
 
         Expect Type dataCube:Attribute
+        Expect Type dataCube:ValueAttribute
         Expect Property rdf:predicate {
             Expect Id schema:identifier
         }
