@@ -1,9 +1,5 @@
-import stringToStream from 'string-to-stream'
-import rdf from 'rdf-ext'
-import Parser from '@rdfjs/parser-n3'
-import { prefixes } from '@zazuko/rdf-vocabularies'
+import { parseGraph } from '../__tests-helpers__'
 
-const parser = new Parser()
 export const ids = {
   tableId: 'http://example.com/table/Observation',
   sourceId: 'http://example.com/source/UBD0028.Daten_de.csv',
@@ -13,7 +9,7 @@ const tableAndSource = `
 <${ids.tableId}>
       a                 dataCube:FactTable , dataCube:Table ;
       dataCube:source   <${ids.sourceId}> .
-      
+
 <${ids.sourceId}>
       a                         dataCube:CsvSource , dataCube:Source ;
       <http://schema.org/name>  "UBD0028.Daten_de.csv" .`
@@ -22,7 +18,7 @@ const unmappedColumn = `${tableAndSource}
 
 <${ids.sourceId}>
       dataCube:column           <http://example.com/column/station_name> .
-      
+
 <http://example.com/column/station_name>
       a dataCube:Column ;
       <http://schema.org/name>  "station_name" .
@@ -31,7 +27,7 @@ const unmappedColumn = `${tableAndSource}
 const mappedColumn = `${tableAndSource}
 
 <${ids.sourceId}>      dataCube:column           <http://example.com/column/station_name> .
-      
+
 <http://example.com/column/station_name>
       a dataCube:Column ;
       <http://schema.org/name>  "station_name" .
@@ -65,21 +61,8 @@ const columnMappedWithLanguage = `${mappedColumn}
       dataCube:language "en" .
 `
 
-function createGraph (ntriples: string) {
-  return async () => {
-    const dataset = rdf.dataset()
-    const stream = stringToStream(`
-  PREFIX dataCube: <${prefixes['dataCube']}>
-  PREFIX xsd: <${prefixes.xsd}>
-  PREFIX rdf: <${prefixes.rdf}>
-
-  ${ntriples}`)
-    return dataset.import(await parser.import(stream))
-  }
-}
-
-export const unmappedColumnGraph = createGraph(unmappedColumn)
-export const mappedColumnGraph = createGraph(mappedColumn)
-export const multipleMappedColumnsGraph = createGraph(multipleMappedColumns)
-export const columnMappedWithDatatypeGraph = createGraph(columnMappedWithDatatype)
-export const columnMappedWithLanguageGraph = createGraph(columnMappedWithLanguage)
+export const unmappedColumnGraph = parseGraph(unmappedColumn)
+export const mappedColumnGraph = parseGraph(mappedColumn)
+export const multipleMappedColumnsGraph = parseGraph(multipleMappedColumns)
+export const columnMappedWithDatatypeGraph = parseGraph(columnMappedWithDatatype)
+export const columnMappedWithLanguageGraph = parseGraph(columnMappedWithLanguage)

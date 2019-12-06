@@ -27,16 +27,11 @@ export abstract class Builder<T> {
     return this
   }
 
-  public insert (...patterns: string[]) {
-    this.__insertPatterns = [ ...this.__insertPatterns, ...patterns ]
-    return this
-  }
-
   public build () {
     return `
       BASE <${process.env.BASE_URI}>
       ${buildPrefixes(this.__prefixes)}
-      
+
       ${this._buildQueryInternal()}`
   }
 

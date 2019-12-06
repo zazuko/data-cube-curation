@@ -4,6 +4,7 @@ import { Term } from 'rdf-js'
 interface ReadOnlyVariable {
   value: any | null;
   values: any[];
+  terms: Term[];
 }
 
 class Variable {
@@ -25,6 +26,10 @@ class Variable {
 
   public get values (): any[] {
     return this.__terms.map(term => term.value)
+  }
+
+  public get terms (): any[] {
+    return this.__terms
   }
 
   public push (term: Term) {

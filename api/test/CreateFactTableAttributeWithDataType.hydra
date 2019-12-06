@@ -73,7 +73,7 @@ With Operation api:CreateFactTable {
 
 With Class dataCube:Table {
     Expect Property api:attributes {
-        Expect Operation api:AddAttributeMappedFromSingleColumn
+        Expect Operation api:AddValueAttribute
     }
 
     Expect Link api:csvwMetadata {
@@ -87,7 +87,7 @@ With Class dataCube:Table {
     }
 }
 
-With Operation api:AddAttributeMappedFromSingleColumn {
+With Operation api:AddValueAttribute {
     Invoke {
         Content-Type "text/turtle"
 
@@ -98,7 +98,8 @@ With Operation api:AddAttributeMappedFromSingleColumn {
 
         <> dataCube:column <project/attribute-datatype-test/source/single-column-csv/station-id> ;
            rdf:predicate <http://schema.org/identifier> ;
-           dataCube:datatype <http://www.w3.org/2001/XMLSchema#integer>.
+           dataCube:datatype <http://www.w3.org/2001/XMLSchema#integer> ;
+           a dataCube:ValueAttribute .
         ```
     } => {
         Expect Status 201

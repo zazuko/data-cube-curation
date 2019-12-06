@@ -61,7 +61,7 @@ With Operation api:CreateDimensionTable {
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/fact-table-test/source/single-column-csv> ;
+        <> dataCube:source <project/dimension-table-test/source/single-column-csv> ;
            schema:name "Stations" ;
            dataCube:identifierTemplate "http://example.com/station/{station_id}" ;
            a dataCube:DimensionTable .

@@ -1,0 +1,132 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+ENTRYPOINT "project/reference-attribute-test"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Project testing reference attribute between tables" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource {
+                Invoke {
+                    Content-Type "text/csv"
+                    Content-Disposition 'attachment; filename="UBD0028.Daten_de.csv"'
+
+                    <<< "../bodies/UBD0028.Daten_de.csv"
+                } => {}
+
+                Invoke {
+                    Content-Type "text/csv"
+                    Content-Disposition 'attachment; filename="single-column.csv"'
+
+                    <<< "../bodies/single-column.csv"
+                } => {}
+            }
+        }
+        Expect Property api:tables {
+            Expect Operation api:CreateDimensionTable
+            Expect Operation api:PostFactTable
+        }
+    }
+}
+
+With Operation api:CreateDimensionTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/reference-attribute-test/source/single-column-csv> ;
+           schema:name "Stations" ;
+           dataCube:identifierTemplate "http://example.com/station/{station_id}" ;
+           a dataCube:DimensionTable .
+        ```
+    } => {}
+}
+
+With Operation api:PostFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/reference-attribute-test/source/ubd0028-daten-de-csv> ;
+           schema:name "Observation" ;
+           a dataCube:FactTable .
+        ```
+    } => {
+        Expect Status 201
+    }
+}
+
+With Class dataCube:FactTable {
+    Expect Property api:attributes {
+        Expect Operation api:AddReferenceAttribute {
+            Invoke {
+                Content-Type "text/turtle"
+
+                ```
+                @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+                @prefix schema: <http://schema.org/> .
+                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+                <> dataCube:referencedTable <project/reference-attribute-test/table/Stations> ;
+                   rdf:predicate <http://example.org/station> ;
+                   a dataCube:ReferenceAttribute ;
+                   dataCube:columnMapping [
+                       # TODO: substitue from env variables
+                       dataCube:sourceColumn <http://localhost:5678/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id> ;
+                       dataCube:referencedColumn <http://localhost:5678/project/reference-attribute-test/source/single-column-csv/station-id> ;
+                   ] .
+                ```
+            } => {
+                Expect Status 201
+                Expect Header Location
+
+                Expect Type dataCube:Attribute
+                Expect Property rdf:predicate {
+                    Expect Id <http://example.org/station>
+                }
+                Expect Property dataCube:referencedTable {
+                    Expect Id <http://localhost:5678/project/reference-attribute-test/table/Stations>
+                }
+                Expect Property dataCube:columnMapping {
+                    Expect Property dataCube:sourceColumn {
+                        Expect Id <http://localhost:5678/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id>
+                    }
+                    Expect Property dataCube:referencedColumn {
+                        Expect Id <http://localhost:5678/project/reference-attribute-test/source/single-column-csv/station-id>
+                    }
+                }
+            }
+        }
+    }
+}

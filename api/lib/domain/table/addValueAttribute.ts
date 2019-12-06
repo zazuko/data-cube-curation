@@ -1,20 +1,20 @@
 import { factory } from '@tpluscode/fun-ddr'
 import uuid from 'uuid'
 import { Table } from './index'
-import { Attribute } from '../attribute'
+import { ValueAttribute } from '../attribute'
 import { AttributeEvents } from '../attribute/events'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource } from '../../read-graphs/table'
 import { errorFactory } from '../error-helper'
 
-interface AddAttributeCommand {
+interface AddValueAttributeCommand {
   columnId: string;
   predicate: string;
   datatype?: string;
   language?: string;
 }
 
-export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async (table, command, emitter) => {
+export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueAttribute>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
 
   if (!command.predicate) {
@@ -32,7 +32,7 @@ export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async
 
   const attributeId = `${table['@id']}/attribute/${uuid()}`
 
-  emitter.emit<AttributeEvents, 'AttributeAdded'>('AttributeAdded', {
+  emitter.emit<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', {
     tableId: table['@id'],
     columnId: command.columnId,
     predicate: command.predicate,
@@ -42,7 +42,7 @@ export const addAttribute = factory<Table, AddAttributeCommand, Attribute>(async
 
   return {
     '@id': attributeId,
-    '@type': 'Attribute',
+    '@type': ['Attribute', 'ValueAttribute'],
     tableId: table['@id'],
     column: command.columnId,
     predicate: command.predicate,

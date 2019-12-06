@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`table add attribute emits an event 1`] = `
+exports[`table add value attribute emits an event 1`] = `
 Array [
   Object {
     "data": Object {
@@ -10,15 +10,18 @@ Array [
       "predicate": "http://schema.org/name",
       "tableId": "example/table",
     },
-    "name": "AttributeAdded",
+    "name": "ValueAttributeAdded",
   },
 ]
 `;
 
-exports[`table add attribute return expected state 1`] = `
+exports[`table add value attribute return expected state 1`] = `
 Object {
   "@id": StringMatching /example\\\\/table\\\\/attribute\\\\/\\.\\+/,
-  "@type": "Attribute",
+  "@type": Array [
+    "Attribute",
+    "ValueAttribute",
+  ],
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#string",
   "language": undefined,
