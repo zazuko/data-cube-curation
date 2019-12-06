@@ -80,7 +80,6 @@ export default class extends Vue {
 
       return Remote.loaded({ dataset, n3 })
     } catch (e) {
-      console.error(e)
       return Remote.error(e)
     }
   }
