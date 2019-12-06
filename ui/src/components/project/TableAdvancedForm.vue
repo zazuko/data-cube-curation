@@ -115,7 +115,15 @@ export default class TableForm extends Vue {
 
     this.table.sourceId = this.source.id
 
-    this.attributes = this.columns.map((columnId) => emptyAttribute({ columnId: columnId }))
+    this.attributes = this.columns.map((columnId) =>
+      emptyAttribute({
+        columnId: columnId,
+        predicateId: this.getColumnSlug(columnId)
+      }))
+  }
+
+  getColumnSlug (columnId: ResourceId): string {
+    return columnId.split('/').slice(-1)[0]
   }
 
   addAttribute () {
