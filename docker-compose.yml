@@ -35,9 +35,11 @@ services:
     environment:
       ENTRYPOINT_URL: "http://localhost:5678/"
   e2e-tests:
-    build: api/test
+    image: hydrofoil/hypertest
     network_mode: "host"
     environment:
       BASE_URI: "http://localhost:5678/"
+    volumes:
+      - ./api/test:/tests
 volumes:
   uploads:
