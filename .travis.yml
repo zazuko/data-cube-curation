@@ -11,10 +11,6 @@ before_install:
   - sudo dpkg -i /tmp/lando-latest.deb
   - lando version
 
-before_script:
-  - lando start
-  - npx wait-on --timeout 30000 http://datacube-api.lndo.site
-
 jobs:
   include:
     - env:
