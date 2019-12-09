@@ -23,6 +23,7 @@
     api:Error ,
     api:ProjectPlaceholder ,
     dataCube:ValueAttribute ,
+    dataCube:ReferenceAttribute ,
     dataCube:Attribute ,
     api:AttributeCollection ,
     api:TableCollection .
@@ -575,6 +576,50 @@ dataCube:ValueAttribute rdfs:subclassOf dataCube:Attribute ;
     hydra:title "Language of the mapped values" ;
     hydra:description "Cannot be used together with datatype"
   ] .
+
+dataCube:ReferenceAttribute rdfs:subclassOf dataCube:Attribute ;
+                            hydra:supportedProperty
+                                            [
+                                              hydra:property dataCube:referencedTable ;
+                                              hydra:title "The referenced table" ;
+                                              hydra:required true
+                                            ] ,
+                                            [
+                                              hydra:property dataCube:columnMapping ;
+                                              hydra:title "Mapping between table columns" ;
+                                              hydra:description "Mapping is required for each column used in the referenced table's identifier URI Template" ;
+                                            ]
+.
+
+dataCube:referencedTable a hydra:Link ;
+                         rdfs:range dataCube:DimensionTable ;
+.
+
+dataCube:columnMapping a rdf:Property ;
+                       rdfs:range
+                         [
+                           a hydra:Class ;
+                           hydra:title "Mapping between table columns" ;
+                           hydra:supportedProperty [
+                                                     hydra:property dataCube:sourceColumn ;
+                                                     hydra:title "Identifier column in source table" ;
+                                                     hydra:required true ;
+                                                   ],
+                                                   [
+                                                     hydra:property dataCube:referencedColumn ;
+                                                     hydra:title "Identifier column in referenced table" ;
+                                                     hydra:required true ;
+                                                   ]
+                         ]
+.
+
+dataCube:sourceColumn a hydra:Link ;
+                      rdfs:range dataCube:Column ;
+.
+
+dataCube:referencedColumn a hydra:Link ;
+                          rdfs:range dataCube:Column ;
+.
 
 _:PostValueAttribute
   a hydra:SupportedOperation, hydra-box:View, api:AddValueAttribute ;
