@@ -103,8 +103,8 @@ With Class dataCube:FactTable {
                    a dataCube:ReferenceAttribute ;
                    dataCube:columnMapping [
                        # TODO: substitue from env variables
-                       dataCube:sourceColumn <http://localhost:5678/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id> ;
-                       dataCube:referencedColumn <http://localhost:5678/project/reference-attribute-test/source/single-column-csv/station-id> ;
+                       dataCube:sourceColumn <http://datacube-api.lndo.site/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id> ;
+                       dataCube:referencedColumn <http://datacube-api.lndo.site/project/reference-attribute-test/source/single-column-csv/station-id> ;
                    ] .
                 ```
             } => {
@@ -116,14 +116,14 @@ With Class dataCube:FactTable {
                     Expect Id <http://example.org/station>
                 }
                 Expect Property dataCube:referencedTable {
-                    Expect Id <http://localhost:5678/project/reference-attribute-test/table/Stations>
+                    Expect Id <http://datacube-api.lndo.site/project/reference-attribute-test/table/Stations>
                 }
                 Expect Property dataCube:columnMapping {
                     Expect Property dataCube:sourceColumn {
-                        Expect Id <http://localhost:5678/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id>
+                        Expect Id <http://datacube-api.lndo.site/project/reference-attribute-test/source/ubd0028-daten-de-csv/station-id>
                     }
                     Expect Property dataCube:referencedColumn {
-                        Expect Id <http://localhost:5678/project/reference-attribute-test/source/single-column-csv/station-id>
+                        Expect Id <http://datacube-api.lndo.site/project/reference-attribute-test/source/single-column-csv/station-id>
                     }
                 }
             }
