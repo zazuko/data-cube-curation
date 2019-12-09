@@ -1,0 +1,49 @@
+name: datacube-curation
+
+proxy:
+  api:
+    - datacube-api.lndo.site:5678
+  ui:
+    - datacube-ui.lndo.site:8080
+  fuseki:
+    - datacube-db.lndo.site:3030
+
+services:
+  ui:
+    type: node
+    port: 8080
+    command: npm run serve
+    overrides:
+      environment:
+        VUE_APP_API_URL: http://datacube-api.lndo.site/
+      volumes:
+        - ./ui:/app
+  api:
+    type: node
+    port: 5678
+    command: npm run start:debug
+    moreHttpPorts:
+      - 5679
+    overrides:
+      environment:
+        PORT: 5678
+        BASE_URI: http://datacube-api.lndo.site/
+        SPARQL_ENDPOINT: http://fuseki:3030/data-cube-e2e/query
+        SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-e2e/update
+        READ_MODEL_SPARQL_ENDPOINT: http://fuseki:3030/data-cube-read/query
+        READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-read/update
+        STORAGE_FILESYSTEM_PATH: /uploads
+      ports:
+        - 5679:5679
+      volumes:
+        - uploads:/uploads
+        - ./api:/app
+  fuseki:
+    type: compose
+    services:
+      build: fuseki
+      command: /docker-entrypoint.sh /jena-fuseki/start-fuseki.sh
+      ports:
+        - 3030:3030
+      environment:
+        ADMIN_PASSWORD: password

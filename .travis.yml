@@ -4,20 +4,31 @@ node_js: "13"
 services:
   docker
 
+before_install:
+  - sudo apt-get -y update || true
+  - sudo apt-get -y install cgroup-bin curl
+  - curl -fsSL -o /tmp/lando-latest.deb https://github.com/lando/lando/releases/download/v3.0.0-rc.23/lando-v3.0.0-rc.23.deb
+  - sudo dpkg -i /tmp/lando-latest.deb
+  - lando version
+
+before_script:
+  - lando start
+  - npx wait-on --timeout 30000 http://datacube-api.lndo.site
+
 jobs:
   include:
     - env:
         - JOB=analyzer
       before_script:
-        - docker-compose -f docker-compose.yml up -d datacube
-        - npx wait-on --timeout 30000 http://localhost:5678
+        - lando start
+        - npx wait-on --timeout 30000 http://datacube-api.lndo.site
       script:
         - docker-compose run analyzer
     - env:
         - JOB=e2e
       before_script:
-        - docker-compose -f docker-compose.yml up -d datacube
-        - npx wait-on --timeout 30000 http://localhost:5678
+        - lando start
+        - npx wait-on --timeout 30000 http://datacube-api.lndo.site
       script:
         - docker-compose run e2e-tests
     - env:

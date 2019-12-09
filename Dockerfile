@@ -32,8 +32,6 @@ FROM node:lts-alpine
 
 WORKDIR /api
 
-RUN npm i -g nodemon ts-node typescript
-
 COPY --from=builder /api/package.json ./package.json
 COPY --from=builder /api/package-lock.json ./package-lock.json
 RUN npm ci --only=production
