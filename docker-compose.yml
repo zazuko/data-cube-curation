@@ -14,5 +14,3 @@ services:
       BASE_URI: "http://datacube-api.lndo.site/"
     volumes:
       - ./api/test:/tests
-volumes:
-  uploads:
