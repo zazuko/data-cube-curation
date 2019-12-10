@@ -1,8 +1,9 @@
 import cf from 'clownface'
+import Clownface from 'clownface/lib/Clownface'
 import $rdf from 'rdf-ext'
 import { csvw, rdf, dataCube, schema } from '../namespaces'
 
-function addDialect (csvwGraph: any) {
+function addDialect (csvwGraph: Clownface) {
   csvwGraph.addOut(csvw.dialect, dialect => {
     dialect.addOut(csvw.header, true)
     dialect.addOut(csvw.delimiter, ';')
@@ -10,7 +11,7 @@ function addDialect (csvwGraph: any) {
   })
 }
 
-function createColumn (csvwGraph: any, column: any, attribute?: any) {
+function createCsvwColumn (csvwGraph: Clownface, column: Clownface, attribute?: Clownface) {
   let csvwColumn = csvwGraph.blankNode()
     .addOut(csvw.title, column.out(schema.name).value)
 
@@ -35,25 +36,27 @@ export function buildCsvw (tableDataset: any, tableId: string) {
   addDialect(csvwGraph)
 
   csvwGraph.addOut(csvw.tableSchema, tableSchema => {
-    const columnsAndAttributes: [] = tableContext
+    const columns = tableContext
       .out(dataCube.source)
       .out(dataCube.column)
       .toArray()
 
-    tableSchema.addList(csvw.column, columnsAndAttributes
-      .reduce(function matchColumnsToAttributes (previousValue, column) {
-        const attributes = tableContext.in(dataCube.table).has(dataCube.column, column)
-        if (attributes.values.length > 0) {
-          return [...previousValue, ...attributes.map(attribute => ({
-            column, attribute,
-          }))]
+    const csvwColumns = columns
+      .reduce(function matchColumnsToAttributes (previousColumns, column) {
+        let nextColumns: Clownface[]
+        const attributes = tableContext.in(dataCube.table)
+          .has(rdf.type, dataCube.Attribute)
+
+        if (attributes.terms.length === 0) {
+          nextColumns = [ createCsvwColumn(csvwGraph, column) ]
+        } else {
+          nextColumns = attributes.map(a => createCsvwColumn(csvwGraph, column, a))
         }
 
-        return [...previousValue, { column }]
+        return [ ...previousColumns, ...nextColumns ]
       }, [])
-      .map(({ column, attribute }) => {
-        return createColumn(csvwGraph, column, attribute)
-      }))
+
+    tableSchema.addList(csvw.column, csvwColumns)
   })
 
   return csvwGraph.dataset
