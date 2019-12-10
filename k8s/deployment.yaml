@@ -21,6 +21,12 @@ spec:
         - name: STORAGE
           value: s3
 
+        - name: DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: data-cube-curation
+              key: debug
+
         - name: BASE_URI
           valueFrom:
             configMapKeyRef:

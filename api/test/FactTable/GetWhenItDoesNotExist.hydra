@@ -2,6 +2,8 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 
+ENTRYPOINT "project/fact-table-404"
+
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
         Expect Operation schema:CreateAction

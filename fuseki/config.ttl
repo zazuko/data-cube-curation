@@ -1,0 +1,35 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+                     <#aggregates>
+                     <#read-model>
+                   ) .
+
+<#aggregates> rdf:type fuseki:Service ;
+                rdfs:label                        "Aggregate root repositories" ;
+                fuseki:name                       "data-cube-e2e" ;     # http://host:port/e2e
+                fuseki:serviceQuery               "sparql" ;   # SPARQL query service
+                fuseki:serviceQuery               "query" ;    # SPARQL query service (alt name)
+                fuseki:serviceUpdate              "update" ;   # SPARQL update service
+                fuseki:serviceUpload              "upload" ;   # Non-SPARQL upload service
+                fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
+                fuseki:dataset                    [rdf:type tdb:DatasetTDB ; tdb:location "DB1" ;] ;
+.
+
+<#read-model> rdf:type fuseki:Service ;
+                  rdfs:label                        "Read model dataset" ;
+                  fuseki:name                       "data-cube-read" ;       # http://host:port/read
+                  fuseki:serviceQuery               "sparql" ;   # SPARQL query service
+                  fuseki:serviceQuery               "query" ;    # SPARQL query service (alt name)
+                  fuseki:serviceUpdate              "update" ;   # SPARQL update service
+                  fuseki:serviceUpload              "upload" ;   # Non-SPARQL upload service
+                  fuseki:serviceReadWriteGraphStore "data" ;     # SPARQL Graph store protocol (read and write)
+                  fuseki:dataset                    [rdf:type tdb:DatasetTDB ; tdb:location "DB2" ;] ;
+.

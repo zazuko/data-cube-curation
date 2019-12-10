@@ -1,0 +1,26 @@
+language: node_js
+node_js: "13"
+
+services:
+  docker
+
+jobs:
+  include:
+    - env:
+        - JOB=analyzer
+      before_script:
+        - docker-compose -f docker-compose.yml up -d datacube
+        - npx wait-on --timeout 30000 http://localhost:5678
+      script:
+        - docker-compose run analyzer
+    - env:
+        - JOB=e2e
+      before_script:
+        - docker-compose -f docker-compose.yml up -d datacube
+        - npx wait-on --timeout 30000 http://localhost:5678
+      script:
+        - docker-compose run e2e-tests
+    - env:
+        - JOB=unit
+      script:
+        - npm run test
