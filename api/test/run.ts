@@ -21,6 +21,7 @@ const scenarios = Object.entries({
   'FactTable/CreateAndDelete': 'project/fact-table-created-deleted',
   'FactTable/GetWhenItDoesNotExist': 'project/fact-table-404',
   'DimensionTable/Create': 'project/dimension-table-test',
+  'DimensionTable/AddDimensionAttribute': 'project/reference-attribute-test',
   'DimensionTable/CreateAndDelete': 'project/dimension-table-created-deleted',
   CreateFactTableAttribute: 'project/add-attribute-test',
   CreateFactTableAttributeWithDataType: 'project/attribute-datatype-test',

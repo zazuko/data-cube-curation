@@ -41,6 +41,6 @@ export const OP_TABLES_CREATE_DIMENSION = expand('dataCube:api/CreateDimensionTa
 export const OP_TABLES_CREATE_FACT = expand('dataCube:api/PostFactTable')
 export const OP_TABLE_EDIT = expand('dataCube:api/EditTable')
 export const OP_TABLE_DELETE = expand('dataCube:api/DeleteTable')
-export const OP_ATTRIBUTES_CREATE = expand('dataCube:api/AddAttributeMappedFromSingleColumn')
+export const OP_ATTRIBUTES_CREATE = expand('dataCube:api/AddValueAttribute')
 export const OP_ATTRIBUTE_DELETE = expand('dataCube:api/DeleteAttribute')
 export const OP_ATTRIBUTE_EDIT = expand('dataCube:api/EditAttribute')
