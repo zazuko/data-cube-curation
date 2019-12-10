@@ -32,7 +32,7 @@
     "body-parser": "^1.19.0",
     "clownface": "^0.12.1",
     "cors": "^2.8.5",
-    "csv-parse": "^4.4.3",
+    "csv-parse": "^4.4.6",
     "debug": "^4.1.1",
     "detect-csv": "^1.1.0",
     "dotenv": "^8.0.0",
