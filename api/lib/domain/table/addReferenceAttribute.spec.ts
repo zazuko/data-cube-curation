@@ -6,7 +6,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource, getTableSourceId } from '../../read-graphs/table'
 import { sourceWithColumnGraph } from './addReferenceAttribute.spec-graphs'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
-import { extractColumnIds } from './identifierTemplate'
+import { extractColumns } from './identifierTemplate'
 
 jest.mock('../../read-graphs/table')
 jest.mock('../../read-graphs/source/getSourceColumns')
@@ -16,7 +16,7 @@ jest.mock('./identifierTemplate')
 const existsInTableSourceMock = existsInTableSource as jest.Mock
 const getSourceColumnsMock = getSourceColumns as jest.Mock
 const getTableSourceIdMock = getTableSourceId as jest.Mock
-const extractColumnIdsMock = extractColumnIds as jest.Mock
+const extractColumnIdsMock = extractColumns as jest.Mock
 
 const sourceTableSourceId = 'http://example.com/source'
 const referencedTableSourceId = 'http://example.com/destination'
@@ -36,7 +36,7 @@ describe('table', () => {
     getSourceColumnsMock.mockReset()
     getTableSourceIdMock.mockResolvedValue(referencedTableSourceId)
     extractColumnIdsMock.mockResolvedValue([
-      `${referencedTableSourceId}/column1`,
+      { id: `${referencedTableSourceId}/column1`, name: 'foo' },
     ])
 
     table = {
@@ -126,8 +126,8 @@ describe('table', () => {
     it('errors when attribute does not reference all identifier template columns', async () => {
       // given
       extractColumnIdsMock.mockResolvedValueOnce([
-        `${referencedTableSourceId}/column1`,
-        `${referencedTableSourceId}/column2`,
+        { id: `${referencedTableSourceId}/column1` },
+        { id: `${referencedTableSourceId}/column2` },
       ])
       getSourceColumnsMock.mockImplementation(sourceWithColumnGraph)
       command.columnMappings.push({
