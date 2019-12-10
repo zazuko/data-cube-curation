@@ -3,12 +3,12 @@ import { addDimensionTable } from './createDimensionTable'
 import { Project } from './index'
 import { DomainError } from '@tpluscode/fun-ddr'
 import { hasSource } from '../../read-graphs/project'
-import { extractColumnIds } from '../table/identifierTemplate'
+import { extractColumns } from '../table/identifierTemplate'
 
 jest.mock('../../read-graphs/project')
 jest.mock('../table/identifierTemplate')
 const projectHasSourceMock = hasSource as jest.Mock
-const extractColumnIdsMock = extractColumnIds as jest.Mock
+const extractColumnIdsMock = extractColumns as jest.Mock
 
 describe('project', () => {
   beforeAll(() => {

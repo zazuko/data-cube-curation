@@ -9,7 +9,7 @@ import { AttributeEvents } from '../attribute/events'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 import { getTableSourceId } from '../../read-graphs/table'
 import { dataCube, rdf } from '../../namespaces'
-import { extractColumnIds } from './identifierTemplate'
+import { extractColumns } from './identifierTemplate'
 import { getIdentifierTemplate } from '../../read-graphs/table/dimensionTable'
 
 interface ColumnMapping {
@@ -51,11 +51,11 @@ async function validateReferencedColumns (tableId: string, columnsDataset: any, 
   const errors = await validateColumns(columnsDataset, columnMappings)(mapping => mapping.referencedColumnId)
 
   const template = await getIdentifierTemplate(tableId)
-  const identifierColumns = await extractColumnIds(columnsDataset, template)
+  const identifierColumns = await extractColumns(columnsDataset, template)
   if (identifierColumns instanceof Error) throw identifierColumns
 
   identifierColumns.forEach(column => {
-    if (!columnMappings.find(mapping => mapping.referencedColumnId === column)) {
+    if (!columnMappings.find(mapping => mapping.referencedColumnId === column.id)) {
       errors.push(`Column ${column} is part of referenced table's identifier but not used in the attribute`)
     }
   })

@@ -1,4 +1,4 @@
-import { extractColumnIds } from './identifierTemplate'
+import { extractColumns } from './identifierTemplate'
 import { parseGraph } from '../../__tests-helpers__'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 
@@ -17,7 +17,7 @@ describe('identifierTemplate', () => {
   describe('extractColumnIds', () => {
     it('fails when value is not well-formed URI template', async () => {
       // when
-      const result = await extractColumnIds('irrelevant', 'http://x.y.z/{unclosed')
+      const result = await extractColumns('irrelevant', 'http://x.y.z/{unclosed')
 
       // then
       expect(result).toBeInstanceOf(Error)
@@ -28,12 +28,12 @@ describe('identifierTemplate', () => {
       getSourceColumnsMock.mockResolvedValueOnce(sourceColumns())
 
       // when
-      const result = await extractColumnIds('source-id', 'http://x.y.z/{first_name}-{last_name}')
+      const result = await extractColumns('source-id', 'http://x.y.z/{first_name}-{last_name}')
 
       // then
       expect(result).toMatchObject([
-        'http://foo.bar/column1',
-        'http://foo.bar/column2',
+        { id: 'http://foo.bar/column1', name: 'first_name' },
+        { id: 'http://foo.bar/column2', name: 'last_name' },
       ])
     })
 
@@ -42,11 +42,11 @@ describe('identifierTemplate', () => {
       getSourceColumnsMock.mockResolvedValueOnce(sourceColumns())
 
       // when
-      const result = await extractColumnIds('source-id', 'http://x.y.z/{Fahrzeug%20gr%C3%B6%C3%9Fe}')
+      const result = await extractColumns('source-id', 'http://x.y.z/{Fahrzeug%20gr%C3%B6%C3%9Fe}')
 
       // then
       expect(result).toMatchObject([
-        'http://foo.bar/column-with-spaces-and-others',
+        { id: 'http://foo.bar/column-with-spaces-and-others', name: 'Fahrzeug größe' },
       ])
     })
 
@@ -55,7 +55,7 @@ describe('identifierTemplate', () => {
       getSourceColumnsMock.mockResolvedValueOnce(sourceColumns())
 
       // when
-      const result = await extractColumnIds('source-id', 'http://x.y.z/{first_name}-{not_found}')
+      const result = await extractColumns('source-id', 'http://x.y.z/{first_name}-{not_found}')
 
       // then
       expect(result).toBeInstanceOf(Error)

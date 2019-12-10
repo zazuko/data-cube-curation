@@ -81,4 +81,9 @@ With Class dataCube:DimensionTable {
         }
     }
     Expect Property dataCube:identifierTemplate "http://example.com/station/{station_id}"
+    Expect Property dataCube:identifierColumn {
+        Expect Id <http://localhost:5678/project/dimension-table-test/source/single-column-csv/station-id>
+        Expect Type dataCube:Column
+        Expect Property schema:name "station_id"
+    }
 }

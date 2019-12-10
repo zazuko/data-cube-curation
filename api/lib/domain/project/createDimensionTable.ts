@@ -5,7 +5,7 @@ import { errorFactory } from '../error-helper'
 import { DimensionTable, Table } from '../table'
 import { TableEvents } from '../table/events'
 import { hasSource } from '../../read-graphs/project'
-import { extractColumnIds } from '../table/identifierTemplate'
+import { extractColumns } from '../table/identifierTemplate'
 
 interface CreateDimensionTableCommand extends TableCommand {
   identifierTemplate: string;
@@ -23,9 +23,9 @@ export const addDimensionTable = factory<Project, CreateDimensionTableCommand, T
     throw new DomainError('Source does not belong to the project')
   }
 
-  const columnIds = await extractColumnIds(cmd.sourceId, cmd.identifierTemplate)
-  if (columnIds instanceof Error) {
-    throw new DomainError(`Template is not correct. ${columnIds.message}`)
+  const columns = await extractColumns(cmd.sourceId, cmd.identifierTemplate)
+  if (columns instanceof Error) {
+    throw new DomainError(`Template is not correct. ${columns.message}`)
   }
 
   const tableId = `${project['@id']}/table/${encodeURIComponent(cmd.tableName)}`
