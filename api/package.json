@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
+    "@fcostarodrigo/walk": "^4.0.2",
     "@tpluscode/fun-ddr": "^0.5.2",
     "@tpluscode/fun-ddr-sparql-graph-repository": "^0.2.9",
     "@zazuko/rdf-vocabularies": "^2019.9.24",

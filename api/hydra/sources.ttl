@@ -1,0 +1,72 @@
+@prefix api:       <https://rdf-cube-curation.described.at/api/> .
+@prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
+@prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix code:      <https://code.described.at/> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:    <http://schema.org/> .
+
+api:Sources
+  a                        hydra:Class ;
+  hydra:supportedOperation api:GetProjectSources, api:AddSource .
+
+dataCube:Source
+  a hydra:Class ;
+  hydra:supportedOperation api:GetDataCubeSource ;
+  hydra:supportedProperty [ hydra:property  schema:name ;
+                            hydra:title     "Name" ;
+                            hydra:readable  true ;
+                            hydra:writeable true ], [ hydra:property  api:columns ;
+                                                      hydra:title     "Columns" ;
+                                                      hydra:writeable false ], [ hydra:property  dataCube:project ;
+                                                                                 hydra:title     "Project" ;
+                                                                                 hydra:description
+                                                                                                 "The project this source belongs to" ;
+                                                                                 hydra:writeable false ],
+[ hydra:property  api:sample ;
+  hydra:title     "Collection of sample row data" ;
+  hydra:writeable false ] .
+
+api:sample
+  a                        hydra:Link ;
+  hydra:supportedOperation _:GetSourceSample .
+
+_:GetSourceSample
+  a                  hydra:SupportedOperation, hydra-box:View, schema:ViewAction ;
+  hydra:method       "GET" ;
+  hydra:title        "Sample source rows" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/sample#getSampleRows> ] ) ] .
+
+dataCube:project
+  a hydra:Link .
+
+api:csvwMetadata
+  a                        hydra:Link ;
+  hydra:supportedOperation api:GetCsvwMetadata .
+
+api:GetDataCubeSource
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Get project source" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/get#get> ] ) ] .
+
+api:GetCsvwMetadata
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table/csvw#get> ] ) ] .
+
+dataCube:Column
+  a hydra:Class ;
+  hydra:title "Source column" ;
+  hydra:supportedProperty [ hydra:property schema:name ;
+                            hydra:title    "Column heading" ], [ hydra:property dataCube:mapped ;
+                                                                 hydra:title    "Mapped" ;
+                                                                 hydra:description
+                                                                                "Indicates that the column is used in a dimension or measure." ] .
