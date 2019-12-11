@@ -2,6 +2,9 @@ import cf from 'clownface'
 import Clownface from 'clownface/lib/Clownface'
 import $rdf from 'rdf-ext'
 import { csvw, rdf, dataCube, schema } from '../namespaces'
+import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
+import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
+import { error } from '../log'
 
 function addDialect (csvwGraph: Clownface) {
   csvwGraph.addOut(csvw.dialect, dialect => {
@@ -19,13 +22,20 @@ function createCsvwColumn (csvwGraph: Clownface, column: Clownface, attribute?: 
     return csvwColumn.addOut(csvw.suppressOutput, true)
   }
 
-  if (attribute.out(dataCube.language).value) {
-    csvwColumn = csvwColumn.addOut(csvw.lang, attribute.out(dataCube.language))
-  } else if (attribute.out(dataCube.datatype).value) {
-    csvwColumn = csvwColumn.addOut(csvw.datatype, attribute.out(dataCube.datatype))
+  csvwColumn.addOut(csvw.propertyUrl, attribute.out(rdf.predicate).value)
+
+  const attributeTypes = attribute.out(rdf.type).terms
+
+  if (attributeTypes.find(t => t.equals(dataCube.ValueAttribute))) {
+    return valueAttributeToCsvwColumn(attribute, csvwColumn)
   }
 
-  return csvwColumn.addOut(csvw.propertyUrl, attribute.out(rdf.predicate).value)
+  if (attributeTypes.find(t => t.equals(dataCube.ReferenceAttribute))) {
+    return referenceAttributeToCsvwColumn(attribute, csvwColumn)
+  }
+
+  error(`The types of <%s> did not contain one of the expected datacube:Attribute types`, attribute.value)
+  return csvwColumn
 }
 
 export function buildCsvw (tableDataset: any, tableId: string) {
@@ -41,16 +51,23 @@ export function buildCsvw (tableDataset: any, tableId: string) {
       .out(dataCube.column)
       .toArray()
 
+    const doneAttributes: string[] = []
+
     const csvwColumns = columns
       .reduce(function matchColumnsToAttributes (previousColumns, column) {
         let nextColumns: Clownface[]
         const attributes = tableContext.in(dataCube.table)
           .has(rdf.type, dataCube.Attribute)
 
-        if (attributes.terms.length === 0) {
+        nextColumns = attributes
+          .filter(attr => !doneAttributes.includes(attr.value))
+          .map(attr => {
+            doneAttributes.push(attr.value)
+            return createCsvwColumn(csvwGraph, column, attr)
+          })
+
+        if (nextColumns.length === 0) {
           nextColumns = [ createCsvwColumn(csvwGraph, column) ]
-        } else {
-          nextColumns = attributes.map(a => createCsvwColumn(csvwGraph, column, a))
         }
 
         return [ ...previousColumns, ...nextColumns ]
