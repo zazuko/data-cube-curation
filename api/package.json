@@ -4,7 +4,7 @@
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --ignore test --ignore **/*.spec.ts --ignore **/*.spec-graphs.ts --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts",
+    "start": "nodemon --watch hydra --watch lib --ext ts,ttl,js,json --ignore **/*.spec.ts --ignore **/*.spec-graphs.ts --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts",
     "test": "jest",
     "precommit": "lint-staged",
     "build": "tsc -p tsconfig.json; cp -r hydra dist"
