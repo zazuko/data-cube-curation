@@ -8,7 +8,7 @@
 
 dataCube:Attribute
   a hydra:Class ;
-  hydra:supportedOperation api:GetAttribute ;
+  hydra:supportedOperation api:GetAttribute, _:DeleteAttribute ;
   hydra:supportedProperty [ hydra:property rdf:predicate ;
                             hydra:title    "Predicate URI for mapped value" ;
                             hydra:required true ], [ hydra:property  dataCube:table ;
@@ -108,6 +108,15 @@ api:GetAttribute
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
                                           code:link <file:lib/data-cube/attribute#getHandler> ] ) ] .
+
+_:DeleteAttribute
+  a                  hydra:SupportedOperation, hydra-box:View, api:DeleteAttribute ;
+  hydra:method       "DELETE" ;
+  hydra:title        "Delete attribute" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/attribute/delete#handler> ] ) ] ;
+.
 
 api:attributes
   a                        hydra:Link ;
