@@ -89,7 +89,7 @@ api:DeleteProject
   hydra:title        "Deletes a project" ;
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
-                                          code:link <file:lib/data-cube/project#archive> ] ) ] .
+                                          code:link <file:lib/data-cube/project/delete#handler> ] ) ] .
 
 api:GetProject
   a                  hydra:SupportedOperation, hydra-box:View ;
