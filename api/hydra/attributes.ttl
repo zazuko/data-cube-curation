@@ -5,6 +5,7 @@
 @prefix code:      <https://code.described.at/> .
 @prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:    <http://schema.org/> .
 
 dataCube:Attribute
   a hydra:Class ;
@@ -110,7 +111,7 @@ api:GetAttribute
                                           code:link <file:lib/data-cube/attribute#getHandler> ] ) ] .
 
 _:DeleteAttribute
-  a                  hydra:SupportedOperation, hydra-box:View, api:DeleteAttribute ;
+  a                  hydra:SupportedOperation, hydra-box:View, api:DeleteAttribute, schema:DeleteAction ;
   hydra:method       "DELETE" ;
   hydra:title        "Delete attribute" ;
   code:implementedBy [ a              hydra-box:middlewareChain ;

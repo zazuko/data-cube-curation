@@ -13,7 +13,7 @@ export const handler = deleteAggregateHandler({
       null
     )
   },
-  mutateBeforeDelete: (current) => {
+  beforeDelete: (current) => {
     return current.mutation(archiveProject)(null as never)
   },
 })

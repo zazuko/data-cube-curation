@@ -13,7 +13,7 @@ api:Sources
 
 dataCube:Source
   a hydra:Class ;
-  hydra:supportedOperation api:GetDataCubeSource ;
+  hydra:supportedOperation api:GetDataCubeSource, _:DeleteSource ;
   hydra:supportedProperty [ hydra:property  schema:name ;
                             hydra:title     "Name" ;
                             hydra:readable  true ;
@@ -70,3 +70,12 @@ dataCube:Column
                                                                  hydra:title    "Mapped" ;
                                                                  hydra:description
                                                                                 "Indicates that the column is used in a dimension or measure." ] .
+
+_:DeleteSource
+  a                  hydra:SupportedOperation, hydra-box:View, api:DeleteSource, schema:DeleteAction ;
+  hydra:method       "DELETE" ;
+  hydra:title        "Delete source" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/delete#handler> ] ) ] ;
+.

@@ -6,11 +6,11 @@ import asyncMiddleware from 'middleware-async'
 interface HandlerOptions<T extends Entity> {
   repository: Repository<T>;
   onGone?: (id: string) => void;
-  mutateBeforeDelete?: (current: AggregateRoot<T>, req: Request) => AggregateRoot<T>;
+  beforeDelete?: (current: AggregateRoot<T>, req: Request) => AggregateRoot<T> | Promise<AggregateRoot<T>>;
 }
 
 export function deleteAggregateHandler<T extends Entity> (options: HandlerOptions<T>) {
-  const { repository, onGone, mutateBeforeDelete } = options
+  const { repository, onGone, beforeDelete } = options
 
   return asyncMiddleware(async function (req: Request, res: Response, next: NextFunction) {
     let aggregateRoot = await repository.load(req.resourceId)
@@ -22,7 +22,7 @@ export function deleteAggregateHandler<T extends Entity> (options: HandlerOption
       return
     }
 
-    aggregateRoot = mutateBeforeDelete ? mutateBeforeDelete(aggregateRoot, req) : aggregateRoot
+    aggregateRoot = beforeDelete ? await beforeDelete(aggregateRoot, req) : aggregateRoot
 
     await aggregateRoot
       .delete()
