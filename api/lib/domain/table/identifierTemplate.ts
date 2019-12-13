@@ -4,7 +4,12 @@ import { NamedNode } from 'rdf-js'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 import { rdf, dataCube, schema } from '../../namespaces'
 
-export async function extractColumnIds (sourceIdOrDataset: string | unknown, template: string): Promise<string[] | Error> {
+interface IdentifierColumn {
+  id: string;
+  name: string;
+}
+
+export async function extractColumns (sourceIdOrDataset: string | unknown, template: string): Promise<IdentifierColumn[] | Error> {
   let columnNames: string[]
   try {
     columnNames = parse(template).expressions.map(ex => ex.params[0].name).map(decodeURIComponent)
@@ -26,7 +31,10 @@ export async function extractColumnIds (sourceIdOrDataset: string | unknown, tem
       return
     }
 
-    return columnNameTerm.value
+    return {
+      id: columnNameTerm.value,
+      name,
+    }
   })
 
   if (columnsNotFound.length > 0) {
