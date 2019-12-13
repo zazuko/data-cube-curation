@@ -56,7 +56,7 @@ export async function getSourceColumns (sourceId: string) {
     .node($rdf.namedNode(`${sourceId}`)).out(dataCube.column)
     .map(column => ({
       column: column.term,
-      order: column.out(dtype.order).value || 0,
+      order: parseInt(column.out(dtype.order).value) || 0,
     }))
     .sort((left, right) => left.order - right.order)
     .map(item => item.column)
