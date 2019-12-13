@@ -9,6 +9,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
+import env from '../env'
 
 function addTableLinks (ev: DomainEvent) {
   return insertData(`
@@ -61,9 +62,9 @@ handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function c
     .execute(getClient())
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeTable (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
-    return deleteInsert(`
+    await deleteInsert(`
       ?table ?p0 ?o0 .`
     )
       .where(`
@@ -133,7 +134,7 @@ export async function getTableSourceId (tableId: string) {
     return null
   }
 
-  return bindings[0].source.value.replace(process.env.BASE_URI, '')
+  return bindings[0].source.value.replace(env.BASE_URI || '', '')
 }
 
 export async function getProjectTables (collectionId: string) {

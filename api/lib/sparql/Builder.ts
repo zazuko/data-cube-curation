@@ -2,6 +2,7 @@ import { NamedNode } from 'rdf-js'
 import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import debug from 'debug'
 import authHeader from './authentication'
+import env from '../env'
 
 const logQuery = debug('SPARQL:query')
 const logQueryError = logQuery.extend('error')
@@ -14,7 +15,6 @@ function buildPrefixes (prefixes: Record<string, (term: string) => NamedNode>) {
 export abstract class Builder<T> {
   private __prefixes = {}
   protected __defaultGraph?: string
-  private __insertPatterns: string[] = []
 
   public prefixes (value: Record<string, (term: string) => NamedNode>) {
     this.__prefixes = value
@@ -29,7 +29,7 @@ export abstract class Builder<T> {
 
   public build () {
     return `
-      BASE <${process.env.BASE_URI}>
+      BASE <${env.BASE_URI}>
       ${buildPrefixes(this.__prefixes)}
 
       ${this._buildQueryInternal()}`

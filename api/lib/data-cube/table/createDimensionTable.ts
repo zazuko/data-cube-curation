@@ -8,6 +8,7 @@ import { addDimensionTable, selectFactTableSource } from '../../domain/project'
 import { DomainError } from '@tpluscode/fun-ddr'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/table/index'
+import env from '../../env'
 
 async function loadProject (projectId: string) {
   const project = await projects.load(projectId)
@@ -35,7 +36,7 @@ async function createDimensionTable (req: express.Request, projectId: string): P
   const tableAggregate = await table
     .commit(tables)
 
-  return `${process.env.BASE_URI}${tableAggregate['@id']}`
+  return `${env.BASE_URI}${tableAggregate['@id']}`
 }
 
 async function createFactTable (req: express.Request, projectId: string) {

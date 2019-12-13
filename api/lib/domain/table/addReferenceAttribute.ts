@@ -1,6 +1,6 @@
 import uuid from 'uuid'
 import cf from 'clownface'
-import { NamedNode } from 'rdf-js'
+import { Dataset } from 'rdf-js'
 import { factory } from '@tpluscode/fun-ddr'
 import { Table } from './index'
 import { ReferenceAttribute } from '../attribute'
@@ -23,13 +23,12 @@ interface AddReferenceAttributeCommand {
   columnMappings: ColumnMapping[];
 }
 
-function validateColumns (columnsDataset: any, columnMappings: ColumnMapping[]) {
+function validateColumns (columnsDataset: Dataset, columnMappings: ColumnMapping[]) {
   return async function (selectColumn: (m: ColumnMapping) => string) {
     const errors: string[] = []
     const columns = cf({ dataset: columnsDataset })
       .has(rdf.type, dataCube.Column)
-      .terms
-      .map((term: NamedNode) => term.value)
+      .map((term) => term.value)
 
     columnMappings.forEach(mapping => {
       const columnId = selectColumn(mapping)
@@ -43,11 +42,11 @@ function validateColumns (columnsDataset: any, columnMappings: ColumnMapping[]) 
   }
 }
 
-async function validateSourceColumns (columnsDataset: any, columnMappings: ColumnMapping[]) {
+async function validateSourceColumns (columnsDataset: Dataset, columnMappings: ColumnMapping[]) {
   return validateColumns(columnsDataset, columnMappings)(mapping => mapping.sourceColumnId)
 }
 
-async function validateReferencedColumns (tableId: string, columnsDataset: any, columnMappings: ColumnMapping[]) {
+async function validateReferencedColumns (tableId: string, columnsDataset: Dataset, columnMappings: ColumnMapping[]) {
   const errors = await validateColumns(columnsDataset, columnMappings)(mapping => mapping.referencedColumnId)
 
   const template = await getIdentifierTemplate(tableId)

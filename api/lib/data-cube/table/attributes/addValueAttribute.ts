@@ -1,4 +1,5 @@
 import asyncMiddleware from 'middleware-async'
+import $rdf from 'rdf-ext'
 import { expand } from '@zazuko/rdf-vocabularies'
 import express from 'express'
 import { getTableId } from '../../../read-graphs/table/links'
@@ -7,6 +8,7 @@ import { buildVariables } from '../../../buildVariables'
 import { attributes, tables } from '../../../storage/repository'
 import { getSingleAttribute } from '../../../read-graphs/attribute'
 import { addValueAttribute } from '../../../domain/table/addValueAttribute'
+import env from '../../../env'
 
 export const addValueAttributeHandler = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = await getTableId(req.resourceId)
@@ -39,6 +41,6 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
   const newAttribute = await attribute.commit(attributes)
 
   res.status(201)
-  res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
-  res.graph(await getSingleAttribute(newAttribute['@id']))
+  res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
+  res.graph(await getSingleAttribute(newAttribute['@id']) || $rdf.dataset())
 })

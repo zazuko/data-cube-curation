@@ -1,31 +1,32 @@
 import hydraBox from 'hydra-box'
 import Parser from '@rdfjs/parser-n3'
-import { dataset } from 'rdf-ext'
+import $rdf from 'rdf-ext'
 import { createReadStream } from 'fs'
+import env from './env'
 
 export default async function (apiPath: string) {
   const parser = new Parser({
-    baseIRI: process.env.BASE_URI,
+    baseIRI: env.BASE_URI,
   })
 
   let authentication
-  if (process.env.SPARQL_ENDPOINT_USERNAME && process.env.SPARQL_ENDPOINT_PASSWORD) {
+  if (env.SPARQL_ENDPOINT_USERNAME && env.SPARQL_ENDPOINT_PASSWORD) {
     authentication = {
-      user: process.env.SPARQL_ENDPOINT_USERNAME,
-      password: process.env.SPARQL_ENDPOINT_PASSWORD,
+      user: env.SPARQL_ENDPOINT_USERNAME,
+      password: env.SPARQL_ENDPOINT_PASSWORD,
     }
   }
 
   const options: Record<string, unknown> = {
     debug: true,
-    sparqlEndpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,
-    sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
+    sparqlEndpointUrl: env.READ_MODEL_SPARQL_ENDPOINT,
+    sparqlEndpointUpdateUrl: env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
     authentication,
-    uploadLimit: process.env.EXPRESS_UPLOAD_LIMIT || '5MB',
+    uploadLimit: env.EXPRESS_UPLOAD_LIMIT || '5MB',
   }
 
   const apiDocsFile = createReadStream(apiPath)
 
-  return hydraBox('/api', await dataset().import(parser.import(apiDocsFile)), options)
+  return hydraBox('/api', await $rdf.dataset().import(parser.import(apiDocsFile)), options)
 }

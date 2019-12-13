@@ -4,15 +4,16 @@ import SparqlHttp from 'sparql-http-client'
 import { prefixes, expand } from '@zazuko/rdf-vocabularies'
 import rdfFetch from 'hydra-box/lib/rdfFetch'
 import authHeader from '../../sparql/authentication'
+import env from '../../env'
 
-const base = process.env.BASE_URI
+const base = env.BASE_URI
 const defaultHeaders: HeadersInit = {}
 if (authHeader) {
   defaultHeaders.Authorization = authHeader
 }
 const sparqlClient = new SparqlHttp({
-  endpointUrl: process.env.SPARQL_ENDPOINT,
-  updateUrl: process.env.SPARQL_UPDATE_ENDPOINT || process.env.SPARQL_ENDPOINT,
+  endpointUrl: env.SPARQL_ENDPOINT,
+  updateUrl: env.SPARQL_UPDATE_ENDPOINT || env.SPARQL_ENDPOINT,
   fetch: rdfFetch,
   defaultHeaders,
 })
