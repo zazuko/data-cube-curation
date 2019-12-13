@@ -21,7 +21,7 @@ declare module 'clownface/lib/Clownface' {
     toArray(): Clownface<T>[];
     filter(cb: (quad: Clownface<T>) => boolean): Clownface<T>;
     forEach(cb: (quad: Clownface<T>) => void): void;
-    map<X extends Term = Term>(cb: (quad: Clownface<T>) => X): X[];
+    map<X>(cb: (quad: Clownface<T>) => X): X[];
     toString(): string;
     node<X extends Term = Term> (values, { type, datatype, language }?): Clownface<X>;
     blankNode (values?): Clownface<BlankNode>;
