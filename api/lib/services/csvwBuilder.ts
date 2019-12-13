@@ -1,8 +1,10 @@
 import cf from 'clownface'
+import Clownface from 'clownface/lib/Clownface'
 import $rdf from 'rdf-ext'
+import { Dataset } from 'rdf-js'
 import { csvw, rdf, dataCube, schema } from '../namespaces'
 
-function addDialect (csvwGraph: any) {
+function addDialect (csvwGraph: Clownface) {
   csvwGraph.addOut(csvw.dialect, dialect => {
     dialect.addOut(csvw.header, true)
     dialect.addOut(csvw.delimiter, ';')
@@ -10,7 +12,7 @@ function addDialect (csvwGraph: any) {
   })
 }
 
-function createColumn (csvwGraph: any, column: any, attribute?: any) {
+function createColumn (csvwGraph: Clownface, column: Clownface, attribute?: Clownface) {
   let csvwColumn = csvwGraph.blankNode()
     .addOut(csvw.title, column.out(schema.name).value)
 
@@ -27,7 +29,7 @@ function createColumn (csvwGraph: any, column: any, attribute?: any) {
   return csvwColumn.addOut(csvw.propertyUrl, attribute.out(rdf.predicate).value)
 }
 
-export function buildCsvw (tableDataset: any, tableId: string) {
+export function buildCsvw (tableDataset: Dataset, tableId: string) {
   const tableContext = cf({ dataset: tableDataset, term: $rdf.namedNode(tableId) })
   const csvwGraph = cf({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${tableId}/csvw`) })
   csvwGraph.addOut(rdf.type, csvw.CsvwMapping)
@@ -35,7 +37,7 @@ export function buildCsvw (tableDataset: any, tableId: string) {
   addDialect(csvwGraph)
 
   csvwGraph.addOut(csvw.tableSchema, tableSchema => {
-    const columnsAndAttributes: [] = tableContext
+    const columnsAndAttributes = tableContext
       .out(dataCube.source)
       .out(dataCube.column)
       .toArray()
@@ -50,7 +52,7 @@ export function buildCsvw (tableDataset: any, tableId: string) {
         }
 
         return [...previousValue, { column }]
-      }, [])
+      }, [] as { column: Clownface; attribute?: Clownface }[])
       .map(({ column, attribute }) => {
         return createColumn(csvwGraph, column, attribute)
       }))

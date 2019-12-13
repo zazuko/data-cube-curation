@@ -1,7 +1,8 @@
 import SparqlHttp from 'sparql-http-client'
 import { Builder } from './Builder'
+import { Stream } from 'rdf-js'
 
-export class ConstructBuilder extends Builder<any> {
+export class ConstructBuilder extends Builder<Stream> {
   private __constructGraph: string[] = []
   private __patterns: string[] = []
 

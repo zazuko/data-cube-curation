@@ -3,8 +3,8 @@ export interface AttributeEvents {
     tableId: string;
     columnId: string;
     predicate: string;
-    datatype: string;
-    language: string;
+    datatype?: string;
+    language?: string;
   };
   ReferenceAttributeAdded: {
     tableId: string;

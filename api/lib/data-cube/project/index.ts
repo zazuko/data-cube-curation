@@ -9,6 +9,7 @@ import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
 import { ProjectEvents } from '../../domain/project/events'
 import { getProject } from '../../read-graphs/project'
+import env from '../../env'
 
 export { getTables } from './getTables'
 
@@ -23,7 +24,7 @@ export const create = asyncMiddleware(async (req: Request, res: Response) => {
     .commit(projects)
 
   res.status(201)
-  res.setHeader('Location', `${process.env.BASE_URI}${project['@id'].replace('/', '')}`)
+  res.setHeader('Location', `${env.BASE_URI}${project['@id'].replace('/', '')}`)
   res.graph(await getProject(project['@id']))
 })
 

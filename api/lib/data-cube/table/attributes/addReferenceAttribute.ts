@@ -1,4 +1,5 @@
 import cf from 'clownface'
+import $rdf from 'rdf-ext'
 import asyncMiddleware from 'middleware-async'
 import { Request, Response } from 'express'
 import { expand } from '@zazuko/rdf-vocabularies'
@@ -9,6 +10,7 @@ import { attributes, tables } from '../../../storage/repository'
 import { addReferenceAttribute } from '../../../domain/table/addReferenceAttribute'
 import { getSingleAttribute } from '../../../read-graphs/attribute'
 import { dataCube } from '../../../namespaces'
+import env from '../../../env'
 
 function readColumnMappingsFromRequest (req: Request, columnMappingNodes) {
   const graph = cf({ dataset: req.graph })
@@ -66,6 +68,6 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
   const newAttribute = await attribute.commit(attributes)
 
   res.status(201)
-  res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
-  res.graph(await getSingleAttribute(newAttribute['@id']))
+  res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
+  res.graph(await getSingleAttribute(newAttribute['@id']) || $rdf.dataset())
 })

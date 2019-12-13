@@ -8,6 +8,7 @@ export const getHandler = asyncMiddleware(async (req: Request, res: Response, ne
       if (dataset === null) {
         res.status(404)
         next()
+        return
       }
 
       res.graph(dataset)
