@@ -48,7 +48,10 @@ declare module 'clownface/lib/Clownface' {
     deleteList<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
   }
 
-  class Clownface<T extends Term = Term> implements Clownface<T> {}
+  class Clownface<T extends Term = Term> implements Clownface<T> {
+    public constructor(o: { term?: Term; dataset?: any; _context?: unknown });
+    public readonly _context: unknown;
+  }
 
   export = Clownface
 }

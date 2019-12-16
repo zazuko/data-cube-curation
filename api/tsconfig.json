@@ -8,7 +8,8 @@
     "typeRoots" : ["./typings", "./node_modules/@types"],
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "experimentalDecorators": true
   },
   "exclude": ["test"]
 }
