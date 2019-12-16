@@ -24,6 +24,8 @@ export interface Source extends HydraResource {
   id: ResourceId;
   name: string;
   columns: Column[];
+  projectId: ResourceId;
+  actions: Record<string, any>;
 }
 
 export interface Column extends HydraResource {

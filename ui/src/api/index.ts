@@ -168,6 +168,10 @@ class ProjectsClient {
     return invokeCreateOperation<Source>(operation, file, headers)
   }
 
+  async deleteSource (source: Source): Promise<void> {
+    return invokeDeleteOperation(source.actions.delete)
+  }
+
   async getSources (project: any) {
     const sourcesCollection = await loadResource<Collection>(project.sourcesCollection.id)
     const incompleteSources = sourcesCollection.members
