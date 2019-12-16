@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, TableFormData, AttributeFormData } from '@/types'
+import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, TableFormData, ValueAttributeFormData } from '@/types'
 import TableTag from '@/components/TableTag.vue'
 import Loader from '@/components/Loader.vue'
 import TableAdvancedForm from '@/components/project/TableAdvancedForm.vue'
@@ -106,7 +106,7 @@ export default class extends Vue {
         project: this.project,
         source: this.source,
         columns: this.selectedColumns,
-        save: async (table: TableFormData, attributes: AttributeFormData[]) => {
+        save: async (table: TableFormData, attributes: ValueAttributeFormData[]) => {
           const loading = this.$buefy.loading.open({})
           await this.$store.dispatch('tables/createWithAttributes', { project: this.project, table, attributes })
           this.selectedColumns = []

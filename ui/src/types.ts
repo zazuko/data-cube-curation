@@ -41,6 +41,7 @@ export interface Table extends HydraResource {
   color: string;
   sourceId: ResourceId;
   identifierTemplate: string | null;
+  identifierColumns: Column[];
   attributesCollection: Collection | null;
   mapping: any;
   preview: any;
@@ -59,18 +60,39 @@ export interface TableFormData {
 export interface Attribute extends HydraResource {
   id: ResourceId;
   predicateId: ResourceId;
+  tableId: ResourceId;
+}
+
+export interface ValueAttribute extends Attribute {
   columnId: ResourceId;
   dataTypeId: ResourceId | null;
   language: string | null;
   tableId: ResourceId;
 }
 
-export interface AttributeFormData {
+export interface ReferenceAttribute extends Attribute {
+  referencedTableId: ResourceId;
+  columnMapping: ReferenceColumnMapping[];
+}
+
+export interface ReferenceColumnMapping {
+  sourceColumnId: ResourceId,
+  referencedColumnId: ResourceId
+}
+
+export interface ValueAttributeFormData {
   id?: ResourceId,
   columnId: ResourceId,
   predicateId: ResourceId,
   dataTypeId: string,
   language: string
+}
+
+export interface ReferenceAttributeFormData {
+  id?: ResourceId,
+  referencedTableId: ResourceId,
+  predicateId: ResourceId,
+  columnMapping: ReferenceColumnMapping[]
 }
 
 export interface ErrorMessage {

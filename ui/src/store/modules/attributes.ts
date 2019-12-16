@@ -44,9 +44,16 @@ const actions: ActionTree<AttributesState, RootState> = {
     })
   },
 
-  async create (context, { table, attribute: attributeData }) {
+  async createValue (context, { table, attribute: attributeData }) {
     await handleAPIError(context, async () => {
-      const attribute = await client.projects.createAttribute(table, attributeData)
+      const attribute = await client.projects.createValueAttribute(table, attributeData)
+      context.commit('storeInTable', { table, attribute })
+    })
+  },
+
+  async createReference (context, { table, attribute: attributeData }) {
+    await handleAPIError(context, async () => {
+      const attribute = await client.projects.createReferenceAttribute(table, attributeData)
       context.commit('storeInTable', { table, attribute })
     })
   }

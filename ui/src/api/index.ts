@@ -1,14 +1,15 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Attribute, Source, TableFormData, AttributeFormData } from '@/types'
+import { Project, ResourceId, Table, Source, TableFormData, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
 import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
 import * as TableMixin from './resources/table'
 import * as ColumnMixin from './resources/column'
-import * as AttributeMixin from './resources/attribute'
+import * as ValueAttributeMixin from './resources/value-attribute'
+import * as ReferenceAttributeMixin from './resources/reference-attribute'
 
 const apiURL = process.env.VUE_APP_API_URL
 
@@ -19,7 +20,8 @@ rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 rdf.resourceFactory.mixins.push(TableMixin)
 rdf.resourceFactory.mixins.push(ColumnMixin)
-rdf.resourceFactory.mixins.push(AttributeMixin)
+rdf.resourceFactory.mixins.push(ValueAttributeMixin)
+rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 
 export class APIError extends Error {
   details: any;
@@ -128,9 +130,9 @@ class ProjectsClient {
     }
   }
 
-  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: AttributeFormData[]): Promise<Table> {
+  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: ValueAttributeFormData[]): Promise<Table> {
     const table = await this.createTable(project, tableData)
-    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(table, attribute)))
+    const attributesIds = await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
     return table
   }
 
@@ -193,16 +195,30 @@ class ProjectsClient {
     return collection.members
   }
 
-  async createAttribute (table: any, attributeData: AttributeFormData): Promise<Attribute> {
-    const operation = table.actions.createAttribute
+  async createValueAttribute (table: any, attributeData: ValueAttributeFormData): Promise<ValueAttribute> {
+    const operation = table.actions.createValueAttribute
     const data = {
-      '@type': URI.TYPE_ATTRIBUTE,
+      '@type': URI.TYPE_VALUE_ATTRIBUTE,
       [URI.PROP_PREDICATE]: attributeData.predicateId,
       [URI.PROP_COLUMN]: attributeData.columnId,
       [URI.PROP_DATATYPE]: attributeData.dataTypeId,
       [URI.PROP_LANGUAGE]: attributeData.language
     }
-    return invokeCreateOperation<Attribute>(operation, data)
+    return invokeCreateOperation<ValueAttribute>(operation, data)
+  }
+
+  async createReferenceAttribute (table: any, attributeData: ReferenceAttributeFormData): Promise<ReferenceAttribute> {
+    const operation = table.actions.createReferenceAttribute
+    const data = {
+      '@type': URI.TYPE_REFERENCE_ATTRIBUTE,
+      [URI.PROP_PREDICATE]: attributeData.predicateId,
+      [URI.PROP_REFERENCED_TABLE]: attributeData.referencedTableId,
+      [URI.PROP_COLUMN_MAPPING]: attributeData.columnMapping.map((mapping) => ({
+        [URI.PROP_SOURCE_COLUMN]: mapping.sourceColumnId,
+        [URI.PROP_REFERENCED_COLUMN]: mapping.referencedColumnId
+      }))
+    }
+    return invokeCreateOperation<ReferenceAttribute>(operation, data)
   }
 }
 

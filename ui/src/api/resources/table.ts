@@ -1,5 +1,5 @@
 import { HydraResource, Collection } from 'alcaeus/types/Resources'
-import { Source } from '@/types'
+import { Source, Column } from '@/types'
 import { Constructor, findOperation } from '../common'
 import { getColor } from '../../colors'
 import * as URI from '../uris'
@@ -19,7 +19,8 @@ export function Mixin<B extends Constructor> (Base: B) {
       return {
         delete: findOperation(this, URI.TYPE_OP_DELETE),
         edit: findOperation(this, URI.OP_TABLE_EDIT),
-        createAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE)
+        createValueAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_VALUE),
+        createReferenceAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_REFERENCE)
       }
     }
 
@@ -29,6 +30,10 @@ export function Mixin<B extends Constructor> (Base: B) {
 
     get identifierTemplate () {
       return this.get(URI.PROP_IDENTIFIER_TEMPLATE)
+    }
+
+    get identifierColumns () {
+      return this.getArray<Column[]>(URI.PROP_IDENTIFIER_COLUMN)
     }
 
     get isFact () {

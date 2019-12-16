@@ -93,7 +93,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source, Attribute, TableFormData, AttributeFormData } from '@/types'
+import { TableType, ResourceId, Project, Source, ValueAttribute, TableFormData, ValueAttributeFormData } from '@/types'
 import LanguageInput from '../LanguageInput.vue'
 
 @Component({
@@ -105,9 +105,9 @@ export default class TableForm extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly source: Source
   @Prop() readonly columns: ResourceId[]
-  @Prop() readonly save: (table: TableFormData, attributes: AttributeFormData[]) => void
+  @Prop() readonly save: (table: TableFormData, attributes: ValueAttributeFormData[]) => void
   table: TableFormData = emptyTable()
-  attributes: AttributeFormData[] = []
+  attributes: ValueAttributeFormData[] = []
 
   mounted () {
     if (!this.table.type) {
@@ -135,7 +135,7 @@ export default class TableForm extends Vue {
     this.attributes.push(emptyAttribute())
   }
 
-  removeAttribute (attribute: AttributeFormData) {
+  removeAttribute (attribute: ValueAttributeFormData) {
     this.attributes.splice(this.attributes.indexOf(attribute), 1)
   }
 }

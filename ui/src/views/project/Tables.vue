@@ -7,7 +7,7 @@
     </div>
 
     <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
-      <TableItem v-for="table in tables" :key="table.id" :table="table" :project="project" />
+      <TableItem v-for="table in tables" :key="table.id" :table="table" :project="project" :tables="tables" />
       <div v-if="tables.length < 1" class="content has-text-grey">
         <p>No table yet</p>
       </div>
