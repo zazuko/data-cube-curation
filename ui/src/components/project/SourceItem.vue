@@ -6,7 +6,7 @@
         <b-button icon-left="plus" @click="createTable" :disabled="selectedColumns.length < 1">
           Create table from selected columns
         </b-button>
-        <b-button icon-left="trash-can-outline" v-if="source.actions.delete"></b-button>
+        <b-button icon-left="trash-can-outline" v-if="source.actions.delete" @click="deleteSource(source)" />
       </div>
     </header>
     <section class="card-content">
@@ -115,6 +115,21 @@ export default class extends Vue {
         }
       },
       hasModalCard: true
+    })
+  }
+
+  deleteSource (source: Source) {
+    this.$buefy.dialog.confirm({
+      title: source.actions.delete.title,
+      message: 'Are you sure you want to delete this source?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('sources/delete', source)
+        loading.close()
+      }
     })
   }
 }
