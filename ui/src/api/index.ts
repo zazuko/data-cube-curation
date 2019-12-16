@@ -204,6 +204,10 @@ class ProjectsClient {
     }
     return invokeCreateOperation<Attribute>(operation, data)
   }
+
+  async deleteAttribute (attribute: Attribute): Promise<void> {
+    return invokeDeleteOperation(attribute.actions.delete)
+  }
 }
 
 async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {

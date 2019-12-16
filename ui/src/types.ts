@@ -63,6 +63,7 @@ export interface Attribute extends HydraResource {
   dataTypeId: ResourceId | null;
   language: string | null;
   tableId: ResourceId;
+  actions: Record<string, any>;
 }
 
 export interface AttributeFormData {
