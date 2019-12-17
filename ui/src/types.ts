@@ -28,6 +28,7 @@ export interface Source extends HydraResource {
   id: ResourceId;
   name: string;
   columns: Column[];
+  projectId: ResourceId;
   actions: Actions;
   sampleCollection: Collection | null;
 }
@@ -75,6 +76,7 @@ export interface ValueAttribute extends Attribute {
   dataTypeId: ResourceId | null;
   language: string | null;
   tableId: ResourceId;
+  actions: Actions;
 }
 
 export interface ReferenceAttribute extends Attribute {

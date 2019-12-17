@@ -17,6 +17,7 @@ export const TYPE_OP_DELETE = expand('schema:DeleteAction')
 
 export const PROP_NAME = expand('schema:name')
 export const PROP_SOURCE = expand('dataCube:source')
+export const PROP_PROJECT = expand('dataCube:project')
 export const PROP_IDENTIFIER_TEMPLATE = expand('dataCube:identifierTemplate')
 export const PROP_IDENTIFIER_COLUMN = expand('dataCube:identifierColumn')
 export const PROP_PREDICATE = expand('rdf:predicate')

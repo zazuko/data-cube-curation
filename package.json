@@ -9,7 +9,8 @@
     "stop:fuseki": "docker-compose stop fuseki",
     "postinstall": "lerna bootstrap",
     "test": "lerna run test --stream --no-prefix",
-    "test:analyse": "lerna run test:analyse --stream --no-prefix",
+    "test:analyse": "docker-compose run --rm analyzer",
+    "test:hypertest": "docker-compose run --rm e2e-tests",
     "version": "standard-changelog"
   },
   "devDependencies": {

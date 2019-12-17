@@ -1,7 +1,7 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Source, TableFormData, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
+import { Project, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
 import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
@@ -185,6 +185,10 @@ class ProjectsClient {
     return sources
   }
 
+  async deleteSource (source: Source): Promise<void> {
+    return invokeDeleteOperation(source.actions.delete)
+  }
+
   async getSourceSampleData (source: Source) {
     if (!source.sampleCollection) throw new Error('Source has no sample collection')
 
@@ -227,6 +231,10 @@ class ProjectsClient {
       }))
     }
     return invokeCreateOperation<ReferenceAttribute>(operation, data)
+  }
+
+  async deleteAttribute (attribute: Attribute): Promise<void> {
+    return invokeDeleteOperation(attribute.actions.delete)
   }
 }
 
