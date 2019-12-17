@@ -1,0 +1,119 @@
+@prefix api:       <https://rdf-cube-curation.described.at/api/> .
+@prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
+@prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix code:      <https://code.described.at/> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:    <http://schema.org/> .
+
+api:TableCollection
+  a hydra:Class .
+
+dataCube:FactTable
+  rdfs:subClassOf          dataCube:Table ;
+  hydra:title              "Project's table" ;
+  hydra:supportedOperation api:GetFactTable .
+
+dataCube:DimensionTable
+  rdfs:subClassOf         dataCube:Table ;
+  hydra:title             "Project's dimension table" ;
+  hydra:supportedProperty [ hydra:property    dataCube:identifierTemplate ;
+                            hydra:title       "Table identifier" ;
+                            hydra:description "A URL Template which can contain column names as variables" ;
+                            hydra:required    true ] .
+
+dataCube:source
+  a          hydra:Link ;
+  rdfs:range dataCube:Source .
+
+api:GetTable
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:returns      dataCube:Table ;
+  code:implementedBy [ a         code:EcmaScript ;
+                       code:link <file:lib/data-cube/table#get> ] .
+
+api:GetFactTable
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:returns      dataCube:Table ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project#getFactTable> ] ) ] .
+
+_:DeleteTable
+  a                  hydra:SupportedOperation, hydra-box:View, schema:DeleteAction ;
+  hydra:method       "DELETE" ;
+  hydra:title        "Delete table" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#archive> ] ) ] .
+
+api:CreateFactTable
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "PUT" ;
+  hydra:title        "Create a Fact Table" ;
+  hydra:expects      dataCube:FactTable ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#createFactTable> ] ) ] .
+
+api:PostFactTable
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "POST" ;
+  hydra:title        "Create a Fact Table" ;
+  hydra:expects      dataCube:FactTable ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#createTable> ] ) ] .
+
+api:CreateDimensionTable
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "POST" ;
+  hydra:title        "Create a Dimension Table" ;
+  hydra:expects      dataCube:DimensionTable ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#createTable> ] ) ] .
+
+api:GetTables
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project#getTables> ] ) ] .
+
+dataCube:Table
+  a hydra:Class ;
+  hydra:title "A table" ;
+  hydra:description "Models the output of transforming source data into the data cube structure" ;
+  hydra:supportedProperty [ hydra:property  dataCube:project ;
+                            hydra:title     "The project which contains this fact table" ;
+                            hydra:writeable false ], [ hydra:property schema:name ;
+                                                       hydra:title    "Table name" ;
+                                                       hydra:required true ], [ hydra:property dataCube:source ;
+                                                                                hydra:title    "The tables's source" ;
+                                                                                hydra:required true ], [ hydra:property
+  api:csvwMetadata ;
+                                                                                                         hydra:title
+  "CVSW mapping document for this table" ;
+                                                                                                         hydra:writeable
+  false ], [ hydra:property  api:attributes ;
+             hydra:title     "Table's attributes mapped from it's source" ;
+             hydra:writeable false ], [ hydra:property  api:preview ;
+                                        hydra:title     "Preview the table's mapping" ;
+                                        hydra:writeable false ] ;
+  hydra:supportedOperation api:GetTable, _:DeleteTable .
+
+api:preview
+  a                        hydra:Link ;
+  hydra:supportedOperation api:GetPreview .
+
+api:GetPreview
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Runs the table's mapping on sample source data and returns the resulting triples" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table/preview#parseSample> ] ) ] .
