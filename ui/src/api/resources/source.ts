@@ -1,5 +1,6 @@
 import { HydraResource, Collection } from 'alcaeus/types/Resources'
-import { Constructor, findOperation } from '../common'
+import { ResourceId } from '@/types'
+import { Constructor, getOrThrow, findOperation } from '../common'
 import * as URI from '../uris'
 
 export function Mixin<B extends Constructor> (Base: B) {
@@ -22,6 +23,11 @@ export function Mixin<B extends Constructor> (Base: B) {
 
     get sampleCollection () {
       return this.get<Collection>(URI.API_SOURCE_SAMPLE)
+    }
+
+    get projectId (): ResourceId {
+      const project = getOrThrow<HydraResource>(this, URI.PROP_PROJECT)
+      return project.id
     }
   }
 }
