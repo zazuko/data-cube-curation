@@ -111,11 +111,13 @@ class ProjectsClient {
     return loadResource(id)
   }
 
-  async getTables (project: any): Promise<Table[]> {
+  async getTables (project: Project): Promise<Table[]> {
+    if (!project.tablesCollection) throw new Error('Project has no tables collection')
+
     const collection = await loadResource<Collection>(project.tablesCollection.id)
     const incompleteTables = collection.members
 
-    const tables = Promise.all(incompleteTables.map(async (incompleteTable: any) =>
+    const tables = Promise.all(incompleteTables.map(async (incompleteTable: HydraResource) =>
       loadResource<Table>(incompleteTable.id)
     ))
 
@@ -161,7 +163,7 @@ class ProjectsClient {
     return invokeDeleteOperation(table.actions.delete)
   }
 
-  async createSource (project: any, file: File): Promise<Source> {
+  async createSource (project: Project, file: File): Promise<Source> {
     const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
@@ -170,18 +172,22 @@ class ProjectsClient {
     return invokeCreateOperation<Source>(operation, file, headers)
   }
 
-  async getSources (project: any) {
+  async getSources (project: Project) {
+    if (!project.sourcesCollection) throw new Error('Project has no sources collection')
+
     const sourcesCollection = await loadResource<Collection>(project.sourcesCollection.id)
     const incompleteSources = sourcesCollection.members
 
-    const sources = Promise.all(incompleteSources.map(async (incompleteSource: any) =>
+    const sources = Promise.all(incompleteSources.map(async (incompleteSource: HydraResource) =>
       loadResource(incompleteSource.id)
     ))
 
     return sources
   }
 
-  async getSourceSampleData (source: any) {
+  async getSourceSampleData (source: Source) {
+    if (!source.sampleCollection) throw new Error('Source has no sample collection')
+
     const loadedCollection = await loadResource<Collection>(source.sampleCollection.id)
     const rows = loadedCollection.members.map((row: HydraResource) => {
       return row[URI.API_CELLS]
@@ -190,12 +196,14 @@ class ProjectsClient {
     return rows
   }
 
-  async getAttributes (table: any) {
+  async getAttributes (table: Table) {
+    if (!table.attributesCollection) throw new Error('Table has no attributes collection')
+
     const collection = await loadResource<Collection>(table.attributesCollection.id)
     return collection.members
   }
 
-  async createValueAttribute (table: any, attributeData: ValueAttributeFormData): Promise<ValueAttribute> {
+  async createValueAttribute (table: Table, attributeData: ValueAttributeFormData): Promise<ValueAttribute> {
     const operation = table.actions.createValueAttribute
     const data = {
       '@type': URI.TYPE_VALUE_ATTRIBUTE,
@@ -207,7 +215,7 @@ class ProjectsClient {
     return invokeCreateOperation<ValueAttribute>(operation, data)
   }
 
-  async createReferenceAttribute (table: any, attributeData: ReferenceAttributeFormData): Promise<ReferenceAttribute> {
+  async createReferenceAttribute (table: Table, attributeData: ReferenceAttributeFormData): Promise<ReferenceAttribute> {
     const operation = table.actions.createReferenceAttribute
     const data = {
       '@type': URI.TYPE_REFERENCE_ATTRIBUTE,

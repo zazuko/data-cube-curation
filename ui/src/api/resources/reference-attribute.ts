@@ -1,10 +1,10 @@
 import { HydraResource } from 'alcaeus/types/Resources'
-import { ResourceId } from '@/types'
+import { ResourceId, ReferenceColumnMapping, ReferenceAttribute } from '@/types'
 import { Constructor, getOrThrow, findOperation } from '../common'
 import * as URI from '../uris'
 
 export function Mixin<B extends Constructor> (Base: B) {
-  return class extends Base {
+  return class extends Base implements ReferenceAttribute {
     isValue = false
     isReference = true
 
@@ -15,21 +15,21 @@ export function Mixin<B extends Constructor> (Base: B) {
       }
     }
 
-    get predicateId () {
+    get predicateId (): ResourceId {
       const predicate = getOrThrow<HydraResource>(this, URI.PROP_PREDICATE)
       return predicate.id
     }
 
-    get referencedTableId () {
+    get referencedTableId (): ResourceId {
       const table = getOrThrow<HydraResource>(this, URI.PROP_REFERENCED_TABLE)
       return table.id
     }
 
-    get columnMapping () {
+    get columnMapping (): ReferenceColumnMapping[] {
       return this.getArray(URI.PROP_COLUMN_MAPPING)
     }
 
-    get tableId () {
+    get tableId (): ResourceId {
       const table = getOrThrow<HydraResource>(this, URI.PROP_TABLE)
       return table.id
     }

@@ -8,7 +8,9 @@ export type Actions = Record<string, IOperation | null>;
 export interface Project extends HydraResource {
   id: ResourceId;
   actions: Actions;
-  name: string | null;
+  name: string;
+  tablesCollection: Collection | null;
+  sourcesCollection: Collection | null;
 }
 
 export interface ProjectFormData {
@@ -27,6 +29,7 @@ export interface Source extends HydraResource {
   name: string;
   columns: Column[];
   actions: Actions;
+  sampleCollection: Collection | null;
 }
 
 export interface Column extends HydraResource {
