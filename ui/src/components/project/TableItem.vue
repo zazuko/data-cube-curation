@@ -32,7 +32,7 @@
         <tbody>
           <tr>
             <th>Source CSV</th>
-            <Loader tag="td" :data="source" v-slot="{ data: source }">{{ source.name }}</Loader>
+            <td>{{ source.name }}</td>
           </tr>
           <tr v-if="!table.isFact">
             <th>Identifier template</th>
@@ -54,9 +54,7 @@
                 </thead>
                 <Loader tag="tbody" :data="valueAttributes" v-slot="{ data: attributes }">
                   <tr v-for="attribute in attributes" :key="attribute.id">
-                    <Loader tag="td" :data="getColumn(attribute.columnId)" v-slot="{ data: column }">
-                      {{ column.name }}
-                    </Loader>
+                    <td>{{ getColumn(attribute.columnId).name }}</td>
                     <td>{{ attribute.predicateId }}</td>
                     <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
@@ -96,9 +94,7 @@
                     <td>
                        <ul v-if="attribute.columnMapping.length > 0">
                         <li v-for="(mapping, index) in attribute.columnMapping" :key="index">
-                          {{ mapping['https://rdf-cube-curation.described.at/sourceColumn']['http://schema.org/name'] }}
-                          >
-                          {{ mapping['https://rdf-cube-curation.described.at/referencedColumn']['http://schema.org/name']  }}
+                          {{ displayColumnMapping(mapping) }}
                         </li>
                       </ul>
                       <span v-else>N/A</span>
@@ -136,7 +132,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { IOperation } from 'alcaeus/types/Resources'
+import { IOperation, HydraResource } from 'alcaeus/types/Resources'
 import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, ValueAttributeFormData, ReferenceAttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
@@ -145,6 +141,8 @@ import ReferenceAttributeForm from './ReferenceAttributeForm.vue'
 import TableMapping from './TableMapping.vue'
 import TablePreview from './TablePreview.vue'
 import TableTag from '../TableTag.vue'
+import * as URI from '@/api/uris'
+import { getOrThrow } from '@/api/common'
 
 @Component({
   components: {
@@ -174,9 +172,12 @@ export default class extends Vue {
     return Remote.loaded(this.attributes.data.filter((attribute) => attribute.isReference))
   }
 
-  get source (): RemoteData<Source> {
-    const projectId = this.$route.params.id
-    return this.$store.getters['sources/one'](projectId, this.table.sourceId)
+  get source (): Source {
+    const source = this.sources.find((s) => s.id === this.table.sourceId)
+
+    if (!source) throw new Error('Source not found')
+
+    return source
   }
 
   getTable (id: ResourceId): Table {
@@ -187,14 +188,24 @@ export default class extends Vue {
     return table
   }
 
-  getColumn (id: ResourceId): RemoteData<Column> {
-    if (this.source.isLoading || !this.source.data) {
-      return Remote.loading()
-    }
+  get allColumns (): Column[] {
+    return this.sources.flatMap((s) => s.columns)
+  }
 
-    const column = this.source.data.columns.find((column: Column) => column.id === id)
+  getColumn (id: ResourceId): Column {
+    const column = this.allColumns.find((column: Column) => column.id === id)
 
-    return Remote.loaded(column)
+    if (!column) throw new Error(`Column not found: ${id}`)
+
+    return column
+  }
+
+  displayColumnMapping (mapping: HydraResource): string {
+    // TODO: Cleanup once mappings have a type
+    const sourceColumnName = this.getColumn(getOrThrow<Column>(mapping, URI.PROP_SOURCE_COLUMN).id).name
+    const referencedColumnName = this.getColumn(getOrThrow<Column>(mapping, URI.PROP_REFERENCED_COLUMN).id).name
+
+    return `${sourceColumnName} -> ${referencedColumnName}`
   }
 
   deleteTable (table: Table) {
@@ -218,8 +229,7 @@ export default class extends Vue {
       component: ValueAttributeForm,
       props: {
         table: this.table,
-        // TODO: Handle source not loaded
-        source: this.source.data,
+        source: this.source,
         save: async (attribute: ValueAttributeFormData) => {
           const loading = this.$buefy.loading.open({})
           await this.$store.dispatch('attributes/createValue', { table: this.table, attribute })
@@ -237,8 +247,7 @@ export default class extends Vue {
       component: ReferenceAttributeForm,
       props: {
         table: this.table,
-        // TODO: Handle source not loaded
-        source: this.source.data,
+        source: this.source,
         tables: this.tables,
         sources: this.sources,
         save: async (attribute: ReferenceAttributeFormData) => {
