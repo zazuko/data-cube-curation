@@ -1,8 +1,10 @@
 import { TypedClownfaceEntity } from '../TypedClownfaceEntity'
+import { Project } from '../'
 
 export interface Table extends TypedClownfaceEntity {
   readonly columns: Column[];
   readonly attributes: Attribute[];
+  readonly project: Project;
 }
 
 export interface DimensionTable extends Table {

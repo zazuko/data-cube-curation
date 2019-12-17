@@ -5,6 +5,8 @@ import TypedClownfaceEntity from '../TypedClownfaceEntity'
 import { literal, namespace, property } from '../decorators'
 import { Constructor, factory } from '../TypedEntityFactory'
 import './Attribute'
+import { ProjectMixin } from '../Project'
+import * as DataCube from '../'
 import Clownface = require('clownface/lib/Clownface')
 
 @namespace(dataCube)
@@ -21,6 +23,9 @@ export class BaseTable extends TypedClownfaceEntity implements Table.Table {
 
   @property({ path: [ dataCube.source, dataCube.column ], array: true })
   public readonly columns: Table.Column[]
+
+  @property({ path: dataCube.project, as: [ ProjectMixin ] })
+  public readonly project: DataCube.Project
 
   public get attributes () {
     return this.in(dataCube.table)

@@ -32,13 +32,22 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attrib
   return csvwColumn
 }
 
-export function buildCsvw (tableDataset: any, tableId: string) {
-  const table = new BaseTable(tableDataset, tableId)
-  const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${tableId}/csvw`) })
+export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | object, tableId?: string) {
+  let table: Table.Table | Table.DimensionTable
+  if (!('id' in tableDataset)) {
+    table = new BaseTable(tableDataset, tableId)
+  } else {
+    table = tableDataset
+  }
+  const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
   csvwGraph.addDialect()
 
   const doneAttributes: string[] = []
+
+  if ('identifierTemplate' in table) {
+    csvwGraph.tableSchema.aboutUrl = table.identifierTemplate
+  }
 
   csvwGraph.tableSchema.columns = table.columns
     .reduce(function matchColumnsToAttributes (previousColumns, column) {
@@ -58,5 +67,5 @@ export function buildCsvw (tableDataset: any, tableId: string) {
       return [ ...previousColumns, ...nextColumns ]
     }, [] as Csvw.Column[])
 
-  return csvwGraph.dataset
+  return csvwGraph
 }

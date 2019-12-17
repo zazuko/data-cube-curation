@@ -10,6 +10,7 @@ export interface Column {
 
 export interface TableSchema {
   columns: Column[];
+  aboutUrl: string;
 }
 
 export interface Mapping {

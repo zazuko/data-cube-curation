@@ -1,5 +1,12 @@
 import * as specGraphs from './csvwBuilder.spec-graphs'
 import { buildCsvw } from './csvwBuilder'
+import { DimensionTable } from '../read-model/Table'
+import { namedNode } from 'rdf-data-model'
+import { dataCube } from '../namespaces'
+
+type RecursivePartial<T> = {
+  [P in keyof T]?: RecursivePartial<T[P]>;
+};
 
 const { ids } = specGraphs
 
@@ -12,7 +19,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute', async () => {
@@ -23,7 +30,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps multiple attributes mapping same column', async () => {
@@ -34,7 +41,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute with datatype', async () => {
@@ -45,7 +52,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps attribute with language tag', async () => {
@@ -56,7 +63,7 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, ids.tableId)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
   })
 
   it('maps reference attribute', async () => {
@@ -67,6 +74,30 @@ describe('csvwBuilder', () => {
     const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
 
     // then
-    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+  })
+
+  describe('mapping for DimensionTable', () => {
+    it('uses identifierTemplate for aboutUrl', async () => {
+      // given
+      const table: RecursivePartial<DimensionTable> = {
+        id: namedNode('http://reference-attribute.test/fact-table'),
+        identifierTemplate: 'http://example.com/{foo}/{bar}',
+        columns: [],
+        attributes: [],
+        types: [
+          dataCube.DimensionTable,
+        ],
+        project: {
+          baseUri: 'http://example.com/tst-project',
+        },
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table)
+
+      // then
+      expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/{foo}/{bar}')
+    })
   })
 })
