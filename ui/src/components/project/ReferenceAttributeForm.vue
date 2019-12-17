@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Table, ResourceId, Source, ReferenceAttributeFormData } from '@/types'
+import { Table, ResourceId, Source, Column, ReferenceAttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 
 @Component({
@@ -64,6 +64,7 @@ export default class extends Vue {
   @Prop() readonly table: Table;
   @Prop() readonly source: Source;
   @Prop() readonly tables: Table[];
+  @Prop() readonly sources: Source[];
   @Prop() readonly save: (attribute: ReferenceAttributeFormData) => void;
 
   get title () {
@@ -105,11 +106,13 @@ export default class extends Vue {
   populateColumnMapping (table: Table | null) {
     if (!table) return
 
-    // TODO: try to auto-map by name
+    const referencedSource = this.sources.find((s) => s.id === table.sourceId)
+    if (!referencedSource) throw new Error(`Source ${table.sourceId} not found`)
+
     this.attribute.columnMapping = table.identifierColumns.map((column) => ({
       referencedColumnId: column.id,
       referencedColumnName: column.name,
-      sourceColumnId: ''
+      sourceColumnId: guessMappedColumn(column, referencedSource, this.source)
     }))
   }
 }
@@ -119,6 +122,15 @@ function emptyAttribute () {
     referencedTableId: '',
     predicateId: '',
     columnMapping: []
+  }
+}
+
+function guessMappedColumn (referencedColumn: Column, referencedSource: Source, tableSource: Source): ResourceId {
+  if (tableSource.id === referencedSource.id) {
+    return referencedColumn.id
+  } else {
+    const guess = tableSource.columns.find((c) => c.name === referencedColumn.name)
+    return guess ? guess.id : ''
   }
 }
 </script>

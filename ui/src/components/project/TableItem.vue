@@ -153,6 +153,7 @@ export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly table: Table
   @Prop() readonly tables: Table[]
+  @Prop() readonly sources: Source[]
 
   get attributes (): RemoteData<Attribute[]> {
     return this.$store.getters['attributes/forTable'](this.table.id)
@@ -236,6 +237,7 @@ export default class extends Vue {
         // TODO: Handle source not loaded
         source: this.source.data,
         tables: this.tables,
+        sources: this.sources,
         save: async (attribute: ReferenceAttributeFormData) => {
           const loading = this.$buefy.loading.open({})
           await this.$store.dispatch('attributes/createReference', { table: this.table, attribute })
