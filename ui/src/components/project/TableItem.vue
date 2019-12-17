@@ -61,8 +61,8 @@
                     <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
                     <td>
-                      <b-button v-if="attribute.actions.delete" icon="trash-can-outline" />
-                      <b-button v-if="attribute.actions.edit" icon="pencil" />
+                      <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
+                      <b-button v-if="attribute.actions.edit" icon-left="pencil" />
                     </td>
                   </tr>
                   <tr v-if="attributes.length < 1">
@@ -162,6 +162,21 @@ export default class extends Vue {
         }
       },
       hasModalCard: true
+    })
+  }
+
+  deleteAttribute (attribute: Attribute) {
+    this.$buefy.dialog.confirm({
+      title: attribute.actions.delete.title,
+      message: 'Are you sure you want to delete this attribute?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('attributes/delete', attribute)
+        loading.close()
+      }
     })
   }
 
