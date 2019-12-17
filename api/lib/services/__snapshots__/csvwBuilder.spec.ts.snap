@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`csvwBuilder includes unmapped source columns as suppressed 1`] = `
+exports[`csvwBuilder mapping for FactTable includes unmapped source columns as suppressed 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
@@ -15,7 +15,7 @@ _:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
-exports[`csvwBuilder maps attribute 1`] = `
+exports[`csvwBuilder mapping for FactTable maps attribute 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
@@ -30,7 +30,7 @@ _:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
-exports[`csvwBuilder maps attribute with datatype 1`] = `
+exports[`csvwBuilder mapping for FactTable maps attribute with datatype 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
@@ -46,7 +46,7 @@ _:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
-exports[`csvwBuilder maps attribute with language tag 1`] = `
+exports[`csvwBuilder mapping for FactTable maps attribute with language tag 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
@@ -62,7 +62,7 @@ _:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
-exports[`csvwBuilder maps multiple attributes mapping same column 1`] = `
+exports[`csvwBuilder mapping for FactTable maps multiple attributes mapping same column 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n5 .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
@@ -82,7 +82,7 @@ _:c14n5 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
-exports[`csvwBuilder maps reference attribute 1`] = `
+exports[`csvwBuilder mapping for FactTable maps reference attribute 1`] = `
 "<http://reference-attribute.test/fact-table/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://reference-attribute.test/fact-table/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n5 .
 <http://reference-attribute.test/fact-table/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
