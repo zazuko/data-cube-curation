@@ -237,7 +237,9 @@ async function loadResource<T extends HydraResource = HydraResource> (id: Resour
   return resource as T
 }
 
-async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
+async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation | null, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
+  if (!operation) throw new Error('Operation does not exist')
+
   const serializedData = data instanceof File ? data : JSON.stringify(data)
 
   const response = await operation.invoke(serializedData, headers)
@@ -253,7 +255,9 @@ async function invokeCreateOperation<T extends HydraResource = HydraResource> (o
   return resource as T
 }
 
-async function invokeDeleteOperation (operation: IOperation): Promise<void> {
+async function invokeDeleteOperation (operation: IOperation | null): Promise<void> {
+  if (!operation) throw new Error('Operation does not exist')
+
   const response = await operation.invoke('')
 
   if (response.xhr.status !== 204) {

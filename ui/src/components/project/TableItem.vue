@@ -134,6 +134,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, ValueAttributeFormData, ReferenceAttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
@@ -196,7 +197,7 @@ export default class extends Vue {
 
   deleteTable (table: Table) {
     this.$buefy.dialog.confirm({
-      title: this.table.actions.delete.title,
+      title: (this.table.actions.delete as IOperation).title,
       message: 'Are you sure you want to delete this table?',
       confirmText: 'Delete',
       type: 'is-danger',

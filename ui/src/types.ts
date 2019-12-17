@@ -1,11 +1,13 @@
 
-import { Collection, HydraResource } from 'alcaeus/types/Resources'
+import { Collection, HydraResource, IOperation } from 'alcaeus/types/Resources'
 
 export type ResourceId = string;
 
+export type Actions = Record<string, IOperation | null>;
+
 export interface Project extends HydraResource {
   id: ResourceId;
-  actions: Record<string, any>;
+  actions: Actions;
   name: string | null;
 }
 
@@ -24,12 +26,13 @@ export interface Source extends HydraResource {
   id: ResourceId;
   name: string;
   columns: Column[];
+  actions: Actions;
 }
 
 export interface Column extends HydraResource {
   id: ResourceId;
   name: string;
-  actions: Record<string, any>;
+  actions: Actions;
 }
 
 export type TableType = 'fact' | 'dimension'
@@ -45,7 +48,7 @@ export interface Table extends HydraResource {
   attributesCollection: Collection | null;
   mapping: any;
   preview: any;
-  actions: Record<string, any>;
+  actions: Actions;
 }
 
 export interface TableFormData {
@@ -61,6 +64,7 @@ export interface Attribute extends HydraResource {
   id: ResourceId;
   predicateId: ResourceId;
   tableId: ResourceId;
+  actions: Actions;
 }
 
 export interface ValueAttribute extends Attribute {
