@@ -94,12 +94,14 @@
                     <td><TableTag :table="getTable(attribute.referencedTableId)" /></td>
                     <td>{{ attribute.predicateId }}</td>
                     <td>
-                      <!-- <ul v-if="attribute.columnMapping.length > 0">
+                       <ul v-if="attribute.columnMapping.length > 0">
                         <li v-for="(mapping, index) in attribute.columnMapping" :key="index">
-                          {{ mapping.referencesColumn.id }} / {{ mapping.sourceColumn.id }}
+                          {{ mapping['https://rdf-cube-curation.described.at/sourceColumn']['http://schema.org/name'] }}
+                          >
+                          {{ mapping['https://rdf-cube-curation.described.at/referencedColumn']['http://schema.org/name']  }}
                         </li>
                       </ul>
-                      <span v-else>N/A</span> -->
+                      <span v-else>N/A</span>
                     </td>
                     <td>
                       <b-button v-if="attribute.actions.delete" icon="trash-can-outline" />
