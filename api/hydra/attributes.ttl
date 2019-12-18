@@ -1,0 +1,125 @@
+@prefix api:       <https://rdf-cube-curation.described.at/api/> .
+@prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
+@prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix code:      <https://code.described.at/> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:    <http://schema.org/> .
+
+dataCube:Attribute
+  a hydra:Class ;
+  hydra:supportedOperation api:GetAttribute, _:DeleteAttribute ;
+  hydra:supportedProperty [ hydra:property rdf:predicate ;
+                            hydra:title    "Predicate URI for mapped value" ;
+                            hydra:required true ], [ hydra:property  dataCube:table ;
+                                                     hydra:title     "Table containing this attribute" ;
+                                                     hydra:writeable false ] .
+
+dataCube:ValueAttribute
+  rdfs:subclassOf dataCube:Attribute ;
+  hydra:supportedProperty [ hydra:property dataCube:column ;
+                            hydra:title    "Column to be transformed by this attribute" ;
+                            hydra:required true ], [ hydra:property    rdf:type ;
+                                                     hydra:title       "Datatype URI for mapped value" ;
+                                                     hydra:description "Cannot be used together with language tag" ],
+[ hydra:property    dataCube:language ;
+  hydra:title       "Language of the mapped values" ;
+  hydra:description "Cannot be used together with datatype" ] .
+
+dataCube:ReferenceAttribute
+  rdfs:subclassOf dataCube:Attribute ;
+  hydra:supportedProperty [ hydra:property dataCube:referencedTable ;
+                            hydra:title    "The referenced table" ;
+                            hydra:required true ], [ hydra:property dataCube:columnMapping ;
+                                                     hydra:title    "Mapping between table columns" ;
+                                                     hydra:description
+                                                                    "Mapping is required for each column used in the referenced table's identifier URI Template" ; ]
+.
+
+dataCube:referencedTable
+  a          hydra:Link ;
+  rdfs:range dataCube:DimensionTable ;
+.
+
+dataCube:columnMapping
+  a          rdf:Property ;
+  rdfs:range [ a hydra:Class ;
+               hydra:title "Mapping between table columns" ;
+               hydra:supportedProperty [ hydra:property dataCube:sourceColumn ;
+                                         hydra:title    "Identifier column in source table" ;
+                                         hydra:required true ; ], [ hydra:property dataCube:referencedColumn ;
+                                                                    hydra:title
+                                                                                   "Identifier column in referenced table" ;
+                                                                    hydra:required true ; ] ]
+.
+
+dataCube:sourceColumn
+  a          hydra:Link ;
+  rdfs:range dataCube:Column ;
+.
+
+dataCube:referencedColumn
+  a          hydra:Link ;
+  rdfs:range dataCube:Column ;
+.
+
+dataCube:column
+  a hydra:Link .
+
+dataCube:table
+  a hydra:Link .
+
+api:AttributeCollection
+  a hydra:Class .
+
+api:GetTableAttributes
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#getAttributes> ] ) ] .
+
+_:PostValueAttribute
+  a                  hydra:SupportedOperation, hydra-box:View, api:AddValueAttribute ;
+  hydra:method       "POST" ;
+  hydra:title        "Creates a table attribute from column" ;
+  hydra:description  "Such an attribute will always map a single value into a literal" ;
+  hydra:expects      dataCube:ValueAttribute ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#addAttributeHandler> ] ) ] .
+
+_:PostReferenceAttribute
+  a                  hydra:SupportedOperation, hydra-box:View, api:AddReferenceAttribute ;
+  hydra:method       "POST" ;
+  hydra:title        "Creates a reference attribute" ;
+  hydra:description  "Creates a table attribute referencing a dimension table" ;
+  hydra:expects      dataCube:ReferenceAttribute ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/table#addAttributeHandler> ] ) ] ;
+.
+
+api:GetAttribute
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Retrieves a table's attribute" ;
+  hydra:returns      dataCube:Attribute ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/attribute#getHandler> ] ) ] .
+
+_:DeleteAttribute
+  a                  hydra:SupportedOperation, hydra-box:View, api:DeleteAttribute, schema:DeleteAction ;
+  hydra:method       "DELETE" ;
+  hydra:title        "Delete attribute" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/attribute/delete#handler> ] ) ] ;
+.
+
+api:attributes
+  a                        hydra:Link ;
+  rdfs:range               api:AttributeCollection ;
+  hydra:supportedOperation _:PostValueAttribute, _:PostReferenceAttribute, api:GetTableAttributes .

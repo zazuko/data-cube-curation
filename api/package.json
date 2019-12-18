@@ -4,7 +4,7 @@
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --ignore test --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts",
+    "start": "nodemon --watch hydra --watch lib --ext ts,ttl,js,json --ignore **/*.spec.ts --ignore **/*.spec-graphs.ts --exec node --inspect=0.0.0.0:5679 -r ts-node/register --inspect index.ts",
     "test": "jest",
     "precommit": "lint-staged",
     "build": "tsc -p tsconfig.json; cp -r hydra dist"
@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
+    "@fcostarodrigo/walk": "^4.0.2",
     "@tpluscode/fun-ddr": "^0.5.2",
     "@tpluscode/fun-ddr-sparql-graph-repository": "^0.2.9",
     "@zazuko/rdf-vocabularies": "^2019.9.24",
