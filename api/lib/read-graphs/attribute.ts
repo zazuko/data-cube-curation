@@ -63,6 +63,8 @@ export async function getTableAttributes (tableId: string) {
         ?attribute dataCube:table <${tableId}> .
         ?attribute a dataCube:Attribute .
         ?attribute ?p ?o .
+
+        FILTER (?p != dataCube:columnMapping )
       }`)
     .where(`{
       SELECT (COUNT(?attribute) as ?count) WHERE {
@@ -88,6 +90,28 @@ export async function getTableAttributes (tableId: string) {
       ] `)
     .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
     .prefixes({ hydra, dataCube, rdf, api })
+    .execute(getClient()))
+
+  await collection.import(await construct()
+    .graph(`
+      ?attribute dataCube:columnMapping [
+        dataCube:sourceColumn ?sourceColumn ;
+        dataCube:referencedColumn ?referencedColumn ;
+      ] .
+
+      ?sourceColumn schema:name ?sourceName .
+      ?referencedColumn schema:name ?referencedName .`)
+    .where(`
+      ?attribute dataCube:table <${tableId}> .
+      ?attribute dataCube:columnMapping [
+        dataCube:sourceColumn ?sourceColumn ;
+        dataCube:referencedColumn ?referencedColumn ;
+      ] .
+
+      ?sourceColumn schema:name ?sourceName .
+      ?referencedColumn schema:name ?referencedName .
+    `)
+    .prefixes({ dataCube, schema })
     .execute(getClient()))
 
   return collection

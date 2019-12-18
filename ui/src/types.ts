@@ -1,12 +1,16 @@
 
-import { Collection, HydraResource } from 'alcaeus/types/Resources'
+import { Collection, HydraResource, IOperation } from 'alcaeus/types/Resources'
 
 export type ResourceId = string;
 
+export type Actions = Record<string, IOperation | null>;
+
 export interface Project extends HydraResource {
   id: ResourceId;
-  actions: Record<string, any>;
-  name: string | null;
+  actions: Actions;
+  name: string;
+  tablesCollection: Collection | null;
+  sourcesCollection: Collection | null;
 }
 
 export interface ProjectFormData {
@@ -25,13 +29,14 @@ export interface Source extends HydraResource {
   name: string;
   columns: Column[];
   projectId: ResourceId;
-  actions: Record<string, any>;
+  actions: Actions;
+  sampleCollection: Collection | null;
 }
 
 export interface Column extends HydraResource {
   id: ResourceId;
   name: string;
-  actions: Record<string, any>;
+  actions: Actions;
 }
 
 export type TableType = 'fact' | 'dimension'
@@ -43,10 +48,11 @@ export interface Table extends HydraResource {
   color: string;
   sourceId: ResourceId;
   identifierTemplate: string | null;
+  identifierColumns: Column[];
   attributesCollection: Collection | null;
   mapping: any;
   preview: any;
-  actions: Record<string, any>;
+  actions: Actions;
 }
 
 export interface TableFormData {
@@ -61,19 +67,41 @@ export interface TableFormData {
 export interface Attribute extends HydraResource {
   id: ResourceId;
   predicateId: ResourceId;
+  tableId: ResourceId;
+  actions: Actions;
+}
+
+export interface ValueAttribute extends Attribute {
   columnId: ResourceId;
   dataTypeId: ResourceId | null;
   language: string | null;
   tableId: ResourceId;
-  actions: Record<string, any>;
+  actions: Actions;
 }
 
-export interface AttributeFormData {
+export interface ReferenceAttribute extends Attribute {
+  referencedTableId: ResourceId;
+  columnMapping: ReferenceColumnMapping[];
+}
+
+export interface ReferenceColumnMapping {
+  sourceColumnId: ResourceId,
+  referencedColumnId: ResourceId
+}
+
+export interface ValueAttributeFormData {
   id?: ResourceId,
   columnId: ResourceId,
   predicateId: ResourceId,
   dataTypeId: string,
   language: string
+}
+
+export interface ReferenceAttributeFormData {
+  id?: ResourceId,
+  referencedTableId: ResourceId,
+  predicateId: ResourceId,
+  columnMapping: ReferenceColumnMapping[]
 }
 
 export interface ErrorMessage {

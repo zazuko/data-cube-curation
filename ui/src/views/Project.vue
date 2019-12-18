@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { RemoteData, ResourceId } from '../types'
+import { RemoteData, ResourceId, Project } from '@/types'
 import Loader from '../components/Loader.vue'
 
 @Component({
@@ -38,7 +38,7 @@ export default class ProjectView extends Vue {
     return this.$route.params.id
   }
 
-  get project (): any {
+  get project (): RemoteData<Project> {
     return this.$store.getters['projects/one'](this.projectId)
   }
 
