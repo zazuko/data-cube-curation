@@ -13,7 +13,7 @@ const { ids } = specGraphs
 describe('csvwBuilder', () => {
   describe('mapping for FactTable', () => {
     it('includes unmapped source columns as suppressed', async () => {
-    // given
+      // given
       const dataset = await specGraphs.unmappedColumnGraph()
 
       // when
@@ -24,7 +24,7 @@ describe('csvwBuilder', () => {
     })
 
     it('maps attribute', async () => {
-    // given
+      // given
       const dataset = await specGraphs.mappedColumnGraph()
 
       // when
@@ -35,7 +35,7 @@ describe('csvwBuilder', () => {
     })
 
     it('maps multiple attributes mapping same column', async () => {
-    // given
+      // given
       const dataset = await specGraphs.multipleMappedColumnsGraph()
 
       // when
@@ -46,7 +46,7 @@ describe('csvwBuilder', () => {
     })
 
     it('maps attribute with datatype', async () => {
-    // given
+      // given
       const dataset = await specGraphs.columnMappedWithDatatypeGraph()
 
       // when
@@ -57,7 +57,7 @@ describe('csvwBuilder', () => {
     })
 
     it('maps attribute with language tag', async () => {
-    // given
+      // given
       const dataset = await specGraphs.columnMappedWithLanguageGraph()
 
       // when
@@ -68,7 +68,7 @@ describe('csvwBuilder', () => {
     })
 
     it('maps reference attribute', async () => {
-    // given
+      // given
       const dataset = await specGraphs.referenceAttributeGraph()
 
       // when
