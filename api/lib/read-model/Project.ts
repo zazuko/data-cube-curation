@@ -1,22 +1,20 @@
-import { Constructor, factory } from './TypedEntityFactory'
-import { literal } from './decorators'
+import { Constructor, factory, property, RdfResource } from '@tpluscode/rdfine'
 import { dataCube, schema } from '../namespaces'
-import TypedClownfaceEntity from './TypedClownfaceEntity'
 import * as DataCube from '.'
 
 export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
   class Project extends Base implements DataCube.Project {
-    @literal({ path: schema.name })
+    @property.literal({ path: schema.name })
     public name: string
 
-    @literal({ path: dataCube.baseUri })
+    @property.literal({ path: dataCube.baseUri })
     public baseUri: string
   }
 
   return Project
 }
 
-ProjectMixin.shouldApply = (node: TypedClownfaceEntity) => {
+ProjectMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Project)
 }
 

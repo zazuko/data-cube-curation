@@ -1,4 +1,5 @@
 import $rdf from 'rdf-ext'
+import { Dataset } from 'rdf-js'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
@@ -34,10 +35,13 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attrib
   return csvwColumn
 }
 
-export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | object, tableId?: string) {
+export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | Dataset, tableId?: string) {
   let table: Table.Table | Table.DimensionTable
   if (!('id' in tableDataset)) {
-    table = new BaseTable(tableDataset, tableId)
+    table = new BaseTable({
+      dataset: tableDataset,
+      term: $rdf.namedNode(tableId),
+    })
   } else {
     table = tableDataset
   }

@@ -1,19 +1,19 @@
-import { TypedClownfaceEntity } from '../../read-model/TypedClownfaceEntity'
+import { RdfResource } from '@tpluscode/rdfine'
 
-export interface Column {
+export interface Column extends RdfResource {
   suppressed: boolean;
   propertyUrl: string;
   language: string;
-  datatype: TypedClownfaceEntity;
+  datatype: RdfResource;
   valueUrl: string;
 }
 
-export interface TableSchema {
+export interface TableSchema extends RdfResource {
   columns: Column[];
   aboutUrl: string;
 }
 
-export interface Mapping {
+export interface Mapping extends RdfResource {
   newColumn(col: { name: string }): Column;
   addDialect(): void;
   readonly tableSchema: TableSchema;

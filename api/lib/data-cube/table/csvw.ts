@@ -8,5 +8,6 @@ export const get = asyncMiddleware(async (req: express.Request, res: express.Res
   const tableId = await getTableId(req.resourceId)
   const tableDataset = await getTableAndSource(req.resourceId)
 
-  res.graph(await buildCsvw(tableDataset, tableId))
+  const csvw = await buildCsvw(tableDataset, tableId)
+  res.graph(csvw._node.dataset)
 })

@@ -1,28 +1,26 @@
+import { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
 import { csvw } from '../../namespaces'
 import * as Csvw from './index'
-import TypedClownfaceEntity from '../../read-model/TypedClownfaceEntity'
-import { namespace, literal, property } from '../../read-model/decorators'
-import { Constructor } from '../../read-model/TypedEntityFactory'
 
 export function ColumnMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(csvw)
   abstract class Column extends Base implements Csvw.Column {
-    @literal()
+    @property.literal()
     public propertyUrl: string;
 
-    @literal({ path: csvw.lang })
+    @property.literal({ path: csvw.lang })
     public language: string;
 
-    @property()
-    public datatype: TypedClownfaceEntity;
+    @property.resource()
+    public datatype: RdfResource;
 
-    @property()
+    @property.literal()
     public valueUrl: string;
 
-    @literal()
+    @property.literal()
     public title: string;
 
-    @literal({ path: csvw.suppressOutput, type: Boolean })
+    @property.literal({ path: csvw.suppressOutput, type: Boolean })
     public suppressed: boolean;
   }
 

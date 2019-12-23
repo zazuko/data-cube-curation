@@ -1,56 +1,69 @@
 declare module 'clownface/lib/Clownface' {
-  import { Term, BlankNode, NamedNode, Literal } from 'rdf-js'
+  import { BlankNode, DatasetCore, Literal, NamedNode, Term } from 'rdf-js'
+  import {
+    Clownface as ClownfaceContract,
+    ClownfaceInit,
+    AddCallback,
+    NodeOptions,
+    SafeClownface,
+    SingleOrArray,
+    SingleOrArrayOfTerms,
+    SingleOrArrayOfTermsOrLiterals,
+    WithValue,
+    WithTerm,
+  } from 'clownface'
 
-  type TermOrClownface = Clownface | Term;
-  type TermOrLiteral = TermOrClownface | string | number | boolean;
+  class Clownface<D extends DatasetCore = DatasetCore, T extends Term = Term> implements ClownfaceContract<D, T> {
+    public constructor(options: ClownfaceInit & Partial<WithTerm> & Partial<WithValue>);
 
-  type AddCallback<X extends Term> = (added: Clownface<X>) => void;
-  type SingleOrArray<T> = T | T[]
+    public readonly term: T | undefined;
+    public readonly terms: T[];
+    public readonly value: string | undefined;
+    public readonly values: string[];
+    public readonly dataset: D;
+    public readonly datasets: D[];
+    public readonly _context: any;
 
-  type SingleOrArrayOfTerms = SingleOrArray<TermOrClownface>
-  type SingleOrArrayOfTermsOrLiterals = SingleOrArray<TermOrLiteral>
+    public list(): Iterator<Term>;
 
-  interface Clownface<T extends Term = Term> {
-    term: T | null;
-    terms: T[];
-    value: string | null;
-    values: string[];
-    dataset: any;
-    datasets: any[];
-    list: Iterator<Term>;
-    toArray(): Clownface<T>[];
-    filter(cb: (quad: Clownface<T>) => boolean): Clownface<T>;
-    forEach(cb: (quad: Clownface<T>) => void): void;
-    map<X>(cb: (quad: Clownface<T>) => X): X[];
-    toString(): string;
-    node<X extends Term = Term> (values, { type, datatype, language }?): Clownface<X>;
-    blankNode (values?): Clownface<BlankNode>;
-    literal (values, languageOrDatatype?: string): Clownface<Literal>;
-    namedNode (values): Clownface<NamedNode>;
-    in<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    out<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
+    public toArray(): Clownface<D, T>[];
 
-    has<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    has<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objects: SingleOrArrayOfTermsOrLiterals): Clownface<X>;
+    public filter(cb: (quad: Clownface<D, T>) => boolean): Clownface<D, T>;
+    public forEach(cb: (quad: Clownface<D, T>) => void): void;
 
-    addIn<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    addIn<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objectsOrCallback: SingleOrArrayOfTermsOrLiterals | AddCallback<X>): Clownface<X>;
-    addIn<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objects: SingleOrArrayOfTermsOrLiterals, callback: AddCallback<X>): Clownface<X>;
+    public toString(): string;
 
-    addOut<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    addOut<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objectsOrCallback: SingleOrArrayOfTermsOrLiterals | AddCallback<X>): Clownface<X>;
-    addOut<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objects: SingleOrArrayOfTermsOrLiterals, callback: AddCallback<X>): Clownface<X>;
+    public map<X>(cb: (quad: Clownface<D, T>, index: number) => X): X[];
 
-    addList<X extends Term = Term> (predicates: SingleOrArrayOfTerms, objects?, callback?: AddCallback<X>): Clownface<X>;
+    public node<X extends Term = Term>(values: SingleOrArray<boolean | string | number | Term | null>, options?: NodeOptions): SafeClownface<D, X>;
 
-    deleteIn<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    deleteOut<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-    deleteList<X extends Term = Term> (predicates: SingleOrArrayOfTerms): Clownface<X>;
-  }
+    public blankNode(values?: SingleOrArray<string>): SafeClownface<D, BlankNode>;
 
-  class Clownface<T extends Term = Term> implements Clownface<T> {
-    public constructor(o: { term?: Term; dataset?: any; _context?: unknown });
-    public readonly _context: unknown;
+    public literal(values: SingleOrArray<boolean | string | number | Term | null>, languageOrDatatype?: string | NamedNode): SafeClownface<D, Literal>;
+
+    public namedNode(values: SingleOrArray<string | NamedNode>): SafeClownface<D, NamedNode>;
+
+    public in<X extends Term = Term>(predicates: SingleOrArrayOfTerms): SafeClownface<D, X>;
+
+    public out<X extends Term = Term>(predicates: SingleOrArrayOfTerms): SafeClownface<D, X>;
+
+    public has<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objects?: SingleOrArrayOfTermsOrLiterals): SafeClownface<D, X>;
+
+    public addIn<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objectsOrCallback?: SingleOrArrayOfTermsOrLiterals | AddCallback<D, X>): SafeClownface<D, X>;
+    // eslint-disable-next-line no-dupe-class-members
+    public addIn<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objects: SingleOrArrayOfTermsOrLiterals, callback: AddCallback<D, X>): SafeClownface<D, X>;
+
+    public addOut<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objectsOrCallback?: SingleOrArrayOfTermsOrLiterals | AddCallback<D, X>): SafeClownface<D, X>;
+    // eslint-disable-next-line no-dupe-class-members
+    public addOut<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objects: SingleOrArrayOfTermsOrLiterals, callback: AddCallback<D, X>): SafeClownface<D, X>;
+
+    public addList<X extends Term = Term>(predicates: SingleOrArrayOfTerms, objects?: SingleOrArrayOfTermsOrLiterals, callback?: AddCallback<D, X>): SafeClownface<D, X>;
+
+    public deleteIn<X extends Term = Term>(predicates?: SingleOrArrayOfTerms): SafeClownface<D, X>;
+
+    public deleteOut<X extends Term = Term>(predicates?: SingleOrArrayOfTerms): SafeClownface<D, X>;
+
+    public deleteList<X extends Term = Term>(predicates: SingleOrArrayOfTerms): SafeClownface<D, X>;
   }
 
   export = Clownface

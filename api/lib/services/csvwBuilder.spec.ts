@@ -20,7 +20,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, ids.tableId)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute', async () => {
@@ -31,7 +31,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, ids.tableId)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps multiple attributes mapping same column', async () => {
@@ -42,7 +42,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, ids.tableId)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with datatype', async () => {
@@ -53,7 +53,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, ids.tableId)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with language tag', async () => {
@@ -64,7 +64,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, ids.tableId)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps reference attribute', async () => {
@@ -75,7 +75,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
   })
 
@@ -96,7 +96,7 @@ describe('csvwBuilder', () => {
       }
 
       // when
-      const csvwDataset = buildCsvw(table)
+      const csvwDataset = buildCsvw(table as any)
 
       // then
       expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/{foo}/{bar}')
@@ -118,7 +118,7 @@ describe('csvwBuilder', () => {
       }
 
       // when
-      const csvwDataset = buildCsvw(table)
+      const csvwDataset = buildCsvw(table as any)
 
       // then
       expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/tst-project/table/{foo}/{bar}')
