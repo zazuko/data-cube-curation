@@ -11,7 +11,7 @@ interface FileStorage {
 
 let storage: FileStorage
 
-if (env.STORAGE === 's3') {
+if (env.has.STORAGE && env.STORAGE === 's3') {
   storage = awsStorage
 } else {
   storage = localStorage

@@ -1,7 +1,7 @@
 import env from '../env'
 
 let authHeader
-if (env.SPARQL_ENDPOINT_USERNAME && env.SPARQL_ENDPOINT_PASSWORD) {
+if (env.has.SPARQL_ENDPOINT_USERNAME && env.has.SPARQL_ENDPOINT_PASSWORD) {
   const user = env.SPARQL_ENDPOINT_USERNAME
   const password = env.SPARQL_ENDPOINT_PASSWORD
 
