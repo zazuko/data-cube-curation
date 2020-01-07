@@ -8,7 +8,7 @@ export { addDimensionTable } from './createDimensionTable'
 export interface Project extends Entity {
   name: string;
   archived: 'true' | 'false';
-  factTableSource?: string;
+  factTableSource?: string | null;
   baseUri: string;
 }
 

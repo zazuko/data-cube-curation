@@ -35,17 +35,17 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function delet
     }))
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function removeSource (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
-    return deleteInsert(`
+    await deleteInsert(`
       ?source ?p0 ?o0 .
       ?column ?p1 ?o1 .`
     )
       .where(`
         ?source ?p0 ?o0 .
-        ?source dataCube:column ?column . 
+        ?source dataCube:column ?column .
         ?column ?p1 ?o1 .
-  
+
         FILTER ( ?source = <${ev.id}> )`)
       .prefixes({
         dataCube,

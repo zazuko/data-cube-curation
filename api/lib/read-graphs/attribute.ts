@@ -28,9 +28,9 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
     .execute(getClient())
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', function deleteAttributeReadModel (ev) {
+handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
   if (ev.data.types.includes('Attribute')) {
-    return deleteInsert(`
+    await deleteInsert(`
       ?attribute ?p0 ?o0 .`
     )
       .where(`

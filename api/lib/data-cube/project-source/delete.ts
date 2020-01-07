@@ -8,9 +8,9 @@ import { DomainError } from '@tpluscode/fun-ddr'
 export const handler = deleteAggregateHandler({
   repository: sources,
   async beforeDelete (source: AggregateRoot<Source>) {
-    const sourceId = (await source.state)['@id']
-    if (await isReferenced(sourceId)) {
-      throw new DomainError(sourceId, 'Cannot delete source', 'It is being used')
+    const state = await source.state
+    if (state && await isReferenced(state['@id'])) {
+      throw new DomainError(state['@id'], 'Cannot delete source', 'It is being used')
     }
 
     return source

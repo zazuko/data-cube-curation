@@ -10,10 +10,12 @@ export function referenceAttributeToCsvwColumn (attribute: Clownface, csvwColumn
   const identifierTemplate = referencedTable.out<Literal>(dataCube.identifierTemplate)
   const columnNameMap = attribute.out<NamedNode>(dataCube.columnMapping).toArray()
     .reduce((map, mapping) => {
-      const from = mapping.out(dataCube.sourceColumn).out(schema.name).value
-      const to = mapping.out(dataCube.referencedColumn).out(schema.name).value
+      const from = mapping.out(dataCube.sourceColumn).out(schema('name')).value
+      const to = mapping.out(dataCube.referencedColumn).out(schema('name')).value
 
-      map.set(to, from)
+      if (to && from) {
+        map.set(to, from)
+      }
 
       return map
     }, new Map<string, string>())

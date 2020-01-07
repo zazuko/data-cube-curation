@@ -1,6 +1,6 @@
 import uuid from 'uuid'
 import cf from 'clownface'
-import { NamedNode } from 'rdf-js'
+import { DatasetCore, NamedNode } from 'rdf-js'
 import { factory } from '@tpluscode/fun-ddr'
 import { Table } from './index'
 import { ReferenceAttribute } from '../attribute'
@@ -43,11 +43,11 @@ function validateColumns (columnsDataset: any, columnMappings: ColumnMapping[]) 
   }
 }
 
-async function validateSourceColumns (columnsDataset: any, columnMappings: ColumnMapping[]) {
+async function validateSourceColumns (columnsDataset: DatasetCore, columnMappings: ColumnMapping[]) {
   return validateColumns(columnsDataset, columnMappings)(mapping => mapping.sourceColumnId)
 }
 
-async function validateReferencedColumns (tableId: string, columnsDataset: any, columnMappings: ColumnMapping[]) {
+async function validateReferencedColumns (tableId: string, columnsDataset: DatasetCore, columnMappings: ColumnMapping[]) {
   const errors = await validateColumns(columnsDataset, columnMappings)(mapping => mapping.referencedColumnId)
 
   const template = await getIdentifierTemplate(tableId)

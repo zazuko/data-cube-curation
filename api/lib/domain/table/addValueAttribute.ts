@@ -36,7 +36,7 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     tableId: table['@id'],
     columnId: command.columnId,
     predicate: command.predicate,
-    datatype: command.datatype,
+    datatype: command.datatype || expand('xsd:string'),
     language: command.language,
   })
 

@@ -11,10 +11,11 @@ import frontend, { rootRedirect } from './frontend'
 import hydraMiddleware from './lib/hydra-box'
 import { log } from './lib/log'
 import { resourceId } from './lib/express'
+import env from './lib/env'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
-debug.enable(process.env.DEBUG)
+debug.enable(env.DEBUG)
 
 const requestLogger = log.extend('request')
 const requestErrorLogger = requestLogger.extend('error')
@@ -34,12 +35,12 @@ function logger (req: express.Request, res, next) {
 }
 
 Promise.resolve().then(async () => {
-  const baseUrl = `${process.env.BASE_URI}`
+  const baseUrl = `${env.BASE_URI}`
 
   const app = express()
 
   app.enable('trust proxy')
-  if (process.env.NODE_ENV === 'production') {
+  if (env.NODE_ENV === 'production') {
     app.use('/app', frontend)
     app.get('/', rootRedirect)
   }
@@ -58,7 +59,7 @@ Promise.resolve().then(async () => {
   })
   app.use(httpProblemMiddleware)
 
-  const port = process.env.PORT || url.parse(baseUrl).port
+  const port = env.PORT || url.parse(baseUrl).port
   app.listen(port, () => {
     log(`listening at port ${port}`)
   })

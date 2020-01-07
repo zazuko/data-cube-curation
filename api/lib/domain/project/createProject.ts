@@ -11,7 +11,7 @@ interface CreateCommand {
 
 export const createProject = initialize<Project, CreateCommand>(function (createCommand, emitter) {
   if (!createCommand.name || typeof createCommand.name !== 'string') {
-    throw new DomainError(null, 'Cannot create Project', 'Invalid name')
+    throw new DomainError('', 'Cannot create Project', 'Invalid name')
   }
 
   const baseUri = createCommand.baseUri || temporaryUri(createCommand.name)
