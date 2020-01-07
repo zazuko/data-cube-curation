@@ -21,7 +21,7 @@ api:GetDataCubeProjects
 
 api:CreateProject
   a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
-  hydra:title         "Design an RDF data cube" ;
+  hydra:title         "Create a new project" ;
   hydra:method        "POST" ;
   hydra:returns       dataCube:Project ;
   hydra:expects       dataCube:Project ;
@@ -34,7 +34,7 @@ api:CreateProject
 
 api:ReplaceProject
   a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction, schema:UpdateAction ;
-  hydra:title         "Design an RDF data cube" ;
+  hydra:title         "Edit project" ;
   hydra:method        "PUT" ;
   hydra:returns       dataCube:Project ;
   hydra:expects       dataCube:Project ;
