@@ -25,7 +25,7 @@ export async function extractColumns (sourceIdOrDataset: string | Dataset, templ
   const columns = cf({ dataset })
     .has(rdf.type, dataCube.Column)
   const columnIds = columnNames.reduce((identifiers, name) => {
-    const columnNameTerm = columns.has(schema.name, name).term as NamedNode
+    const columnNameTerm = columns.has(schema('name'), name).term as NamedNode
     if (!columnNameTerm) {
       columnsNotFound.push(name)
       return identifiers

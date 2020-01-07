@@ -17,7 +17,7 @@ function addDialect (csvwGraph: Clownface) {
 
 function createCsvwColumn (csvwGraph: Clownface, column: Clownface, attribute?: Clownface) {
   let csvwColumn = csvwGraph.blankNode()
-    .addOut(csvw.title, column.out(schema.name).value)
+    .addOut(csvw.title, column.out(schema('name')).value)
 
   if (!attribute) {
     return csvwColumn.addOut(csvw.suppressOutput, true)
