@@ -15,7 +15,9 @@ import env from './lib/env'
 
 dotenvExpand(dotenv.config())
 import('./lib/handlers')
-debug.enable(env.DEBUG)
+if (env.has.DEBUG) {
+  debug.enable(env.DEBUG)
+}
 
 const requestLogger = log.extend('request')
 const requestErrorLogger = requestLogger.extend('error')
