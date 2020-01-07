@@ -13,12 +13,14 @@ CONSTRUCT {
 
     ?project
         schema:name ?name ;
+        dataCube:baseUri ?baseUri ;
         a ?projectType .
 }
 WHERE {
     OPTIONAL { ?project a dataCube:Project . }
 
     OPTIONAL { ?project schema:name ?name . }
+    OPTIONAL { ?project dataCube:baseUri ?baseUri . }
     OPTIONAL { ?project a ?projectType . }
 
     {
