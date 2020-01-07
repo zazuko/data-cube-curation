@@ -1,8 +1,8 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
-import { getOperation } from './common'
+import { Project, ProjectFormData, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
+import { getOperation, findOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
@@ -81,6 +81,14 @@ class ProjectsClient {
     return entrypoint.get<Collection>(URI.API_PROJECTS)
   }
 
+  async actions () {
+    const projectsCollection = await this.projectsCollection()
+
+    return {
+      create: projectsCollection && findOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
+    }
+  }
+
   async list () {
     const projectsCollection = await this.projectsCollection()
 
@@ -90,18 +98,12 @@ class ProjectsClient {
     return loadedCollection.members
   }
 
-  async create ({ name, baseUri }: { name: string, baseUri: string }): Promise<Project> {
-    const projectsCollection = await this.projectsCollection()
-
-    if (!projectsCollection) throw new Error('No projects collection on entrypoint')
-
-    const operation = getOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
+  async save (operation: IOperation, project: ProjectFormData) {
     const data = {
-      '@type': URI.TYPE_PROJECT,
-      [URI.PROP_NAME]: name,
-      [URI.PROP_BASE_URI]: baseUri
+      [URI.PROP_NAME]: project.name,
+      [URI.PROP_BASE_URI]: project.baseUri
     }
-    return invokeCreateOperation<Project>(operation, data)
+    return invokeSaveOperation<Project>(operation, data)
   }
 
   async delete (project: Project): Promise<void> {
@@ -147,7 +149,7 @@ class ProjectsClient {
       [URI.PROP_SOURCE]: tableData.sourceId,
       [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate
     }
-    return invokeCreateOperation<Table>(operation, data)
+    return invokeSaveOperation<Table>(operation, data)
   }
 
   async createFactTable (project: Project, tableData: TableFormData): Promise<Table> {
@@ -157,7 +159,7 @@ class ProjectsClient {
       [URI.PROP_NAME]: tableData.name,
       [URI.PROP_SOURCE]: tableData.sourceId
     }
-    return invokeCreateOperation<Table>(operation, data)
+    return invokeSaveOperation<Table>(operation, data)
   }
 
   async deleteTable (table: Table): Promise<void> {
@@ -170,7 +172,7 @@ class ProjectsClient {
       'Content-Type': 'text/csv',
       'Content-Disposition': `attachment; filename="${file.name}"`
     }
-    return invokeCreateOperation<Source>(operation, file, headers)
+    return invokeSaveOperation<Source>(operation, file, headers)
   }
 
   async getSources (project: Project) {
@@ -217,7 +219,7 @@ class ProjectsClient {
       [URI.PROP_DATATYPE]: attributeData.dataTypeId,
       [URI.PROP_LANGUAGE]: attributeData.language
     }
-    return invokeCreateOperation<ValueAttribute>(operation, data)
+    return invokeSaveOperation<ValueAttribute>(operation, data)
   }
 
   async createReferenceAttribute (table: Table, attributeData: ReferenceAttributeFormData): Promise<ReferenceAttribute> {
@@ -231,7 +233,7 @@ class ProjectsClient {
         [URI.PROP_REFERENCED_COLUMN]: mapping.referencedColumnId
       }))
     }
-    return invokeCreateOperation<ReferenceAttribute>(operation, data)
+    return invokeSaveOperation<ReferenceAttribute>(operation, data)
   }
 
   async deleteAttribute (attribute: Attribute): Promise<void> {
@@ -254,13 +256,13 @@ async function loadResource<T extends HydraResource = HydraResource> (id: Resour
   return resource as T
 }
 
-async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation | null, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
+async function invokeSaveOperation<T extends HydraResource = HydraResource> (operation: IOperation | null, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
   if (!operation) throw new Error('Operation does not exist')
 
   const serializedData = data instanceof File ? data : JSON.stringify(data)
 
   const response = await operation.invoke(serializedData, headers)
-  if (response.xhr.status !== 201) {
+  if (![200, 201].includes(response.xhr.status)) {
     throw await APIError.fromResponse(response)
   }
 

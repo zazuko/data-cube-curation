@@ -3,8 +3,8 @@
     <h2 class="title is-2">My projects</h2>
 
     <div class="buttons">
-      <b-button type="is-primary" icon-left="plus" @click="addProject">
-        New project
+      <b-button type="is-primary" icon-left="plus" @click="showProjectForm(createProject)" v-if="createProject">
+        {{ createProject.title }}
       </b-button>
     </div>
 
@@ -18,7 +18,7 @@
           </b-table-column>
           <b-table-column field label="">
             <div class="buttons">
-              <b-button icon-left="pencil" v-if="props.row.actions.edit" />
+              <b-button icon-left="pencil" v-if="props.row.actions.edit" @click="showProjectForm(props.row.actions.edit, props.row)" />
               <b-button icon-left="trash-can-outline" v-if="props.row.actions.delete" @click="deleteProject(props.row)" />
             </div>
           </b-table-column>
@@ -38,6 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Project, RemoteData, ProjectFormData } from '@/types'
 import Loader from '../components/Loader.vue'
 import ProjectForm from '../components/project/ProjectForm.vue'
@@ -53,18 +54,24 @@ export default class Projects extends Vue {
     return this.$store.getters['projects/list']
   }
 
+  get createProject (): IOperation | null {
+    return this.$store.state.projects.actions.create
+  }
+
   created () {
     this.$store.dispatch('projects/loadAll')
   }
 
-  addProject () {
+  showProjectForm (operation: IOperation, project: Project | null = null) {
     const modal = this.$buefy.modal.open({
       parent: this,
       component: ProjectForm,
       props: {
-        save: async (project: ProjectFormData) => {
+        project: project,
+        operation: operation,
+        save: async (data: ProjectFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('projects/create', project)
+          await this.$store.dispatch('projects/save', { operation, data })
           loading.close()
           modal.close()
         }

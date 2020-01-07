@@ -1,14 +1,14 @@
 <template>
-  <form class="modal-card" @submit.prevent="save(project)">
+  <form class="modal-card" @submit.prevent="save(data)">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">{{ title }}</h3>
+      <h3 class="modal-card-title">{{ operation.title }}</h3>
     </header>
     <section class="modal-card-body">
       <b-field label="Name">
-        <b-input v-model="project.name" required />
+        <b-input v-model="data.name" required />
       </b-field>
       <b-field label="Base URI" message="Default prefix for tables and properties">
-        <b-input v-model="project.baseUri" placeholder="https://my-project.example.org" />
+        <b-input v-model="data.baseUri" placeholder="https://my-project.example.org" />
       </b-field>
     </section>
     <footer class="modal-card-foot">
@@ -20,19 +20,23 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Project, Table, Source, ProjectFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 
 @Component
 export default class extends Vue {
-  @Prop({ default: emptyProject }) project: ProjectFormData;
+  @Prop() operation: IOperation;
+  @Prop() project: Project | null;
   @Prop() save: (project: ProjectFormData) => void;
+  data: ProjectFormData = emptyProject();
 
-  get title () {
-    if (this.project.id) {
-      return 'Edit project'
-    } else {
-      return 'Create project'
+  mounted () {
+    if (this.project) {
+      this.data = {
+        name: this.project.name,
+        baseUri: this.project.baseUri
+      }
     }
   }
 }

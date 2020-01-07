@@ -1,17 +1,19 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { RootState } from '@/store/types'
-import { ResourceId, Project, RemoteData } from '@/types'
+import { Actions, ResourceId, Project, RemoteData } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
 import Remote from '@/remote'
 
 interface ProjectsState {
+  actions: Actions,
   projectsList: RemoteData<Project[]>;
   projects: Record<ResourceId, RemoteData<Project>>;
 }
 
 const initialState: ProjectsState = {
+  actions: {},
   projectsList: Remote.loading(),
   projects: {}
 }
@@ -33,6 +35,9 @@ const actions: ActionTree<ProjectsState, RootState> = {
     await handleAPIError(context, async () => {
       const projects = await client.projects.list()
       context.commit('storeAll', projects)
+
+      const actions = await client.projects.actions()
+      context.commit('storeActions', actions)
     })
   },
 
@@ -46,9 +51,9 @@ const actions: ActionTree<ProjectsState, RootState> = {
     })
   },
 
-  async create (context, { name, baseUri }) {
+  async save (context, { operation, data }) {
     await handleAPIError(context, async () => {
-      const project = await client.projects.create({ name, baseUri })
+      const project = await client.projects.save(operation, data)
       context.commit('storeOneInList', project)
     })
   },
@@ -74,9 +79,14 @@ const mutations: MutationTree<ProjectsState> = {
     state.projectsList = Remote.loaded(projects)
   },
 
+  storeActions (state, actions: Actions) {
+    state.actions = actions
+  },
+
   storeOneInList (state, project: Project) {
     if (!state.projectsList.data) throw new Error('Projects list not loaded')
 
+    state.projectsList.data = state.projectsList.data.filter((p) => p.id !== project.id)
     state.projectsList.data.push(project)
   },
 
