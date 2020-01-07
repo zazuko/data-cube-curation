@@ -1,10 +1,11 @@
 
 import { HydraResource, Collection } from 'alcaeus/types/Resources'
-import { findOperation, Constructor } from '../common'
+import { findOperation, Constructor, getOrThrow } from '../common'
+import { Project } from '@/types'
 import * as URI from '../uris'
 
 export function Mixin<B extends Constructor> (Base: B) {
-  return class extends Base {
+  return class extends Base implements Project {
     get actions () {
       return {
         delete: findOperation(this, URI.OP_PROJECT_DELETE),
@@ -15,15 +16,15 @@ export function Mixin<B extends Constructor> (Base: B) {
       }
     }
 
-    get name () {
-      return this.get(URI.PROP_NAME)
+    get name (): string {
+      return getOrThrow(this, URI.PROP_NAME)
     }
 
-    get sourcesCollection () {
+    get sourcesCollection (): Collection | null {
       return this.get<Collection>(URI.API_SOURCES)
     }
 
-    get tablesCollection () {
+    get tablesCollection (): Collection | null {
       return this.get<Collection>(URI.API_TABLES)
     }
   }

@@ -1,11 +1,11 @@
 import { HydraResource, Collection } from 'alcaeus/types/Resources'
-import { Source } from '@/types'
-import { Constructor, findOperation } from '../common'
+import { Source, Column, ResourceId, Table, TableType } from '@/types'
+import { Constructor, findOperation, getOrThrow } from '../common'
 import { getColor } from '../../colors'
 import * as URI from '../uris'
 
 export function Mixin<B extends Constructor> (Base: B) {
-  return class extends Base {
+  return class extends Base implements Table {
     attributes = [];
     color: string;
 
@@ -19,28 +19,36 @@ export function Mixin<B extends Constructor> (Base: B) {
       return {
         delete: findOperation(this, URI.TYPE_OP_DELETE),
         edit: findOperation(this, URI.OP_TABLE_EDIT),
-        createAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE)
+        createValueAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_VALUE),
+        createReferenceAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_REFERENCE)
       }
     }
 
-    get name () {
-      return this.get(URI.PROP_NAME)
+    get type (): TableType {
+      return this.isFact ? 'fact' : 'dimension'
     }
 
-    get identifierTemplate () {
+    get name (): string {
+      return getOrThrow(this, URI.PROP_NAME)
+    }
+
+    get identifierTemplate (): string | null {
       return this.get(URI.PROP_IDENTIFIER_TEMPLATE)
     }
 
-    get isFact () {
+    get identifierColumns (): Column[] {
+      return this.getArray<Column>(URI.PROP_IDENTIFIER_COLUMN)
+    }
+
+    get isFact (): boolean {
       return this.types.includes(URI.TYPE_FACT_TABLE)
     }
 
-    get sourceId () {
-      const source = this.get<Source>(URI.PROP_SOURCE)
-      return source ? source.id : null
+    get sourceId (): ResourceId {
+      return getOrThrow<Source>(this, URI.PROP_SOURCE).id
     }
 
-    get attributesCollection () {
+    get attributesCollection (): Collection | null {
       return this.get<Collection>(URI.API_ATTRIBUTES)
     }
 

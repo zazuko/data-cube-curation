@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Table, ResourceId, Source, AttributeFormData } from '@/types'
+import { Table, ResourceId, Source, ValueAttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 import LanguageInput from '../LanguageInput.vue'
 
@@ -45,10 +45,10 @@ import LanguageInput from '../LanguageInput.vue'
   }
 })
 export default class extends Vue {
-  @Prop({ default: emptyAttribute }) readonly attribute: AttributeFormData;
+  @Prop({ default: emptyAttribute }) readonly attribute: ValueAttributeFormData;
   @Prop() readonly table: Table;
   @Prop() readonly source: Source;
-  @Prop() readonly save: (attribute: AttributeFormData) => void;
+  @Prop() readonly save: (attribute: ValueAttributeFormData) => void;
 
   get title () {
     if (this.attribute.id) {

@@ -7,6 +7,9 @@
       <b-field label="Name">
         <b-input v-model="project.name" />
       </b-field>
+      <b-field label="Base URI">
+        <b-input v-model="project.baseUri" />
+      </b-field>
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -36,7 +39,8 @@ export default class extends Vue {
 
 function emptyProject (): ProjectFormData {
   return {
-    name: ''
+    name: '',
+    baseUri: ''
   }
 }
 </script>

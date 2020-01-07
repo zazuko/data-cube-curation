@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
-import { createProject, renameProject } from '../../domain/project'
+import { createProject, updateProject } from '../../domain/project'
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
@@ -12,12 +12,14 @@ import env from '../../env'
 export { getTables } from './getTables'
 
 export const create = asyncMiddleware(async (req: Request, res: Response) => {
-  const { projectName } = buildVariables(req, {
+  const { projectName, baseUri } = buildVariables(req, {
     projectName: expand('schema:name'),
+    baseUri: expand('dataCube:baseUri'),
   })
 
   const project = await createProject({
     name: projectName.value,
+    baseUri: baseUri.value,
   })
     .commit(projects)
 
@@ -27,22 +29,25 @@ export const create = asyncMiddleware(async (req: Request, res: Response) => {
 })
 
 export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response) => {
-  const { projectName } = buildVariables(req, {
+  const { projectName, baseUri } = buildVariables(req, {
     projectName: expand('schema:name'),
+    baseUri: expand('dataCube:baseUri'),
   })
   let aggregateRoot = await projects.load(req.resourceId)
 
-  const renameCommand = {
+  const updateCommand = {
     newName: projectName.value,
+    baseUri: baseUri.value,
   }
   const createCommand = {
     name: projectName.value,
     uriSlug: req.params.projectId,
+    baseUri: baseUri.value,
   }
 
   aggregateRoot = !(await aggregateRoot.state)
     ? createProject(createCommand)
-    : aggregateRoot.mutation(renameProject)(renameCommand)
+    : aggregateRoot.mutation(updateProject)(updateCommand)
 
   await aggregateRoot.commit(projects)
   res.graph(await getProject(req.resourceId))

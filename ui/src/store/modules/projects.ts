@@ -46,9 +46,9 @@ const actions: ActionTree<ProjectsState, RootState> = {
     })
   },
 
-  async create (context, name) {
+  async create (context, { name, baseUri }) {
     await handleAPIError(context, async () => {
-      const project = await client.projects.create(name)
+      const project = await client.projects.create({ name, baseUri })
       context.commit('storeOneInList', project)
     })
   },
