@@ -1,11 +1,12 @@
 import uuid from 'uuid'
 import { DomainError, initialize } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from './events'
-import { Project } from './index'
+import { Project, temporaryUri } from './index'
 
 interface CreateCommand {
   uriSlug?: string;
   name: string;
+  baseUri?: string;
 }
 
 export const createProject = initialize<Project, CreateCommand>(function (createCommand, emitter) {
@@ -13,8 +14,10 @@ export const createProject = initialize<Project, CreateCommand>(function (create
     throw new DomainError(null, 'Cannot create Project', 'Invalid name')
   }
 
+  const baseUri = createCommand.baseUri || temporaryUri(createCommand.name)
   emitter.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
     name: createCommand.name,
+    baseUri,
   })
 
   return {
@@ -22,5 +25,6 @@ export const createProject = initialize<Project, CreateCommand>(function (create
     '@type': 'Project',
     name: createCommand.name,
     archived: 'false',
+    baseUri,
   }
 })

@@ -1,0 +1,64 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+
+With Class api:Entrypoint {
+    Expect Property api:projects {
+        Expect Operation api:CreateProject
+    }
+}
+
+With Operation api:CreateProject {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+
+        <> schema:name "To be rebased"; dataCube:baseUri "http://tempuri.com/" .
+        ```
+    } => {
+        Expect Status 201
+        Expect Header Location
+        Expect Property dataCube:baseUri "http://tempuri.com/"
+    }
+}
+
+With Class dataCube:Project {
+    Expect Operation schema:UpdateAction {
+        Invoke {
+            Content-Type "text/turtle"
+
+            ```
+            @prefix schema: <http://schema.org/> .
+
+            <> schema:name "Irrelevant" .
+            ```
+        } => {
+            Expect Status 400
+            // Expect Header Content-Type Matching "^application/problem+json"
+        }
+
+        Invoke {
+            Content-Type "text/turtle"
+
+            ```
+            @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+            @prefix schema: <http://schema.org/> .
+
+            <>  schema:name "Irrelevant" ; dataCube:baseUri "http://example.com/project/" .
+            ```
+        } => {
+            Expect Status 200
+            Expect Property dataCube:baseUri "http://example.com/project/"
+        }
+    }
+
+    Expect Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
