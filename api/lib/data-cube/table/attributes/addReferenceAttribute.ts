@@ -9,6 +9,7 @@ import { attributes, tables } from '../../../storage/repository'
 import { addReferenceAttribute } from '../../../domain/table/addReferenceAttribute'
 import { getSingleAttribute } from '../../../read-graphs/attribute'
 import { dataCube } from '../../../namespaces'
+import env from '../../../env'
 
 function readColumnMappingsFromRequest (req: Request, columnMappingNodes) {
   const graph = cf({ dataset: req.graph })
@@ -66,6 +67,6 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
   const newAttribute = await attribute.commit(attributes)
 
   res.status(201)
-  res.setHeader('Location', `${process.env.BASE_URI}${newAttribute['@id']}`)
+  res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
   res.graph(await getSingleAttribute(newAttribute['@id']))
 })

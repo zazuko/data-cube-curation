@@ -5,27 +5,28 @@ import { createReadStream } from 'fs'
 import { relative } from 'path'
 import walk from '@fcostarodrigo/walk'
 import { log, warning } from './log'
+import env from './env'
 
 export default async function (apiDir: string) {
   const parser = new Parser({
-    baseIRI: process.env.BASE_URI,
+    baseIRI: env.BASE_URI,
   })
 
   let authentication
-  if (process.env.SPARQL_ENDPOINT_USERNAME && process.env.SPARQL_ENDPOINT_PASSWORD) {
+  if (env.SPARQL_ENDPOINT_USERNAME && env.SPARQL_ENDPOINT_PASSWORD) {
     authentication = {
-      user: process.env.SPARQL_ENDPOINT_USERNAME,
-      password: process.env.SPARQL_ENDPOINT_PASSWORD,
+      user: env.SPARQL_ENDPOINT_USERNAME,
+      password: env.SPARQL_ENDPOINT_PASSWORD,
     }
   }
 
   const options: Record<string, unknown> = {
     debug: true,
-    sparqlEndpointUrl: process.env.READ_MODEL_SPARQL_ENDPOINT,
-    sparqlEndpointUpdateUrl: process.env.SPARQL_UPDATE_ENDPOINT,
+    sparqlEndpointUrl: env.READ_MODEL_SPARQL_ENDPOINT,
+    sparqlEndpointUpdateUrl: env.SPARQL_UPDATE_ENDPOINT,
     contextHeader: '/context/',
     authentication,
-    uploadLimit: process.env.EXPRESS_UPLOAD_LIMIT || '5MB',
+    uploadLimit: env.EXPRESS_UPLOAD_LIMIT || '5MB',
   }
 
   const dataset = rdf.dataset()

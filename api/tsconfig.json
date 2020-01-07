@@ -8,7 +8,12 @@
     "typeRoots" : ["./typings", "./node_modules/@types"],
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "pretty": true,
+    "noUnusedLocals": true
   },
   "exclude": ["test"]
 }

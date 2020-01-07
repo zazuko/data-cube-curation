@@ -4,7 +4,7 @@ export interface AttributeEvents {
     columnId: string;
     predicate: string;
     datatype: string;
-    language: string;
+    language?: string;
   };
   ReferenceAttributeAdded: {
     tableId: string;

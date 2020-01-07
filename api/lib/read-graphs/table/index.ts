@@ -42,7 +42,7 @@ export async function getRepresentation (tableId: string) {
     } else {
       columns.forEach(column => {
         table.addOut(dataCube.identifierColumn, $rdf.namedNode(column.id), columnNode => {
-          columnNode.addOut(schema.name, column.name)
+          columnNode.addOut(schema('name'), column.name)
           columnNode.addOut(rdf.type, dataCube.Column)
         })
       })
