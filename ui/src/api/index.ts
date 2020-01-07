@@ -90,7 +90,7 @@ class ProjectsClient {
     return loadedCollection.members
   }
 
-  async create (name: string): Promise<Project> {
+  async create ({ name, baseUri }: { name: string, baseUri: string }): Promise<Project> {
     const projectsCollection = await this.projectsCollection()
 
     if (!projectsCollection) throw new Error('No projects collection on entrypoint')
@@ -98,7 +98,8 @@ class ProjectsClient {
     const operation = getOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
     const data = {
       '@type': URI.TYPE_PROJECT,
-      [URI.PROP_NAME]: name
+      [URI.PROP_NAME]: name,
+      [URI.PROP_BASE_URI]: baseUri
     }
     return invokeCreateOperation<Project>(operation, data)
   }

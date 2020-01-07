@@ -16,6 +16,7 @@ export interface Project extends HydraResource {
 export interface ProjectFormData {
   id?: string;
   name: string;
+  baseUri: string;
 }
 
 export interface RemoteData<T> {
