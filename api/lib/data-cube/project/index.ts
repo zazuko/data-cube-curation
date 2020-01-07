@@ -1,13 +1,11 @@
-import { emitImmediate } from '@tpluscode/fun-ddr/lib/events'
 import { Request, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
-import { createProject, renameProject, archiveProject } from '../../domain/project'
+import { createProject, renameProject } from '../../domain/project'
 import { projects } from '../../storage/repository'
 import { buildVariables } from '../../buildVariables'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
-import { ProjectEvents } from '../../domain/project/events'
 import { getProject } from '../../read-graphs/project'
 import env from '../../env'
 
@@ -61,26 +59,4 @@ export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {
       return res.redirect(value, 303)
     })
     .catch(next)
-})
-
-export const archive = asyncMiddleware(async (req: Request, res, next) => {
-  let aggregateRoot = await projects.load(req.resourceId)
-
-  if (!await aggregateRoot.state) {
-    emitImmediate<ProjectEvents, 'ProjectArchived'>(
-      req.resourceId,
-      'ProjectArchived',
-      null
-    )
-    res.status(404)
-    next()
-    return
-  }
-
-  await aggregateRoot.mutation(archiveProject)(null as never)
-    .delete()
-    .commit(projects)
-
-  res.status(204)
-  next()
 })

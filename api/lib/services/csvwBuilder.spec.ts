@@ -58,4 +58,15 @@ describe('csvwBuilder', () => {
     // then
     expect(csvwDataset.toCanonical()).toMatchSnapshot()
   })
+
+  it('maps reference attribute', async () => {
+    // given
+    const dataset = await specGraphs.referenceAttributeGraph()
+
+    // when
+    const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
+
+    // then
+    expect(csvwDataset.toCanonical()).toMatchSnapshot()
+  })
 })

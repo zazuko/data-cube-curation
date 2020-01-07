@@ -49,7 +49,7 @@ Promise.resolve().then(async () => {
     exposedHeaders: ['link', 'location'],
   }))
   app.use(resourceId)
-  app.use(await hydraMiddleware(path.join(__dirname, 'hydra/api.ttl')))
+  app.use(await hydraMiddleware(path.join(__dirname, 'hydra')))
   app.use(function (req, res, next) {
     next(new NotFoundError())
   })
