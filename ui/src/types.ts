@@ -9,6 +9,7 @@ export interface Project extends HydraResource {
   id: ResourceId;
   actions: Actions;
   name: string;
+  baseUri: string;
   tablesCollection: Collection | null;
   sourcesCollection: Collection | null;
 }

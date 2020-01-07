@@ -20,6 +20,10 @@ export function Mixin<B extends Constructor> (Base: B) {
       return getOrThrow(this, URI.PROP_NAME)
     }
 
+    get baseUri (): string {
+      return this.get(URI.PROP_BASE_URI) || ''
+    }
+
     get sourcesCollection (): Collection | null {
       return this.get<Collection>(URI.API_SOURCES)
     }
