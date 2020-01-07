@@ -6,12 +6,11 @@ import rdfFetch from 'hydra-box/lib/rdfFetch'
 import authHeader from '../../sparql/authentication'
 import env from '../../env'
 
-const base = env.BASE_URI
 const defaultHeaders: HeadersInit = {}
 if (authHeader) {
   defaultHeaders.Authorization = authHeader
 }
-const sparqlClient = new SparqlHttp({
+const sparqlClient = () => new SparqlHttp({
   endpointUrl: env.SPARQL_ENDPOINT,
   updateUrl: env.SPARQL_UPDATE_ENDPOINT || env.SPARQL_ENDPOINT,
   fetch: rdfFetch,
@@ -25,10 +24,10 @@ const context = {
   archived: { '@id': 'archived', '@type': expand('xsd:boolean') },
 }
 
-export function createRepository<T extends Entity> (frame: object, specialisedContext?: object): Repository<T> {
+export const createRepository = function<T extends Entity> (frame: object, specialisedContext?: object): Repository<T> {
   return new SparqlGraphRepository<T>(
-    sparqlClient,
-    base,
+    sparqlClient(),
+    env.BASE_URI,
     { ...context, ...specialisedContext },
     frame) as Repository<T>
 }

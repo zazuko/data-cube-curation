@@ -23,7 +23,7 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
     columnId: expand('dataCube:column'),
   })
 
-  const aggregate = await tables.load(tableId)
+  const aggregate = await tables().load(tableId)
   const table = await aggregate.state
   if (!table) {
     res.status(404)
@@ -38,7 +38,7 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
     language: variables.language && variables.language.value,
   })
 
-  const newAttribute = await attribute.commit(attributes)
+  const newAttribute = await attribute.commit(attributes())
 
   res.status(201)
   res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)

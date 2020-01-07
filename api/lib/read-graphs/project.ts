@@ -63,11 +63,11 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', async function initi
 
 handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProjectEntity (ev) {
   if (ev.data.isFactTable) {
-    const project = await projects
+    const project = await projects()
       .load(ev.data.projectId)
 
     await project.mutation(unselectFactTable)(null as never)
-      .commit(projects)
+      .commit(projects())
   }
 })
 

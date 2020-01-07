@@ -21,7 +21,7 @@ export const create = asyncMiddleware(async (req: Request, res: Response) => {
     name: projectName.value,
     baseUri: baseUri.value,
   })
-    .commit(projects)
+    .commit(projects())
 
   res.status(201)
   res.setHeader('Location', `${env.BASE_URI}${project['@id'].replace('/', '')}`)
@@ -33,7 +33,7 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
     projectName: expand('schema:name'),
     baseUri: expand('dataCube:baseUri'),
   })
-  let aggregateRoot = await projects.load(req.resourceId)
+  let aggregateRoot = await projects().load(req.resourceId)
 
   const updateCommand = {
     newName: projectName.value,
@@ -49,7 +49,7 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
     ? createProject(createCommand)
     : aggregateRoot.mutation(updateProject)(updateCommand)
 
-  await aggregateRoot.commit(projects)
+  await aggregateRoot.commit(projects())
   res.graph(await getProject(req.resourceId))
 })
 

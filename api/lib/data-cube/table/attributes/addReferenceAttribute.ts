@@ -51,7 +51,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
   })
   const columnMappings = readColumnMappingsFromRequest(req, columnMappingNodes)
 
-  const aggregate = await tables.load(tableId)
+  const aggregate = await tables().load(tableId)
   const table = await aggregate.state
   if (!table) {
     res.status(404)
@@ -65,7 +65,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
     columnMappings,
   })
 
-  const newAttribute = await attribute.commit(attributes)
+  const newAttribute = await attribute.commit(attributes())
 
   res.status(201)
   res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)

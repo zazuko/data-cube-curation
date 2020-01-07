@@ -9,5 +9,5 @@ handle<ProjectEvents, 'FactTableSourceSelected'>('FactTableSourceSelected', func
     tableName: ev.data.tableName,
     sourceId: ev.data.sourceId,
   })
-    .commit(tables)
+    .commit(tables())
 })

@@ -11,7 +11,7 @@ import { getRepresentation } from '../../read-graphs/table/index'
 import env from '../../env'
 
 async function loadProject (projectId: string) {
-  const project = await projects.load(projectId)
+  const project = await projects().load(projectId)
   if (!project.state) {
     throw new NotFoundError('Project was not found')
   }
@@ -34,7 +34,7 @@ async function createDimensionTable (req: express.Request, projectId: string): P
   })
 
   const tableAggregate = await table
-    .commit(tables)
+    .commit(tables())
 
   return `${env.BASE_URI}${tableAggregate['@id']}`
 }
@@ -50,7 +50,7 @@ async function createFactTable (req: express.Request, projectId: string) {
     sourceId: sourceId.value,
     tableName: tableName.value,
   })
-    .commit(projects)
+    .commit(projects())
 
   return `${projectId}/table/${tableName.value}`
 }

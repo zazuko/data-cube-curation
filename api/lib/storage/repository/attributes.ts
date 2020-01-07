@@ -1,6 +1,7 @@
 import { createRepository } from './create'
 import { Attribute } from '../../domain/attribute'
 import { expand } from '@zazuko/rdf-vocabularies'
+import once from 'once'
 
 const context = {
   predicate: { '@id': expand('rdf:predicate'), '@type': '@id' },
@@ -11,4 +12,4 @@ const context = {
 const frame = {
   '@type': 'Attribute',
 }
-export const attributes = createRepository<Attribute>(frame, context)
+export const attributes = once(() => createRepository<Attribute>(frame, context))

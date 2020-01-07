@@ -5,12 +5,12 @@ import { archiveTable } from '../../domain/table/archive'
 
 export const archive = asyncMiddleware(async (req: Request, res, next) => {
   const tableId = req.resourceId
-  const table = await tables.load(tableId)
+  const table = await tables().load(tableId)
 
   table
     .mutation(archiveTable)(null as never)
     .delete()
-    .commit(tables)
+    .commit(tables())
     .then(() => {
       res.status(204)
       res.end()

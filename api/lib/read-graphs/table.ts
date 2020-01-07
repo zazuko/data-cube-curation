@@ -85,8 +85,8 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
     const deletions = hydraCollection.match(null, expand('hydra:member')).toArray()
       .map((quad: Quad) => quad.object.value)
       .map(async (attributeId: string) => {
-        const aggregate = await attributes.load(attributeId)
-        return aggregate.delete().commit(attributes)
+        const aggregate = await attributes().load(attributeId)
+        return aggregate.delete().commit(attributes())
       })
 
     await Promise.all(deletions)

@@ -24,7 +24,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
     name: expand('schema:name'),
   })
 
-  const project = await projects.load(projectId)
+  const project = await projects().load(projectId)
   if (!project.state) {
     res.status(404)
     res.end()
@@ -35,7 +35,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
     sourceId: variables.source.value,
     tableName: variables.name.value,
   })
-    .commit(projects)
+    .commit(projects())
 
   const tableId = `${projectId}/table/${variables.name.value}`
 

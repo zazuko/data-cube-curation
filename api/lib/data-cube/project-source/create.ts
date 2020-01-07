@@ -41,7 +41,7 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res: Res
     throw new NotFoundError()
   }
 
-  const project = await projects.load(projectId)
+  const project = await projects().load(projectId)
 
   const contentDispositionPattern = /attachment; filename="(.+)"/
   const contentDisposition: string | undefined = req.headers['content-disposition']
@@ -64,7 +64,7 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res: Res
   const source = await project
     .factory(createSource)(createSourceCommand)
 
-  const sourceAggregate = await source.commit(sources)
+  const sourceAggregate = await source.commit(sources())
   const sourceId = `${env.BASE_URI}${sourceAggregate['@id']}`
 
   res.status(201)

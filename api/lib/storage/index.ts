@@ -1,5 +1,5 @@
-import * as localStorage from './local'
-import * as awsStorage from './s3'
+import localStorage from './local'
+import awsStorage from './s3'
 import { Readable } from 'stream'
 import env from '../env'
 
@@ -11,10 +11,10 @@ interface FileStorage {
 
 let storage: FileStorage
 
-if (env.STORAGE === 's3') {
-  storage = awsStorage
+if (env.has.STORAGE && env.STORAGE === 's3') {
+  storage = awsStorage()
 } else {
-  storage = localStorage
+  storage = localStorage()
 }
 
 export default storage

@@ -13,7 +13,7 @@ export default async function (apiDir: string) {
   })
 
   let authentication
-  if (env.SPARQL_ENDPOINT_USERNAME && env.SPARQL_ENDPOINT_PASSWORD) {
+  if (env.has.SPARQL_ENDPOINT_USERNAME && env.has.SPARQL_ENDPOINT_PASSWORD) {
     authentication = {
       user: env.SPARQL_ENDPOINT_USERNAME,
       password: env.SPARQL_ENDPOINT_PASSWORD,

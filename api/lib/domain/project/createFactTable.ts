@@ -16,7 +16,7 @@ export const selectFactTableSource = mutate<Project, TableCommand>(async (projec
     throw new DomainError('Fact table has already been selected.')
   }
 
-  const source = await sources.load(command.sourceId).then(ar => ar.state)
+  const source = await sources().load(command.sourceId).then(ar => ar.state)
   if (!source) {
     throw new DomainError(`Source '${command.sourceId}' was not found`)
   }

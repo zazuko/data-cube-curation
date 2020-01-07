@@ -13,10 +13,10 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function delet
     })
     .execute(getClient())
     .then(bindings => bindings.forEach(async b => {
-      const source = await sources.load(b.source.value)
+      const source = await sources().load(b.source.value)
       await source
         .delete()
-        .commit(sources)
+        .commit(sources())
     }))
 })
 
@@ -28,10 +28,10 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function delet
     })
     .execute(getClient())
     .then(bindings => bindings.forEach(async b => {
-      const table = await tables.load(b.table.value)
+      const table = await tables().load(b.table.value)
       await table
         .delete()
-        .commit(tables)
+        .commit(tables())
     }))
 })
 
