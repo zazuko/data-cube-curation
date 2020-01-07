@@ -71,13 +71,10 @@ export function buildCsvw (tableDataset: Dataset, tableId: string) {
           nextColumns = [ createCsvwColumn(csvwGraph, column) ]
         }
 
-        return [...previousColumns, { column }]
-      }, [] as { column: Clownface; attribute?: Clownface }[])
-      .map(({ column, attribute }) => {
-        return createCsvwColumn(csvwGraph, column, attribute)
-      })
+        return [ ...previousColumns, ...nextColumns ]
+      }, [])
 
-    tableSchema.addList(csvw.columns, csvwColumns)
+    tableSchema.addList(csvw.column, csvwColumns)
   })
 
   return csvwGraph.dataset
