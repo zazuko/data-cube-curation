@@ -1,4 +1,4 @@
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 import { Stream } from 'rdf-js'
 
@@ -18,7 +18,7 @@ export class ConstructBuilder extends Builder<Stream> {
     return this
   }
 
-  protected _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.constructQuery(query, options)
   }
 

@@ -20,7 +20,7 @@ debug.enable(env.DEBUG || '')
 const requestLogger = log.extend('request')
 const requestErrorLogger = requestLogger.extend('error')
 const headersLogger = requestLogger.extend('headers')
-function logger (req: express.Request, res, next) {
+function logger (req: express.Request, res: express.Response, next: express.NextFunction) {
   requestLogger(`${req.method} ${req.url}`)
 
   if (headersLogger.enabled) {
@@ -53,7 +53,7 @@ Promise.resolve().then(async () => {
   app.use(function (req, res, next) {
     next(new NotFoundError())
   })
-  app.use(function (err, req, res, next) {
+  app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
     requestErrorLogger('Request failed: %o', err)
     next(err)
   })

@@ -1,10 +1,10 @@
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 
 export class InsertDataBuilder extends Builder<void> {
   private __data: string[] = []
 
-  protected _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.updateQuery(query, options)
   }
 

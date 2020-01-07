@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import parse from 'csv-parse'
 import detect from 'detect-csv'
 import asyncMiddleware from 'middleware-async'
@@ -9,7 +9,7 @@ import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/source/index'
 import env from '../../env'
 
-export function parseCsv (req, res, next) {
+export function parseCsv (req: Request, res: Response, next: NextFunction) {
   let delimiter = ','
   const detectedCsvFormat = detect(req.body)
   if (detectedCsvFormat) {

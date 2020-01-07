@@ -1,4 +1,5 @@
 import { renameProject } from './index'
+import { DomainEventEmitter } from '@tpluscode/fun-ddr/lib'
 
 describe('Project', () => {
   const nullProject = {
@@ -7,7 +8,7 @@ describe('Project', () => {
     archived: 'false' as 'true' | 'false',
   }
 
-  let emitter
+  let emitter: DomainEventEmitter
   beforeEach(() => {
     emitter = {
       emit: jest.fn(),

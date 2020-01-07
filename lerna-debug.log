@@ -1,0 +1,17 @@
+0 silly argv {
+0 silly argv   _: [ 'bootstrap' ],
+0 silly argv   lernaVersion: '3.15.0',
+0 silly argv   '$0': '/c/projects/zazuko/data-cube-curation/node_modules/.bin/lerna'
+0 silly argv }
+1 notice cli v3.15.0
+2 verbose rootPath /c/projects/zazuko/data-cube-curation
+3 info versioning independent
+4 error Error: Invalid tag name "^": Tags may not have any characters that encodeURIComponent encodes.
+4 error     at invalidTagName (/c/projects/zazuko/data-cube-curation/node_modules/npm-package-arg/npa.js:87:15)
+4 error     at fromRegistry (/c/projects/zazuko/data-cube-curation/node_modules/npm-package-arg/npa.js:290:13)
+4 error     at Function.resolve (/c/projects/zazuko/data-cube-curation/node_modules/npm-package-arg/npa.js:77:12)
+4 error     at /c/projects/zazuko/data-cube-curation/node_modules/@lerna/package-graph/index.js:112:30
+4 error     at Array.forEach (<anonymous>)
+4 error     at /c/projects/zazuko/data-cube-curation/node_modules/@lerna/package-graph/index.js:106:38
+4 error     at Map.forEach (<anonymous>)
+4 error     at new PackageGraph (/c/projects/zazuko/data-cube-curation/node_modules/@lerna/package-graph/index.js:95:10)

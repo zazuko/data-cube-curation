@@ -2,9 +2,9 @@ import express from 'express'
 import rdf from 'rdf-ext'
 import { Term } from 'rdf-js'
 
-interface ReadOnlyVariable {
-  value: any | null;
-  values: any[];
+export interface ReadOnlyVariable {
+  value: string;
+  values: string[];
   terms: Term[];
 }
 
@@ -17,15 +17,16 @@ class Variable {
     }
   }
 
-  public get value (): any | null {
+  public get value (): string {
     if (this.__terms.length === 1) {
       return this.__terms[0].value
     }
 
-    return null
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return null!
   }
 
-  public get values (): any[] {
+  public get values (): string[] {
     return this.__terms.map(term => term.value)
   }
 

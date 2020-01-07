@@ -1,4 +1,4 @@
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 
 export class DescribeBuilder extends Builder<any> {
@@ -10,7 +10,7 @@ export class DescribeBuilder extends Builder<any> {
     this.__variables = [idOrVariable, ...additionalVariables]
   }
 
-  public _executeInternal (client: SparqlHttp, query: string, options) {
+  public _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.constructQuery(query, options)
   }
 

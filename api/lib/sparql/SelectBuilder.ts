@@ -1,5 +1,5 @@
 import { Term } from 'rdf-js'
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 
 export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
@@ -11,7 +11,7 @@ export class SelectBuilder extends Builder<readonly Record<string, Term>[]> {
     return this
   }
 
-  protected _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.selectQuery(query, options)
   }
 

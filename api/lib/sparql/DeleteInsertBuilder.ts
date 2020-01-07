@@ -1,4 +1,4 @@
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 
 export class DeleteInsertBuilder extends Builder<void> {
@@ -6,7 +6,7 @@ export class DeleteInsertBuilder extends Builder<void> {
   private __deleteGraph: string[] = []
   private __insertGraph: string[] = []
 
-  protected _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.updateQuery(query, options)
   }
 

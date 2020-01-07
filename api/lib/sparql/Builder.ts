@@ -39,7 +39,7 @@ export abstract class Builder<T> {
     const query = this.build().trim()
 
     logQuery('executing %s', query)
-    let requestInit
+    let requestInit = {}
     if (authHeader) {
       requestInit = {
         headers: {

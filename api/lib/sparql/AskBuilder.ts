@@ -1,10 +1,10 @@
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp, { QueryRequestInit } from 'sparql-http-client'
 import { Builder } from './Builder'
 
 export class AskBuilder extends Builder<boolean> {
   private __patterns: string[] = []
 
-  protected _executeInternal (client: SparqlHttp, query: string, options) {
+  protected _executeInternal (client: SparqlHttp, query: string, options: QueryRequestInit) {
     return client.selectQuery(query, options)
   }
 

@@ -8,7 +8,7 @@ if (authHeader) {
   defaultHeaders.Authorization = authHeader
 }
 
-let sparqlClient
+let sparqlClient: SparqlHttp
 export function getClient (): SparqlHttp {
   sparqlClient = sparqlClient || new SparqlHttp({
     endpointUrl: env.READ_MODEL_SPARQL_ENDPOINT,

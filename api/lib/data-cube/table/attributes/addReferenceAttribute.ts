@@ -5,14 +5,14 @@ import { Request, Response } from 'express'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { getTableId } from '../../../read-graphs/table/links'
 import { NotFoundError, RequestError } from '../../../error'
-import { buildVariables } from '../../../buildVariables'
+import { buildVariables, ReadOnlyVariable } from '../../../buildVariables'
 import { attributes, tables } from '../../../storage/repository'
 import { addReferenceAttribute } from '../../../domain/table/addReferenceAttribute'
 import { getSingleAttribute } from '../../../read-graphs/attribute'
 import { dataCube } from '../../../namespaces'
 import env from '../../../env'
 
-function readColumnMappingsFromRequest (req: Request, columnMappingNodes) {
+function readColumnMappingsFromRequest (req: Request, columnMappingNodes: ReadOnlyVariable) {
   const graph = cf({ dataset: req.graph })
 
   return columnMappingNodes.terms.reduce((mappings, node) => {

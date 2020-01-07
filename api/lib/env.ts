@@ -1,5 +1,5 @@
 const handler = {
-  get (env, prop: string) {
+  get (env: Record<string, string>, prop: string) {
     const value = env[prop]
 
     if (!value) {
@@ -10,4 +10,4 @@ const handler = {
   },
 }
 
-export default new Proxy(process.env, handler)
+export default new Proxy(process.env, handler) as Record<string, string>
