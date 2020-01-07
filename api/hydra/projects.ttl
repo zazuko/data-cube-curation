@@ -33,7 +33,7 @@ api:CreateProject
                                         hydra:variable "projectName" ] ] .
 
 api:ReplaceProject
-  a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
+  a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction, schema:UpdateAction ;
   hydra:title         "Design an RDF data cube" ;
   hydra:method        "PUT" ;
   hydra:returns       dataCube:Project ;
@@ -55,7 +55,7 @@ api:project
 dataCube:Project
   a hydra:Class ;
   hydra:title "A data cube mapping project" ;
-  hydra:supportedOperation api:GetProject, api:DeleteProject ;
+  hydra:supportedOperation api:GetProject, api:DeleteProject, api:ReplaceProject ;
   hydra:supportedProperty [ hydra:property  schema:name ;
                             hydra:title     "Project name" ;
                             hydra:readable  true ;
