@@ -5,10 +5,10 @@
     </header>
     <section class="modal-card-body">
       <b-field label="Name">
-        <b-input v-model="project.name" />
+        <b-input v-model="project.name" required />
       </b-field>
-      <b-field label="Base URI">
-        <b-input v-model="project.baseUri" />
+      <b-field label="Base URI" message="Default prefix for tables and properties">
+        <b-input v-model="project.baseUri" placeholder="https://my-project.example.org" />
       </b-field>
     </section>
     <footer class="modal-card-foot">
