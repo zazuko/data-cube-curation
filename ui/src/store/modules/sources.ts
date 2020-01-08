@@ -49,6 +49,13 @@ const actions: ActionTree<SourcesState, RootState> = {
       const source = await client.projects.createSource(project, file)
       context.commit('storeInProject', { project, source })
     })
+  },
+
+  async delete (context, source: Source) {
+    await handleAPIError(context, async () => {
+      await client.projects.deleteSource(source)
+      context.commit('removeOne', source)
+    })
   }
 }
 
@@ -64,6 +71,14 @@ const mutations: MutationTree<SourcesState> = {
     if (!projectSources.data) throw new Error('Project sources not loaded')
 
     projectSources.data.push(source)
+  },
+
+  removeOne (state, source: Source) {
+    const projectSources = state.sources[source.projectId]
+
+    if (!projectSources.data) return
+
+    projectSources.data = projectSources.data.filter((s) => s.id !== source.id)
   }
 }
 

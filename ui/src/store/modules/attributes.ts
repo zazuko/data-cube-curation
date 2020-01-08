@@ -44,10 +44,24 @@ const actions: ActionTree<AttributesState, RootState> = {
     })
   },
 
-  async create (context, { table, attribute: attributeData }) {
+  async createValue (context, { table, attribute: attributeData }) {
     await handleAPIError(context, async () => {
-      const attribute = await client.projects.createAttribute(table, attributeData)
+      const attribute = await client.projects.createValueAttribute(table, attributeData)
       context.commit('storeInTable', { table, attribute })
+    })
+  },
+
+  async createReference (context, { table, attribute: attributeData }) {
+    await handleAPIError(context, async () => {
+      const attribute = await client.projects.createReferenceAttribute(table, attributeData)
+      context.commit('storeInTable', { table, attribute })
+    })
+  },
+
+  async delete (context, attribute: Attribute) {
+    await handleAPIError(context, async () => {
+      await client.projects.deleteAttribute(attribute)
+      context.commit('removeOne', attribute)
     })
   }
 }
@@ -64,6 +78,14 @@ const mutations: MutationTree<AttributesState> = {
     if (!tableAttributes.data) throw new Error('Table attributes not loaded')
 
     tableAttributes.data.push(attribute)
+  },
+
+  removeOne (state, attribute: Attribute) {
+    const tableAttributes = state.attributes[attribute.tableId]
+
+    if (!tableAttributes.data) return
+
+    tableAttributes.data = tableAttributes.data.filter((a) => a.id !== attribute.id)
   }
 }
 

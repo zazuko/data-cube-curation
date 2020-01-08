@@ -64,7 +64,7 @@ export default class Projects extends Vue {
       props: {
         save: async (project: ProjectFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('projects/create', project.name)
+          await this.$store.dispatch('projects/create', project)
           loading.close()
           modal.close()
         }

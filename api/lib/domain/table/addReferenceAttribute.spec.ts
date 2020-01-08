@@ -28,7 +28,7 @@ describe('table', () => {
     name: 'foo-bar',
     predicate: expand('schema:name'),
     referencedTableId: 'table/other',
-    columnMappings: [ ],
+    columnMappings: [ ] as any[],
   }
 
   beforeEach(() => {

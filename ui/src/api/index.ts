@@ -1,14 +1,15 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Attribute, Source, TableFormData, AttributeFormData } from '@/types'
+import { Project, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
 import { getOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
 import * as TableMixin from './resources/table'
 import * as ColumnMixin from './resources/column'
-import * as AttributeMixin from './resources/attribute'
+import * as ValueAttributeMixin from './resources/value-attribute'
+import * as ReferenceAttributeMixin from './resources/reference-attribute'
 
 const apiURL = process.env.VUE_APP_API_URL
 
@@ -19,7 +20,8 @@ rdf.resourceFactory.mixins.push(ProjectMixin)
 rdf.resourceFactory.mixins.push(SourceMixin)
 rdf.resourceFactory.mixins.push(TableMixin)
 rdf.resourceFactory.mixins.push(ColumnMixin)
-rdf.resourceFactory.mixins.push(AttributeMixin)
+rdf.resourceFactory.mixins.push(ValueAttributeMixin)
+rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 
 export class APIError extends Error {
   details: any;
@@ -88,7 +90,7 @@ class ProjectsClient {
     return loadedCollection.members
   }
 
-  async create (name: string): Promise<Project> {
+  async create ({ name, baseUri }: { name: string, baseUri: string }): Promise<Project> {
     const projectsCollection = await this.projectsCollection()
 
     if (!projectsCollection) throw new Error('No projects collection on entrypoint')
@@ -96,7 +98,8 @@ class ProjectsClient {
     const operation = getOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
     const data = {
       '@type': URI.TYPE_PROJECT,
-      [URI.PROP_NAME]: name
+      [URI.PROP_NAME]: name,
+      [URI.PROP_BASE_URI]: baseUri
     }
     return invokeCreateOperation<Project>(operation, data)
   }
@@ -109,11 +112,13 @@ class ProjectsClient {
     return loadResource(id)
   }
 
-  async getTables (project: any): Promise<Table[]> {
+  async getTables (project: Project): Promise<Table[]> {
+    if (!project.tablesCollection) throw new Error('Project has no tables collection')
+
     const collection = await loadResource<Collection>(project.tablesCollection.id)
     const incompleteTables = collection.members
 
-    const tables = Promise.all(incompleteTables.map(async (incompleteTable: any) =>
+    const tables = Promise.all(incompleteTables.map(async (incompleteTable: HydraResource) =>
       loadResource<Table>(incompleteTable.id)
     ))
 
@@ -128,9 +133,9 @@ class ProjectsClient {
     }
   }
 
-  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: AttributeFormData[]): Promise<Table> {
+  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: ValueAttributeFormData[]): Promise<Table> {
     const table = await this.createTable(project, tableData)
-    const attributesIds = await Promise.all(attributes.map((attribute) => this.createAttribute(table, attribute)))
+    const attributesIds = await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
     return table
   }
 
@@ -159,7 +164,7 @@ class ProjectsClient {
     return invokeDeleteOperation(table.actions.delete)
   }
 
-  async createSource (project: any, file: File): Promise<Source> {
+  async createSource (project: Project, file: File): Promise<Source> {
     const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
@@ -168,18 +173,26 @@ class ProjectsClient {
     return invokeCreateOperation<Source>(operation, file, headers)
   }
 
-  async getSources (project: any) {
+  async getSources (project: Project) {
+    if (!project.sourcesCollection) throw new Error('Project has no sources collection')
+
     const sourcesCollection = await loadResource<Collection>(project.sourcesCollection.id)
     const incompleteSources = sourcesCollection.members
 
-    const sources = Promise.all(incompleteSources.map(async (incompleteSource: any) =>
+    const sources = Promise.all(incompleteSources.map(async (incompleteSource: HydraResource) =>
       loadResource(incompleteSource.id)
     ))
 
     return sources
   }
 
-  async getSourceSampleData (source: any) {
+  async deleteSource (source: Source): Promise<void> {
+    return invokeDeleteOperation(source.actions.delete)
+  }
+
+  async getSourceSampleData (source: Source) {
+    if (!source.sampleCollection) throw new Error('Source has no sample collection')
+
     const loadedCollection = await loadResource<Collection>(source.sampleCollection.id)
     const rows = loadedCollection.members.map((row: HydraResource) => {
       return row[URI.API_CELLS]
@@ -188,21 +201,41 @@ class ProjectsClient {
     return rows
   }
 
-  async getAttributes (table: any) {
+  async getAttributes (table: Table) {
+    if (!table.attributesCollection) throw new Error('Table has no attributes collection')
+
     const collection = await loadResource<Collection>(table.attributesCollection.id)
     return collection.members
   }
 
-  async createAttribute (table: any, attributeData: AttributeFormData): Promise<Attribute> {
-    const operation = table.actions.createAttribute
+  async createValueAttribute (table: Table, attributeData: ValueAttributeFormData): Promise<ValueAttribute> {
+    const operation = table.actions.createValueAttribute
     const data = {
-      '@type': URI.TYPE_ATTRIBUTE,
+      '@type': URI.TYPE_VALUE_ATTRIBUTE,
       [URI.PROP_PREDICATE]: attributeData.predicateId,
       [URI.PROP_COLUMN]: attributeData.columnId,
       [URI.PROP_DATATYPE]: attributeData.dataTypeId,
       [URI.PROP_LANGUAGE]: attributeData.language
     }
-    return invokeCreateOperation<Attribute>(operation, data)
+    return invokeCreateOperation<ValueAttribute>(operation, data)
+  }
+
+  async createReferenceAttribute (table: Table, attributeData: ReferenceAttributeFormData): Promise<ReferenceAttribute> {
+    const operation = table.actions.createReferenceAttribute
+    const data = {
+      '@type': URI.TYPE_REFERENCE_ATTRIBUTE,
+      [URI.PROP_PREDICATE]: attributeData.predicateId,
+      [URI.PROP_REFERENCED_TABLE]: attributeData.referencedTableId,
+      [URI.PROP_COLUMN_MAPPING]: attributeData.columnMapping.map((mapping) => ({
+        [URI.PROP_SOURCE_COLUMN]: mapping.sourceColumnId,
+        [URI.PROP_REFERENCED_COLUMN]: mapping.referencedColumnId
+      }))
+    }
+    return invokeCreateOperation<ReferenceAttribute>(operation, data)
+  }
+
+  async deleteAttribute (attribute: Attribute): Promise<void> {
+    return invokeDeleteOperation(attribute.actions.delete)
   }
 }
 
@@ -221,7 +254,9 @@ async function loadResource<T extends HydraResource = HydraResource> (id: Resour
   return resource as T
 }
 
-async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
+async function invokeCreateOperation<T extends HydraResource = HydraResource> (operation: IOperation | null, data: Record<string, any> | File, headers: Record<string, any> = {}): Promise<T> {
+  if (!operation) throw new Error('Operation does not exist')
+
   const serializedData = data instanceof File ? data : JSON.stringify(data)
 
   const response = await operation.invoke(serializedData, headers)
@@ -237,7 +272,9 @@ async function invokeCreateOperation<T extends HydraResource = HydraResource> (o
   return resource as T
 }
 
-async function invokeDeleteOperation (operation: IOperation): Promise<void> {
+async function invokeDeleteOperation (operation: IOperation | null): Promise<void> {
+  if (!operation) throw new Error('Operation does not exist')
+
   const response = await operation.invoke('')
 
   if (response.xhr.status !== 204) {
