@@ -36,12 +36,16 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attrib
   return csvwColumn
 }
 
-export function buildCsvw (tableOrDataset: { dataset: Dataset; tableId: string }) {
-  let table: Table.Table | Table.DimensionTable =
-    BaseTable.factory.createEntity(cf({
+export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: Dataset; tableId: string }) {
+  let table: Table.Table | Table.DimensionTable
+  if ('dataset' in tableOrDataset) {
+    table = BaseTable.factory.createEntity(cf({
       dataset: tableOrDataset.dataset,
       term: $rdf.namedNode(tableOrDataset.tableId),
-    }), [ BaseTable ])
+    }), [BaseTable])
+  } else {
+    table = tableOrDataset
+  }
 
   const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
