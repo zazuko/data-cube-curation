@@ -17,7 +17,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.unmappedColumnGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
@@ -28,7 +28,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.mappedColumnGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
@@ -39,7 +39,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.multipleMappedColumnsGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
@@ -50,7 +50,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.columnMappedWithDatatypeGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
@@ -61,7 +61,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.columnMappedWithLanguageGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
@@ -72,7 +72,7 @@ describe('csvwBuilder', () => {
       const dataset = await specGraphs.referenceAttributeGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
+      const csvwDataset = buildCsvw({ dataset, tableId: `http://reference-attribute.test/fact-table` })
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()

@@ -35,15 +35,15 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attrib
   return csvwColumn
 }
 
-export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | Dataset, tableId?: string) {
+export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: Dataset; tableId: string }) {
   let table: Table.Table | Table.DimensionTable
-  if (!('id' in tableDataset)) {
+  if (!('id' in tableOrDataset)) {
     table = new BaseTable({
-      dataset: tableDataset,
-      term: $rdf.namedNode(tableId),
+      dataset: tableOrDataset.dataset,
+      term: $rdf.namedNode(tableOrDataset.tableId),
     })
   } else {
-    table = tableDataset
+    table = tableOrDataset
   }
   const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
