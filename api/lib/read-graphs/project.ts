@@ -42,6 +42,9 @@ handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async ev => {
 handle<ProjectEvents, 'ProjectRebased'>('ProjectRebased', async ev => {
   await deleteInsert(`<${ev.id}> dataCube:baseUri ?currentBase .`)
     .insert(`<${ev.id}> dataCube:baseUri "${ev.data.baseUri}" .`)
+    .where(`OPTIONAL {
+      <${ev.id}> dataCube:baseUri ?currentBase .
+    }`)
     .prefixes({
       dataCube,
     })
@@ -117,8 +120,9 @@ export async function getProject (id: string) {
         a ?projectType ;
         api:sources ?sources ;
         api:factTable ?factTableCanonical ;
-        api:tables ?tables ;
-        dataCube:baseUri ?baseUri .
+        api:tables ?tables .
+
+    OPTIONAL { ?project dataCube:baseUri ?baseUri . }
 
     OPTIONAL
     {
