@@ -77,7 +77,6 @@
     "dotenv-cli": "^2.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-jest": "^22.5.1",
-    "husky": "^4.0.1",
     "hydra-validator": "^1.0.11",
     "hydra-validator-analyse": "^0.1.6",
     "hydra-validator-e2e": "^0.6",
