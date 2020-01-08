@@ -7,6 +7,8 @@ import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
 import { dataCube } from '../namespaces'
+import isUri = require('is-uri')
+import parser = require('uri-template')
 
 function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attribute?: Table.Attribute): Csvw.Column {
   let csvwColumn = csvwGraph.newColumn({
@@ -46,7 +48,12 @@ export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | ob
   const doneAttributes: string[] = []
 
   if ('identifierTemplate' in table) {
-    csvwGraph.tableSchema.aboutUrl = table.identifierTemplate
+    const parsed = parser.parse(table.identifierTemplate)
+    if (isUri(parsed.prefix)) {
+      csvwGraph.tableSchema.aboutUrl = table.identifierTemplate
+    } else {
+      csvwGraph.tableSchema.aboutUrl = table.project.baseUri + table.identifierTemplate
+    }
   }
 
   csvwGraph.tableSchema.columns = table.columns

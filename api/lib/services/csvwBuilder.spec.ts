@@ -11,74 +11,76 @@ type RecursivePartial<T> = {
 const { ids } = specGraphs
 
 describe('csvwBuilder', () => {
-  it('includes unmapped source columns as suppressed', async () => {
+  describe('mapping for FactTable', () => {
+    it('includes unmapped source columns as suppressed', async () => {
     // given
-    const dataset = await specGraphs.unmappedColumnGraph()
+      const dataset = await specGraphs.unmappedColumnGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, ids.tableId)
+      // when
+      const csvwDataset = buildCsvw(dataset, ids.tableId)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
-  })
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
 
-  it('maps attribute', async () => {
+    it('maps attribute', async () => {
     // given
-    const dataset = await specGraphs.mappedColumnGraph()
+      const dataset = await specGraphs.mappedColumnGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, ids.tableId)
+      // when
+      const csvwDataset = buildCsvw(dataset, ids.tableId)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
-  })
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
 
-  it('maps multiple attributes mapping same column', async () => {
+    it('maps multiple attributes mapping same column', async () => {
     // given
-    const dataset = await specGraphs.multipleMappedColumnsGraph()
+      const dataset = await specGraphs.multipleMappedColumnsGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, ids.tableId)
+      // when
+      const csvwDataset = buildCsvw(dataset, ids.tableId)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
-  })
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
 
-  it('maps attribute with datatype', async () => {
+    it('maps attribute with datatype', async () => {
     // given
-    const dataset = await specGraphs.columnMappedWithDatatypeGraph()
+      const dataset = await specGraphs.columnMappedWithDatatypeGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, ids.tableId)
+      // when
+      const csvwDataset = buildCsvw(dataset, ids.tableId)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
-  })
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
 
-  it('maps attribute with language tag', async () => {
+    it('maps attribute with language tag', async () => {
     // given
-    const dataset = await specGraphs.columnMappedWithLanguageGraph()
+      const dataset = await specGraphs.columnMappedWithLanguageGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, ids.tableId)
+      // when
+      const csvwDataset = buildCsvw(dataset, ids.tableId)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
-  })
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
 
-  it('maps reference attribute', async () => {
+    it('maps reference attribute', async () => {
     // given
-    const dataset = await specGraphs.referenceAttributeGraph()
+      const dataset = await specGraphs.referenceAttributeGraph()
 
-    // when
-    const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
+      // when
+      const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
 
-    // then
-    expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      // then
+      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+    })
   })
 
   describe('mapping for DimensionTable', () => {
-    it('uses identifierTemplate for aboutUrl', async () => {
+    it('uses absolute identifierTemplate for aboutUrl', async () => {
       // given
       const table: RecursivePartial<DimensionTable> = {
         id: namedNode('http://reference-attribute.test/fact-table'),
@@ -98,6 +100,28 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/{foo}/{bar}')
+    })
+
+    it('concatenates project base when identifier template is note absolute', async () => {
+      // given
+      const table: RecursivePartial<DimensionTable> = {
+        id: namedNode('http://reference-attribute.test/fact-table'),
+        identifierTemplate: 'table/{foo}/{bar}',
+        columns: [],
+        attributes: [],
+        types: [
+          dataCube.DimensionTable,
+        ],
+        project: {
+          baseUri: 'http://example.com/tst-project/',
+        },
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table)
+
+      // then
+      expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/tst-project/table/{foo}/{bar}')
     })
   })
 })
