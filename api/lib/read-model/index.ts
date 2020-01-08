@@ -1,6 +1,6 @@
-import { TypedClownfaceEntity } from './TypedClownfaceEntity'
+import { RdfResource } from '@tpluscode/rdfine'
 
-export interface Project extends TypedClownfaceEntity {
+export interface Project extends RdfResource {
   name: string;
   baseUri: string;
 }

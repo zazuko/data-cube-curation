@@ -11,7 +11,8 @@ import { unselectFactTable } from '../domain/project'
 
 handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
   await insertData(`
-    <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" .
+    <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" ;
+       dataCube:baseUri "${ev.data.baseUri}" .
     <${ev.id}/tables> dataCube:project <${ev.id}> .
     <${ev.id}/sources> dataCube:project <${ev.id}> .
     <${ev.id}/fact-table> dataCube:project <${ev.id}> .
@@ -33,6 +34,15 @@ handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async ev => {
     .insert(`<${ev.id}> schema:name "${ev.data.name}" .`)
     .prefixes({
       schema,
+      dataCube,
+    })
+    .execute(getClient())
+})
+
+handle<ProjectEvents, 'ProjectRebased'>('ProjectRebased', async ev => {
+  await deleteInsert(`<${ev.id}> dataCube:baseUri ?currentBase .`)
+    .insert(`<${ev.id}> dataCube:baseUri "${ev.data.baseUri}" .`)
+    .prefixes({
       dataCube,
     })
     .execute(getClient())
@@ -90,7 +100,8 @@ export async function getProject (id: string) {
       api:sources ?sources ;
       dataCube:factTable ?factTable ;
       api:factTable ?factTableCanonical ;
-      api:tables ?tables .
+      api:tables ?tables ;
+      dataCube:baseUri ?baseUri .
 
     ?sources
         a hydra:Collection ;
@@ -106,7 +117,8 @@ export async function getProject (id: string) {
         a ?projectType ;
         api:sources ?sources ;
         api:factTable ?factTableCanonical ;
-        api:tables ?tables .
+        api:tables ?tables ;
+        dataCube:baseUri ?baseUri .
 
     OPTIONAL
     {

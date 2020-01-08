@@ -1,0 +1,141 @@
+@prefix api:       <https://rdf-cube-curation.described.at/api/> .
+@prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
+@prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix code:      <https://code.described.at/> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema:    <http://schema.org/> .
+
+api:Projects
+  a                        hydra:Class ;
+  hydra:title              "Data Cube Projects" ;
+  hydra:supportedOperation api:CreateProject, api:GetDataCubeProjects .
+
+api:GetDataCubeProjects
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Get all projects" ;
+  code:implementedBy [ a                hydra-box:SparqlQuery ;
+                       hydra-box:source <file:hydra/projects/get.rq>, <file:hydra/projects/get.manages-block.rq> ] .
+
+api:CreateProject
+  a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
+  hydra:title         "Design an RDF data cube" ;
+  hydra:method        "POST" ;
+  hydra:returns       dataCube:Project ;
+  hydra:expects       dataCube:Project ;
+  code:implementedBy  [ a              hydra-box:middlewareChain ;
+                        code:arguments ( [ a         code:EcmaScript ;
+                                           code:link <file:lib/data-cube/project#create> ] ) ] ;
+  hydra-box:variables [ hydra:mapping [ a              hydra:IriTemplateMapping ;
+                                        hydra:property schema:name ;
+                                        hydra:variable "projectName" ] ] .
+
+api:ReplaceProject
+  a                   hydra:SupportedOperation, hydra-box:View, schema:CreateAction, schema:UpdateAction ;
+  hydra:title         "Design an RDF data cube" ;
+  hydra:method        "PUT" ;
+  hydra:returns       dataCube:Project ;
+  hydra:expects       dataCube:Project ;
+  code:implementedBy  [ a              hydra-box:middlewareChain ;
+                        code:arguments ( [ a         code:EcmaScript ;
+                                           code:link <file:lib/data-cube/project#createOrUpdate> ] ) ] ;
+  hydra-box:variables [ hydra:mapping [ a              hydra:IriTemplateMapping ;
+                                        hydra:property schema:name ;
+                                        hydra:variable "projectName" ] ] .
+
+api:ProjectPlaceholder
+  a                       hydra:Class ;
+  hydra:supportedProperty [ hydra:property api:project ] .
+
+api:project
+  hydra:supportedOperation api:ReplaceProject .
+
+dataCube:Project
+  a                        hydra:Class ;
+  hydra:title              "A data cube mapping project" ;
+  hydra:supportedOperation api:GetProject,
+                           api:DeleteProject,
+                           api:ReplaceProject ;
+  hydra:supportedProperty  [
+                             hydra:property  schema:name ;
+                             hydra:title     "Project name" ;
+                             hydra:readable  true ;
+                             hydra:writeable true ;
+                             hydra:required  true
+                           ],
+                           [
+                             hydra:property  dataCube:baseUri ;
+                             hydra:title     "Base URI for generated triples" ;
+                             hydra:readable  true ;
+                             hydra:writeable true
+                           ],
+                           [
+                             hydra:property  api:sources ;
+                             hydra:title     "Data cube sources" ;
+                             hydra:writeable false
+                           ],
+                           [
+                             hydra:property  api:factTable ;
+                             hydra:title     "The project's output Fact Table" ;
+                             hydra:writeable false
+                           ],
+                           [
+                             hydra:property  api:tables ;
+                             hydra:title     "The project's tables" ;
+                             hydra:writeable false
+                           ] .
+
+api:tables
+  a                        hydra:Link ;
+  rdfs:range               api:TableCollection ;
+  hydra:supportedOperation api:CreateDimensionTable, api:PostFactTable, api:GetTables .
+
+api:factTable
+  a                        hydra:Link ;
+  rdfs:range               dataCube:FactTable ;
+  hydra:supportedOperation api:CreateFactTable .
+
+api:sources
+  a                        hydra:Link ;
+  hydra:supportedOperation api:AddSource .
+
+api:DeleteProject
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "DELETE" ;
+  hydra:title        "Deletes a project" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project/delete#handler> ] ) ] .
+
+api:GetProject
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Get a project" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project/get#get> ] ) ] .
+
+api:AddSource
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "POST" ;
+  hydra:title        "Create a data cube source" ;
+  hydra:description  "Select a comma-separated values file" ;
+  hydra:returns      dataCube:Project ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/create#parseCsv> ]
+                                        [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/create#createSourceHandler> ]
+                                        [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/get#get> ] ) ] .
+
+api:GetProjectSources
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "GET" ;
+  hydra:title        "Get the data cube source" ;
+  hydra:returns      api:Sources ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project/sources-collection#get> ] ) ] .

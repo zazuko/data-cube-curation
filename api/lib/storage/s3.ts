@@ -2,15 +2,16 @@ import aws from 'aws-sdk'
 import { Readable } from 'stream'
 import { isReadable } from 'isstream'
 import { log } from '../log'
+import env from '../env'
 
 const logError = log.extend('s3').extend('error')
 
 const s3 = new aws.S3({
-  endpoint: process.env.AWS_S3_ENDPOINT,
+  endpoint: env.AWS_S3_ENDPOINT,
 })
 
 const defaultS3Options = {
-  Bucket: process.env.AWS_S3_BUCKET,
+  Bucket: env.AWS_S3_BUCKET,
 }
 
 export async function saveFile (path: string, contents: string) {

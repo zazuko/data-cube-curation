@@ -1,31 +1,31 @@
+import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { csvw, rdf } from '../../namespaces'
 import * as Csvw from './index'
-import TypedClownfaceEntity from '../../read-model/TypedClownfaceEntity'
 import { TableSchema } from './TableSchema'
-import { Term } from 'rdf-js'
-import { factory } from '../../read-model/TypedEntityFactory'
+import { BlankNode, DatasetCore, NamedNode } from 'rdf-js'
 import { ColumnMixin } from './Column'
+import { SingleContextClownface, Clownface } from 'clownface'
 
-export default class extends TypedClownfaceEntity implements Csvw.Mapping {
-  public constructor (o: { dataset: any; term: Term }) {
+export default class <D extends DatasetCore> extends RdfResourceImpl<D> implements Csvw.Mapping {
+  public constructor (o: { dataset: D; term: NamedNode }) {
     super(o)
 
-    this.addOut(rdf.type, csvw.CsvwMapping)
+    this._node.addOut(rdf.type, csvw.CsvwMapping)
   }
 
   public get tableSchema () {
-    let node = this.out(csvw.tableSchema)
+    let node: SingleContextClownface | Clownface = this._node.out(csvw.tableSchema)
     if (!node.term) {
-      this.addOut(csvw.tableSchema, newNode => {
+      this._node.addOut(csvw.tableSchema, newNode => {
         node = newNode
       })
     }
 
-    return new TableSchema(node)
+    return new TableSchema(node as any as SingleContextClownface<DatasetCore, BlankNode>)
   }
 
   public addDialect () {
-    this.addOut(csvw.dialect, dialect => {
+    this._node.addOut(csvw.dialect, dialect => {
       dialect.addOut(csvw.header, true)
       dialect.addOut(csvw.delimiter, ';')
       dialect.addOut(csvw.quoteChar, '"')
@@ -33,8 +33,8 @@ export default class extends TypedClownfaceEntity implements Csvw.Mapping {
   }
 
   public newColumn (col: { name: string }) {
-    const node = this.blankNode().addOut(csvw.title, col.name)
+    const node = this._node.blankNode().addOut(csvw.title, col.name)
 
-    return factory.createEntity<Csvw.Column>(node, [ ColumnMixin ])
+    return RdfResourceImpl.factory.createEntity<Csvw.Column>(node, [ ColumnMixin ])
   }
 }

@@ -7,6 +7,7 @@ import { projects, sources } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/source/index'
+import env from '../../env'
 
 export function parseCsv (req, res, next) {
   let delimiter = ','
@@ -43,10 +44,13 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res: Res
   const project = await projects.load(projectId)
 
   const contentDispositionPattern = /attachment; filename="(.+)"/
-  const contentDisposition: string = req.headers['content-disposition']
+  const contentDisposition = req.headers['content-disposition']
   if (contentDisposition) {
     if (contentDispositionPattern.test(contentDisposition)) {
-      res.locals.sourceName = contentDisposition.match(contentDispositionPattern)[1]
+      const matchedName = contentDisposition.match(contentDispositionPattern)
+      if (matchedName) {
+        res.locals.sourceName = matchedName[1]
+      }
     }
   } else {
     res.locals.sourceName = 'unnamed'
@@ -63,7 +67,7 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res: Res
     .factory(createSource)(createSourceCommand)
 
   const sourceAggregate = await source.commit(sources)
-  const sourceId = `${process.env.BASE_URI}${sourceAggregate['@id']}`
+  const sourceId = `${env.BASE_URI}${sourceAggregate['@id']}`
 
   res.status(201)
   res.setHeader('Location', sourceId)

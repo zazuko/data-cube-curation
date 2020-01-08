@@ -54,10 +54,14 @@ export async function getSourceColumns (sourceId: string) {
 
   const columns = graph
     .node($rdf.namedNode(`${sourceId}`)).out(dataCube.column)
-    .map(column => ({
-      column: column.term,
-      order: parseInt(column.out(dtype.order).value) || 0,
-    }))
+    .map(column => {
+      const dtypeOrder = column.out(dtype.order).value
+
+      return {
+        column: column.term,
+        order: dtypeOrder ? parseInt(dtypeOrder) : 0,
+      }
+    })
     .sort((left, right) => left.order - right.order)
     .map(item => item.column)
 

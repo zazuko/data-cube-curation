@@ -1,27 +1,27 @@
-import { TypedClownfaceEntity } from '../TypedClownfaceEntity'
+import { RdfResource } from '@tpluscode/rdfine'
 import { Project } from '../'
 
-export interface Table extends TypedClownfaceEntity {
+export interface Table extends RdfResource {
   readonly columns: Column[];
   readonly attributes: Attribute[];
   readonly project: Project;
 }
 
 export interface DimensionTable extends Table {
-  readonly identifierTemplate: string;
+  readonly identifierTemplate: string | undefined;
 }
 
 export interface Column {
   readonly name: string;
 }
 
-export interface Attribute extends TypedClownfaceEntity {
+export interface Attribute extends RdfResource {
   readonly predicate: string;
 }
 
 export interface ValueAttribute extends Attribute {
   readonly language: string;
-  readonly datatype: TypedClownfaceEntity;
+  readonly datatype: RdfResource;
 }
 
 export interface ColumnMapping {

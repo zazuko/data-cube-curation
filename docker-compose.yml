@@ -29,6 +29,7 @@ services:
       READ_MODEL_SPARQL_ENDPOINT: http://fuseki:3030/data-cube-read/query
       READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-read/update
       STORAGE_FILESYSTEM_PATH: /uploads
+      NODE_ENV: production
     volumes:
       - uploads:/uploads
   analyzer:

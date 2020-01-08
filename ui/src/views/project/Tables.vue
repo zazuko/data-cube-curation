@@ -6,11 +6,13 @@
       </b-button>
     </div>
 
-    <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
-      <TableItem v-for="table in tables" :key="table.id" :table="table" :project="project" />
-      <div v-if="tables.length < 1" class="content has-text-grey">
-        <p>No table yet</p>
-      </div>
+    <Loader :data="sources" v-slot="{ data: sources }">
+      <Loader class="tables-list" :data="tables" v-slot="{ data: tables }">
+        <TableItem v-for="table in tables" :key="table.id" :table="table" :project="project" :tables="tables" :sources="sources" />
+        <div v-if="tables.length < 1" class="content has-text-grey">
+          <p>No table yet</p>
+        </div>
+      </Loader>
     </Loader>
   </div>
 </template>

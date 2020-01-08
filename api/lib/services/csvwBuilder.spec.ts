@@ -13,69 +13,69 @@ const { ids } = specGraphs
 describe('csvwBuilder', () => {
   describe('mapping for FactTable', () => {
     it('includes unmapped source columns as suppressed', async () => {
-    // given
+      // given
       const dataset = await specGraphs.unmappedColumnGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute', async () => {
-    // given
+      // given
       const dataset = await specGraphs.mappedColumnGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps multiple attributes mapping same column', async () => {
-    // given
+      // given
       const dataset = await specGraphs.multipleMappedColumnsGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with datatype', async () => {
-    // given
+      // given
       const dataset = await specGraphs.columnMappedWithDatatypeGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with language tag', async () => {
-    // given
+      // given
       const dataset = await specGraphs.columnMappedWithLanguageGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, ids.tableId)
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps reference attribute', async () => {
-    // given
+      // given
       const dataset = await specGraphs.referenceAttributeGraph()
 
       // when
-      const csvwDataset = buildCsvw(dataset, `http://reference-attribute.test/fact-table`)
+      const csvwDataset = buildCsvw({ dataset, tableId: `http://reference-attribute.test/fact-table` })
 
       // then
-      expect(csvwDataset.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
   })
 
@@ -96,7 +96,7 @@ describe('csvwBuilder', () => {
       }
 
       // when
-      const csvwDataset = buildCsvw(table)
+      const csvwDataset = buildCsvw(table as any)
 
       // then
       expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/{foo}/{bar}')
@@ -118,7 +118,7 @@ describe('csvwBuilder', () => {
       }
 
       // when
-      const csvwDataset = buildCsvw(table)
+      const csvwDataset = buildCsvw(table as any)
 
       // then
       expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/tst-project/table/{foo}/{bar}')

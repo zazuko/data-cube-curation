@@ -1,4 +1,6 @@
 import $rdf from 'rdf-ext'
+import { Dataset } from 'rdf-js'
+import cf from 'clownface'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
@@ -7,7 +9,7 @@ import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
 import { dataCube } from '../namespaces'
-import isUri = require('is-uri')
+import { getAboutUrl } from './csvwBuilder/aboutUrl'
 import parser = require('uri-template')
 
 function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attribute?: Table.Attribute): Csvw.Column {
@@ -34,13 +36,13 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attrib
   return csvwColumn
 }
 
-export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | object, tableId?: string) {
-  let table: Table.Table | Table.DimensionTable
-  if (!('id' in tableDataset)) {
-    table = new BaseTable(tableDataset, tableId)
-  } else {
-    table = tableDataset
-  }
+export function buildCsvw (tableOrDataset: { dataset: Dataset; tableId: string }) {
+  let table: Table.Table | Table.DimensionTable =
+    BaseTable.factory.createEntity(cf({
+      dataset: tableOrDataset.dataset,
+      term: $rdf.namedNode(tableOrDataset.tableId),
+    }), [ BaseTable ])
+
   const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
   csvwGraph.addDialect()
@@ -49,11 +51,7 @@ export function buildCsvw (tableDataset: Table.Table | Table.DimensionTable | ob
 
   if ('identifierTemplate' in table) {
     const parsed = parser.parse(table.identifierTemplate)
-    if (isUri(parsed.prefix)) {
-      csvwGraph.tableSchema.aboutUrl = table.identifierTemplate
-    } else {
-      csvwGraph.tableSchema.aboutUrl = table.project.baseUri + table.identifierTemplate
-    }
+    csvwGraph.tableSchema.aboutUrl = getAboutUrl(table.project, parsed)
   }
 
   csvwGraph.tableSchema.columns = table.columns

@@ -1,14 +1,13 @@
+import { namespace, property, RdfResourceImpl } from '@tpluscode/rdfine'
 import { csvw } from '../../namespaces'
-import TypedClownfaceEntity from '../../read-model/TypedClownfaceEntity'
 import * as Csvw from './index'
-import { literal, namespace } from '../../read-model/decorators'
 
 @namespace(csvw)
-export class TableSchema extends TypedClownfaceEntity implements Csvw.TableSchema {
+export class TableSchema extends RdfResourceImpl implements Csvw.TableSchema {
   public set columns (columns: Csvw.Column[]) {
-    this.addList(csvw.column, columns)
+    this._node.addList(csvw.column, columns.map(c => c._node))
   }
 
-  @literal()
+  @property.literal()
   public aboutUrl: string;
 }

@@ -32,7 +32,7 @@
         <tbody>
           <tr>
             <th>Source CSV</th>
-            <Loader tag="td" :data="source" v-slot="{ data: source }">{{ source.name }}</Loader>
+            <td>{{ source.name }}</td>
           </tr>
           <tr v-if="!table.isFact">
             <th>Identifier template</th>
@@ -40,9 +40,9 @@
           </tr>
           <tr v-if="table.attributesCollection">
             <th>Properties</th>
-            <td>
+            <Loader tag="td" :data="valueAttributes" v-slot="{ data: attributes }">
 
-              <table class="table is-fullwidth">
+              <table class="table is-fullwidth" v-if="attributes.length > 0">
                 <thead>
                   <tr>
                     <th>Source column</th>
@@ -52,35 +52,71 @@
                     <th></th>
                   </tr>
                 </thead>
-                <Loader tag="tbody" :data="attributes" v-slot="{ data: attributes }">
+                <Loader tag="tbody" :data="valueAttributes" v-slot="{ data: attributes }">
                   <tr v-for="attribute in attributes" :key="attribute.id">
-                    <Loader tag="td" :data="getColumn(attribute.columnId)" v-slot="{ data: column }">
-                      {{ column.name }}
-                    </Loader>
+                    <td>{{ getColumn(attribute.columnId).name }}</td>
                     <td>{{ attribute.predicateId }}</td>
                     <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
                     <td>
-                      <b-button v-if="attribute.actions.delete" icon="trash-can-outline" />
-                      <b-button v-if="attribute.actions.edit" icon="pencil" />
+                      <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
+                      <b-button v-if="attribute.actions.edit" icon-left="pencil" />
                     </td>
-                  </tr>
-                  <tr v-if="attributes.length < 1">
-                    <td colspan="7" class="has-text-grey">No properties yet</td>
                   </tr>
                 </Loader>
-                <tfoot>
+              </table>
+              <p v-else class="has-text-grey">No properties yet</p>
+
+              <p v-if="table.actions.createValueAttribute" class="has-text-right">
+                <b-button icon-left="plus" @click="createValueAttribute">
+                  {{ table.actions.createValueAttribute.title }}
+                </b-button>
+              </p>
+
+            </Loader>
+          </tr>
+          <tr v-if="table.attributesCollection">
+            <th>References to other tables</th>
+            <Loader tag="td" :data="referenceAttributes" v-slot="{ data: attributes }">
+              <table class="table is-fullwidth" v-if="attributes.length > 0">
+                <thead>
                   <tr>
-                    <td colspan="7" v-if="table.actions.createAttribute" class="has-text-right">
-                      <b-button icon-left="plus" @click="createAttribute">
-                        {{ table.actions.createAttribute.title }}
-                      </b-button>
+                    <th>Table</th>
+                    <th>Property</th>
+                    <th>Column mapping</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="attribute in attributes" :key="attribute.id">
+                    <td><TableTag :table="getTable(attribute.referencedTableId)" /></td>
+                    <td>{{ attribute.predicateId }}</td>
+                    <td>
+                       <ul v-if="attribute.columnMapping.length > 0">
+                        <li v-for="(mapping, index) in attribute.columnMapping" :key="index">
+                          {{ displayColumnMapping(mapping) }}
+                        </li>
+                      </ul>
+                      <span v-else>N/A</span>
+                    </td>
+                    <td>
+                      <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
+                      <b-button v-if="attribute.actions.edit" icon-left="pencil" />
                     </td>
                   </tr>
-                </tfoot>
+                </tbody>
               </table>
+              <p v-else class="has-text-grey">
+                No reference yet
+              </p>
 
-            </td>
+              <p v-if="table.actions.createReferenceAttribute" class="has-text-right">
+                <b-button icon-left="plus" @click="createReferenceAttribute">
+                  {{ table.actions.createReferenceAttribute.title }}
+                </b-button>
+              </p>
+
+            </Loader>
           </tr>
         </tbody>
       </table>
@@ -96,44 +132,85 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, AttributeFormData } from '@/types'
+import { IOperation, HydraResource } from 'alcaeus/types/Resources'
+import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, ValueAttributeFormData, ReferenceAttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
-import AttributeForm from './AttributeForm.vue'
+import ValueAttributeForm from './ValueAttributeForm.vue'
+import ReferenceAttributeForm from './ReferenceAttributeForm.vue'
 import TableMapping from './TableMapping.vue'
 import TablePreview from './TablePreview.vue'
+import TableTag from '../TableTag.vue'
+import * as URI from '@/api/uris'
+import { getOrThrow } from '@/api/common'
 
 @Component({
   components: {
-    Loader
+    Loader,
+    TableTag
   }
 })
 export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly table: Table
+  @Prop() readonly tables: Table[]
+  @Prop() readonly sources: Source[]
 
-  get attributes () {
+  get attributes (): RemoteData<Attribute[]> {
     return this.$store.getters['attributes/forTable'](this.table.id)
   }
 
-  get source (): RemoteData<Source> {
-    const projectId = this.$route.params.id
-    return this.$store.getters['sources/one'](projectId, this.table.sourceId)
+  get valueAttributes () {
+    if (!this.attributes.data) return Remote.loading()
+
+    return Remote.loaded(this.attributes.data.filter((attribute) => attribute.isValue))
   }
 
-  getColumn (id: ResourceId): RemoteData<Column> {
-    if (this.source.isLoading || !this.source.data) {
-      return Remote.loading()
-    }
+  get referenceAttributes () {
+    if (!this.attributes.data) return Remote.loading()
 
-    const column = this.source.data.columns.find((column: Column) => column.id === id)
+    return Remote.loaded(this.attributes.data.filter((attribute) => attribute.isReference))
+  }
 
-    return Remote.loaded(column)
+  get source (): Source {
+    const source = this.sources.find((s) => s.id === this.table.sourceId)
+
+    if (!source) throw new Error('Source not found')
+
+    return source
+  }
+
+  getTable (id: ResourceId): Table {
+    const table = this.tables.find((table) => table.id === id)
+
+    if (!table) throw new Error(`Table not found ${id}`)
+
+    return table
+  }
+
+  get allColumns (): Column[] {
+    return this.sources.flatMap((s) => s.columns)
+  }
+
+  getColumn (id: ResourceId): Column {
+    const column = this.allColumns.find((column: Column) => column.id === id)
+
+    if (!column) throw new Error(`Column not found: ${id}`)
+
+    return column
+  }
+
+  displayColumnMapping (mapping: HydraResource): string {
+    // TODO: Cleanup once mappings have a type
+    const sourceColumnName = this.getColumn(getOrThrow<Column>(mapping, URI.PROP_SOURCE_COLUMN).id).name
+    const referencedColumnName = this.getColumn(getOrThrow<Column>(mapping, URI.PROP_REFERENCED_COLUMN).id).name
+
+    return `${sourceColumnName} -> ${referencedColumnName}`
   }
 
   deleteTable (table: Table) {
     this.$buefy.dialog.confirm({
-      title: this.table.actions.delete.title,
+      title: (this.table.actions.delete as IOperation).title,
       message: 'Are you sure you want to delete this table?',
       confirmText: 'Delete',
       type: 'is-danger',
@@ -146,22 +223,56 @@ export default class extends Vue {
     })
   }
 
-  createAttribute () {
+  createValueAttribute () {
     const modal = this.$buefy.modal.open({
       parent: this,
-      component: AttributeForm,
+      component: ValueAttributeForm,
       props: {
         table: this.table,
-        // TODO: Handle source not loaded
-        source: this.source.data,
-        save: async (attribute: AttributeFormData) => {
+        source: this.source,
+        save: async (attribute: ValueAttributeFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('attributes/create', { table: this.table, attribute })
+          await this.$store.dispatch('attributes/createValue', { table: this.table, attribute })
           loading.close()
           modal.close()
         }
       },
       hasModalCard: true
+    })
+  }
+
+  createReferenceAttribute () {
+    const modal = this.$buefy.modal.open({
+      parent: this,
+      component: ReferenceAttributeForm,
+      props: {
+        table: this.table,
+        source: this.source,
+        tables: this.tables,
+        sources: this.sources,
+        save: async (attribute: ReferenceAttributeFormData) => {
+          const loading = this.$buefy.loading.open({})
+          await this.$store.dispatch('attributes/createReference', { table: this.table, attribute })
+          loading.close()
+          modal.close()
+        }
+      },
+      hasModalCard: true
+    })
+  }
+
+  deleteAttribute (attribute: Attribute) {
+    this.$buefy.dialog.confirm({
+      title: (attribute.actions.delete as IOperation).title,
+      message: 'Are you sure you want to delete this attribute?',
+      confirmText: 'Delete',
+      type: 'is-danger',
+      hasIcon: true,
+      onConfirm: async () => {
+        const loading = this.$buefy.loading.open({})
+        await this.$store.dispatch('attributes/delete', attribute)
+        loading.close()
+      }
     })
   }
 
