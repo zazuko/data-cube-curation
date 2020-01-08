@@ -1,4 +1,4 @@
-import { Constructor, RdfResource, factory, property } from '@tpluscode/rdfine'
+import { Constructor, RdfResource, RdfResourceImpl, property } from '@tpluscode/rdfine'
 import * as Table from './index'
 import { dataCube, schema } from '../../namespaces'
 
@@ -15,4 +15,4 @@ ColumnMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Column)
 }
 
-factory.addMixin(ColumnMixin)
+RdfResourceImpl.factory.addMixin(ColumnMixin)

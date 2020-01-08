@@ -1,8 +1,8 @@
-import { RdfResourceImpl, factory } from '@tpluscode/rdfine'
+import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { csvw, rdf } from '../../namespaces'
 import * as Csvw from './index'
 import { TableSchema } from './TableSchema'
-import { DatasetCore, NamedNode } from 'rdf-js'
+import { BlankNode, DatasetCore, NamedNode } from 'rdf-js'
 import { ColumnMixin } from './Column'
 import { SingleContextClownface, Clownface } from 'clownface'
 
@@ -21,7 +21,7 @@ export default class <D extends DatasetCore> extends RdfResourceImpl<D> implemen
       })
     }
 
-    return new TableSchema(node as any as SingleContextClownface)
+    return new TableSchema(node as any as SingleContextClownface<DatasetCore, BlankNode>)
   }
 
   public addDialect () {
@@ -35,6 +35,6 @@ export default class <D extends DatasetCore> extends RdfResourceImpl<D> implemen
   public newColumn (col: { name: string }) {
     const node = this._node.blankNode().addOut(csvw.title, col.name)
 
-    return factory.createEntity<Csvw.Column>(node, [ ColumnMixin ])
+    return RdfResourceImpl.factory.createEntity<Csvw.Column>(node, [ ColumnMixin ])
   }
 }

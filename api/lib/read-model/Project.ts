@@ -1,4 +1,4 @@
-import { Constructor, factory, property, RdfResource } from '@tpluscode/rdfine'
+import { Constructor, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
 import { dataCube, schema } from '../namespaces'
 import * as DataCube from '.'
 
@@ -18,4 +18,4 @@ ProjectMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Project)
 }
 
-factory.addMixin(ProjectMixin)
+RdfResourceImpl.factory.addMixin(ProjectMixin)

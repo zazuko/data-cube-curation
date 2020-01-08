@@ -8,7 +8,7 @@ export interface Table extends RdfResource {
 }
 
 export interface DimensionTable extends Table {
-  readonly identifierTemplate: string;
+  readonly identifierTemplate: string | undefined;
 }
 
 export interface Column {

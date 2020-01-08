@@ -1,0 +1,124 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+
+ENTRYPOINT "project/reference-attribute-csvw-value-url"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Project testing reference attribute between tables" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource {
+                Invoke {
+                    Content-Type "text/csv"
+                    Content-Disposition 'attachment; filename="UBD0028.Daten_de.csv"'
+
+                    <<< "../../bodies/UBD0028.Daten_de.csv"
+                } => {}
+
+                Invoke {
+                    Content-Type "text/csv"
+                    Content-Disposition 'attachment; filename="single-column.csv"'
+
+                    <<< "../../bodies/single-column.csv"
+                } => {}
+            }
+        }
+        Expect Property api:tables {
+            Expect Operation api:CreateDimensionTable
+            Expect Operation api:PostFactTable
+        }
+    }
+}
+
+With Operation api:CreateDimensionTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/reference-attribute-csvw-value-url/source/ubd0028-daten-de-csv> ;
+           schema:name "Stations" ;
+           dataCube:identifierTemplate "http://example.com/station/{station_name}" ;
+           a dataCube:DimensionTable .
+        ```
+    } => {}
+}
+
+With Operation api:PostFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/reference-attribute-csvw-value-url/source/single-column-csv> ;
+           schema:name "Observation" ;
+           a dataCube:FactTable .
+        ```
+    } => {
+        Expect Status 201
+    }
+}
+
+With Class dataCube:FactTable {
+    Expect Property api:attributes {
+        Expect Operation api:AddReferenceAttribute {
+            Invoke {
+                Content-Type "text/turtle"
+
+                ```
+                @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+                @prefix schema: <http://schema.org/> .
+                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+                <> dataCube:referencedTable <project/reference-attribute-csvw-value-url/table/Stations> ;
+                   rdf:predicate <http://example.org/station> ;
+                   a dataCube:ReferenceAttribute ;
+                   dataCube:columnMapping [
+                       # TODO: substitue from env variables
+                       dataCube:sourceColumn <http://localhost:5678/project/reference-attribute-csvw-value-url/source/single-column-csv/station-id> ;
+                       dataCube:referencedColumn <http://localhost:5678/project/reference-attribute-csvw-value-url/source/ubd0028-daten-de-csv/station-name> ;
+                   ] .
+                ```
+            } => {
+                Expect Status 201
+            }
+        }
+    }
+
+    Expect Link api:csvwMetadata {
+        Expect Property csvw:tableSchema {
+            Expect Property csvw:column {
+                Expect Property csvw:valueUrl "http://example.com/station/{station_id}"
+            }
+        }
+    }
+}

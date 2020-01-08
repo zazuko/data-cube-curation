@@ -1,4 +1,4 @@
-import { namespace, property, RdfResourceImpl, RdfResource, factory, Constructor } from '@tpluscode/rdfine'
+import { namespace, property, RdfResourceImpl, RdfResource, Constructor } from '@tpluscode/rdfine'
 import * as Table from './index'
 import { dataCube, rdf } from '../../namespaces'
 import './Attribute'
@@ -17,7 +17,7 @@ export class BaseTable extends RdfResourceImpl implements Table.Table {
     return this._node.in(dataCube.table)
       .has(rdf.type, dataCube.Attribute)
       .map(attr => {
-        return factory.createEntity<Table.Attribute>(attr)
+        return RdfResourceImpl.factory.createEntity<Table.Attribute>(attr)
       })
   }
 }
@@ -36,4 +36,4 @@ DimensionTableMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.DimensionTable)
 }
 
-factory.addMixin(DimensionTableMixin)
+RdfResourceImpl.factory.addMixin(DimensionTableMixin)
