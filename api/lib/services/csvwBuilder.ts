@@ -8,32 +8,38 @@ import CsvwGraph from './csvwBuilder/Csvw'
 import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
-import { dataCube } from '../namespaces'
 import { getAboutUrl } from './csvwBuilder/aboutUrl'
 import parser = require('uri-template')
 
-function createCsvwColumn (csvwGraph: Csvw.Mapping, column: Table.Column, attribute?: Table.Attribute): Csvw.Column {
-  let csvwColumn = csvwGraph.newColumn({
-    name: column.name,
-  })
+type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
 
-  if (!attribute) {
-    csvwColumn.suppressed = true
+function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribute: Attribute): Csvw.Column | null {
+  let csvwColumn: Csvw.Column | null = null
+
+  if ('column' in attribute) {
+    csvwColumn = csvwGraph.newColumn({
+      name: attribute.column.name,
+    })
+
+    csvwColumn = valueAttributeToCsvwColumn(attribute, csvwColumn)
+  }
+
+  if ('columnMappings' in attribute) {
+    const column = attribute.columnMappings[0].sourceColumn
+    csvwColumn = csvwGraph.newColumn({
+      name: column.name,
+    })
+
+    csvwColumn = referenceAttributeToCsvwColumn(attribute, csvwColumn)
+  }
+
+  if (csvwColumn) {
+    csvwColumn.propertyUrl = attribute.predicate
     return csvwColumn
   }
 
-  csvwColumn.propertyUrl = attribute.predicate
-
-  if (attribute.hasType(dataCube.ValueAttribute)) {
-    return valueAttributeToCsvwColumn(attribute as Table.ValueAttribute, csvwColumn)
-  }
-
-  if (attribute.hasType(dataCube.ReferenceAttribute)) {
-    return referenceAttributeToCsvwColumn(attribute as Table.ReferenceAttribute, csvwColumn)
-  }
-
   error(`The types of <%s> did not contain one of the expected datacube:Attribute types`, attribute.id)
-  return csvwColumn
+  return null
 }
 
 export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: Dataset; tableId: string }) {
@@ -51,30 +57,36 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
 
   csvwGraph.addDialect()
 
-  const doneAttributes: string[] = []
-
   if ('identifierTemplate' in table) {
     const parsed = parser.parse(table.identifierTemplate)
     csvwGraph.tableSchema.aboutUrl = getAboutUrl(table.project, parsed)
   }
 
-  csvwGraph.tableSchema.columns = table.columns
-    .reduce(function matchColumnsToAttributes (previousColumns, column) {
-      let nextColumns: Csvw.Column[]
+  const attributes: Attribute[] = table.attributes
+  const mappedColumns = attributes.reduce((columns, attr) => {
+    const column = createCsvwColumn(csvwGraph, table, attr)
 
-      nextColumns = table.attributes
-        .filter(attr => !doneAttributes.includes(attr.id.value))
-        .map(attr => {
-          doneAttributes.push(attr.id.value)
-          return createCsvwColumn(csvwGraph, column, attr)
-        })
+    if (column) {
+      columns.push(column)
+    }
 
-      if (nextColumns.length === 0) {
-        nextColumns = [ createCsvwColumn(csvwGraph, column) ]
-      }
+    return columns
+  }, [] as Csvw.Column[])
 
-      return [ ...previousColumns, ...nextColumns ]
-    }, [] as Csvw.Column[])
+  const suppressedColumns = table.columns.reduce((mapped, column: Table.Column) => {
+    if (!mappedColumns.find(c => c.title === column.name)) {
+      let csvwColumn = csvwGraph.newColumn({
+        name: column.name,
+      })
+      csvwColumn.suppressed = true
+
+      mapped.push(csvwColumn)
+    }
+
+    return mapped
+  }, [] as Csvw.Column[])
+
+  csvwGraph.tableSchema.columns = [...mappedColumns, ...suppressedColumns]
 
   return csvwGraph
 }

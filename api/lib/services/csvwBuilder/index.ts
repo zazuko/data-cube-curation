@@ -6,6 +6,7 @@ export interface Column extends RdfResource {
   language: string;
   datatype: RdfResource;
   valueUrl: string;
+  title: string;
 }
 
 export interface TableSchema extends RdfResource {

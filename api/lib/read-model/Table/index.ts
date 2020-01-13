@@ -11,7 +11,7 @@ export interface DimensionTable extends Table {
   readonly identifierTemplate: string | undefined;
 }
 
-export interface Column {
+export interface Column extends RdfResource {
   readonly name: string;
 }
 
@@ -20,11 +20,12 @@ export interface Attribute extends RdfResource {
 }
 
 export interface ValueAttribute extends Attribute {
+  readonly column: Column;
   readonly language: string;
   readonly datatype: RdfResource;
 }
 
-export interface ColumnMapping {
+export interface ColumnMapping extends RdfResource {
   readonly sourceColumn: Column;
   readonly referencedColumn: Column;
 }

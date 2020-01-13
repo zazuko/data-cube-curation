@@ -21,6 +21,9 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
 
     @property.literal()
     public language: string
+
+    @property.resource()
+    public column: Table.Column
   }
 
   return AttributeMixin(ValueAttribute)
