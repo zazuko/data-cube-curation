@@ -5,7 +5,7 @@ import { getClient } from '../sparqlClient'
 
 export async function getTableAndSource (tableId: string) {
   // eslint-disable-next-line jest/valid-describe
-  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable')
+  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?referencedColumn')
     .prefixes({ dataCube, schema, rdf })
     .where(`
         <${tableId}> a dataCube:Table ;
@@ -20,6 +20,9 @@ export async function getTableAndSource (tableId: string) {
 
         OPTIONAL {
           ?attribute dataCube:referencedTable ?referencedTable .
+          ?attribute dataCube:columnMapping [
+            dataCube:referencedColumn ?referencedColumn
+          ]
         }
       `)
     .execute(getClient()))

@@ -13,7 +13,9 @@ describe('project', () => {
       project = await updateProject(project, {
         newName: 'foo',
         baseUri: 'http://example.com',
-      }, {} as any)
+      }, {
+        emit: jest.fn(),
+      })
 
       // then
       expect(project).toHaveProperty('baseUri', 'http://example.com/')
