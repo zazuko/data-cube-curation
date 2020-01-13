@@ -33,7 +33,7 @@
       </div>
 
       <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
-        <b-input type="text" v-model="table.identifierTemplate" placeholder="http://example.org/{column_id}" required />
+        <IdentifierTemplateInput v-model="table.identifierTemplate" :tableName="table.name" :source="source" />
       </b-field>
 
       <b-field label="Properties">
@@ -94,10 +94,12 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { TableType, ResourceId, Project, Source, ValueAttribute, TableFormData, ValueAttributeFormData } from '@/types'
+import IdentifierTemplateInput from '../IdentifierTemplateInput.vue'
 import LanguageInput from '../LanguageInput.vue'
 
 @Component({
   components: {
+    IdentifierTemplateInput,
     LanguageInput
   }
 })
