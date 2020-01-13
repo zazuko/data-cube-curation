@@ -1,13 +1,11 @@
-import Clownface from 'clownface/lib/Clownface'
-import { csvw, dataCube } from '../../namespaces'
+import * as Table from '../../read-model/Table/index'
+import * as Csvw from './index'
 
-export function valueAttributeToCsvwColumn (attribute: Clownface, csvwColumn: Clownface) {
-  if (attribute.out(dataCube.language).value) {
-    return csvwColumn.addOut(csvw.lang, attribute.out(dataCube.language))
-  }
-
-  if (attribute.out(dataCube.datatype).value) {
-    return csvwColumn.addOut(csvw.datatype, attribute.out(dataCube.datatype))
+export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csvwColumn: Csvw.Column) {
+  if (attribute.language) {
+    csvwColumn.language = attribute.language
+  } else if (attribute.datatype) {
+    csvwColumn.datatype = attribute.datatype
   }
 
   return csvwColumn

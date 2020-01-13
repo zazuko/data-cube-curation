@@ -13,7 +13,8 @@
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "pretty": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "experimentalDecorators": true
   },
   "exclude": ["test"]
 }

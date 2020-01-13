@@ -2,6 +2,7 @@ import { mutate } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from './events'
 import { Project } from './index'
 import { errorFactory } from '../error-helper'
+import { ensureSlash } from './baseUri'
 
 interface UpdateCommand {
   newName: string;
@@ -19,20 +20,22 @@ export const updateProject = mutate<Project, UpdateCommand>(function (state, com
     throw new DomainError('Invalid base URI')
   }
 
+  const baseUri = ensureSlash(command.baseUri)
+
   if (state.name !== command.newName) {
     emitter.emit<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', {
       name: command.newName,
     })
   }
-  if (state.baseUri !== command.baseUri) {
+  if (state.baseUri !== baseUri) {
     emitter.emit<ProjectEvents, 'ProjectRebased'>('ProjectRebased', {
-      baseUri: command.baseUri,
+      baseUri,
     })
   }
 
   return {
     ...state,
     name: command.newName,
-    baseUri: command.baseUri,
+    baseUri,
   }
 })

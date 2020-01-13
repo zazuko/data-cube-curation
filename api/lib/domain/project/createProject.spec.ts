@@ -25,6 +25,17 @@ describe('project', () => {
       await expect(project.state).resolves.toHaveProperty('@id', '/project/bar')
     })
 
+    it('ensures that domain-only base URI ends with a slash', async () => {
+      // when
+      const project = await createProject({
+        name: 'foo',
+        baseUri: 'http://example.com',
+      })
+
+      // then
+      await expect(project.state).resolves.toHaveProperty('baseUri', 'http://example.com/')
+    })
+
     it('fails when name is not a string', async () => {
       // given
       const command = {

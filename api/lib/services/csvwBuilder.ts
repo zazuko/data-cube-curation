@@ -1,80 +1,92 @@
-import cf from 'clownface'
-import Clownface from 'clownface/lib/Clownface'
 import $rdf from 'rdf-ext'
-import { csvw, rdf, dataCube, schema } from '../namespaces'
+import { Dataset } from 'rdf-js'
+import cf from 'clownface'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
+import CsvwGraph from './csvwBuilder/Csvw'
+import * as Table from '../read-model/Table'
+import { BaseTable } from '../read-model/Table/Table'
+import * as Csvw from './csvwBuilder/index'
+import { getAboutUrl } from './csvwBuilder/aboutUrl'
+import parser = require('uri-template')
 
-function addDialect (csvwGraph: Clownface) {
-  csvwGraph.addOut(csvw.dialect, dialect => {
-    dialect.addOut(csvw.header, true)
-    dialect.addOut(csvw.delimiter, ';')
-    dialect.addOut(csvw.quoteChar, '"')
-  })
+type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
+
+function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribute: Attribute): Csvw.Column | null {
+  let csvwColumn: Csvw.Column | null = null
+
+  if ('column' in attribute) {
+    csvwColumn = csvwGraph.newColumn({
+      name: attribute.column.name,
+    })
+
+    csvwColumn = valueAttributeToCsvwColumn(attribute, csvwColumn)
+  }
+
+  if ('columnMappings' in attribute) {
+    const column = attribute.columnMappings[0].sourceColumn
+    csvwColumn = csvwGraph.newColumn({
+      name: column.name,
+    })
+
+    csvwColumn = referenceAttributeToCsvwColumn(attribute, csvwColumn)
+  }
+
+  if (csvwColumn) {
+    csvwColumn.propertyUrl = attribute.predicate
+    return csvwColumn
+  }
+
+  error(`The types of <%s> did not contain one of the expected datacube:Attribute types`, attribute.id)
+  return null
 }
 
-function createCsvwColumn (csvwGraph: Clownface, column: Clownface, attribute?: Clownface) {
-  let csvwColumn = csvwGraph.blankNode()
-    .addOut(csvw.title, column.out(schema('name')).value)
-
-  if (!attribute) {
-    return csvwColumn.addOut(csvw.suppressOutput, true)
+export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: Dataset; tableId: string }) {
+  let table: Table.Table | Table.DimensionTable
+  if ('dataset' in tableOrDataset) {
+    table = BaseTable.factory.createEntity(cf({
+      dataset: tableOrDataset.dataset,
+      term: $rdf.namedNode(tableOrDataset.tableId),
+    }), [BaseTable])
+  } else {
+    table = tableOrDataset
   }
 
-  csvwColumn.addOut(csvw.propertyUrl, attribute.out(rdf.predicate).value)
+  const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
-  const attributeTypes = attribute.out(rdf.type).terms
+  csvwGraph.addDialect()
 
-  if (attributeTypes.find(t => t.equals(dataCube.ValueAttribute))) {
-    return valueAttributeToCsvwColumn(attribute, csvwColumn)
+  if ('identifierTemplate' in table) {
+    const parsed = parser.parse(table.identifierTemplate)
+    csvwGraph.tableSchema.aboutUrl = getAboutUrl(table.project, parsed)
   }
 
-  if (attributeTypes.find(t => t.equals(dataCube.ReferenceAttribute))) {
-    return referenceAttributeToCsvwColumn(attribute, csvwColumn)
-  }
+  const attributes: Attribute[] = table.attributes
+  const mappedColumns = attributes.reduce((columns, attr) => {
+    const column = createCsvwColumn(csvwGraph, table, attr)
 
-  error(`The types of <%s> did not contain one of the expected datacube:Attribute types`, attribute.value)
-  return csvwColumn
-}
+    if (column) {
+      columns.push(column)
+    }
 
-export function buildCsvw (tableDataset: any, tableId: string) {
-  const tableContext = cf({ dataset: tableDataset, term: $rdf.namedNode(tableId) })
-  const csvwGraph = cf({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${tableId}/csvw`) })
-  csvwGraph.addOut(rdf.type, csvw.CsvwMapping)
+    return columns
+  }, [] as Csvw.Column[])
 
-  addDialect(csvwGraph)
+  const suppressedColumns = table.columns.reduce((mapped, column: Table.Column) => {
+    if (!mappedColumns.find(c => c.title === column.name)) {
+      let csvwColumn = csvwGraph.newColumn({
+        name: column.name,
+      })
+      csvwColumn.suppressed = true
 
-  csvwGraph.addOut(csvw.tableSchema, tableSchema => {
-    const columns = tableContext
-      .out(dataCube.source)
-      .out(dataCube.column)
-      .toArray()
+      mapped.push(csvwColumn)
+    }
 
-    const doneAttributes: string[] = []
+    return mapped
+  }, [] as Csvw.Column[])
 
-    const csvwColumns = columns
-      .reduce(function matchColumnsToAttributes (previousColumns, column) {
-        let nextColumns: Clownface[]
-        const attributes = tableContext.in(dataCube.table)
-          .has(rdf.type, dataCube.Attribute)
+  csvwGraph.tableSchema.columns = [...mappedColumns, ...suppressedColumns]
 
-        nextColumns = attributes
-          .filter(attr => !doneAttributes.includes(attr.value))
-          .map(attr => {
-            doneAttributes.push(attr.value)
-            return createCsvwColumn(csvwGraph, column, attr)
-          })
-
-        if (nextColumns.length === 0) {
-          nextColumns = [ createCsvwColumn(csvwGraph, column) ]
-        }
-
-        return [ ...previousColumns, ...nextColumns ]
-      }, [])
-
-    tableSchema.addList(csvw.column, csvwColumns)
-  })
-
-  return csvwGraph.dataset
+  return csvwGraph
 }

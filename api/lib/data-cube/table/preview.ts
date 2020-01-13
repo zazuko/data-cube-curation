@@ -20,8 +20,8 @@ export const parseSample = asyncMiddleware(async (req: express.Request, res: exp
     throw new NotFoundError()
   }
 
-  const tableDataset = await getTableAndSource(tableId)
-  const csvwMetadata = buildCsvw(tableDataset, tableId)
+  const dataset = await getTableAndSource(tableId)
+  const csvwMetadata = buildCsvw({ dataset, tableId })
   const sampleCsv = await loadSourceSample(sourceId)
 
   if (!sampleCsv) {
@@ -30,7 +30,7 @@ export const parseSample = asyncMiddleware(async (req: express.Request, res: exp
   }
 
   const parser = new CsvwParser({
-    metadata: csvwMetadata,
+    metadata: csvwMetadata._node.dataset,
     factory: $rdf,
   })
 

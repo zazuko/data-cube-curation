@@ -1,7 +1,8 @@
 import uuid from 'uuid'
 import { DomainError, initialize } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from './events'
-import { Project, temporaryUri } from './index'
+import { Project } from './index'
+import { ensureSlash, temporaryUri } from './baseUri'
 
 interface CreateCommand {
   uriSlug?: string;
@@ -14,7 +15,7 @@ export const createProject = initialize<Project, CreateCommand>(function (create
     throw new DomainError('', 'Cannot create Project', 'Invalid name')
   }
 
-  const baseUri = createCommand.baseUri || temporaryUri(createCommand.name)
+  const baseUri = ensureSlash(createCommand.baseUri) || temporaryUri(createCommand.name)
   emitter.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
     name: createCommand.name,
     baseUri,

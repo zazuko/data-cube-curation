@@ -3,20 +3,26 @@ import { describe } from '../../sparql'
 import { dataCube, schema, rdf } from '../../namespaces'
 import { getClient } from '../sparqlClient'
 
-export async function getTableAndSource (csvwResourceId: string) {
+export async function getTableAndSource (tableId: string) {
   // eslint-disable-next-line jest/valid-describe
-  return $rdf.dataset().import(await describe('?table', '?source', '?attribute', '?column')
+  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?referencedColumn')
     .prefixes({ dataCube, schema, rdf })
     .where(`
-        <${csvwResourceId}> dataCube:table ?table .
-    
-        ?tableId a dataCube:Table;
-                     dataCube:source ?source .
-                     
-         ?source dataCube:column ?column .
-      
-        OPTIONAL { 
-          ?attribute dataCube:table ?tableId
+        <${tableId}> a dataCube:Table ;
+                   dataCube:source ?source ;
+                   dataCube:project ?project .
+
+        ?source dataCube:column ?column .
+
+        OPTIONAL {
+          ?attribute dataCube:table <${tableId}> .
+        }
+
+        OPTIONAL {
+          ?attribute dataCube:referencedTable ?referencedTable .
+          ?attribute dataCube:columnMapping [
+            dataCube:referencedColumn ?referencedColumn
+          ]
         }
       `)
     .execute(getClient()))

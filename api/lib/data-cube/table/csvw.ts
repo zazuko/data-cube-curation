@@ -7,11 +7,12 @@ import { NotFoundError } from '../../error'
 
 export const get = asyncMiddleware(async (req: express.Request, res: express.Response) => {
   const tableId = await getTableId(req.resourceId)
-  const tableDataset = await getTableAndSource(req.resourceId)
 
   if (!tableId) {
     throw new NotFoundError()
   }
 
-  res.graph(await buildCsvw(tableDataset, tableId))
+  const dataset = await getTableAndSource(tableId)
+  const csvw = await buildCsvw({ dataset, tableId })
+  res.graph(csvw._node.dataset)
 })
