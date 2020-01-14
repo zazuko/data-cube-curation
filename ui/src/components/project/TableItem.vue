@@ -228,6 +228,7 @@ export default class extends Vue {
       parent: this,
       component: ValueAttributeForm,
       props: {
+        project: this.project,
         table: this.table,
         source: this.source,
         save: async (attribute: ValueAttributeFormData) => {
@@ -247,6 +248,7 @@ export default class extends Vue {
       component: ReferenceAttributeForm,
       props: {
         operation: this.table.actions.createReferenceAttribute,
+        project: this.project,
         table: this.table,
         source: this.source,
         tables: this.tables,

@@ -54,6 +54,10 @@ import { ErrorMessage } from './types'
 
 @Component
 export default class AppView extends Vue {
+  mounted () {
+    this.$store.dispatch('loadRDFProperties')
+  }
+
   get errors () {
     return this.$store.state.errors
   }

@@ -1,5 +1,6 @@
-import { ResourceId, Project, RemoteData, ErrorMessage, Table } from '@/types'
+import { ErrorMessage } from '@/types'
 
 export interface RootState {
   errors: ErrorMessage[];
+  rdfProperties: string[];
 }

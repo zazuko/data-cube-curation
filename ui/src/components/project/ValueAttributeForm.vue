@@ -13,9 +13,7 @@
         </b-select>
       </b-field>
 
-      <b-field label="Property">
-        <b-input type="text" v-model="attribute.predicateId" required />
-      </b-field>
+      <PropertyField :project="project" label="Property" v-model="attribute.predicateId" required />
 
       <b-field label="Type">
         <b-input type="text" v-model="attribute.dataTypeId" :disabled="attribute.language !== ''" />
@@ -34,21 +32,25 @@
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Table, ResourceId, Source, ValueAttributeFormData } from '@/types'
+import { Project, Table, ResourceId, Source, ValueAttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 import LanguageInput from '../LanguageInput.vue'
+import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
     TableTag,
-    LanguageInput
+    LanguageInput,
+    PropertyField
   }
 })
 export default class extends Vue {
   @Prop({ default: emptyAttribute }) readonly attribute: ValueAttributeFormData;
+  @Prop() readonly project: Project;
   @Prop() readonly table: Table;
   @Prop() readonly source: Source;
   @Prop() readonly save: (attribute: ValueAttributeFormData) => void;
+  vocabularies = [];
 
   get title () {
     if (this.attribute.id) {
