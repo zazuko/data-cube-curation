@@ -3,44 +3,45 @@
     <header class="modal-card-head">
       <h3 class="modal-card-title">
         {{ title }}
-        <TableTag :table="table" class="is-large" />
       </h3>
     </header>
-    <section class="modal-card-body">
-      <b-field label="Table">
-        <b-select v-model="attribute.referencedTableId">
-          <option v-for="table in tables" :key="table.id" :value="table.id">{{ table.name }}</option>
+    <section class="modal-card-body reference-form">
+      <p>
+        On table <TableTag :table="table" class="is-medium" />,
+      </p>
+      <p>
+        create a link to the <label for="referenced-table"><strong>category table</strong></label>
+      </p>
+      <b-field>
+        <b-select v-model="attribute.referencedTableId" id="referenced-table">
+          <option v-for="table in linkableTables" :key="table.id" :value="table.id">{{ table.name }}</option>
         </b-select>
       </b-field>
-
-      <b-field label="Property">
-        <b-input type="text" v-model="attribute.predicateId" required />
+      <p>
+        using the <label for="property"><strong>property</strong></label>
+      </p>
+      <b-field>
+        <b-input type="text" id="property" v-model="attribute.predicateId" required />
       </b-field>
 
-      <b-field label="Identifier columns mapping" v-if="referencedTable" :addons="false">
-        <p class="help">
-          The identifier for <TableTag :table="referencedTable" /> is defined as <code>{{ referencedTable.identifierTemplate }}</code><br>
-          Which columns should be used to reference it?
+      <div v-if="referencedTable">
+        <p>
+          The identifier <code>{{ referencedTable.identifierTemplate }}</code> shall use
+          the columns
         </p>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Identifier column</th>
-              <th>Link column</th>
-            </tr>
-          </thead>
+        <table class="table columns-table">
           <tbody>
             <tr v-for="(mapping, index) in attribute.columnMapping" :key="index">
-              <td>{{ mapping.referencedColumnName }}</td>
               <td>
                 <b-select v-model="mapping.sourceColumnId">
                   <option v-for="column in source.columns" :key="column.id" :value="column.id">{{ column.name }}</option>
                 </b-select>
               </td>
+              <td>for <code>{{ mapping.referencedColumnName }}</code></td>
             </tr>
           </tbody>
         </table>
-      </b-field>
+      </div>
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -48,6 +49,24 @@
     </footer>
   </form>
 </template>
+
+<style scoped>
+.reference-form p {
+  margin-bottom: 1em;
+}
+
+.columns-table > tbody > tr > td {
+  padding: 0;
+}
+
+.columns-table > tbody > tr > td:first-child {
+  padding-right: 0.4em;
+}
+
+.columns-table > tbody > tr > td:last-child {
+  line-height: 2em;
+}
+</style>
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
@@ -69,20 +88,14 @@ export default class extends Vue {
 
   get title () {
     if (this.attribute.id) {
-      return 'Edit attribute on'
+      return 'Edit link between tables'
     } else {
-      return 'Create attribute on'
+      return 'Create link to another table'
     }
   }
 
-  get columnLabel () {
-    return `Column from ${this.source.name}`
-  }
-
-  get needsColumnMapping (): boolean {
-    if (!this.referencedTable) return false
-
-    return this.table.sourceId !== this.referencedTable.sourceId
+  get linkableTables () {
+    return this.tables.filter((table) => !table.isFact)
   }
 
   get referencedTable (): Table | null {
