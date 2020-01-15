@@ -7,7 +7,8 @@
       @select="onSelect"
       :data="propositions"
       :custom-formatter="formatProposition"
-      placeholder="my-table/{column_id}"
+      placeholder="e.g. my-table/{column_id}"
+      :disabled="!source"
       required>
   </b-autocomplete>
 </template>
