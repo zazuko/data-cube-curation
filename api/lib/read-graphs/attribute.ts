@@ -14,10 +14,10 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
         rdf:predicate <${ev.data.predicate}> .
   `)
 
-  if (ev.data.datatype) {
-    builder.graph(`<${ev.id}> dataCube:datatype <${ev.data.datatype}>`)
-  } else if (ev.data.language) {
+  if (ev.data.language) {
     builder.graph(`<${ev.id}> dataCube:language "${ev.data.language}"`)
+  } else if (ev.data.datatype) {
+    builder.graph(`<${ev.id}> dataCube:datatype <${ev.data.datatype}>`)
   }
 
   return builder.prefixes({
