@@ -246,6 +246,7 @@ export default class extends Vue {
       parent: this,
       component: ReferenceAttributeForm,
       props: {
+        operation: this.table.actions.createReferenceAttribute,
         table: this.table,
         source: this.source,
         tables: this.tables,

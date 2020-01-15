@@ -2,7 +2,7 @@
   <form action="" class="modal-card" @submit.prevent="save(attribute)">
     <header class="modal-card-head">
       <h3 class="modal-card-title">
-        {{ title }}
+        {{ operation.title }}
       </h3>
     </header>
     <section class="modal-card-body reference-form">
@@ -70,6 +70,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Table, ResourceId, Source, Column, ReferenceAttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
 
@@ -80,19 +81,12 @@ import TableTag from '../TableTag.vue'
 })
 export default class extends Vue {
   @Prop({ default: emptyAttribute }) readonly attribute: ReferenceAttributeFormData;
+  @Prop() readonly operation: IOperation;
   @Prop() readonly table: Table;
   @Prop() readonly source: Source;
   @Prop() readonly tables: Table[];
   @Prop() readonly sources: Source[];
   @Prop() readonly save: (attribute: ReferenceAttributeFormData) => void;
-
-  get title () {
-    if (this.attribute.id) {
-      return 'Edit link between tables'
-    } else {
-      return 'Create link to another table'
-    }
-  }
 
   get linkableTables () {
     return this.tables.filter((table) => !table.isFact)
