@@ -1,0 +1,111 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+ENTRYPOINT "project/attribute-language-test"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Fact table project" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property api:factTable {
+            Expect Operation api:CreateFactTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="single-column.csv"'
+
+        <<< "bodies/single-column.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:CreateFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/attribute-language-test/source/single-column-csv> ;
+           schema:name "Observation" .
+        ```
+    } => {
+        Expect Status 201
+    }
+}
+
+With Class dataCube:Table {
+    Expect Property api:attributes {
+        Expect Operation api:AddValueAttribute
+    }
+
+    Expect Link api:csvwMetadata {
+        Expect Property csvw:tableSchema {
+            Expect Property csvw:column {
+                Expect Property csvw:lang "en-AU"
+            }
+        }
+    }
+}
+
+With Operation api:AddValueAttribute {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+        <> dataCube:column <project/attribute-language-test/source/single-column-csv/station-id> ;
+           rdf:predicate <http://schema.org/identifier> ;
+           dataCube:language "en-AU" ;
+           a dataCube:ValueAttribute .
+        ```
+    } => {
+        Expect Status 201
+        Expect Header Location
+
+        Expect Type dataCube:Attribute
+        Expect Type dataCube:ValueAttribute
+        Expect Property rdf:predicate {
+            Expect Id schema:identifier
+        }
+        Expect Property dataCube:column
+        Expect Property dataCube:language "en-AU"
+    }
+}
