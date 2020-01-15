@@ -1,4 +1,4 @@
-import rdf from 'rdf-ext'
+import rdf from '@rdfjs/data-model'
 import { Quad } from 'rdf-js'
 import { vocabularies, prefixes, expand as rdfExpand, shrink as rdfShrink } from '@zazuko/rdf-vocabularies'
 
