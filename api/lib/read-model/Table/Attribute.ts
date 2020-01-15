@@ -33,7 +33,7 @@ function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Ba
     @property.resource({ as: [ BaseTable ] })
     public referencedTable: Table.DimensionTable
 
-    @property.resource({ path: dataCube.columnMapping, array: true })
+    @property.resource({ path: dataCube.columnMapping, values: 'array' })
     public readonly columnMappings: Table.ColumnMapping[]
   }
 

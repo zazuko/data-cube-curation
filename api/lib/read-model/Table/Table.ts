@@ -7,7 +7,7 @@ import * as DataCube from '../'
 
 @namespace(dataCube)
 export class BaseTable extends RdfResourceImpl implements Table.Table {
-  @property.resource({ path: [ dataCube.source, dataCube.column ], array: true })
+  @property.resource({ path: [ dataCube.source, dataCube.column ], values: 'array' })
   public readonly columns: Table.Column[]
 
   @property.resource({ path: dataCube.project, as: [ ProjectMixin ] })

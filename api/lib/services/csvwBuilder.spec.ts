@@ -133,7 +133,7 @@ describe('csvwBuilder', () => {
       const attribute: RecursivePartial<ValueAttribute> = {
         id: namedNode('http://reference-attribute.test/attribute'),
         column,
-        datatype: { _node: { term: xsd.string } }, // TODO: -_node + id
+        datatype: { id: xsd.string },
         predicate: 'property/{foo}/{bar}',
       }
       const table: RecursivePartial<DimensionTable> = {
