@@ -55,7 +55,6 @@ export default class extends Vue {
   }
 
   get propositions () {
-    const value = this.value
     const position = this.getPosition()
     const beforeCursor = this.value.slice(0, position)
     const insideBracesMatch = beforeCursor.match(/^.*\{([^}]*)$/)

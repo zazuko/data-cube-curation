@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source, TableFormData } from '@/types'
+import { Project, Source, TableFormData } from '@/types'
 import IdentifierTemplateInput from '../IdentifierTemplateInput.vue'
 
 @Component({

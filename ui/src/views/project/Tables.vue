@@ -38,8 +38,8 @@
 </style>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, RemoteData, TableFormData } from '@/types'
+import { Component, Vue } from 'vue-property-decorator'
+import { Project, Table, RemoteData, TableFormData } from '@/types'
 import Loader from '../../components/Loader.vue'
 import TableItem from '../../components/project/TableItem.vue'
 import TableForm from '../../components/project/TableForm.vue'
