@@ -9,6 +9,7 @@
       :custom-formatter="formatProposition"
       placeholder="e.g. my-table/{column_id}"
       :disabled="!source"
+      keep-first
       required>
   </b-autocomplete>
 </template>
@@ -56,11 +57,14 @@ export default class extends Vue {
   get propositions () {
     const value = this.value
     const position = this.getPosition()
+    const beforeCursor = this.value.slice(0, position)
+    const insideBracesMatch = beforeCursor.match(/^.*\{([^}]*)$/)
+    const insideBraces = insideBracesMatch ? insideBracesMatch[1] : ''
 
-    const prevChar = this.value[position - 1]
-
-    if (prevChar === '{') {
-      return this.source.columns.map((c) => c.name)
+    if (insideBracesMatch) {
+      return this.source.columns
+        .filter((column) => column.name.startsWith(insideBraces))
+        .map((column) => column.name.substring(insideBraces.length))
     } else {
       return []
     }
