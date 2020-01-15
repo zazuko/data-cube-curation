@@ -4,6 +4,7 @@ import ProjectsView from './views/Projects.vue'
 import ProjectView from './views/Project.vue'
 import ProjectSourcesView from './views/project/Sources.vue'
 import ProjectTablesView from './views/project/Tables.vue'
+import ProjectSettingsView from './views/project/Settings.vue'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
           path: 'tables',
           name: 'project/tables',
           component: ProjectTablesView
+        },
+        {
+          path: 'edit',
+          name: 'project/edit',
+          component: ProjectSettingsView
         }
       ]
     }
