@@ -34,7 +34,8 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
   }
 
   if (csvwColumn) {
-    const parsed = parser.parse(attribute.predicate)
+    const propertyTemplate = attribute.propertyTemplate || attribute.predicate
+    const parsed = parser.parse(propertyTemplate)
     csvwColumn.propertyUrl = getAbsoluteUrl(table.project, parsed)
     return csvwColumn
   }

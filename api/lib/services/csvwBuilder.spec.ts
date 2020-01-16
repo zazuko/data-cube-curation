@@ -134,7 +134,7 @@ describe('csvwBuilder', () => {
         id: namedNode('http://reference-attribute.test/attribute'),
         column,
         datatype: { id: xsd.string },
-        predicate: 'property/{foo}/{bar}',
+        propertyTemplate: 'property/{foo}/{bar}',
       }
       const table: RecursivePartial<DimensionTable> = {
         id: namedNode('http://reference-attribute.test/fact-table'),
@@ -154,6 +154,39 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset.tableSchema.columns[0].propertyUrl).toEqual('http://example.com/tst-project/property/{foo}/{bar}')
+    })
+
+    it('uses concrete rdf:property if template is missing', async () => {
+      // given
+      const column: Partial<Column> = {
+        id: namedNode('http://reference-attribute.test/column'),
+        name: 'column',
+      }
+      const attribute: RecursivePartial<ValueAttribute> = {
+        id: namedNode('http://reference-attribute.test/attribute'),
+        column,
+        datatype: { id: xsd.string },
+        propertyTemplate: '',
+        predicate: 'http://example.com/prop',
+      }
+      const table: RecursivePartial<DimensionTable> = {
+        id: namedNode('http://reference-attribute.test/fact-table'),
+        identifierTemplate: 'table/{foo}/{bar}',
+        columns: [column],
+        attributes: [attribute],
+        types: [
+          dataCube.DimensionTable,
+        ],
+        project: {
+          baseUri: 'http://example.com/tst-project/',
+        },
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table as any)
+
+      // then
+      expect(csvwDataset.tableSchema.columns[0].propertyUrl).toEqual('http://example.com/prop')
     })
   })
 })

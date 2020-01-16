@@ -18,7 +18,7 @@ interface ColumnMapping {
 }
 
 interface AddReferenceAttributeCommand {
-  predicate: string;
+  propertyTemplate: string;
   referencedTableId: string;
   columnMappings: ColumnMapping[];
 }
@@ -65,7 +65,7 @@ async function validateReferencedColumns (tableId: string, columnsDataset: Datas
 
 export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand, ReferenceAttribute>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
-  if (!command.predicate) {
+  if (!command.propertyTemplate) {
     throw new DomainError('Predicate missing')
   }
 
@@ -90,7 +90,7 @@ export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand
 
   emitter.emit<AttributeEvents, 'ReferenceAttributeAdded'>('ReferenceAttributeAdded', {
     tableId: table['@id'],
-    predicate: command.predicate,
+    propertyTemplate: command.propertyTemplate,
     referencedTableId: command.referencedTableId,
     columnMappings: command.columnMappings,
   })
@@ -99,7 +99,7 @@ export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand
     '@id': attributeId,
     '@type': ['Attribute', 'ReferenceAttribute'],
     tableId: table['@id'],
-    predicate: command.predicate,
+    propertyTemplate: command.propertyTemplate,
     referencedTableId: command.referencedTableId,
     columnMappings: command.columnMappings,
   }

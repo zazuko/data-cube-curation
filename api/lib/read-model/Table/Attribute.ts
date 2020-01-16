@@ -8,7 +8,10 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
   class Attribute extends Base implements Table.Attribute {
     @property.literal({ path: rdf.predicate })
-    public predicate: string
+    public predicate: string | null
+
+    @property.literal()
+    public propertyTemplate: string
   }
 
   return Attribute

@@ -9,7 +9,8 @@ import { errorFactory } from '../error-helper'
 
 interface AddValueAttributeCommand {
   columnId: string;
-  predicate: string;
+  predicate?: string;
+  propertyTemplate: string;
   datatype?: string;
   language?: string;
 }
@@ -17,8 +18,8 @@ interface AddValueAttributeCommand {
 export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueAttribute>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
 
-  if (!command.predicate) {
-    throw new DomainError('Predicate missing')
+  if (!command.propertyTemplate) {
+    throw new DomainError('Property template missing')
   }
   if (!command.columnId) {
     throw new DomainError('Column missing')
@@ -35,7 +36,7 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
   emitter.emit<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', {
     tableId: table['@id'],
     columnId: command.columnId,
-    predicate: command.predicate,
+    propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
   })
@@ -45,7 +46,7 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     '@type': ['Attribute', 'ValueAttribute'],
     tableId: table['@id'],
     column: command.columnId,
-    predicate: command.predicate,
+    propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
   }

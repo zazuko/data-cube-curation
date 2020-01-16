@@ -10,7 +10,7 @@ Array [
           "sourceColumnId": "http://example.com/source/column1",
         },
       ],
-      "predicate": "http://schema.org/name",
+      "propertyTemplate": "http://schema.org/name",
       "referencedTableId": "table/other",
       "tableId": "example/table",
     },
@@ -32,7 +32,7 @@ Object {
       "sourceColumnId": "http://example.com/source/column1",
     },
   ],
-  "predicate": "http://schema.org/name",
+  "propertyTemplate": "http://schema.org/name",
   "referencedTableId": "table/other",
   "tableId": "example/table",
 }

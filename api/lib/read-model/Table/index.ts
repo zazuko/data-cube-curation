@@ -16,7 +16,8 @@ export interface Column extends RdfResource {
 }
 
 export interface Attribute extends RdfResource {
-  readonly predicate: string;
+  readonly predicate: string | null;
+  readonly propertyTemplate: string;
 }
 
 export interface ValueAttribute extends Attribute {
