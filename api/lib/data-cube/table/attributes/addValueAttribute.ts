@@ -17,6 +17,7 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
 
   const variables = buildVariables(req, {
     predicate: expand('rdf:predicate'),
+    propertyTemplate: expand('dataCube:propertyTemplate'),
     datatype: expand('dataCube:datatype'),
     language: expand('dataCube:language'),
     columnId: expand('dataCube:column'),
@@ -31,7 +32,7 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
   }
 
   const attribute = await aggregate.factory(addValueAttribute)({
-    predicate: variables.predicate && variables.predicate.value,
+    propertyTemplate: (variables.propertyTemplate && variables.propertyTemplate.value) || (variables.predicate && variables.predicate.value),
     datatype: variables.datatype && variables.datatype.value,
     columnId: variables.columnId && variables.columnId.value,
     language: variables.language && variables.language.value,

@@ -26,7 +26,7 @@ describe('table', () => {
 
   const command = {
     name: 'foo-bar',
-    predicate: expand('schema:name'),
+    propertyTemplate: expand('schema:name'),
     referencedTableId: 'table/other',
     columnMappings: [ ] as any[],
   }
@@ -50,10 +50,10 @@ describe('table', () => {
   })
 
   describe('add reference attribute', () => {
-    it('errors when predicate is missing', async () => {
+    it('errors when property template is missing', async () => {
       // given
       const cmd = { ...command }
-      delete cmd.predicate
+      delete cmd.propertyTemplate
 
       // when
       const result = await addReferenceAttribute(table, cmd)

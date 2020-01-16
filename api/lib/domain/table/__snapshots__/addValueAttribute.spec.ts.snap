@@ -7,7 +7,7 @@ Array [
       "columnId": "source/column",
       "datatype": "http://www.w3.org/2001/XMLSchema#string",
       "language": undefined,
-      "predicate": "http://schema.org/name",
+      "propertyTemplate": "http://schema.org/name",
       "tableId": "example/table",
     },
     "name": "ValueAttributeAdded",
@@ -25,7 +25,7 @@ Object {
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#string",
   "language": undefined,
-  "predicate": "http://schema.org/name",
+  "propertyTemplate": "http://schema.org/name",
   "tableId": "example/table",
 }
 `;

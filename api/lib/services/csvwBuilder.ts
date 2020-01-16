@@ -8,7 +8,7 @@ import CsvwGraph from './csvwBuilder/Csvw'
 import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
-import { getAboutUrl } from './csvwBuilder/aboutUrl'
+import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import parser = require('uri-template')
 
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
@@ -34,7 +34,9 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
   }
 
   if (csvwColumn) {
-    csvwColumn.propertyUrl = attribute.predicate
+    const propertyTemplate = attribute.propertyTemplate || attribute.predicate
+    const parsed = parser.parse(propertyTemplate)
+    csvwColumn.propertyUrl = getAbsoluteUrl(table.project, parsed)
     return csvwColumn
   }
 
@@ -59,7 +61,7 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
 
   if ('identifierTemplate' in table) {
     const parsed = parser.parse(table.identifierTemplate)
-    csvwGraph.tableSchema.aboutUrl = getAboutUrl(table.project, parsed)
+    csvwGraph.tableSchema.aboutUrl = getAbsoluteUrl(table.project, parsed)
   }
 
   const attributes: Attribute[] = table.attributes

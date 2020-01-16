@@ -10,7 +10,7 @@
 dataCube:Attribute
   a hydra:Class ;
   hydra:supportedOperation api:GetAttribute, _:DeleteAttribute ;
-  hydra:supportedProperty [ hydra:property rdf:predicate ;
+  hydra:supportedProperty [ hydra:property dataCube:propertyTemplate ;
                             hydra:title    "Predicate URI for mapped value" ;
                             hydra:required true ], [ hydra:property  dataCube:table ;
                                                      hydra:title     "Table containing this attribute" ;

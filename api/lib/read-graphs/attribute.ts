@@ -11,7 +11,7 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
       <${ev.id}> a dataCube:Attribute , dataCube:ValueAttribute ;
         dataCube:table <${ev.data.tableId}> ;
         dataCube:column <${ev.data.columnId}> ;
-        rdf:predicate <${ev.data.predicate}> .
+        dataCube:propertyTemplate "${ev.data.propertyTemplate}" .
   `)
 
   if (ev.data.language) {
@@ -143,5 +143,15 @@ export async function getSingleAttribute (attributeId: string) {
     return null
   }
 
-  return attribute
+  return attribute.map(quad => {
+    if (rdf.predicate.equals(quad.predicate)) {
+      return $rdf.quad(
+        quad.subject,
+        dataCube.propertyTemplate,
+        quad.object,
+      )
+    }
+
+    return quad
+  })
 }

@@ -20,7 +20,7 @@
       <p>
         using the <label for="property"><strong>property</strong></label>
       </p>
-      <PropertyField :project="project" v-model="attribute.predicateId" required />
+      <PropertyField :project="project" v-model="attribute.property" required />
 
       <div v-if="referencedTable" v-show="attribute.columnMapping.length > 0">
         <p>
@@ -105,8 +105,8 @@ export default class extends Vue {
   populatePredicate (table: Table | null) {
     if (!table) return
 
-    if (!this.attribute.predicateId) {
-      this.attribute.predicateId = table.name.toLowerCase()
+    if (!this.attribute.property) {
+      this.attribute.property = table.name.toLowerCase()
     }
   }
 
@@ -128,7 +128,7 @@ export default class extends Vue {
 function emptyAttribute () {
   return {
     referencedTableId: '',
-    predicateId: '',
+    property: '',
     columnMapping: []
   }
 }

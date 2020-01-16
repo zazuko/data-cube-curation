@@ -12,7 +12,7 @@ describe('table', () => {
 
   const command = {
     columnId: 'source/column',
-    predicate: expand('schema:name'),
+    propertyTemplate: expand('schema:name'),
   }
 
   beforeEach(() => {
@@ -41,7 +41,7 @@ describe('table', () => {
     it('errors when predicate is missing', async () => {
       // given
       const cmd = { ...command }
-      delete cmd.predicate
+      delete cmd.propertyTemplate
 
       // when
       const result = await addValueAttribute(table, cmd)

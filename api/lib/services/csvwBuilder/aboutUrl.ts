@@ -1,7 +1,7 @@
 import { Project } from '../../read-model'
 import isUri = require('is-uri')
 
-export function getAboutUrl (project: Project, uriTemplate: any) {
+export function getAbsoluteUrl (project: Project, uriTemplate: any) {
   uriTemplate.expressions.forEach(expression => {
     expression.params.forEach(p => {
       // TODO: required until grncdr/uri-template#19 is fixed

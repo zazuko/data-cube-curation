@@ -214,7 +214,7 @@ class ProjectsClient {
     const operation = table.actions.createValueAttribute
     const data = {
       '@type': URI.TYPE_VALUE_ATTRIBUTE,
-      [URI.PROP_PREDICATE]: attributeData.predicateId,
+      [URI.PROP_PREDICATE]: attributeData.property,
       [URI.PROP_COLUMN]: attributeData.columnId,
       [URI.PROP_DATATYPE]: attributeData.dataTypeId,
       [URI.PROP_LANGUAGE]: attributeData.language
@@ -226,7 +226,7 @@ class ProjectsClient {
     const operation = table.actions.createReferenceAttribute
     const data = {
       '@type': URI.TYPE_REFERENCE_ATTRIBUTE,
-      [URI.PROP_PREDICATE]: attributeData.predicateId,
+      [URI.PROP_PREDICATE]: attributeData.property,
       [URI.PROP_REFERENCED_TABLE]: attributeData.referencedTableId,
       [URI.PROP_COLUMN_MAPPING]: attributeData.columnMapping.map((mapping) => ({
         [URI.PROP_SOURCE_COLUMN]: mapping.sourceColumnId,

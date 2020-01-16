@@ -9,7 +9,7 @@ handle<AttributeEvents, 'ReferenceAttributeAdded'>('ReferenceAttributeAdded', fu
       <${ev.id}> a dataCube:Attribute , dataCube:ReferenceAttribute ;
         dataCube:table <${ev.data.tableId}> ;
         dataCube:referencedTable <${ev.data.referencedTableId}> ;
-        rdf:predicate <${ev.data.predicate}> .
+        dataCube:propertyTemplate "${ev.data.propertyTemplate}" .
   `)
 
   ev.data.columnMappings.forEach(mapping => {

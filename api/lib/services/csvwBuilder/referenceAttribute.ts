@@ -2,7 +2,7 @@ import parser from 'uri-template'
 import { error, warning } from '../../log'
 import * as Table from '../../read-model/Table'
 import * as Csvw from '../csvwBuilder/index'
-import { getAboutUrl } from './aboutUrl'
+import { getAbsoluteUrl } from './aboutUrl'
 
 export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {
   const referencedTable = attribute.referencedTable
@@ -29,7 +29,7 @@ export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttrib
       })
     })
 
-    csvwColumn.valueUrl = getAboutUrl(referencedTable.project, uriTemplate)
+    csvwColumn.valueUrl = getAbsoluteUrl(referencedTable.project, uriTemplate)
   }
 
   error(`Failed to create column for reference attribute <%s>`, attribute.id)

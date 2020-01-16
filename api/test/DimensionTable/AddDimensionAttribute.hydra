@@ -2,7 +2,6 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 ENTRYPOINT "project/reference-attribute-test"
 
@@ -96,10 +95,9 @@ With Class dataCube:FactTable {
                 ```
                 @prefix dataCube: <https://rdf-cube-curation.described.at/> .
                 @prefix schema: <http://schema.org/> .
-                @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
                 <> dataCube:referencedTable <project/reference-attribute-test/table/Stations> ;
-                   rdf:predicate <http://example.org/station> ;
+                   dataCube:propertyTemplate <http://example.org/station> ;
                    a dataCube:ReferenceAttribute ;
                    dataCube:columnMapping [
                        # TODO: substitue from env variables
@@ -112,9 +110,7 @@ With Class dataCube:FactTable {
                 Expect Header Location
 
                 Expect Type dataCube:Attribute
-                Expect Property rdf:predicate {
-                    Expect Id <http://example.org/station>
-                }
+                Expect Property dataCube:propertyTemplate "http://example.org/station"
                 Expect Property dataCube:referencedTable {
                     Expect Id <http://localhost:5678/project/reference-attribute-test/table/Stations>
                 }

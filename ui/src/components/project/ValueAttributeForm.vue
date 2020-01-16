@@ -13,7 +13,7 @@
         </b-select>
       </b-field>
 
-      <PropertyField :project="project" label="Property" v-model="attribute.predicateId" required />
+      <PropertyField :project="project" label="Property" v-model="attribute.property" required />
 
       <b-field label="Type">
         <b-input type="text" v-model="attribute.dataTypeId" :disabled="attribute.language !== ''" />
@@ -66,8 +66,8 @@ export default class extends Vue {
 
   @Watch('attribute.columnId')
   populatePredicate (columnId: ResourceId) {
-    if (!this.attribute.predicateId) {
-      this.attribute.predicateId = columnId.split('/').slice(-1)[0]
+    if (!this.attribute.property) {
+      this.attribute.property = columnId.split('/').slice(-1)[0]
     }
   }
 }
@@ -75,7 +75,7 @@ export default class extends Vue {
 function emptyAttribute () {
   return {
     columnId: '',
-    predicateId: '',
+    property: '',
     dataTypeId: '',
     language: ''
   }

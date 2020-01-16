@@ -3,7 +3,6 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 ENTRYPOINT "project/attribute-language-test"
 
@@ -89,10 +88,9 @@ With Operation api:AddValueAttribute {
         ```
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
-        @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
         <> dataCube:column <project/attribute-language-test/source/single-column-csv/station-id> ;
-           rdf:predicate <http://schema.org/identifier> ;
+           dataCube:propertyTemplate <http://schema.org/identifier> ;
            dataCube:language "en-AU" ;
            a dataCube:ValueAttribute .
         ```
@@ -102,9 +100,7 @@ With Operation api:AddValueAttribute {
 
         Expect Type dataCube:Attribute
         Expect Type dataCube:ValueAttribute
-        Expect Property rdf:predicate {
-            Expect Id schema:identifier
-        }
+        Expect Property dataCube:propertyTemplate "http://schema.org/identifier"
         Expect Property dataCube:column
         Expect Property dataCube:language "en-AU"
     }

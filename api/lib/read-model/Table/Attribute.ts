@@ -8,7 +8,10 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
   class Attribute extends Base implements Table.Attribute {
     @property.literal({ path: rdf.predicate })
-    public predicate: string
+    public predicate: string | null
+
+    @property.literal()
+    public propertyTemplate: string
   }
 
   return Attribute
@@ -33,7 +36,7 @@ function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Ba
     @property.resource({ as: [ BaseTable ] })
     public referencedTable: Table.DimensionTable
 
-    @property.resource({ path: dataCube.columnMapping, array: true })
+    @property.resource({ path: dataCube.columnMapping, values: 'array' })
     public readonly columnMappings: Table.ColumnMapping[]
   }
 
