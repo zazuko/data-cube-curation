@@ -93,7 +93,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source, ValueAttribute, TableFormData, ValueAttributeFormData } from '@/types'
+import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
 import IdentifierTemplateInput from '../IdentifierTemplateInput.vue'
 import LanguageInput from '../LanguageInput.vue'
 import PropertyField from '../PropertyField.vue'

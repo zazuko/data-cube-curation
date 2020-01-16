@@ -56,8 +56,8 @@
 </style>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData, SourceColumnFilter } from '@/types'
+import { Component, Vue } from 'vue-property-decorator'
+import { Project, Table, Source, RemoteData, SourceColumnFilter } from '@/types'
 import Loader from '@/components/Loader.vue'
 import SourceItem from '@/components/project/SourceItem.vue'
 

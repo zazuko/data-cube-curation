@@ -73,7 +73,7 @@ export default class extends Vue {
   async loadPreview () {
     try {
       const response = await rdfFetch(this.table.preview.id, {
-        headers: { 'accept': 'application/n-triples' }
+        headers: { accept: 'application/n-triples' }
       })
       const dataset = await response.dataset()
       const n3 = await serializeN3(dataset)
