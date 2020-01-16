@@ -89,7 +89,7 @@
                 </thead>
                 <tbody>
                   <tr v-for="attribute in attributes" :key="attribute.id">
-                    <td><TableTag :table="getTable(attribute.referencedTableId)" /></td>
+                    <td><TableTag :table="getTable(attribute.referencedTableId)" class="is-medium" /></td>
                     <td><PrefixedURI :uri="attribute.property" :project="project" /></td>
                     <td>
                        <ul v-if="attribute.columnMapping.length > 0">
