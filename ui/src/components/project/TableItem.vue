@@ -1,5 +1,5 @@
 <template>
-  <article class="card">
+  <article class="table-card card">
     <header class="card-header" :style="{'background-color': table.color}">
       <h3 class="card-header-title">{{ table.name }}</h3>
       <div class="card-header-icon">
@@ -125,6 +125,10 @@
 </template>
 
 <style scoped>
+.table-card {
+  max-width: 1400px;
+}
+
 .card-content {
   padding: 0;
 }
