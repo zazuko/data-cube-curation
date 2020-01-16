@@ -32,9 +32,13 @@
         </div>
       </div>
 
-      <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
-        <b-input type="text" v-model="table.identifierTemplate" placeholder="http://example.org/{column_id}" required />
-      </b-field>
+      <IdentifierTemplateField
+        v-model="table.identifierTemplate"
+        :project="project"
+        :tableName="table.name"
+        :source="source"
+        v-if="table.type != 'fact'"
+      />
 
       <b-field label="Properties">
         <table class="table is-narrow">
@@ -55,7 +59,7 @@
                 </b-select>
               </td>
               <td>
-                <b-input v-model="attribute.property" required />
+                <PropertyField :project="project" v-model="attribute.property" required />
               </td>
               <td>
                 <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
@@ -93,12 +97,16 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source, ValueAttribute, TableFormData, ValueAttributeFormData } from '@/types'
+import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
+import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 import LanguageInput from '../LanguageInput.vue'
+import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
-    LanguageInput
+    IdentifierTemplateField,
+    LanguageInput,
+    PropertyField
   }
 })
 export default class TableForm extends Vue {

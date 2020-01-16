@@ -4,12 +4,12 @@
 
     <div class="tabs">
       <ul>
-        <router-link :to="{ name: 'project/sources' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <router-link :to="{ name: 'project/sources' }" v-slot="{ href, route, navigate, isActive }">
           <li :class="[isActive && 'is-active']">
             <a :href="href" @click="navigate">Input data</a>
           </li>
         </router-link>
-        <router-link :to="{ name: 'project/tables' }" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <router-link :to="{ name: 'project/tables' }" v-slot="{ href, route, navigate, isActive }">
           <li :class="[isActive && 'is-active']">
             <a :href="href" @click="navigate">Output tables</a>
           </li>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { RemoteData, ResourceId, Project } from '@/types'
 import Loader from '../components/Loader.vue'
 

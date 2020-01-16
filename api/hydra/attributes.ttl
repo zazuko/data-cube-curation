@@ -83,7 +83,7 @@ api:GetTableAttributes
 _:PostValueAttribute
   a                  hydra:SupportedOperation, hydra-box:View, api:AddValueAttribute ;
   hydra:method       "POST" ;
-  hydra:title        "Creates a table attribute from column" ;
+  hydra:title        "Create a table attribute from column" ;
   hydra:description  "Such an attribute will always map a single value into a literal" ;
   hydra:expects      dataCube:ValueAttribute ;
   code:implementedBy [ a              hydra-box:middlewareChain ;
@@ -93,7 +93,7 @@ _:PostValueAttribute
 _:PostReferenceAttribute
   a                  hydra:SupportedOperation, hydra-box:View, api:AddReferenceAttribute ;
   hydra:method       "POST" ;
-  hydra:title        "Creates a reference attribute" ;
+  hydra:title        "Create link to another table" ;
   hydra:description  "Creates a table attribute referencing a dimension table" ;
   hydra:expects      dataCube:ReferenceAttribute ;
   code:implementedBy [ a              hydra-box:middlewareChain ;

@@ -110,3 +110,5 @@ export interface ErrorMessage {
   title: string;
   message: string;
 }
+
+export type SourceColumnFilter = 'all' | 'mapped' | 'not-mapped'

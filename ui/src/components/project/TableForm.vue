@@ -40,9 +40,13 @@
         </b-select>
       </b-field>
 
-      <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
-        <b-input type="text" v-model="table.identifierTemplate" placeholder="http://example.org/{column_id}" required />
-      </b-field>
+      <IdentifierTemplateField
+        v-model="table.identifierTemplate"
+        :project="project"
+        :tableName="table.name"
+        :source="source"
+        v-if="table.type != 'fact'"
+      />
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -53,9 +57,14 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import { TableType, ResourceId, Project, Source, TableFormData } from '@/types'
+import { Project, Source, TableFormData } from '@/types'
+import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 
-@Component
+@Component({
+  components: {
+    IdentifierTemplateField
+  }
+})
 export default class TableForm extends Vue {
   @Prop({ default: emptyTable }) readonly table: TableFormData;
   @Prop() readonly project: Project;
@@ -82,6 +91,12 @@ export default class TableForm extends Vue {
     } else {
       return 'Create table'
     }
+  }
+
+  get source () {
+    if (!this.table.sourceId) return null
+
+    return this.sources.find((source) => source.id === this.table.sourceId)
   }
 }
 

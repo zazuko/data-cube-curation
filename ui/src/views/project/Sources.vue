@@ -7,11 +7,25 @@
           <span>Upload source CSV file</span>
         </a>
       </b-upload>
+      <div class="column-filters">
+        <p>Filter columns:</p>
+        <b-field>
+          <b-radio-button v-model="columnFilter" native-value="all" size="is-small">
+            All
+          </b-radio-button>
+          <b-radio-button v-model="columnFilter" native-value="mapped" size="is-small">
+            Mapped
+          </b-radio-button>
+          <b-radio-button v-model="columnFilter" native-value="not-mapped" size="is-small">
+            Not mapped
+          </b-radio-button>
+        </b-field>
+      </div>
     </div>
 
     <Loader :data="tables" v-slot="{ data: tables }">
       <Loader :data="sources" v-slot="{ data: sources }" class="sources-list">
-          <SourceItem v-for="source in sources" :key="source.id" :project="project" :source="source" :tables="tables" />
+          <SourceItem v-for="source in sources" :key="source.id" :project="project" :source="source" :tables="tables" :column-filter="columnFilter" />
           <p v-if="sources.length < 1" class="has-text-grey">
             No sources yet
           </p>
@@ -29,11 +43,21 @@
     padding: 0;
     overflow-x: scroll;
   }
+
+  .column-filters {
+    margin-left: auto;
+
+    display: flex;
+  }
+
+  .column-filters > p {
+    margin-right: 0.5em;
+  }
 </style>
 
 <script lang="ts">
-import { Prop, Component, Vue } from 'vue-property-decorator'
-import { Project, ResourceId, Table, Source, RemoteData } from '@/types'
+import { Component, Vue } from 'vue-property-decorator'
+import { Project, Table, Source, RemoteData, SourceColumnFilter } from '@/types'
 import Loader from '@/components/Loader.vue'
 import SourceItem from '@/components/project/SourceItem.vue'
 
@@ -44,6 +68,8 @@ import SourceItem from '@/components/project/SourceItem.vue'
   }
 })
 export default class extends Vue {
+  columnFilter: SourceColumnFilter = 'all'
+
   get project (): Project {
     const projectId = this.$route.params.id
     const remoteProject = this.$store.getters['projects/one'](projectId)

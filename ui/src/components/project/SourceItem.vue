@@ -13,7 +13,7 @@
       <table class="table is-fullwidth is-bordered is-striped is-narrowed source-table">
         <thead>
           <tr>
-            <th v-for="column in source.columns" :key="column.id">
+            <th v-for="(column, index) in source.columns" :key="column.id" v-show="showColumn(index)">
               <b-field>
                 <b-checkbox v-model="selectedColumns" :native-value="column.id">
                   {{ column.name }}
@@ -28,8 +28,10 @@
           </tr>
         </thead>
         <Loader tag="tbody" :data="sampleData" v-slot="{ data: sampleData }">
-          <tr v-for="(row, index) in sampleData" :key="index">
-            <td v-for="(cell, index) in row" :key="index">{{ cell }}</td>
+          <tr v-for="(row, rowIndex) in sampleData" :key="rowIndex">
+            <td v-for="(cell, colIndex) in row" :key="colIndex" v-show="showColumn(colIndex)">
+              {{ cell }}
+            </td>
           </tr>
           <tr v-if="sampleData.length < 1" class="has-text-grey">
             <td :colspan="source.columns.length">No data</td>
@@ -56,7 +58,18 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { IOperation } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, TableFormData, ValueAttributeFormData } from '@/types'
+import {
+  Project,
+  ResourceId,
+  Table,
+  Source,
+  RemoteData,
+  Attribute,
+  Column,
+  TableFormData,
+  ValueAttributeFormData,
+  SourceColumnFilter
+} from '@/types'
 import TableTag from '@/components/TableTag.vue'
 import Loader from '@/components/Loader.vue'
 import TableAdvancedForm from '@/components/project/TableAdvancedForm.vue'
@@ -71,6 +84,7 @@ export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly source: Source
   @Prop() readonly tables: Table[]
+  @Prop() readonly columnFilter: SourceColumnFilter
   selectedColumns: string[] = []
 
   created () {
@@ -97,6 +111,17 @@ export default class extends Vue {
     if (this.sourceAttributes.isLoading || !this.sourceAttributes.data) return []
 
     return this.sourceAttributes.data.filter((attribute) => attribute.columnId === column.id)
+  }
+
+  showColumn (index: number) {
+    const column = this.source.columns[index]
+    const isMapped = this.columnAttributes(column).length > 0
+
+    return (
+      this.columnFilter === 'all' ||
+      (this.columnFilter === 'mapped' && isMapped) ||
+      (this.columnFilter === 'not-mapped' && !isMapped)
+    )
   }
 
   createTable () {

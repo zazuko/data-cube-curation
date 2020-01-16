@@ -2,7 +2,7 @@ import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
 import { Project, ProjectFormData, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
-import { getOperation, findOperation } from './common'
+import { findOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
 import * as SourceMixin from './resources/source'
@@ -137,7 +137,7 @@ class ProjectsClient {
 
   async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: ValueAttributeFormData[]): Promise<Table> {
     const table = await this.createTable(project, tableData)
-    const attributesIds = await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
+    await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
     return table
   }
 

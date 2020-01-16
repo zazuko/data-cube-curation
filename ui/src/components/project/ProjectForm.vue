@@ -21,8 +21,7 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { IOperation } from 'alcaeus/types/Resources'
-import { Project, Table, Source, ProjectFormData } from '@/types'
-import TableTag from '../TableTag.vue'
+import { Project, ProjectFormData } from '@/types'
 
 @Component
 export default class extends Vue {

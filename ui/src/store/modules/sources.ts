@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ActionTree, MutationTree, GetterTree, ActionContext } from 'vuex'
+import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData, Source } from '@/types'
 import { client } from '../../api'
