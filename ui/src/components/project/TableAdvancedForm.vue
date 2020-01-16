@@ -32,9 +32,13 @@
         </div>
       </div>
 
-      <b-field label="Identifier attribute template" v-if="table.type != 'fact'">
-        <IdentifierTemplateInput v-model="table.identifierTemplate" :tableName="table.name" :source="source" />
-      </b-field>
+      <IdentifierTemplateField
+        v-model="table.identifierTemplate"
+        :project="project"
+        :tableName="table.name"
+        :source="source"
+        v-if="table.type != 'fact'"
+      />
 
       <b-field label="Properties">
         <table class="table is-narrow">
@@ -94,13 +98,13 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
-import IdentifierTemplateInput from '../IdentifierTemplateInput.vue'
+import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 import LanguageInput from '../LanguageInput.vue'
 import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
-    IdentifierTemplateInput,
+    IdentifierTemplateField,
     LanguageInput,
     PropertyField
   }

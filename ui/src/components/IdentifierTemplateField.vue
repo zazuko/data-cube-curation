@@ -1,26 +1,30 @@
 <template>
-  <b-autocomplete
-      ref="autocomplete"
-      :value="value"
-      @input="onUpdate"
-      @typing="onTyping"
-      @select="onSelect"
-      :data="propositions"
-      :custom-formatter="formatProposition"
-      placeholder="e.g. my-table/{column_id}"
-      :disabled="!source"
-      keep-first
-      required>
-  </b-autocomplete>
+  <b-field label="Identifier attribute template" :message="expandedValue">
+    <b-autocomplete
+        ref="autocomplete"
+        :value="value"
+        @input="onUpdate"
+        @typing="onTyping"
+        @select="onSelect"
+        :data="propositions"
+        :custom-formatter="formatProposition"
+        placeholder="e.g. my-table/{column_id}"
+        :disabled="!source"
+        keep-first
+        required>
+    </b-autocomplete>
+  </b-field>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Source } from '@/types'
+import { Project, Source } from '@/types'
+import { expandWithBase } from '@/rdf-vocabularies'
 
 @Component
 export default class extends Vue {
   @Prop() value: string
+  @Prop() project: Project
   @Prop() tableName: string
   @Prop() source: Source
   wasModified = false;
@@ -81,6 +85,10 @@ export default class extends Vue {
   onSelect () {
     const inputElement = this.getInputElement()
     inputElement && inputElement.focus()
+  }
+
+  get expandedValue () {
+    return expandWithBase(this.value, this.project.baseUri)
   }
 }
 </script>
