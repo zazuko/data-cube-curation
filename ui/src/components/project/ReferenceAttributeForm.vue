@@ -20,9 +20,7 @@
       <p>
         using the <label for="property"><strong>property</strong></label>
       </p>
-      <b-field>
-        <b-input type="text" id="property" v-model="attribute.predicateId" required />
-      </b-field>
+      <PropertyField :project="project" v-model="attribute.predicateId" required />
 
       <div v-if="referencedTable">
         <p>
@@ -71,17 +69,20 @@
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
 import { IOperation } from 'alcaeus/types/Resources'
-import { Table, ResourceId, Source, Column, ReferenceAttributeFormData } from '@/types'
+import { Project, Table, ResourceId, Source, Column, ReferenceAttributeFormData } from '@/types'
 import TableTag from '../TableTag.vue'
+import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
+    PropertyField,
     TableTag
   }
 })
 export default class extends Vue {
   @Prop({ default: emptyAttribute }) readonly attribute: ReferenceAttributeFormData;
   @Prop() readonly operation: IOperation;
+  @Prop() readonly project: Project;
   @Prop() readonly table: Table;
   @Prop() readonly source: Source;
   @Prop() readonly tables: Table[];

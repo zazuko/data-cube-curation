@@ -55,7 +55,7 @@
                 </b-select>
               </td>
               <td>
-                <b-input v-model="attribute.predicateId" required />
+                <PropertyField :project="project" v-model="attribute.predicateId" required />
               </td>
               <td>
                 <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
@@ -96,11 +96,13 @@ import { Prop, Component, Vue } from 'vue-property-decorator'
 import { TableType, ResourceId, Project, Source, ValueAttribute, TableFormData, ValueAttributeFormData } from '@/types'
 import IdentifierTemplateInput from '../IdentifierTemplateInput.vue'
 import LanguageInput from '../LanguageInput.vue'
+import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
     IdentifierTemplateInput,
-    LanguageInput
+    LanguageInput,
+    PropertyField
   }
 })
 export default class TableForm extends Vue {
