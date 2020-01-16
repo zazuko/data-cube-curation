@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { Project } from '@/types'
 import { expand, expandWithBase, shrink } from '@/rdf-vocabularies'
 
@@ -37,6 +37,12 @@ export default class extends Vue {
 
   get expandedValue () {
     return expandWithBase(this.value, this.project.baseUri)
+  }
+
+  // Set `shortProperty` when value is changed from the outside
+  @Watch('value')
+  setShortProperty (value: string) {
+    this.shortProperty = shrink(value)
   }
 }
 </script>

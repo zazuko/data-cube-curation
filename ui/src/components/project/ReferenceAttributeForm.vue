@@ -22,7 +22,7 @@
       </p>
       <PropertyField :project="project" v-model="attribute.predicateId" required />
 
-      <div v-if="referencedTable">
+      <div v-if="referencedTable" v-show="attribute.columnMapping.length > 0">
         <p>
           The identifier <code>{{ referencedTable.identifierTemplate }}</code> shall use
           the columns
