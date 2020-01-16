@@ -55,7 +55,7 @@
                 </b-select>
               </td>
               <td>
-                <b-input v-model="attribute.predicateId" required />
+                <b-input v-model="attribute.property" required />
               </td>
               <td>
                 <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
@@ -123,7 +123,7 @@ export default class TableForm extends Vue {
     this.attributes = this.columns.map((columnId) =>
       emptyAttribute({
         columnId: columnId,
-        predicateId: this.getColumnSlug(columnId)
+        property: this.getColumnSlug(columnId)
       }))
   }
 
@@ -154,7 +154,7 @@ function emptyTable () {
 
 function emptyAttribute (attrs = {}) {
   return {
-    predicateId: '',
+    property: '',
     dataTypeId: '',
     language: '',
     columnId: '',

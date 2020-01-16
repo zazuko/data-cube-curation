@@ -20,9 +20,8 @@ export function Mixin<B extends Constructor> (Base: B) {
       return column.id
     }
 
-    get predicateId (): ResourceId {
-      const predicate = getOrThrow<HydraResource>(this, URI.PROP_PREDICATE)
-      return predicate.id
+    get property (): string {
+      return getOrThrow<string>(this, URI.PROP_PREDICATE)
     }
 
     get dataTypeId (): ResourceId | null {

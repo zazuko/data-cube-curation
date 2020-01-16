@@ -55,7 +55,7 @@
                 <Loader tag="tbody" :data="valueAttributes" v-slot="{ data: attributes }">
                   <tr v-for="attribute in attributes" :key="attribute.id">
                     <td>{{ getColumn(attribute.columnId).name }}</td>
-                    <td>{{ attribute.predicateId }}</td>
+                    <td>{{ attribute.property }}</td>
                     <td>{{ attribute.dataTypeId }}</td>
                     <td>{{ attribute.language }}</td>
                     <td>
@@ -90,7 +90,7 @@
                 <tbody>
                   <tr v-for="attribute in attributes" :key="attribute.id">
                     <td><TableTag :table="getTable(attribute.referencedTableId)" /></td>
-                    <td>{{ attribute.predicateId }}</td>
+                    <td>{{ attribute.property }}</td>
                     <td>
                        <ul v-if="attribute.columnMapping.length > 0">
                         <li v-for="(mapping, index) in attribute.columnMapping" :key="index">

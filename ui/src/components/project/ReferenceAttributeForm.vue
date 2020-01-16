@@ -14,7 +14,7 @@
       </b-field>
 
       <b-field label="Property">
-        <b-input type="text" v-model="attribute.predicateId" required />
+        <b-input type="text" v-model="attribute.property" required />
       </b-field>
 
       <b-field label="Identifier columns mapping" v-if="referencedTable" :addons="false">
@@ -97,8 +97,8 @@ export default class extends Vue {
   populatePredicate (table: Table | null) {
     if (!table) return
 
-    if (!this.attribute.predicateId) {
-      this.attribute.predicateId = table.name.toLowerCase()
+    if (!this.attribute.property) {
+      this.attribute.property = table.name.toLowerCase()
     }
   }
 
@@ -120,7 +120,7 @@ export default class extends Vue {
 function emptyAttribute () {
   return {
     referencedTableId: '',
-    predicateId: '',
+    property: '',
     columnMapping: []
   }
 }

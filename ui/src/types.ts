@@ -68,7 +68,7 @@ export interface TableFormData {
 
 export interface Attribute extends HydraResource {
   id: ResourceId;
-  predicateId: ResourceId;
+  property: string;
   tableId: ResourceId;
   actions: Actions;
 }
@@ -94,7 +94,7 @@ export interface ReferenceColumnMapping {
 export interface ValueAttributeFormData {
   id?: ResourceId,
   columnId: ResourceId,
-  predicateId: ResourceId,
+  property: string,
   dataTypeId: string,
   language: string
 }
@@ -102,7 +102,7 @@ export interface ValueAttributeFormData {
 export interface ReferenceAttributeFormData {
   id?: ResourceId,
   referencedTableId: ResourceId,
-  predicateId: ResourceId,
+  property: string,
   columnMapping: ReferenceColumnMapping[]
 }
 
