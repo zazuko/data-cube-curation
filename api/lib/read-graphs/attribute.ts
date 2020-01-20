@@ -1,10 +1,12 @@
 import { CoreEvents, handle } from '@tpluscode/fun-ddr'
 import $rdf from 'rdf-ext'
+import cf from 'clownface'
 import { construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { AttributeEvents } from '../domain/attribute/events'
 import './attribute/eventHandlers'
+import { DatasetCore } from 'rdf-js'
 
 handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function addAttributeToReadModel (ev) {
   const builder = insertData(`
@@ -44,6 +46,16 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
       .execute(getClient())
   }
 })
+
+function mapPredicateToPropertyTemplate (dataset: DatasetCore) {
+  cf({ dataset })
+    .has(rdf.type, dataCube.Attribute)
+    .has(rdf.predicate)
+    .forEach((node) => {
+      node.addOut(dataCube.propertyTemplate, node.out(rdf.predicate))
+      node.deleteOut(rdf.predicate)
+    })
+}
 
 export async function getTableAttributes (tableId: string) {
   const collection = $rdf.dataset()
@@ -114,6 +126,8 @@ export async function getTableAttributes (tableId: string) {
     .prefixes({ dataCube, schema })
     .execute(getClient()))
 
+  mapPredicateToPropertyTemplate(collection)
+
   return collection
 }
 
@@ -143,15 +157,7 @@ export async function getSingleAttribute (attributeId: string) {
     return null
   }
 
-  return attribute.map(quad => {
-    if (rdf.predicate.equals(quad.predicate)) {
-      return $rdf.quad(
-        quad.subject,
-        dataCube.propertyTemplate,
-        quad.object,
-      )
-    }
+  mapPredicateToPropertyTemplate(attribute)
 
-    return quad
-  })
+  return attribute
 }
