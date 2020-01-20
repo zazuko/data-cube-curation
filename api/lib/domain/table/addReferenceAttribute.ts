@@ -18,8 +18,8 @@ interface ColumnMapping {
 }
 
 interface AddReferenceAttributeCommand {
-  propertyTemplate: string;
-  referencedTableId: string;
+  propertyTemplate?: string;
+  referencedTableId?: string;
   columnMappings: ColumnMapping[];
 }
 
@@ -101,6 +101,9 @@ export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand
     tableId: table['@id'],
     propertyTemplate: command.propertyTemplate,
     referencedTableId: command.referencedTableId,
-    columnMappings: command.columnMappings,
+    columnMappings: command.columnMappings.map(m => ({
+      referencedColumnId: m.referencedColumnId,
+      sourceColumnId: m.sourceColumnId,
+    })),
   }
 })

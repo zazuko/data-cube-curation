@@ -8,9 +8,8 @@ import { existsInTableSource } from '../../read-graphs/table'
 import { errorFactory } from '../error-helper'
 
 interface AddValueAttributeCommand {
-  columnId: string;
-  predicate?: string;
-  propertyTemplate: string;
+  columnId?: string;
+  propertyTemplate?: string;
   datatype?: string;
   language?: string;
 }

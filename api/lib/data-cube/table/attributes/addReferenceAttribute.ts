@@ -1,55 +1,18 @@
-import cf from 'clownface'
 import asyncMiddleware from 'middleware-async'
 import { Request, Response } from 'express'
-import { expand } from '@zazuko/rdf-vocabularies'
 import { getTableId } from '../../../read-graphs/table/links'
-import { NotFoundError, RequestError } from '../../../error'
-import { buildVariables } from '../../../buildVariables'
+import { NotFoundError } from '../../../error'
 import { attributes, tables } from '../../../storage/repository'
 import { addReferenceAttribute } from '../../../domain/table/addReferenceAttribute'
 import { getSingleAttribute } from '../../../read-graphs/attribute'
-import { dataCube } from '../../../namespaces'
 import env from '../../../env'
-
-function readColumnMappingsFromRequest (req: Request, columnMappingNodes) {
-  const graph = cf({ dataset: req.graph })
-
-  return columnMappingNodes.terms.reduce((mappings, node) => {
-    const mappingNode = graph.node(node)
-    if (!mappingNode.term) {
-      throw new RequestError(`Could not process ${expand('dataCube:columnMapping')} nodes`)
-    }
-
-    const sourceColumn = mappingNode.out(dataCube.sourceColumn).term
-    const referencedColumn = mappingNode.out(dataCube.referencedColumn).term
-
-    if (!sourceColumn || !referencedColumn) {
-      throw new RequestError(`Could not process ${expand('dataCube:columnMapping')} nodes`)
-    }
-
-    return [
-      ...mappings,
-      {
-        sourceColumnId: sourceColumn.value,
-        referencedColumnId: referencedColumn.value,
-      },
-    ]
-  }, [])
-}
+import { AddReferenceAttributeCommand } from './Commands'
 
 export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request, res: Response) => {
   const tableId = await getTableId(req.resourceId)
   if (!tableId) {
     throw new NotFoundError()
   }
-
-  const { predicate, propertyTemplate, referencedTableId, columnMappingNodes } = buildVariables(req, {
-    predicate: expand('rdf:predicate'),
-    propertyTemplate: expand('dataCube:propertyTemplate'),
-    referencedTableId: expand('dataCube:referencedTable'),
-    columnMappingNodes: expand('dataCube:columnMapping'),
-  })
-  const columnMappings = readColumnMappingsFromRequest(req, columnMappingNodes)
 
   const aggregate = await tables.load(tableId)
   const table = await aggregate.state
@@ -59,11 +22,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
     return
   }
 
-  const attribute = await aggregate.factory(addReferenceAttribute)({
-    propertyTemplate: (propertyTemplate && propertyTemplate.value) || (predicate && predicate.value),
-    referencedTableId: referencedTableId && referencedTableId.value,
-    columnMappings,
-  })
+  const attribute = await aggregate.factory(addReferenceAttribute)(req.buildModel(AddReferenceAttributeCommand))
 
   const newAttribute = await attribute.commit(attributes)
 
