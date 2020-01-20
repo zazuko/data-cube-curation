@@ -1,49 +1,8 @@
-import { CoreEvents, handle } from '@tpluscode/fun-ddr'
 import $rdf from 'rdf-ext'
-import { construct, deleteInsert, insertData } from '../sparql'
+import { construct } from '../sparql'
 import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
-import { AttributeEvents } from '../domain/attribute/events'
 import './attribute/eventHandlers'
-
-handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function addAttributeToReadModel (ev) {
-  const builder = insertData(`
-      <${ev.id}> a dataCube:Attribute , dataCube:ValueAttribute ;
-        dataCube:table <${ev.data.tableId}> ;
-        dataCube:column <${ev.data.columnId}> ;
-        dataCube:propertyTemplate "${ev.data.propertyTemplate}" .
-  `)
-
-  if (ev.data.language) {
-    builder.graph(`<${ev.id}> dataCube:language "${ev.data.language}"`)
-  } else if (ev.data.datatype) {
-    builder.graph(`<${ev.id}> dataCube:datatype <${ev.data.datatype}>`)
-  }
-
-  return builder.prefixes({
-    dataCube,
-    rdf,
-    schema,
-  })
-    .execute(getClient())
-})
-
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
-  if (ev.data.types.includes('Attribute')) {
-    await deleteInsert(`
-      ?attribute ?p0 ?o0 .`
-    )
-      .where(`
-        ?attribute a dataCube:Attribute .
-        ?attribute ?p0 ?o0 .
-
-        FILTER ( ?attribute = <${ev.id}> )`)
-      .prefixes({
-        dataCube,
-      })
-      .execute(getClient())
-  }
-})
 
 export async function getTableAttributes (tableId: string) {
   const collection = $rdf.dataset()
