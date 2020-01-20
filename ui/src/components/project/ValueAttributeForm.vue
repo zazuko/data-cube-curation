@@ -15,13 +15,7 @@
 
       <PropertyField :project="project" label="Property" v-model="attribute.property" required />
 
-      <b-field label="Type">
-        <b-input type="text" v-model="attribute.dataTypeId" :disabled="attribute.language !== ''" />
-      </b-field>
-
-      <b-field label="Language">
-        <LanguageInput v-model="attribute.language" :disabled="attribute.dataTypeId !== ''" />
-      </b-field>
+      <DataTypeField v-model="attribute.dataType" label="Data type" />
     </section>
     <footer class="modal-card-foot">
       <button class="button" type="button" @click="$parent.close()">Cancel</button>
@@ -33,13 +27,16 @@
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
 import { Project, Table, ResourceId, Source, ValueAttributeFormData } from '@/types'
+import * as datatypes from '@/datatypes'
 import TableTag from '../TableTag.vue'
+import DataTypeField from '../DataTypeField.vue'
 import LanguageInput from '../LanguageInput.vue'
 import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
     TableTag,
+    DataTypeField,
     LanguageInput,
     PropertyField
   }
@@ -76,8 +73,10 @@ function emptyAttribute () {
   return {
     columnId: '',
     property: '',
-    dataTypeId: '',
-    language: ''
+    dataType: {
+      id: datatypes.defaultURI,
+      params: {}
+    }
   }
 }
 </script>

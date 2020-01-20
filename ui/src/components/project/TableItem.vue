@@ -47,8 +47,8 @@
                   <tr>
                     <th>Source column</th>
                     <th>Property</th>
-                    <th>Type</th>
-                    <th>Language</th>
+                    <th>Data type</th>
+                    <th>Data type params</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -56,8 +56,18 @@
                   <tr v-for="attribute in attributes" :key="attribute.id">
                     <td>{{ getColumn(attribute.columnId).name }}</td>
                     <td><PrefixedURI :uri="attribute.property" :project="project" /></td>
-                    <td><PrefixedURI :uri="attribute.dataTypeId" :project="project" /></td>
-                    <td>{{ attribute.language }}</td>
+                    <td>
+                      <div v-if="attribute.dataType">
+                        <PrefixedURI :uri="attribute.dataType.id" :project="project" />
+                      </div>
+                    </td>
+                    <td>
+                      <ul v-if="attribute.dataType">
+                        <li v-for="(paramValue, param) in attribute.dataType.params" :key="param">
+                          {{ param | capitalize }}: <code>{{ paramValue }}</code>
+                        </li>
+                      </ul>
+                    </td>
                     <td>
                       <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
                       <b-button v-if="attribute.actions.edit" icon-left="pencil" />

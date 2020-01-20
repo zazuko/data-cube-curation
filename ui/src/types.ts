@@ -66,6 +66,21 @@ export interface TableFormData {
   sourceId: ResourceId,
 }
 
+export type DataTypeParam = 'format' | 'default' | 'language'
+
+export type DataTypeParamValues = { [P in DataTypeParam]?: string }
+
+export interface DataType {
+  id: ResourceId;
+  params: DataTypeParamValues;
+}
+
+export interface DataTypeOption {
+  name: string;
+  uri: ResourceId;
+  params: DataTypeParam[];
+}
+
 export interface Attribute extends HydraResource {
   id: ResourceId;
   property: string;
@@ -75,8 +90,7 @@ export interface Attribute extends HydraResource {
 
 export interface ValueAttribute extends Attribute {
   columnId: ResourceId;
-  dataTypeId: ResourceId | null;
-  language: string | null;
+  dataType: DataType | null;
   tableId: ResourceId;
   actions: Actions;
 }
@@ -95,8 +109,7 @@ export interface ValueAttributeFormData {
   id?: ResourceId,
   columnId: ResourceId,
   property: string,
-  dataTypeId: string,
-  language: string
+  dataType: DataType | null
 }
 
 export interface ReferenceAttributeFormData {

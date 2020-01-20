@@ -46,8 +46,7 @@
             <tr>
               <th>CSV Column</th>
               <th>Property</th>
-              <th>Type</th>
-              <th>Language</th>
+              <th>Data type</th>
               <th></th>
             </tr>
           </thead>
@@ -62,10 +61,7 @@
                 <PropertyField :project="project" v-model="attribute.property" required />
               </td>
               <td>
-                <b-input v-model="attribute.dataTypeId" :disabled="!!attribute.language" />
-              </td>
-              <td>
-                <LanguageInput v-model="attribute.language" :disabled="!!attribute.dataTypeId" />
+                <DataTypeField v-model="attribute.dataType" />
               </td>
               <td>
                 <b-button type="is-white" icon-left="close-circle-outline" title="Remove attribute" @click="removeAttribute(attribute)" />
@@ -74,7 +70,7 @@
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="6">
+              <td colspan="5">
                 <b-button type="is-white" icon-left="plus-circle-outline" title="Add attribute" @click="addAttribute" />
               </td>
             </tr>
@@ -98,12 +94,15 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
+import * as datatypes from '@/datatypes'
+import DataTypeField from '../DataTypeField.vue'
 import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 import LanguageInput from '../LanguageInput.vue'
 import PropertyField from '../PropertyField.vue'
 
 @Component({
   components: {
+    DataTypeField,
     IdentifierTemplateField,
     LanguageInput,
     PropertyField
@@ -163,8 +162,10 @@ function emptyTable () {
 function emptyAttribute (attrs = {}) {
   return {
     property: '',
-    dataTypeId: '',
-    language: '',
+    dataType: {
+      id: datatypes.defaultURI,
+      params: {}
+    },
     columnId: '',
     ...attrs
   }

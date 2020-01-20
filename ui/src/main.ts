@@ -13,6 +13,8 @@ Vue.use(VueHighlightJS)
 
 Vue.config.productionTip = false
 
+Vue.filter('capitalize', ([first, ...rest]: string): string => [first.toLocaleUpperCase(), ...rest].join(''))
+
 new Vue({
   router,
   store,
