@@ -43,8 +43,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
     throw new NotFoundError()
   }
 
-  const { predicate, propertyTemplate, referencedTableId, columnMappingNodes } = buildVariables(req, {
-    predicate: expand('rdf:predicate'),
+  const { propertyTemplate, referencedTableId, columnMappingNodes } = buildVariables(req, {
     propertyTemplate: expand('dataCube:propertyTemplate'),
     referencedTableId: expand('dataCube:referencedTable'),
     columnMappingNodes: expand('dataCube:columnMapping'),
@@ -60,7 +59,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
   }
 
   const attribute = await aggregate.factory(addReferenceAttribute)({
-    propertyTemplate: (propertyTemplate && propertyTemplate.value) || (predicate && predicate.value),
+    propertyTemplate: (propertyTemplate && propertyTemplate.value),
     referencedTableId: referencedTableId && referencedTableId.value,
     columnMappings,
   })
