@@ -1,5 +1,6 @@
 import { HydraResource } from 'alcaeus/types/Resources'
-import { ResourceId, ValueAttribute } from '@/types'
+import { DataType, DataTypeParam, DataTypeParamValues, ResourceId, ValueAttribute } from '@/types'
+import * as datatypes from '@/datatypes'
 import { Constructor, getOrThrow, findOperation } from '../common'
 import * as URI from '../uris'
 
@@ -24,13 +25,35 @@ export function Mixin<B extends Constructor> (Base: B) {
       return getOrThrow<string>(this, URI.PROP_PREDICATE)
     }
 
-    get dataTypeId (): ResourceId | null {
+    get dataType (): DataType | null {
       const dataType = this.get<HydraResource>(URI.PROP_DATATYPE)
-      return dataType ? dataType.id : null
-    }
+      const language = this.get<string>(URI.PROP_LANGUAGE)
 
-    get language (): string | null {
-      return this.get(URI.PROP_LANGUAGE)
+      if (!dataType && !language) {
+        return null
+      }
+
+      const dataTypeParams = this.get<HydraResource>(URI.PROP_DATATYPE_PARAMS)
+      const paramURIs: [ResourceId, DataTypeParam][] = [
+        [URI.PROP_DATATYPE_PARAM_FORMAT, 'format'],
+        [URI.PROP_DATATYPE_PARAM_DEFAULT, 'default']
+      ]
+      const params: DataTypeParamValues = paramURIs.reduce((params, [paramURI, paramProp]) => {
+        const paramValue = dataTypeParams?.get<string>(paramURI)
+        if (paramValue) {
+          params[paramProp] = paramValue
+        }
+        return params
+      }, {} as DataTypeParamValues)
+
+      if (language) {
+        params.language = language
+      }
+
+      return {
+        id: dataType?.id ?? datatypes.defaultURI,
+        params: params
+      }
     }
 
     get tableId (): ResourceId {

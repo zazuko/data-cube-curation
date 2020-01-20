@@ -212,12 +212,18 @@ class ProjectsClient {
 
   async createValueAttribute (table: Table, attributeData: ValueAttributeFormData): Promise<ValueAttribute> {
     const operation = table.actions.createValueAttribute
+    const language = attributeData.dataType?.params?.language
     const data = {
       '@type': URI.TYPE_VALUE_ATTRIBUTE,
       [URI.PROP_PREDICATE]: attributeData.property,
       [URI.PROP_COLUMN]: attributeData.columnId,
-      [URI.PROP_DATATYPE]: attributeData.dataTypeId,
-      [URI.PROP_LANGUAGE]: attributeData.language
+      // API doesn't allow datatype and language to be used together.
+      [URI.PROP_DATATYPE]: language ? undefined : attributeData.dataType?.id,
+      [URI.PROP_DATATYPE_PARAMS]: {
+        [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format,
+        [URI.PROP_DATATYPE_PARAM_DEFAULT]: attributeData.dataType?.params?.default
+      },
+      [URI.PROP_LANGUAGE]: language
     }
     return invokeSaveOperation<ValueAttribute>(operation, data)
   }
