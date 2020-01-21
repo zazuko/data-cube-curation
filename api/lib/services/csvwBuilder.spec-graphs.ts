@@ -38,7 +38,7 @@ const mappedColumn = `${tableAndSource}
       a dataCube:Attribute, dataCube:ValueAttribute ;
       dataCube:column <http://example.com/column/station_name> ;
       dataCube:table <${ids.tableId}> ;
-      rdf:predicate <http://schema.org/name> .
+      dataCube:propertyTemplate <http://schema.org/name> .
 `
 
 const multipleMappedColumns = `${mappedColumn}
@@ -47,7 +47,7 @@ const multipleMappedColumns = `${mappedColumn}
       a dataCube:Attribute, dataCube:ValueAttribute ;
       dataCube:column <http://example.com/column/station_name> ;
       dataCube:table <${ids.tableId}> ;
-      rdf:predicate <http://schema.org/name> ;
+      dataCube:propertyTemplate <http://schema.org/name> ;
       dataCube:language "fr" .
 `
 
@@ -98,7 +98,7 @@ BASE <http://reference-attribute.test/fact-table>
     a dataCube:Attribute, dataCube:ReferenceAttribute ;
     dataCube:table <fact-table> ;
     dataCube:referencedTable <dim-table> ;
-    rdf:predicate schema:identifier ;
+    dataCube:propertyTemplate schema:identifier ;
     dataCube:columnMapping [
         dataCube:sourceColumn <fact-source/name-column> ;
         dataCube:referencedColumn <dim-source/name-column> ;

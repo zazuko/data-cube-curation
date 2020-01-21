@@ -21,7 +21,7 @@
               </b-field>
               <b-taglist>
                 <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
-                  {{ getTable(attribute.tableId).name }} > {{ attribute.property }}
+                  {{ getTable(attribute.tableId).name }} > <PrefixedURI :uri="attribute.property" :project="project" />
                 </TableTag>
               </b-taglist>
             </th>
@@ -71,12 +71,14 @@ import {
   SourceColumnFilter
 } from '@/types'
 import TableTag from '@/components/TableTag.vue'
+import PrefixedURI from '@/components/PrefixedURI.vue'
 import Loader from '@/components/Loader.vue'
 import TableAdvancedForm from '@/components/project/TableAdvancedForm.vue'
 
 @Component({
   components: {
     TableTag,
+    PrefixedURI,
     Loader
   }
 })

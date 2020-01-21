@@ -1,5 +1,5 @@
 <template>
-  <article class="card">
+  <article class="table-card card">
     <header class="card-header" :style="{'background-color': table.color}">
       <h3 class="card-header-title">{{ table.name }}</h3>
       <div class="card-header-icon">
@@ -36,7 +36,7 @@
           </tr>
           <tr v-if="!table.isFact">
             <th>Identifier template</th>
-            <td><code>{{ table.identifierTemplate }}</code></td>
+            <td><code><PrefixedURI :uri="table.identifierTemplate" :project="project" /></code></td>
           </tr>
           <tr v-if="table.attributesCollection">
             <th>Properties</th>
@@ -55,8 +55,8 @@
                 <Loader tag="tbody" :data="valueAttributes" v-slot="{ data: attributes }">
                   <tr v-for="attribute in attributes" :key="attribute.id">
                     <td>{{ getColumn(attribute.columnId).name }}</td>
-                    <td>{{ attribute.property }}</td>
-                    <td>{{ attribute.dataTypeId }}</td>
+                    <td><PrefixedURI :uri="attribute.property" :project="project" /></td>
+                    <td><PrefixedURI :uri="attribute.dataTypeId" :project="project" /></td>
                     <td>{{ attribute.language }}</td>
                     <td>
                       <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
@@ -89,8 +89,8 @@
                 </thead>
                 <tbody>
                   <tr v-for="attribute in attributes" :key="attribute.id">
-                    <td><TableTag :table="getTable(attribute.referencedTableId)" /></td>
-                    <td>{{ attribute.property }}</td>
+                    <td><TableTag :table="getTable(attribute.referencedTableId)" class="is-medium" /></td>
+                    <td><PrefixedURI :uri="attribute.property" :project="project" /></td>
                     <td>
                        <ul v-if="attribute.columnMapping.length > 0">
                         <li v-for="(mapping, index) in attribute.columnMapping" :key="index">
@@ -125,6 +125,10 @@
 </template>
 
 <style scoped>
+.table-card {
+  max-width: 1400px;
+}
+
 .card-content {
   padding: 0;
 }
@@ -141,12 +145,14 @@ import ReferenceAttributeForm from './ReferenceAttributeForm.vue'
 import TableMapping from './TableMapping.vue'
 import TablePreview from './TablePreview.vue'
 import TableTag from '../TableTag.vue'
+import PrefixedURI from '../PrefixedURI.vue'
 import * as URI from '@/api/uris'
 import { getOrThrow } from '@/api/common'
 
 @Component({
   components: {
     Loader,
+    PrefixedURI,
     TableTag
   }
 })

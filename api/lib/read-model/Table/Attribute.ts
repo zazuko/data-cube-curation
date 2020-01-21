@@ -1,15 +1,12 @@
 import { Constructor, namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
 import * as Table from './index'
-import { dataCube, rdf } from '../../namespaces'
+import { dataCube } from '../../namespaces'
 import './ColumnMapping'
 import { BaseTable } from './Table'
 
 function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
   class Attribute extends Base implements Table.Attribute {
-    @property.literal({ path: rdf.predicate })
-    public predicate: string | null
-
     @property.literal()
     public propertyTemplate: string
   }

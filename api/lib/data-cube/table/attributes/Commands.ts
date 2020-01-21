@@ -2,29 +2,14 @@ import { NamedNode } from 'rdf-js'
 import ns from '@rdfjs/namespace'
 import { namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
 import { expand } from '@zazuko/rdf-vocabularies'
-import { dataCube, rdf } from '../../../namespaces'
+import { dataCube } from '../../../namespaces'
 
 const datatype = ns(expand('dataCube:datatype/'))
 
 @namespace(dataCube)
 class AddAttributeCommand extends RdfResourceImpl {
-  public get propertyTemplate () {
-    if (this._propertyTemplate) {
-      return this._propertyTemplate.value
-    }
-
-    if (this.predicate) {
-      return this.predicate.value
-    }
-
-    return undefined
-  }
-
-  @property({ path: 'propertyTemplate' })
-  private _propertyTemplate!: NamedNode
-
-  @property({ path: rdf.predicate })
-  private predicate!: NamedNode
+  @property.literal({ path: 'propertyTemplate' })
+  public propertyTemplate!: string
 }
 
 class DatatypeParameters extends RdfResourceImpl {

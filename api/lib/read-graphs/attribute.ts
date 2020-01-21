@@ -100,15 +100,5 @@ export async function getSingleAttribute (attributeId: string) {
     return null
   }
 
-  return attribute.map(quad => {
-    if (rdf.predicate.equals(quad.predicate)) {
-      return $rdf.quad(
-        quad.subject,
-        dataCube.propertyTemplate,
-        quad.object,
-      )
-    }
-
-    return quad
-  })
+  return attribute
 }

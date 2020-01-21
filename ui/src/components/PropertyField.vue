@@ -24,7 +24,7 @@ export default class extends Vue {
   shortProperty: string = shrink(this.value)
 
   update (newValue: string) {
-    this.$emit('input', expand(newValue))
+    this.$emit('input', expand(newValue) || newValue)
   }
 
   get rdfProperties () {
@@ -39,10 +39,12 @@ export default class extends Vue {
     return expandWithBase(this.value, this.project.baseUri)
   }
 
-  // Set `shortProperty` when value is changed from the outside
+  // Set `shortProperty` when value is set from the outside
   @Watch('value')
   setShortProperty (value: string) {
-    this.shortProperty = shrink(value)
+    if (!this.shortProperty) {
+      this.shortProperty = shrink(value)
+    }
   }
 }
 </script>
