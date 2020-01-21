@@ -22,7 +22,7 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
     return
   }
 
-  const attribute = await aggregate.factory(addReferenceAttribute)(req.buildModel(AddReferenceAttributeCommand))
+  const attribute = await aggregate.factory(addReferenceAttribute)(req.buildModel(AddReferenceAttributeCommand)[0])
 
   const newAttribute = await attribute.commit(attributes)
 

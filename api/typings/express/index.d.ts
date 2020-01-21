@@ -1,5 +1,6 @@
 import SparqlHttp from 'sparql-http-client'
 import { Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
+import { NamedNode } from 'rdf-js'
 import DatasetExt = require('rdf-ext/lib/Dataset')
 
 declare module 'express' {
@@ -9,7 +10,7 @@ declare module 'express' {
     graph: DatasetExt;
     resourceId: string;
     resourcePath: string;
-    buildModel <T extends RdfResourceImpl> (Class: Constructor<T>): T;
+    buildModel <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }): T[];
   }
 
   interface Response {

@@ -22,7 +22,7 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
     return
   }
 
-  const attribute = await aggregate.factory(addValueAttribute)(req.buildModel(AddValueAttributeCommand))
+  const attribute = await aggregate.factory(addValueAttribute)(req.buildModel(AddValueAttributeCommand)[0])
 
   const newAttribute = await attribute.commit(attributes)
 

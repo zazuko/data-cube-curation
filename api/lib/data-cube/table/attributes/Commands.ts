@@ -25,6 +25,10 @@ class DatatypeParameters extends RdfResourceImpl {
 }
 
 export class AddValueAttributeCommand extends AddAttributeCommand {
+  public static get types () {
+    return [dataCube.ValueAttribute]
+  }
+
   public get datatype () {
     return this._datatype ? this._datatype.value : undefined
   }
@@ -67,6 +71,10 @@ class ColumnMapping extends RdfResourceImpl {
 }
 
 export class AddReferenceAttributeCommand extends AddAttributeCommand {
+  public static get types () {
+    return [dataCube.ReferenceAttribute]
+  }
+
   @property.resource({
     path: 'columnMapping',
     values: 'array',
