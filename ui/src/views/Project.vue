@@ -1,6 +1,6 @@
 <template>
   <Loader id="project-page" :data="project" v-slot="{ data: project }">
-    <h2 class="title is-2">{{ project.name }}</h2>
+    <h2 class="title is-3">{{ project.name }}</h2>
 
     <div class="tabs">
       <ul>
@@ -12,6 +12,11 @@
         <router-link :to="{ name: 'project/tables' }" v-slot="{ href, route, navigate, isActive }">
           <li :class="[isActive && 'is-active']">
             <a :href="href" @click="navigate">Output tables</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/edit' }" v-slot="{ href, route, navigate, isActive }" style="margin-left: auto;">
+          <li :class="[isActive && 'is-active']">
+            <a :href="href" @click="navigate"><b-icon icon="settings" /> Project settings</a>
           </li>
         </router-link>
       </ul>

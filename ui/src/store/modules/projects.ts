@@ -52,9 +52,11 @@ const actions: ActionTree<ProjectsState, RootState> = {
   },
 
   async save (context, { operation, data }) {
-    await handleAPIError(context, async () => {
+    return handleAPIError(context, async () => {
       const project = await client.projects.save(operation, data)
       context.commit('storeOneInList', project)
+      context.commit('storeOne', project)
+      return project
     })
   },
 
@@ -84,7 +86,7 @@ const mutations: MutationTree<ProjectsState> = {
   },
 
   storeOneInList (state, project: Project) {
-    if (!state.projectsList.data) throw new Error('Projects list not loaded')
+    if (!state.projectsList.data) return
 
     state.projectsList.data = state.projectsList.data.filter((p) => p.id !== project.id)
     state.projectsList.data.push(project)

@@ -7,8 +7,8 @@ export async function handleAPIError (context: ActionContext<any, RootState>, f:
   } catch (error) {
     if (error.details) {
       context.commit('storeError', error.details, { root: true })
-    } else {
-      throw error
     }
+
+    throw error
   }
 }
