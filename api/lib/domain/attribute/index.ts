@@ -9,6 +9,13 @@ export interface ValueAttribute extends Attribute {
   column: string;
   datatype: string;
   language?: string;
+  parameters: {
+    '@context': {
+      '@vocab': 'https://rdf-cube-curation.described.at/datatype/';
+    };
+    format?: string;
+    default?: string;
+  };
 }
 
 export interface ReferenceAttribute extends Attribute {

@@ -29,3 +29,40 @@ Object {
   "tableId": "example/table",
 }
 `;
+
+exports[`table add value attribute with datatype parameters emits an event 1`] = `
+Array [
+  Object {
+    "data": Object {
+      "columnId": "source/column",
+      "datatype": "http://www.w3.org/2001/XMLSchema#date",
+      "language": undefined,
+      "parameters": Object {
+        "format": "YYYY/mm/dd",
+      },
+      "propertyTemplate": "http://schema.org/name",
+      "tableId": "example/table",
+    },
+    "name": "ValueAttributeAdded",
+  },
+]
+`;
+
+exports[`table add value attribute with datatype parameters persists the parameters 1`] = `
+Object {
+  "@id": StringMatching /example\\\\/table\\\\/attribute\\\\/\\.\\+/,
+  "@type": Array [
+    "Attribute",
+    "ValueAttribute",
+  ],
+  "column": "source/column",
+  "datatype": "http://www.w3.org/2001/XMLSchema#date",
+  "language": undefined,
+  "parameters": Object {
+    "@context": "https://rdf-cube-curation.described.at/datatype/",
+    "format": "YYYY/mm/dd",
+  },
+  "propertyTemplate": "http://schema.org/name",
+  "tableId": "example/table",
+}
+`;

@@ -1,0 +1,116 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX datatype: <https://rdf-cube-curation.described.at/datatype/>
+
+ENTRYPOINT "project/parametrized-datatype-test"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Fact table project" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property api:factTable {
+            Expect Operation api:CreateFactTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="single-column.csv"'
+
+        <<< "../../bodies/single-column.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:CreateFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/parametrized-datatype-test/source/single-column-csv> ;
+           schema:name "Observation" .
+        ```
+    } => {
+        Expect Status 201
+    }
+}
+
+With Class dataCube:Table {
+    Expect Property api:attributes {
+        Expect Operation api:AddValueAttribute
+    }
+
+    Expect Link api:csvwMetadata {
+        Expect Property csvw:tableSchema {
+            Expect Property csvw:column {
+                Expect Property csvw:datatype {
+                    Expect Id <http://www.w3.org/2001/XMLSchema#date>
+                }
+                Expect Property csvw:format "dd/MM/yyyy"
+                Expect Property csvw:default "10/10/2010"
+            }
+        }
+    }
+}
+
+With Operation api:AddValueAttribute {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix datatype: <https://rdf-cube-curation.described.at/datatype/> .
+        @prefix schema: <http://schema.org/> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+        <> dataCube:column <project/parametrized-datatype-test/source/single-column-csv/station-id> ;
+           dataCube:propertyTemplate <http://schema.org/identifier> ;
+           dataCube:datatype xsd:date ;
+           datatype:parameters [
+              datatype:format "dd/MM/yyyy" ;
+              datatype:default "10/10/2010" ;
+           ] ;
+           a dataCube:ValueAttribute .
+        ```
+    } => {
+        Expect Status 201
+        Expect Header Location
+
+        Expect Property datatype:parameters {
+            Expect Property datatype:format "dd/MM/yyyy"
+            Expect Property datatype:default "10/10/2010"
+        }
+    }
+}

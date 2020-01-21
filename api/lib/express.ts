@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
-import { namedNode } from 'rdf-data-model'
+import { namedNode } from '@rdfjs/data-model'
 import env from './env'
 
 export function resourceId (req: Request, res: Response, next: NextFunction) {

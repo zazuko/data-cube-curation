@@ -1,8 +1,8 @@
-import * as specGraphs from './csvwBuilder.spec-graphs'
 import { buildCsvw } from './csvwBuilder'
 import { Column, DimensionTable, ValueAttribute } from '../read-model/Table'
-import { namedNode } from 'rdf-data-model'
+import { namedNode } from '@rdfjs/data-model'
 import { dataCube, xsd } from '../namespaces'
+import * as specGraphs from './csvwBuilder.spec-graphs'
 
 type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -48,6 +48,17 @@ describe('csvwBuilder', () => {
     it('maps attribute with datatype', async () => {
       // given
       const dataset = await specGraphs.columnMappedWithDatatypeGraph()
+
+      // when
+      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
+
+      // then
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+    })
+
+    it('maps attribute with datatype parameters', async () => {
+      // given
+      const dataset = await specGraphs.columnMappedWithDatatypeAndParamsGraph()
 
       // when
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })

@@ -1,6 +1,10 @@
 import { NamedNode } from 'rdf-js'
+import ns from '@rdfjs/namespace'
 import { namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { expand } from '@zazuko/rdf-vocabularies'
 import { dataCube, rdf } from '../../../namespaces'
+
+const datatype = ns(expand('dataCube:datatype/'))
 
 @namespace(dataCube)
 class AddAttributeCommand extends RdfResourceImpl {
@@ -23,6 +27,18 @@ class AddAttributeCommand extends RdfResourceImpl {
   private predicate!: NamedNode
 }
 
+class DatatypeParameters extends RdfResourceImpl {
+  @property.literal({
+    path: datatype.format,
+  })
+  format?: string;
+
+  @property.literal({
+    path: datatype.default,
+  })
+  default?: string;
+}
+
 export class AddValueAttributeCommand extends AddAttributeCommand {
   public get datatype () {
     return this._datatype ? this._datatype.value : undefined
@@ -34,6 +50,12 @@ export class AddValueAttributeCommand extends AddAttributeCommand {
   public get columnId () {
     return this.column ? this.column.value : undefined
   }
+
+  @property.resource({
+    path: datatype.parameters,
+    as: [DatatypeParameters],
+  })
+  public parameters: DatatypeParameters;
 
   @property()
   private column?: NamedNode

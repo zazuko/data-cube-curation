@@ -1,4 +1,4 @@
-import { RdfResource } from '@tpluscode/rdfine'
+import { RdfResource, ResourceIndexer } from '@tpluscode/rdfine'
 
 export interface Column extends RdfResource {
   suppressed: boolean;
@@ -15,7 +15,7 @@ export interface TableSchema extends RdfResource {
 }
 
 export interface Mapping extends RdfResource {
-  newColumn(col: { name: string }): Column;
+  newColumn(col: { name: string }): Column & ResourceIndexer;
   addDialect(): void;
   readonly tableSchema: TableSchema;
 }

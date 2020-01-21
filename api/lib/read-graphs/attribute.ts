@@ -1,5 +1,5 @@
 import $rdf from 'rdf-ext'
-import { construct } from '../sparql'
+import { construct, describe } from '../sparql'
 import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import './attribute/eventHandlers'
@@ -79,20 +79,18 @@ export async function getTableAttributes (tableId: string) {
 export async function getSingleAttribute (attributeId: string) {
   const attribute = $rdf.dataset()
 
-  await attribute.import(await construct()
-    .graph(`
-      ?attribute ?p ?o .
-      ?attribute dataCube:columnMapping ?mapping .
-      ?mapping ?mappingO ?mappingP .
-    `)
+  await attribute.import(await describe('?attribute', '?params', '?mapping')
     .where(`
-      ?attribute a dataCube:Attribute ; ?p ?o .
+      BIND ( <${attributeId}> as ?attribute )
 
-      FILTER ( ?attribute = <${attributeId}> )`)
-    .where(`OPTIONAL {
-      ?attribute dataCube:columnMapping ?mapping .
-      ?mapping ?mappingO ?mappingP .
-    }`)
+      OPTIONAL {
+        ?attribute dataCube:columnMapping ?mapping .
+      }
+
+      OPTIONAL {
+        ?attribute <https://rdf-cube-curation.described.at/datatype/parameters> ?params .
+      }
+    `)
     .prefixes({
       dataCube,
     })

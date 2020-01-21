@@ -1,6 +1,6 @@
 import express from 'express'
 import { Term } from 'rdf-js'
-import { namedNode } from 'rdf-data-model'
+import { namedNode } from '@rdfjs/data-model'
 
 interface ReadOnlyVariable {
   value: any | null;
