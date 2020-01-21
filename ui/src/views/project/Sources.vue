@@ -1,15 +1,17 @@
 <template>
   <div class="input-sources">
-    <div class="buttons">
-      <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource">
-        <a class="button is-primary">
-          <b-icon icon="upload"></b-icon>
-          <span>Upload source CSV file</span>
-        </a>
-      </b-upload>
-      <div class="column-filters">
-        <p>Filter columns:</p>
-        <b-field>
+    <div class="level">
+      <div class="level-left">
+        <b-upload @input="uploadSource" accept=".csv" v-if="project.actions.createSource" class="level-item">
+          <a class="button is-primary">
+            <b-icon icon="upload"></b-icon>
+            <span>Upload source CSV file</span>
+          </a>
+        </b-upload>
+      </div>
+      <div class="level-right">
+        <p class="level-item">Filter columns:</p>
+        <b-field class="level-item">
           <b-radio-button v-model="columnFilter" native-value="all" size="is-small">
             All
           </b-radio-button>
@@ -42,16 +44,6 @@
   .sources-list > .card > .card-content {
     padding: 0;
     overflow-x: scroll;
-  }
-
-  .column-filters {
-    margin-left: auto;
-
-    display: flex;
-  }
-
-  .column-filters > p {
-    margin-right: 0.5em;
   }
 </style>
 
