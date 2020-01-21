@@ -4,7 +4,6 @@ import { dataCube, schema, rdf } from '../../namespaces'
 import { getClient } from '../sparqlClient'
 
 export async function getTableAndSource (tableId: string) {
-  // eslint-disable-next-line jest/valid-describe
   return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?referencedColumn')
     .prefixes({ dataCube, schema, rdf })
     .where(`
