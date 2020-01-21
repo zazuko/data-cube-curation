@@ -7,6 +7,10 @@ Array [
       "columnId": "source/column",
       "datatype": "http://www.w3.org/2001/XMLSchema#string",
       "language": undefined,
+      "parameters": Object {
+        "default": undefined,
+        "format": undefined,
+      },
       "propertyTemplate": "http://schema.org/name",
       "tableId": "example/table",
     },
@@ -25,6 +29,13 @@ Object {
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#string",
   "language": undefined,
+  "parameters": Object {
+    "@context": Object {
+      "@vocab": "https://rdf-cube-curation.described.at/datatype/",
+    },
+    "default": undefined,
+    "format": undefined,
+  },
   "propertyTemplate": "http://schema.org/name",
   "tableId": "example/table",
 }
@@ -38,6 +49,7 @@ Array [
       "datatype": "http://www.w3.org/2001/XMLSchema#date",
       "language": undefined,
       "parameters": Object {
+        "default": undefined,
         "format": "YYYY/mm/dd",
       },
       "propertyTemplate": "http://schema.org/name",
@@ -59,7 +71,10 @@ Object {
   "datatype": "http://www.w3.org/2001/XMLSchema#date",
   "language": undefined,
   "parameters": Object {
-    "@context": "https://rdf-cube-curation.described.at/datatype/",
+    "@context": Object {
+      "@vocab": "https://rdf-cube-curation.described.at/datatype/",
+    },
+    "default": undefined,
     "format": "YYYY/mm/dd",
   },
   "propertyTemplate": "http://schema.org/name",

@@ -5,7 +5,7 @@ import * as Csvw from './index'
 import { csvw } from '../../namespaces'
 
 export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csvwColumn: Csvw.Column & ResourceIndexer) {
-  Object.entries(attribute.parameters)
+  attribute.parameters && Object.entries(attribute.parameters)
     .forEach(([param, value]) => {
       csvwColumn[csvw(param).value] = literal(value)
     })
