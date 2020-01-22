@@ -33,6 +33,11 @@ dataCube:ValueAttribute
 
 datatype:parameters rdfs:range dataCube:DatatypeParameters .
 
+dataCube:DatatypeParameters
+  a hydra:Class ;
+  hydra:supportedProperty [ hydra:property datatype:format ] ,
+                          [ hydra:property datatype:default ] .
+
 dataCube:ReferenceAttribute
   rdfs:subclassOf dataCube:Attribute ;
   hydra:supportedProperty [ hydra:property dataCube:referencedTable ;
