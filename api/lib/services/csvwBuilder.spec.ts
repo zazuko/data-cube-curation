@@ -1,7 +1,8 @@
+import { namedNode } from '@rdfjs/data-model'
+import { NamedNode } from 'rdf-js'
 import { buildCsvw } from './csvwBuilder'
 import { Column, DimensionTable, ValueAttribute, Table } from '../read-model/Table'
-import { namedNode } from '@rdfjs/data-model'
-import { dataCube, schema, xsd } from '../namespaces'
+import { csvw, dataCube, rdf, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
 type RecursivePartial<T> = {
@@ -88,6 +89,87 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+    })
+
+    it('does not map as derived type when there are no parameters', async () => {
+      // given
+      const column: Partial<Column> = {
+        id: namedNode('http://example.com/column/station_name'),
+        name: 'station_name',
+      }
+
+      const attribute: RecursivePartial<ValueAttribute> = {
+        id: namedNode('http://example.com/attribute/station_name'),
+        column,
+        propertyTemplate: schema('name').value,
+        datatype: {
+          id: xsd.double,
+        },
+        parameters: {
+        },
+      }
+      const table: RecursivePartial<Table> = {
+        id: namedNode('http://example.com/table/Observation'),
+        columns: [],
+        attributes: [attribute],
+        types: [
+          dataCube.Table,
+        ],
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table as any)
+
+      // then
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+    })
+
+    describe('maps specific datatypes to csvw built-in types', () => {
+      const datatypeMappings: Array<[NamedNode, string]> = [
+        [xsd.double, 'number'],
+        [xsd.base64Binary, 'binary'],
+        [xsd.dateTime, 'datetime'],
+        [xsd.anyAtomicType, 'any'],
+        [rdf.XMLLiteral, 'xml'],
+        [rdf.HTML, 'html'],
+        [csvw.JSON, 'json'],
+      ]
+
+      datatypeMappings.forEach(([datatype, builtInType]) => {
+        it(`${datatype.value} => ${builtInType}`, () => {
+          // given
+          const column: Partial<Column> = {
+            id: namedNode('http://example.com/column/station_name'),
+            name: 'station_name',
+          }
+
+          const attribute: RecursivePartial<ValueAttribute> = {
+            id: namedNode('http://example.com/attribute/station_name'),
+            column,
+            propertyTemplate: schema('name').value,
+            datatype: {
+              id: datatype,
+            },
+            parameters: {
+              format: 'dd/mm/yyyy',
+            },
+          }
+          const table: RecursivePartial<Table> = {
+            id: namedNode('http://example.com/table/Observation'),
+            columns: [],
+            attributes: [attribute],
+            types: [
+              dataCube.Table,
+            ],
+          }
+
+          // when
+          const csvwDataset = buildCsvw(table as any)
+
+          // then
+          expect(csvwDataset.tableSchema.columns[0].datatype[csvw.base.value].value).toEqual(builtInType)
+        })
+      })
     })
 
     it('maps attribute with language tag', async () => {

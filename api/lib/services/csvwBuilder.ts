@@ -1,7 +1,6 @@
 import $rdf from 'rdf-ext'
 import { Dataset } from 'rdf-js'
 import cf from 'clownface'
-import { ResourceIndexer } from '@tpluscode/rdfine'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
@@ -15,7 +14,7 @@ import parser = require('uri-template')
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
 
 function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribute: Attribute): Csvw.Column | null {
-  let csvwColumn: Csvw.Column & ResourceIndexer | null = null
+  let csvwColumn: Csvw.Column | null = null
 
   if ('column' in attribute) {
     csvwColumn = csvwGraph.newColumn({
