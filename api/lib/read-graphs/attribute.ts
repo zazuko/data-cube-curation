@@ -1,6 +1,6 @@
 import $rdf from 'rdf-ext'
 import { construct, describe } from '../sparql'
-import { api, dataCube, hydra, rdf, schema } from '../namespaces'
+import { api, dataCube, hydra, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
 import './attribute/eventHandlers'
 
@@ -13,18 +13,14 @@ export async function getTableAttributes (tableId: string) {
         a hydra:Collection ;
         hydra:member ?attribute ;
         hydra:totalItems ?count .
-
-      ?attribute ?p ?o .
     `)
     .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
     .where(`
       OPTIONAL {
         ?attribute dataCube:table <${tableId}> .
         ?attribute a dataCube:Attribute .
-        ?attribute ?p ?o .
-
-        FILTER (?p != dataCube:columnMapping )
-      }`)
+      }
+    `)
     .where(`{
       SELECT (COUNT(?attribute) as ?count) WHERE {
         OPTIONAL {
@@ -51,26 +47,22 @@ export async function getTableAttributes (tableId: string) {
     .prefixes({ hydra, dataCube, rdf, api })
     .execute(getClient()))
 
-  await collection.import(await construct()
-    .graph(`
-      ?attribute dataCube:columnMapping [
-        dataCube:sourceColumn ?sourceColumn ;
-        dataCube:referencedColumn ?referencedColumn ;
-      ] .
-
-      ?sourceColumn schema:name ?sourceName .
-      ?referencedColumn schema:name ?referencedName .`)
+  await collection.import(await describe('?attribute', '?params', '?mapping')
     .where(`
       ?attribute dataCube:table <${tableId}> .
-      ?attribute dataCube:columnMapping [
-        dataCube:sourceColumn ?sourceColumn ;
-        dataCube:referencedColumn ?referencedColumn ;
-      ] .
+      ?attribute a dataCube:Attribute .
 
-      ?sourceColumn schema:name ?sourceName .
-      ?referencedColumn schema:name ?referencedName .
+      OPTIONAL {
+        ?attribute dataCube:columnMapping ?mapping .
+      }
+
+      OPTIONAL {
+        ?attribute <https://rdf-cube-curation.described.at/datatype/parameters> ?params .
+      }
     `)
-    .prefixes({ dataCube, schema })
+    .prefixes({
+      dataCube,
+    })
     .execute(getClient()))
 
   return collection

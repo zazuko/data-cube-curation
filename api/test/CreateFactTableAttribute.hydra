@@ -2,21 +2,19 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
 ENTRYPOINT "project/add-attribute-test"
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
         Expect Operation schema:CreateAction {
-            // Expect Method "PUT"
         }
     }
 }
 
 With Class dataCube:Project {
     With Operation api:DeleteProject {
-        // Expect Operation "DELETE"
-
         Invoke {
             Expect Status 204
         }
@@ -72,6 +70,13 @@ With Operation api:CreateFactTable {
 With Class dataCube:Table {
     Expect Property api:attributes {
         Expect Operation api:AddValueAttribute
+    }
+
+    Expect Link api:attributes {
+        Expect Property hydra:member {
+            Expect Type dataCube:Attribute
+        }
+        Expect Property hydra:totalItems 1
     }
 
     Expect Link api:csvwMetadata {
