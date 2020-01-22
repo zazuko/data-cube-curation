@@ -1,7 +1,7 @@
 import { buildCsvw } from './csvwBuilder'
-import { Column, DimensionTable, ValueAttribute } from '../read-model/Table'
+import { Column, DimensionTable, ValueAttribute, Table } from '../read-model/Table'
 import { namedNode } from '@rdfjs/data-model'
-import { dataCube, xsd } from '../namespaces'
+import { dataCube, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
 type RecursivePartial<T> = {
@@ -58,10 +58,33 @@ describe('csvwBuilder', () => {
 
     it('maps attribute with datatype parameters', async () => {
       // given
-      const dataset = await specGraphs.columnMappedWithDatatypeAndParamsGraph()
+      const column: Partial<Column> = {
+        id: namedNode('http://example.com/column/station_name'),
+        name: 'station_name',
+      }
+
+      const attribute: RecursivePartial<ValueAttribute> = {
+        id: namedNode('http://example.com/attribute/station_name'),
+        column,
+        propertyTemplate: schema('name').value,
+        datatype: {
+          id: xsd.TOKEN,
+        },
+        parameters: {
+          format: 'dd/mm/yyyy',
+        },
+      }
+      const table: RecursivePartial<Table> = {
+        id: namedNode('http://example.com/table/Observation'),
+        columns: [],
+        attributes: [attribute],
+        types: [
+          dataCube.Table,
+        ],
+      }
 
       // when
-      const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
+      const csvwDataset = buildCsvw(table as any)
 
       // then
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
