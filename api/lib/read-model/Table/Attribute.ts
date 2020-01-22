@@ -24,6 +24,22 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
 
     @property.resource()
     public column: Table.Column
+
+    public get parameters () {
+      const prop = dataCube('datatype/parameters')
+
+      return this._node.out(prop)
+        .toArray()
+        .reduce((params, param) => {
+          [...this._node.dataset.match(param.term)]
+            .forEach(quad => {
+              const csvwProperty = quad.predicate.value.replace(dataCube('datatype/').value, '')
+              params[csvwProperty] = quad.object.value
+            })
+
+          return params
+        }, {} as Record<string, string>)
+    }
   }
 
   return AttributeMixin(ValueAttribute)

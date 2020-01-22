@@ -23,14 +23,18 @@
     "indent": "off",
     "@typescript-eslint/indent": ["error", 2],
     "no-useless-constructor": "off",
-    "@typescript-eslint/no-useless-constructor": "error"
+    "@typescript-eslint/no-useless-constructor": "error",
+    "jest/valid-describe": "off",
+    "jest/no-identical-title": "off"
   },
   "overrides": [
     {
       "files": ["*.spec.ts"],
       "rules": {
         "@typescript-eslint/no-non-null-assertion": 0,
-        "import/first": 0
+        "import/first": 0,
+        "jest/valid-describe": 1,
+        "jest/no-identical-title": 1
       }
     }
   ]

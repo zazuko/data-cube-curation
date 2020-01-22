@@ -1,10 +1,11 @@
 import parser from 'uri-template'
+import { ResourceIndexer } from '@tpluscode/rdfine'
 import { error, warning } from '../../log'
 import * as Table from '../../read-model/Table'
 import * as Csvw from '../csvwBuilder/index'
 import { getAbsoluteUrl } from './aboutUrl'
 
-export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {
+export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column & ResourceIndexer) {
   const referencedTable = attribute.referencedTable
 
   const columnNameMap = attribute.columnMappings

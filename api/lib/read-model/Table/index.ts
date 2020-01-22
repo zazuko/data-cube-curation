@@ -23,6 +23,7 @@ export interface ValueAttribute extends Attribute {
   readonly column: Column;
   readonly language: string;
   readonly datatype: RdfResource;
+  readonly parameters: Record<string, string>;
 }
 
 export interface ColumnMapping extends RdfResource {

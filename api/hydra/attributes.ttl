@@ -1,5 +1,6 @@
 @prefix api:       <https://rdf-cube-curation.described.at/api/> .
 @prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix datatype:  <https://rdf-cube-curation.described.at/datatype/> .
 @prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
 @prefix hydra-box: <http://hydra-box.org/schema/> .
 @prefix code:      <https://code.described.at/> .
@@ -20,12 +21,22 @@ dataCube:ValueAttribute
   rdfs:subclassOf dataCube:Attribute ;
   hydra:supportedProperty [ hydra:property dataCube:column ;
                             hydra:title    "Column to be transformed by this attribute" ;
-                            hydra:required true ], [ hydra:property    rdf:type ;
-                                                     hydra:title       "Datatype URI for mapped value" ;
-                                                     hydra:description "Cannot be used together with language tag" ],
-[ hydra:property    dataCube:language ;
-  hydra:title       "Language of the mapped values" ;
-  hydra:description "Cannot be used together with datatype" ] .
+                            hydra:required true ] ,
+                          [ hydra:property    dataCube:datatype ;
+                            hydra:title       "Datatype URI for mapped value" ;
+                            hydra:description "Cannot be used together with language tag" ] ,
+                          [ hydra:property    datatype:parameters ;
+                            hydra:title       "Optional parameters for datatype" ] ,
+                          [ hydra:property    dataCube:language ;
+                            hydra:title       "Language of the mapped values" ;
+                            hydra:description "Cannot be used together with datatype" ] .
+
+datatype:parameters rdfs:range dataCube:DatatypeParameters .
+
+dataCube:DatatypeParameters
+  a hydra:Class ;
+  hydra:supportedProperty [ hydra:property datatype:format ] ,
+                          [ hydra:property datatype:default ] .
 
 dataCube:ReferenceAttribute
   rdfs:subclassOf dataCube:Attribute ;

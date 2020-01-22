@@ -46,6 +46,23 @@ _:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
 "
 `;
 
+exports[`csvwBuilder mapping for FactTable maps attribute with datatype parameters 1`] = `
+"<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
+<http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .
+<http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#tableSchema> _:c14n0 .
+_:c14n0 <http://www.w3.org/ns/csvw#column> _:c14n2 .
+_:c14n1 <http://www.w3.org/ns/csvw#datatype> <http://www.w3.org/2001/XMLSchema#TOKEN> .
+_:c14n1 <http://www.w3.org/ns/csvw#format> \\"dd/mm/yyyy\\" .
+_:c14n1 <http://www.w3.org/ns/csvw#propertyUrl> \\"http://schema.org/name\\" .
+_:c14n1 <http://www.w3.org/ns/csvw#title> \\"station_name\\" .
+_:c14n2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:c14n1 .
+_:c14n2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:c14n3 <http://www.w3.org/ns/csvw#delimiter> \\";\\" .
+_:c14n3 <http://www.w3.org/ns/csvw#header> \\"true\\"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+_:c14n3 <http://www.w3.org/ns/csvw#quoteChar> \\"\\\\\\"\\" .
+"
+`;
+
 exports[`csvwBuilder mapping for FactTable maps attribute with language tag 1`] = `
 "<http://example.com/table/Observation/csvw> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/csvw#CsvwMapping> .
 <http://example.com/table/Observation/csvw> <http://www.w3.org/ns/csvw#dialect> _:c14n3 .

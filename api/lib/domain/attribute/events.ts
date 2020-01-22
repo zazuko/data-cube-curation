@@ -5,6 +5,10 @@ export interface AttributeEvents {
     propertyTemplate: string;
     datatype: string;
     language?: string;
+    parameters: {
+      format?: string;
+      default?: string;
+    };
   };
   ReferenceAttributeAdded: {
     tableId: string;

@@ -7,12 +7,15 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource } from '../../read-graphs/table'
 import { errorFactory } from '../error-helper'
 
-interface AddValueAttributeCommand {
-  columnId: string;
-  predicate?: string;
-  propertyTemplate: string;
+export interface AddValueAttributeCommand {
+  columnId?: string;
+  propertyTemplate?: string;
   datatype?: string;
   language?: string;
+  parameters?: {
+    format?: string;
+    default?: string;
+  };
 }
 
 export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueAttribute>(async (table, command, emitter) => {
@@ -39,9 +42,13 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
+    parameters: {
+      format: command.parameters?.format,
+      default: command.parameters?.default,
+    },
   })
 
-  return {
+  const attribute: ValueAttribute = {
     '@id': attributeId,
     '@type': ['Attribute', 'ValueAttribute'],
     tableId: table['@id'],
@@ -49,5 +56,14 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
+    parameters: {
+      '@context': {
+        '@vocab': 'https://rdf-cube-curation.described.at/datatype/',
+      },
+      format: command.parameters?.format,
+      default: command.parameters?.default,
+    },
   }
+
+  return attribute
 })

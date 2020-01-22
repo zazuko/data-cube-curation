@@ -1,7 +1,8 @@
-import { addValueAttribute } from './addValueAttribute'
+import { addValueAttribute, AddValueAttributeCommand } from './addValueAttribute'
 import { Table } from './index'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource } from '../../read-graphs/table'
+import { xsd } from '../../namespaces'
 
 jest.mock('../../read-graphs/table')
 
@@ -10,7 +11,7 @@ const existsInTableSourceMock = existsInTableSource as jest.Mock
 describe('table', () => {
   let table: Table
 
-  const command = {
+  const command: Partial<AddValueAttributeCommand> = {
     columnId: 'source/column',
     propertyTemplate: expand('schema:name'),
   }
@@ -88,6 +89,41 @@ describe('table', () => {
 
       // then
       await expect(result.events).resolves.toMatchSnapshot()
+    })
+
+    describe('with datatype parameters', () => {
+      it('persists the parameters', async () => {
+        // given
+        existsInTableSourceMock.mockResolvedValueOnce(true)
+        command.datatype = xsd.date.value
+        command.parameters = {
+          format: 'YYYY/mm/dd',
+        }
+
+        // when
+        const result = await addValueAttribute(table, command)
+
+        // then
+        const state = await result.state
+        expect(state).toMatchSnapshot({
+          '@id': expect.stringMatching(new RegExp('example/table/attribute/.+')),
+        })
+      })
+
+      it('emits an event', async () => {
+        // given
+        existsInTableSourceMock.mockResolvedValueOnce(true)
+        command.datatype = xsd.date.value
+        command.parameters = {
+          format: 'YYYY/mm/dd',
+        }
+
+        // when
+        const result = await addValueAttribute(table, command)
+
+        // then
+        await expect(result.events).resolves.toMatchSnapshot()
+      })
     })
   })
 })

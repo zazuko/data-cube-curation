@@ -2,9 +2,9 @@ PREFIX api: <https://rdf-cube-curation.described.at/api/>
 PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX csvw: <http://www.w3.org/ns/csvw#>
-PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX datatype: <https://rdf-cube-curation.described.at/datatype/>
 
-ENTRYPOINT "project/add-attribute-test"
+ENTRYPOINT "project/parametrized-datatype-test"
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
@@ -45,7 +45,7 @@ With Operation api:AddSource {
         Content-Type "text/csv"
         Content-Disposition 'attachment; filename="single-column.csv"'
 
-        <<< "bodies/single-column.csv"
+        <<< "../../bodies/single-column.csv"
     } => {
         Expect Status 201
     }
@@ -59,7 +59,7 @@ With Operation api:CreateFactTable {
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/add-attribute-test/source/single-column-csv> ;
+        <> dataCube:source <project/parametrized-datatype-test/source/single-column-csv> ;
            schema:name "Observation" .
         ```
     } => {
@@ -72,18 +72,14 @@ With Class dataCube:Table {
         Expect Operation api:AddValueAttribute
     }
 
-    Expect Link api:attributes {
-        Expect Property hydra:member {
-            Expect Type dataCube:Attribute
-        }
-        Expect Property hydra:totalItems 1
-    }
-
     Expect Link api:csvwMetadata {
         Expect Property csvw:tableSchema {
             Expect Property csvw:column {
-                Expect Property csvw:title "station_id"
-                Expect Property csvw:propertyUrl "http://schema.org/identifier"
+                Expect Property csvw:datatype {
+                    Expect Id <http://www.w3.org/2001/XMLSchema#date>
+                }
+                Expect Property csvw:format "dd/MM/yyyy"
+                Expect Property csvw:default "10/10/2010"
             }
         }
     }
@@ -95,18 +91,26 @@ With Operation api:AddValueAttribute {
 
         ```
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix datatype: <https://rdf-cube-curation.described.at/datatype/> .
         @prefix schema: <http://schema.org/> .
+        @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-        <> dataCube:column <project/add-attribute-test/source/single-column-csv/station-id> ;
+        <> dataCube:column <project/parametrized-datatype-test/source/single-column-csv/station-id> ;
            dataCube:propertyTemplate <http://schema.org/identifier> ;
+           dataCube:datatype xsd:date ;
+           datatype:parameters [
+              datatype:format "dd/MM/yyyy" ;
+              datatype:default "10/10/2010" ;
+           ] ;
            a dataCube:ValueAttribute .
         ```
     } => {
         Expect Status 201
+        Expect Header Location
 
-        Expect Type dataCube:Attribute
-        Expect Type dataCube:ValueAttribute
-        Expect Property dataCube:propertyTemplate "http://schema.org/identifier"
-        Expect Property dataCube:column
+        Expect Property datatype:parameters {
+            Expect Property datatype:format "dd/MM/yyyy"
+            Expect Property datatype:default "10/10/2010"
+        }
     }
 }
