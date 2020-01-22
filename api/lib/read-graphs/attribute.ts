@@ -1,6 +1,6 @@
 import $rdf from 'rdf-ext'
 import { construct, describe } from '../sparql'
-import { api, dataCube, hydra, rdf } from '../namespaces'
+import { api, dataCube, datatype, hydra, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
 import './attribute/eventHandlers'
 
@@ -57,11 +57,12 @@ export async function getTableAttributes (tableId: string) {
       }
 
       OPTIONAL {
-        ?attribute <https://rdf-cube-curation.described.at/datatype/parameters> ?params .
+        ?attribute datatype:parameters ?params .
       }
     `)
     .prefixes({
       dataCube,
+      datatype,
     })
     .execute(getClient()))
 
@@ -80,11 +81,12 @@ export async function getSingleAttribute (attributeId: string) {
       }
 
       OPTIONAL {
-        ?attribute <https://rdf-cube-curation.described.at/datatype/parameters> ?params .
+        ?attribute datatype:parameters ?params .
       }
     `)
     .prefixes({
       dataCube,
+      datatype,
     })
     .execute(getClient()))
 
