@@ -18,7 +18,9 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
   `)
 
   Object.entries(ev.data.parameters).forEach(([parameter, value]) => {
-    builder.graph(`_:parameters <${datatype(parameter).value}> "${value}" .`)
+    if (value) {
+      builder.graph(`_:parameters <${datatype(parameter).value}> "${value}" .`)
+    }
   })
 
   if (ev.data.language) {
