@@ -1,4 +1,3 @@
-import { expand } from '@zazuko/rdf-vocabularies'
 import { parseGraph } from '../__tests-helpers__'
 
 export const ids = {
@@ -57,13 +56,6 @@ const columnMappedWithDatatype = `${mappedColumn}
       dataCube:datatype xsd:TOKEN .
 `
 
-const columnMappedWithDatatypeAndParams = `${columnMappedWithDatatype}
-
-<http://example.com/attribute/station_name> <${expand('dataCube:datatype/parameters')}> [
-    <${expand('dataCube:datatype/format')}> "dd/mm/yyyy"
-  ] .
-`
-
 const columnMappedWithLanguage = `${mappedColumn}
 
 <http://example.com/attribute/station_name>
@@ -112,6 +104,5 @@ export const unmappedColumnGraph = parseGraph(unmappedColumn)
 export const mappedColumnGraph = parseGraph(mappedColumn)
 export const multipleMappedColumnsGraph = parseGraph(multipleMappedColumns)
 export const columnMappedWithDatatypeGraph = parseGraph(columnMappedWithDatatype)
-export const columnMappedWithDatatypeAndParamsGraph = parseGraph(columnMappedWithDatatypeAndParams)
 export const columnMappedWithLanguageGraph = parseGraph(columnMappedWithLanguage)
 export const referenceAttributeGraph = parseGraph(referenceAttribute)
