@@ -20,6 +20,9 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
     public datatype: RdfResource
 
     @property.literal()
+    public default: string
+
+    @property.literal()
     public language: string
 
     @property.resource()

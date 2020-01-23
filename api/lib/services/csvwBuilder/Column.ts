@@ -15,6 +15,9 @@ export function ColumnMixin<TBase extends Constructor> (Base: TBase) {
     public datatype: RdfResource;
 
     @property.literal()
+    public default: string;
+
+    @property.literal()
     public valueUrl: string;
 
     @property.literal()

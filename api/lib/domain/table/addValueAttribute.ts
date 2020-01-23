@@ -12,6 +12,7 @@ export interface AddValueAttributeCommand {
   propertyTemplate?: string;
   datatype?: string;
   language?: string;
+  default?: string;
   parameters?: {
     format?: string;
     default?: string;
@@ -42,9 +43,9 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
+    default: command.default,
     parameters: {
       format: command.parameters?.format,
-      default: command.parameters?.default,
     },
   })
 
@@ -56,12 +57,12 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
     propertyTemplate: command.propertyTemplate,
     datatype: command.datatype || expand('xsd:string'),
     language: command.language,
+    default: command.default,
     parameters: {
       '@context': {
         '@vocab': 'https://rdf-cube-curation.described.at/datatype/',
       },
       format: command.parameters?.format,
-      default: command.parameters?.default,
     },
   }
 

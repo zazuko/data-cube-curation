@@ -91,6 +91,39 @@ describe('csvwBuilder', () => {
       expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
     })
 
+    it('maps attribute with default value', async () => {
+      // given
+      const column: Partial<Column> = {
+        id: namedNode('http://example.com/column/station_name'),
+        name: 'station_name',
+      }
+
+      const attribute: RecursivePartial<ValueAttribute> = {
+        id: namedNode('http://example.com/attribute/station_name'),
+        column,
+        propertyTemplate: schema('name').value,
+        datatype: {
+          id: xsd.date,
+        },
+        default: '03/08/1990',
+      }
+      const table: RecursivePartial<Table> = {
+        id: namedNode('http://example.com/table/Observation'),
+        columns: [],
+        attributes: [attribute],
+        types: [
+          dataCube.Table,
+        ],
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table as any)
+
+      // then
+      expect(csvwDataset.tableSchema.columns[0].default).toEqual('03/08/1990')
+      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+    })
+
     it('does not map as derived type when there are no parameters', async () => {
       // given
       const column: Partial<Column> = {

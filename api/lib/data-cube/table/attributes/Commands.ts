@@ -34,6 +34,9 @@ export class AddValueAttributeCommand extends AddAttributeCommand {
   }
 
   @property()
+  public default: string;
+
+  @property()
   public language: string;
 
   public get columnId () {
