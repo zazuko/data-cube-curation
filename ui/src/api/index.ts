@@ -146,7 +146,7 @@ class ProjectsClient {
     const data = {
       '@type': URI.TYPE_DIMENSION_TABLE,
       [URI.PROP_NAME]: tableData.name,
-      [URI.PROP_SOURCE]: tableData.sourceId,
+      [URI.PROP_SOURCE]: namedNode(tableData.sourceId),
       [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate
     }
     return invokeSaveOperation<Table>(operation, data)
@@ -157,7 +157,7 @@ class ProjectsClient {
     const data = {
       '@type': URI.TYPE_FACT_TABLE,
       [URI.PROP_NAME]: tableData.name,
-      [URI.PROP_SOURCE]: tableData.sourceId
+      [URI.PROP_SOURCE]: namedNode(tableData.sourceId)
     }
     return invokeSaveOperation<Table>(operation, data)
   }
@@ -216,9 +216,9 @@ class ProjectsClient {
     const data = {
       '@type': URI.TYPE_VALUE_ATTRIBUTE,
       [URI.PROP_PREDICATE]: attributeData.property,
-      [URI.PROP_COLUMN]: attributeData.columnId,
+      [URI.PROP_COLUMN]: namedNode(attributeData.columnId),
       // API doesn't allow datatype and language to be used together.
-      [URI.PROP_DATATYPE]: language ? undefined : attributeData.dataType?.id,
+      [URI.PROP_DATATYPE]: (!language && attributeData.dataType) ? namedNode(attributeData.dataType.id) : undefined,
       [URI.PROP_DATATYPE_PARAMS]: {
         [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format
       },
@@ -233,10 +233,10 @@ class ProjectsClient {
     const data = {
       '@type': URI.TYPE_REFERENCE_ATTRIBUTE,
       [URI.PROP_PREDICATE]: attributeData.property,
-      [URI.PROP_REFERENCED_TABLE]: attributeData.referencedTableId,
+      [URI.PROP_REFERENCED_TABLE]: namedNode(attributeData.referencedTableId),
       [URI.PROP_COLUMN_MAPPING]: attributeData.columnMapping.map((mapping) => ({
-        [URI.PROP_SOURCE_COLUMN]: mapping.sourceColumnId,
-        [URI.PROP_REFERENCED_COLUMN]: mapping.referencedColumnId
+        [URI.PROP_SOURCE_COLUMN]: namedNode(mapping.sourceColumnId),
+        [URI.PROP_REFERENCED_COLUMN]: namedNode(mapping.referencedColumnId)
       }))
     }
     return invokeSaveOperation<ReferenceAttribute>(operation, data)
@@ -288,6 +288,10 @@ async function invokeDeleteOperation (operation: IOperation | null): Promise<voi
   if (response.xhr.status !== 204) {
     throw await APIError.fromResponse(response)
   }
+}
+
+function namedNode (resourceId: ResourceId) {
+  return { '@id': resourceId }
 }
 
 export const client = new Client(apiURL)
