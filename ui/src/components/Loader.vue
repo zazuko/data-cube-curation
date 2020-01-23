@@ -1,7 +1,7 @@
 <template>
   <component :is="tag">
     <div class="loading-container content has-text-grey has-text-centered" v-if="data.isLoading">
-      <b-icon icon="loading" size="is-large" class="loading-icon" />
+      <b-icon icon="spinner" size="is-large" class="loading-icon" />
     </div>
 
     <div class="content has-text-danger has-text-centered" v-if="data.error">
