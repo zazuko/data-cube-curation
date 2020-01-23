@@ -54,7 +54,8 @@ function helpFor (param: string, dataTypeName: string): { placeholder: string, m
     } else if (datatypes.isDurationType(dataTypeName)) {
       help.message = 'Regular expression to transform value into a valid ISO8601 duration.'
     } else if (datatypes.isNumericType(dataTypeName)) {
-      // We don't currently support format for numeric types
+      help.placeholder = 'e.g. ###.##'
+      help.message = 'Number format pattern, as defined in https://www.unicode.org/reports/tr35/tr35-numbers.html#Number_Format_Patterns'
     } else {
       help.message = 'Valid regular expression'
     }
