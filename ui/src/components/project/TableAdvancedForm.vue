@@ -64,14 +64,14 @@
                 <DataTypeField v-model="attribute.dataType" />
               </td>
               <td>
-                <b-button type="is-white" icon-left="close-circle-outline" title="Remove attribute" @click="removeAttribute(attribute)" />
+                <b-button type="is-white" icon-left="times-circle" title="Remove attribute" @click="removeAttribute(attribute)" />
               </td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
               <td colspan="5">
-                <b-button type="is-white" icon-left="plus-circle-outline" title="Add attribute" @click="addAttribute" />
+                <b-button type="is-white" icon-left="plus-circle" title="Add attribute" @click="addAttribute" />
               </td>
             </tr>
           </tfoot>

@@ -14,7 +14,7 @@
             {{ project.name }}
           </router-link>
           <router-link :to="{ name: 'project/edit', params: { id: project.id } }" class="button is-white">
-            <b-icon icon="pencil" size="is-small" />
+            <b-icon icon="pencil-alt" size="is-small" />
           </router-link>
         </li>
       </ul>

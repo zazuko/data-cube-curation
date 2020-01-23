@@ -18,7 +18,7 @@
         </b-autocomplete>
 
         <b-tooltip label="Data type options" type="is-dark" :delay="100">
-          <b-button :icon-left="showParams ? 'close' : 'settings'" @click="showParams = !showParams" :disabled="!hasTypeParams" />
+          <b-button :icon-left="showParams ? 'times' : 'cog'" @click="showParams = !showParams" :disabled="!hasTypeParams" />
         </b-tooltip>
       </b-field>
 

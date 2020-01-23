@@ -7,7 +7,7 @@
 
         <b-dropdown position="is-bottom-left">
           <button class="button is-text" slot="trigger">
-            <b-icon icon="dots-horizontal"></b-icon>
+            <b-icon icon="ellipsis-h"></b-icon>
           </button>
           <b-dropdown-item v-if="table.mapping" @click="showMapping(table)">
             View mapping
@@ -17,11 +17,11 @@
           </b-dropdown-item>
           <hr class="dropdown-divider">
           <b-dropdown-item v-if="table.actions.edit" @click="editTable(table)">
-            <b-icon icon="pencil" />
+            <b-icon icon="pencil-alt" />
             {{ table.actions.edit.title }}
           </b-dropdown-item>
           <b-dropdown-item v-if="table.actions.delete" @click="deleteTable(table)" class="has-text-danger">
-            <b-icon icon="trash-can-outline" />
+            <b-icon icon="trash" />
             {{ table.actions.delete.title }}
           </b-dropdown-item>
         </b-dropdown>
@@ -69,7 +69,7 @@
                       </ul>
                     </td>
                     <td>
-                      <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
+                      <b-button v-if="attribute.actions.delete" icon-left="trash" @click="deleteAttribute(attribute)" />
                       <b-button v-if="attribute.actions.edit" icon-left="pencil" />
                     </td>
                   </tr>
@@ -110,7 +110,7 @@
                       <span v-else>N/A</span>
                     </td>
                     <td>
-                      <b-button v-if="attribute.actions.delete" icon-left="trash-can-outline" @click="deleteAttribute(attribute)" />
+                      <b-button v-if="attribute.actions.delete" icon-left="trash" @click="deleteAttribute(attribute)" />
                       <b-button v-if="attribute.actions.edit" icon-left="pencil" />
                     </td>
                   </tr>

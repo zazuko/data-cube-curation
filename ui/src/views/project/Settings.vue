@@ -12,7 +12,7 @@
     </form>
 
   <div class="panel">
-    <b-button type="is-danger" icon-left="trash-can-outline" v-if="project.actions.delete.title" @click="doDelete">
+    <b-button type="is-danger" icon-left="trash" v-if="project.actions.delete.title" @click="doDelete">
       {{ project.actions.delete.title }}
     </b-button>
   </div>

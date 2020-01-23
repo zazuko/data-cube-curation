@@ -6,7 +6,7 @@
         <b-button icon-left="plus" @click="createTable" :disabled="selectedColumns.length < 1">
           Create table from selected columns
         </b-button>
-        <b-button icon-left="trash-can-outline" v-if="source.actions.delete" @click="deleteSource(source)" />
+        <b-button icon-left="trash" v-if="source.actions.delete" @click="deleteSource(source)" />
       </div>
     </header>
     <section class="card-content">
@@ -40,7 +40,7 @@
       </table>
     </section>
     <footer class="card-footer">
-      <b-button icon-right="chevron-double-down" class="is-fullwidth" disabled>
+      <b-button icon-right="chevron-down" class="is-fullwidth" disabled>
         Show more
       </b-button>
     </footer>
