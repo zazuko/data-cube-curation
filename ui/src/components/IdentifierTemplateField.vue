@@ -7,6 +7,7 @@
         @typing="onTyping"
         @select="onSelect"
         :data="propositions"
+        :pattern="validationPattern"
         :custom-formatter="formatProposition"
         placeholder="e.g. my-table/{column_id}"
         :disabled="!source"
@@ -89,6 +90,13 @@ export default class extends Vue {
 
   get expandedValue () {
     return expandWithBase(this.value, this.project.baseUri)
+  }
+
+  get validationPattern () {
+    const columns = this.source?.columns ?? []
+    const columnNames = columns.map(({ name }) => name).join('|')
+
+    return `([^{}]*(\\{(${columnNames})\\})?[^{}]*)*`
   }
 }
 </script>
