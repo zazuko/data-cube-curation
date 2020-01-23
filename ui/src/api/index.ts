@@ -220,10 +220,10 @@ class ProjectsClient {
       // API doesn't allow datatype and language to be used together.
       [URI.PROP_DATATYPE]: language ? undefined : attributeData.dataType?.id,
       [URI.PROP_DATATYPE_PARAMS]: {
-        [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format,
-        [URI.PROP_DATATYPE_PARAM_DEFAULT]: attributeData.dataType?.params?.default
+        [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format
       },
-      [URI.PROP_LANGUAGE]: language
+      [URI.PROP_LANGUAGE]: language,
+      [URI.PROP_DEFAULT]: attributeData.dataType?.params?.default
     }
     return invokeSaveOperation<ValueAttribute>(operation, data)
   }

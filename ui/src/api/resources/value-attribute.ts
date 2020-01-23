@@ -27,16 +27,18 @@ export function Mixin<B extends Constructor> (Base: B) {
 
     get dataType (): DataType | null {
       const dataType = this.get<HydraResource>(URI.PROP_DATATYPE)
-      const language = this.get<string>(URI.PROP_LANGUAGE)
+      const language = this.get<string>(URI.PROP_LANGUAGE) ?? ''
+      const defaultValue = this.get<string>(URI.PROP_DEFAULT) ?? ''
 
-      if (!dataType && !language) {
+      if (!dataType && !language && !defaultValue) {
         return null
       }
 
+      const commonParams: DataTypeParamValues = { language, default: defaultValue }
+
       const dataTypeParams = this.get<HydraResource>(URI.PROP_DATATYPE_PARAMS)
       const paramURIs: [ResourceId, DataTypeParam][] = [
-        [URI.PROP_DATATYPE_PARAM_FORMAT, 'format'],
-        [URI.PROP_DATATYPE_PARAM_DEFAULT, 'default']
+        [URI.PROP_DATATYPE_PARAM_FORMAT, 'format']
       ]
       const params: DataTypeParamValues = paramURIs.reduce((params, [paramURI, paramProp]) => {
         const paramValue = dataTypeParams?.get<string>(paramURI)
@@ -44,11 +46,7 @@ export function Mixin<B extends Constructor> (Base: B) {
           params[paramProp] = paramValue
         }
         return params
-      }, {} as DataTypeParamValues)
-
-      if (language) {
-        params.language = language
-      }
+      }, commonParams)
 
       return {
         id: dataType?.id ?? datatypes.defaultURI,

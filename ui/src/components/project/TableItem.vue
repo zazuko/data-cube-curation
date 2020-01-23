@@ -63,7 +63,7 @@
                     </td>
                     <td>
                       <ul v-if="attribute.dataType">
-                        <li v-for="(paramValue, param) in attribute.dataType.params" :key="param">
+                        <li v-for="(paramValue, param) in attribute.dataType.params" :key="param" v-show="paramValue">
                           {{ param | capitalize }}: <code>{{ paramValue }}</code>
                         </li>
                       </ul>
