@@ -8,16 +8,16 @@
     </div>
 
     <Loader :data="projects" v-slot="{ data: projects }">
-      <ul class="panel" v-if="projects.length > 0">
-        <li v-for="project in projects" :key="project.id" class="panel-block">
-          <router-link :to="{ name: 'project', params: { id: project.id } }">
-            {{ project.name }}
-          </router-link>
-          <router-link :to="{ name: 'project/edit', params: { id: project.id } }" class="button is-white">
-            <b-icon icon="pencil-alt" size="is-small" />
-          </router-link>
-        </li>
-      </ul>
+      <div class="panel" v-if="projects.length > 0">
+        <router-link
+          v-for="project in projects"
+          :key="project.id"
+          :to="{ name: 'project', params: { id: project.id } }"
+          class="panel-block"
+        >
+          {{ project.name }}
+        </router-link>
+      </div>
       <section v-else class="section">
         <div class="content has-text-grey has-text-centered">
           <p>You don't have any projects yet.</p>
