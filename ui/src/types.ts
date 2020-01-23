@@ -75,9 +75,12 @@ export interface DataType {
   params: DataTypeParamValues;
 }
 
+export enum DataTypeOptionKind { Any, Numeric, Date, Duration }
+
 export interface DataTypeOption {
   name: string;
   uri: ResourceId;
+  kind: DataTypeOptionKind;
   params: DataTypeParam[];
 }
 
