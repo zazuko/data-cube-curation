@@ -21,6 +21,7 @@ export interface Attribute extends RdfResource {
 
 export interface ValueAttribute extends Attribute {
   readonly column: Column;
+  readonly default: string;
   readonly language: string;
   readonly datatype: RdfResource;
   readonly parameters: Record<string, string>;

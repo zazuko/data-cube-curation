@@ -76,9 +76,9 @@ With Class dataCube:Table {
         Expect Property csvw:tableSchema {
             Expect Property csvw:column {
                 Expect Property csvw:datatype {
-                    Expect Id <http://www.w3.org/2001/XMLSchema#date>
+                    Expect Property csvw:base "date"
+                    Expect Property csvw:format "dd/MM/yyyy"
                 }
-                Expect Property csvw:format "dd/MM/yyyy"
                 Expect Property csvw:default "10/10/2010"
             }
         }
@@ -98,9 +98,9 @@ With Operation api:AddValueAttribute {
         <> dataCube:column <project/parametrized-datatype-test/source/single-column-csv/station-id> ;
            dataCube:propertyTemplate <http://schema.org/identifier> ;
            dataCube:datatype xsd:date ;
+           dataCube:default "10/10/2010" ;
            datatype:parameters [
               datatype:format "dd/MM/yyyy" ;
-              datatype:default "10/10/2010" ;
            ] ;
            a dataCube:ValueAttribute .
         ```
@@ -110,7 +110,7 @@ With Operation api:AddValueAttribute {
 
         Expect Property datatype:parameters {
             Expect Property datatype:format "dd/MM/yyyy"
-            Expect Property datatype:default "10/10/2010"
         }
+        Expect Property dataCube:default "10/10/2010"
     }
 }

@@ -39,6 +39,8 @@ function getBuiltInDatatypeName (datatype: RdfResource): string | null {
 }
 
 export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csvwColumn: Csvw.Column) {
+  csvwColumn.default = attribute.default
+
   if (attribute.language) {
     csvwColumn.language = attribute.language
   } else if (attribute.datatype) {

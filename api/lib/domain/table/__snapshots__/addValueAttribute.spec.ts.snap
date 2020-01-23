@@ -6,9 +6,9 @@ Array [
     "data": Object {
       "columnId": "source/column",
       "datatype": "http://www.w3.org/2001/XMLSchema#string",
+      "default": undefined,
       "language": undefined,
       "parameters": Object {
-        "default": undefined,
         "format": undefined,
       },
       "propertyTemplate": "http://schema.org/name",
@@ -28,12 +28,12 @@ Object {
   ],
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#string",
+  "default": undefined,
   "language": undefined,
   "parameters": Object {
     "@context": Object {
       "@vocab": "https://rdf-cube-curation.described.at/datatype/",
     },
-    "default": undefined,
     "format": undefined,
   },
   "propertyTemplate": "http://schema.org/name",
@@ -47,9 +47,9 @@ Array [
     "data": Object {
       "columnId": "source/column",
       "datatype": "http://www.w3.org/2001/XMLSchema#date",
+      "default": undefined,
       "language": undefined,
       "parameters": Object {
-        "default": undefined,
         "format": "YYYY/mm/dd",
       },
       "propertyTemplate": "http://schema.org/name",
@@ -69,12 +69,12 @@ Object {
   ],
   "column": "source/column",
   "datatype": "http://www.w3.org/2001/XMLSchema#date",
+  "default": undefined,
   "language": undefined,
   "parameters": Object {
     "@context": Object {
       "@vocab": "https://rdf-cube-curation.described.at/datatype/",
     },
-    "default": undefined,
     "format": "YYYY/mm/dd",
   },
   "propertyTemplate": "http://schema.org/name",

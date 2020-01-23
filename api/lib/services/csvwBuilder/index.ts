@@ -5,6 +5,7 @@ export interface Column extends RdfResource {
   propertyUrl: string;
   language: string;
   datatype: RdfResource;
+  default: string;
   valueUrl: string;
   title: string;
 }

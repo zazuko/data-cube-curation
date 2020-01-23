@@ -5,9 +5,9 @@ export interface AttributeEvents {
     propertyTemplate: string;
     datatype: string;
     language?: string;
+    default?: string;
     parameters: {
       format?: string;
-      default?: string;
     };
   };
   ReferenceAttributeAdded: {

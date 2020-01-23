@@ -29,14 +29,16 @@ dataCube:ValueAttribute
                             hydra:title       "Optional parameters for datatype" ] ,
                           [ hydra:property    dataCube:language ;
                             hydra:title       "Language of the mapped values" ;
-                            hydra:description "Cannot be used together with datatype" ] .
+                            hydra:description "Cannot be used together with datatype" ] ,
+                          [ hydra:property    dataCube:default ;
+                            hydra:title       "Default value" ;
+                            hydra:description "Value used when the transformed table cell is empty" ] .
 
 datatype:parameters rdfs:range dataCube:DatatypeParameters .
 
 dataCube:DatatypeParameters
   a hydra:Class ;
-  hydra:supportedProperty [ hydra:property datatype:format ] ,
-                          [ hydra:property datatype:default ] .
+  hydra:supportedProperty [ hydra:property datatype:format ] .
 
 dataCube:ReferenceAttribute
   rdfs:subclassOf dataCube:Attribute ;

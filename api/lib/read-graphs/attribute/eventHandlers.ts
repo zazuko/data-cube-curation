@@ -23,6 +23,10 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
     }
   })
 
+  if (ev.data.default) {
+    builder.graph(`<${ev.id}> dataCube:default "${ev.data.default}" .`)
+  }
+
   if (ev.data.language) {
     builder.graph(`<${ev.id}> dataCube:language "${ev.data.language}" .`)
   } else if (ev.data.datatype) {
