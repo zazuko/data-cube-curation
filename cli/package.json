@@ -1,0 +1,24 @@
+{
+  "name": "@zazuko/data-cube-curation",
+  "version": "0.0.0",
+  "description": "Runs a pipeline to create an RDF data cube",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zazuko/data-cube-curation.git"
+  },
+  "keywords": [
+    "rdf",
+    "data",
+    "cube"
+  ],
+  "author": "Tomasz Pluskiewicz <tomasz.pluskiewicz@zazuko.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zazuko/data-cube-curation/issues"
+  },
+  "homepage": "https://github.com/zazuko/data-cube-curation/tree/master/cli#readme"
+}
