@@ -1,14 +1,15 @@
 import $rdf from 'rdf-ext'
-import { Dataset } from 'rdf-js'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import { DatasetCore } from 'rdf-js'
 import cf from 'clownface'
 import { RdfResourceImpl } from '@tpluscode/rdfine'
+import CsvwGraphMixin from '@rdfine/csvw/Csvw'
+import * as Csvw from '@rdfine/csvw'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
-import CsvwGraph from './csvwBuilder/Csvw'
 import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
-import * as Csvw from './csvwBuilder/index'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import wireUp from '../read-model/wireUp'
 import parser = require('uri-template')
@@ -48,7 +49,7 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
   return null
 }
 
-export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: Dataset; tableId: string }) {
+export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
   let table: Table.Table | Table.DimensionTable
   if ('dataset' in tableOrDataset) {
     table = BaseTable.factory.createEntity(cf({
@@ -59,7 +60,10 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
     table = tableOrDataset
   }
 
-  const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
+  const csvwGraph = RdfResourceImpl.factory.createEntity<Csvw.Mapping<DatasetExt>>(cf({
+    dataset: $rdf.dataset(),
+    term: $rdf.namedNode(`${table.id.value}/csvw`),
+  }), [CsvwGraphMixin])
 
   csvwGraph.addDialect()
   csvwGraph.url = table.source.name

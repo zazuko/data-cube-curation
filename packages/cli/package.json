@@ -4,17 +4,35 @@
   "description": "Runs a pipeline to create an RDF data cube",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "postinstall": "mkdir input; mkdir output",
+    "test": "jest",
+    "start": "ts-node index.ts run --verbose --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 input",
+    "precommit": "lint-staged"
   },
   "dependencies": {
+    "@rdfine/csvw": "^0.0.0",
     "@rdfjs/fetch-lite": "^2.0.1",
-    "@tpluscode/rdfine": "^0.2.8",
+    "@rdfjs/formats-common": "^2.0.1",
+    "@rdfjs/namespace": "^1.1.0",
+    "@tpluscode/rdfine": "^0.2.11",
+    "alcaeus": "^1.0.0-alpha.7",
     "aws-sdk": "^2.559.0",
+    "barnard59": "https://github.com/zazuko/barnard59#extract-runner",
+    "barnard59-formats": "0.0.6",
+    "clownface": "^0.12.1",
     "commander": "^4.1.0",
-    "debug": "^4.1.1"
+    "debug": "^4.1.1",
+    "@zazuko/rdfine-data-cube": "^0.0.0",
+    "rdf-ext": "^1.3.0",
+    "readable-stream": "^3.5.0",
+    "string-to-stream": "^3.0.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
+    "@types/rdf-ext": "^1.3.5",
+    "@types/rdf-js": "^2.0.11",
+    "@types/rdfjs__namespace": "^1.1.1",
+    "@types/readable-stream": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^5.16.0",

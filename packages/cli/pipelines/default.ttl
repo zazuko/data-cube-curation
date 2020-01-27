@@ -1,0 +1,137 @@
+@base <urn:pipeline:data-cube-curation> .
+@prefix : <https://pipeline.described.at/> .
+@prefix code: <https://code.described.at/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# ------------------------------
+#
+# Transform pipeline
+#
+# One-by-one parses and transforms the source csv files to RDF
+#
+# ------------------------------
+
+<#TransformFilesGraphStore> a :Pipeline ;
+                            :steps [
+                                     :stepList ( <#loadMetadata> <#doTransform> <#setGraph> <#upload>)
+                                   ] .
+
+<#TransformFiles> a :Pipeline ;
+                  :steps [
+                           :stepList ( <#loadMetadata> <#doTransform> <#serialize> <#save>)
+                         ] ; :variables [
+                          :variable
+                               [ a :Variable; :name "dataCubeProject"; :value "https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133" ],
+                               [ a :Variable; :name "targetDir"; :value "output" ]
+] .
+
+<#loadMetadata> a :Step ;
+           code:implementedBy
+             [
+               code:link <file:./lib/project#loadCsvMappings> ;
+               a code:EcmaScript
+             ] ;
+           code:arguments (
+                            "dataCubeProject"^^:VariableName
+                          ) .
+
+<#doTransform> a :Step ;
+               code:implementedBy [
+                                    code:link <node:barnard59-core#forEach> ;
+                                    a code:EcmaScript
+                                  ] ;
+               code:arguments (
+                                <#TransformCsv>
+                                "(p, fileName) => { p.variables.set('csvw', fileName) }"^^code:EcmaScript
+                              ) .
+
+# ------------------------------
+#
+# Transforms individual files
+#
+# ------------------------------
+
+<#TransformCsv> a :Pipeline, :ReadableObjectMode ;
+                :steps
+                  [
+                    :stepList ( <#openCsv> <#parse> <#filterNotCsvw> )
+                  ] .
+
+<#openCsv> a :Step ;
+  code:implementedBy [
+      code:link <file:./lib/csv#openFromCsvw> ;
+      a code:EcmaScript
+    ] ;
+  code:arguments ( "csvw"^^:VariableName "sourceDir"^^:VariableName ) .
+
+<#parse> a :Step;
+         code:implementedBy
+           [
+             code:link <node:barnard59-formats#csvw.parse>;
+             a code:EcmaScript
+           ];
+         code:arguments ( <#parseMetadata> ).
+
+<#parseMetadata> a :Pipeline, :ReadableObjectMode;
+                 :steps
+                   [
+                     :stepList ( <#getCsvwGraph> )
+                   ] .
+
+<#getCsvwGraph> a :Step;
+                     code:implementedBy
+                       [
+                         code:link <file:./lib/csv#getCsvwTriples> ;
+                         a code:EcmaScript
+                       ];
+                     code:arguments ( "csvw"^^:VariableName ).
+
+<#filterNotCsvw> a :Step;
+                 code:implementedBy [ a code:EcmaScript;
+                                      code:link <node:barnard59-base#filter>
+                                    ];
+                 code:arguments ( """quad => {
+    if (quad.predicate.value.startsWith('http://www.w3.org/ns/csvw#')) {
+	 return false
+	}
+	if (quad.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' && quad.object.value.startsWith('http://www.w3.org/ns/csvw#')) {
+	 return false
+	}
+	return true
+	}"""^^code:EcmaScript ).
+
+<#serialize> a :Step;
+             code:implementedBy
+               [
+                 code:link <node:barnard59-formats#ntriples.serialize> ;
+                 a code:EcmaScript
+               ].
+
+<#save> a :Step;
+        code:implementedBy
+          [
+            code:link <node:fs#createWriteStream>;
+            a code:EcmaScript
+          ];
+        code:arguments ("${targetDir}/everything.nt"^^code:EcmaScriptTemplateLiteral).
+
+<#setGraph> a :Step;
+            code:implementedBy [ a code:EcmaScript;
+                                 code:link <node:barnard59-base#setGraph>
+                               ];
+            code:arguments ( "graph"^^:VariableName ).
+
+<#upload> a :Step;
+          code:implementedBy [ a code:EcmaScript;
+                               code:link <node:barnard59-graph-store#put>
+                             ];
+          code:arguments [
+                           code:name "endpoint";
+                           code:value "endpoint"^^:VariableName
+                         ], [
+                              code:name "user";
+                              code:value "user"^^:VariableName
+                            ], [
+                                 code:name "password";
+                                 code:value "password"^^:VariableName
+                               ].

@@ -1,8 +1,8 @@
 {
   "packages": [
+    "packages/*",
     "api",
-    "ui",
-    "cli"
+    "ui"
   ],
   "version": "independent",
   "command": {

@@ -1,0 +1,38 @@
+{
+  "extends": [
+    "standard",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "env": {
+    "browser": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint/eslint-plugin"
+  ],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "comma-dangle": ["error", "always-multiline"],
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "error",
+    "jest/valid-describe": "off",
+    "jest/no-identical-title": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/no-non-null-assertion": 0,
+        "import/first": 0,
+        "jest/valid-describe": 1,
+        "jest/no-identical-title": 1
+      }
+    }
+  ]
+}

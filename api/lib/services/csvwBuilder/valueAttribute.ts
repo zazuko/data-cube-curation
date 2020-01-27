@@ -2,7 +2,7 @@ import { RdfResource } from '@tpluscode/rdfine'
 import { literal } from '@rdfjs/data-model'
 import { shrink } from '@zazuko/rdf-vocabularies'
 import * as Table from '../../read-model/Table/index'
-import * as Csvw from './index'
+import * as Csvw from '@rdfine/csvw'
 import { csvw, rdf } from '../../namespaces'
 
 const xsdPrefix = /^xsd:(.+)/
