@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { APIErrorNotFound } from '@/api'
 import { RemoteData, ResourceId, Project } from '@/types'
 import Loader from '../components/Loader.vue'
 
@@ -47,8 +48,16 @@ export default class ProjectView extends Vue {
     return this.$store.getters['projects/one'](this.projectId)
   }
 
-  created () {
-    this.$store.dispatch('projects/loadOne', this.projectId)
+  async created () {
+    try {
+      await this.$store.dispatch('projects/loadOne', this.projectId)
+    } catch (e) {
+      if (e instanceof APIErrorNotFound) {
+        this.$router.push({ name: 'not-found' })
+      } else {
+        throw e
+      }
+    }
   }
 }
 </script>
