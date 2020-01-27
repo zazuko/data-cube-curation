@@ -18,7 +18,12 @@
         </b-autocomplete>
 
         <b-tooltip label="Data type options" type="is-dark" :delay="100">
-          <b-button :icon-left="showParams ? 'times' : 'cog'" @click="showParams = !showParams" :disabled="!hasTypeParams" />
+          <b-button
+            :icon-left="showParams ? 'times' : 'sliders-h'"
+            @click="showParams = !showParams"
+            :disabled="!hasTypeParams"
+            :type="hasTypeParamValues ? 'has-text-info' : ''"
+          />
         </b-tooltip>
       </b-field>
 
@@ -69,6 +74,11 @@ export default class extends Vue {
 
   get hasTypeParams (): boolean {
     return !!this.value && this.typeParams.length > 0
+  }
+
+  get hasTypeParamValues (): boolean {
+    const paramValues = this.value?.params ?? {}
+    return Object.values(paramValues).some((v) => !!v)
   }
 
   onSelect (newValue: DataTypeOption) {
