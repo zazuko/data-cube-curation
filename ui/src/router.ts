@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import ErrorNotFound from './views/ErrorNotFound.vue'
 import ProjectsView from './views/Projects.vue'
 import ProjectView from './views/Project.vue'
 import ProjectSourcesView from './views/project/Sources.vue'
@@ -44,6 +45,11 @@ export default new Router({
           component: ProjectSettingsView
         }
       ]
+    },
+    {
+      path: '*',
+      name: 'not-found',
+      component: ErrorNotFound
     }
   ]
 })

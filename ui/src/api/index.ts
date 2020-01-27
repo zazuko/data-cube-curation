@@ -44,9 +44,19 @@ export class APIError extends Error {
       details = {}
     }
 
-    return new APIError(details, response)
+    switch (response.xhr.status) {
+      case 404:
+        return new APIErrorNotFound(details, response)
+      case 400:
+        return new APIErrorValidation(details, response)
+      default:
+        return new APIError(details, response)
+    }
   }
 }
+
+export class APIErrorNotFound extends APIError {}
+export class APIErrorValidation extends APIError {}
 
 export class Client {
   url: string;
