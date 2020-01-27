@@ -41,7 +41,7 @@
       />
 
       <b-field label="Properties">
-        <table class="table is-narrow">
+        <table class="table is-narrow is-fullwidth">
           <thead>
             <tr>
               <th>CSV Column</th>
@@ -88,6 +88,7 @@
 <style scoped>
 .modal-card {
   width: 100%;
+  min-width: 830px;
 }
 </style>
 
