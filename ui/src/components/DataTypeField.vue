@@ -6,7 +6,7 @@
           @select="onSelect"
           @blur="onBlur"
           @typing="filterDatatypes"
-          :data="matchingDatatypes"
+          :data="sortedMatchingDatatypes"
           field="name"
           placeholder="e.g. string"
           open-on-focus
@@ -14,7 +14,7 @@
           class="select"
           expanded
         >
-          <template slot="empty">"{{ type }}" is not a valid data type</template>
+          <template slot="empty">No matching data type</template>
         </b-autocomplete>
 
         <b-tooltip label="Data type options" type="is-dark" :delay="100">
@@ -95,6 +95,21 @@ export default class extends Vue {
 
   capitalize ([firstLetter, ...rest]: string): string {
     return [firstLetter.toLocaleUpperCase(), ...rest].join('')
+  }
+
+  get sortedMatchingDatatypes () {
+    return this.matchingDatatypes.concat().sort((dt1, dt2) => {
+      const name1 = dt1.name.toUpperCase()
+      const name2 = dt2.name.toUpperCase()
+
+      if (name1 < name2) {
+        return -1
+      } else if (name1 > name2) {
+        return 1
+      } else {
+        return 0
+      }
+    })
   }
 }
 </script>
