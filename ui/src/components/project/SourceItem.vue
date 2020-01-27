@@ -136,10 +136,13 @@ export default class extends Vue {
         columns: this.selectedColumns,
         save: async (table: TableFormData, attributes: ValueAttributeFormData[]) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('tables/createWithAttributes', { project: this.project, table, attributes })
-          this.selectedColumns = []
-          modal.close()
-          loading.close()
+          try {
+            await this.$store.dispatch('tables/createWithAttributes', { project: this.project, table, attributes })
+            this.selectedColumns = []
+            modal.close()
+          } finally {
+            loading.close()
+          }
         }
       },
       hasModalCard: true

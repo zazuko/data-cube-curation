@@ -76,9 +76,12 @@ export default class ProjectTablesView extends Vue {
         sources: this.sources.data, // TODO: Handle loading?
         save: async (table: TableFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('tables/create', { project: this.project, table })
-          loading.close()
-          modal.close()
+          try {
+            await this.$store.dispatch('tables/create', { project: this.project, table })
+            modal.close()
+          } finally {
+            loading.close()
+          }
         }
       },
       hasModalCard: true
@@ -110,8 +113,11 @@ export default class ProjectTablesView extends Vue {
       hasIcon: true,
       onConfirm: async () => {
         const loading = this.$buefy.loading.open({})
-        await this.$store.dispatch('tables/delete', table)
-        loading.close()
+        try {
+          await this.$store.dispatch('tables/delete', table)
+        } finally {
+          loading.close()
+        }
       }
     })
   }

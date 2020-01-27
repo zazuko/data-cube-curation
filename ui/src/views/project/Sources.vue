@@ -79,8 +79,11 @@ export default class extends Vue {
 
   async uploadSource (file: File) {
     const loading = this.$buefy.loading.open({})
-    await this.$store.dispatch('sources/upload', { project: this.project, file })
-    loading.close()
+    try {
+      await this.$store.dispatch('sources/upload', { project: this.project, file })
+    } finally {
+      loading.close()
+    }
   }
 }
 </script>
