@@ -19,4 +19,5 @@ export interface Mapping extends RdfResource {
   newColumn(col: { name: string }): Column & ResourceIndexer;
   addDialect(): void;
   readonly tableSchema: TableSchema;
+  url: string;
 }

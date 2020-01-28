@@ -1,9 +1,9 @@
-import { Constructor, namespace, property, RdfResourceImpl, RdfResource } from '@tpluscode/rdfine'
+import { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
 import * as Table from './index'
 import { dataCube } from '../../namespaces'
 import './Column'
 
-function ColumnMappingMixin<TBase extends Constructor> (Base: TBase) {
+export function ColumnMappingMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
   class ColumnMapping extends Base implements Table.ColumnMapping {
     @property.resource()
@@ -18,5 +18,3 @@ function ColumnMappingMixin<TBase extends Constructor> (Base: TBase) {
 
 ColumnMappingMixin.shouldApply = (term: RdfResource) =>
   term._node.out([ dataCube.referencedColumn, dataCube.sourceColumn ]).terms.length > 1
-
-RdfResourceImpl.factory.addMixin(ColumnMappingMixin)

@@ -1,10 +1,11 @@
 import { RdfResource } from '@tpluscode/rdfine'
-import { Project } from '../'
+import { Project, Source } from '../'
 
 export interface Table extends RdfResource {
   readonly columns: Column[];
   readonly attributes: Attribute[];
   readonly project: Project;
+  readonly source: Source;
 }
 
 export interface DimensionTable extends Table {
