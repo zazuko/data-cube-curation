@@ -1,4 +1,4 @@
-import { RdfResourceImpl } from '@tpluscode/rdfine'
+import { namespace, RdfResourceImpl, property } from '@tpluscode/rdfine'
 import { csvw, rdf } from '../../namespaces'
 import * as Csvw from './index'
 import { TableSchema } from './TableSchema'
@@ -6,7 +6,11 @@ import { BlankNode, DatasetCore, NamedNode } from 'rdf-js'
 import { ColumnMixin } from './Column'
 import { SingleContextClownface, Clownface } from 'clownface'
 
+@namespace(csvw)
 export default class <D extends DatasetCore> extends RdfResourceImpl<D> implements Csvw.Mapping {
+  @property.literal()
+  public url!: string
+
   public constructor (o: { dataset: D; term: NamedNode }) {
     super(o)
 

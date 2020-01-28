@@ -1,6 +1,7 @@
 import $rdf from 'rdf-ext'
 import { Dataset } from 'rdf-js'
 import cf from 'clownface'
+import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
@@ -9,9 +10,12 @@ import * as Table from '../read-model/Table'
 import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
+import wireUp from '../read-model/wireUp'
 import parser = require('uri-template')
 
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
+
+wireUp(RdfResourceImpl.factory)
 
 function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribute: Attribute): Csvw.Column | null {
   let csvwColumn: Csvw.Column | null = null
@@ -58,6 +62,7 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
   const csvwGraph = new CsvwGraph({ dataset: $rdf.dataset(), term: $rdf.namedNode(`${table.id.value}/csvw`) })
 
   csvwGraph.addDialect()
+  csvwGraph.url = table.source.name
 
   if ('identifierTemplate' in table) {
     const parsed = parser.parse(table.identifierTemplate)

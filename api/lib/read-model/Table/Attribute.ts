@@ -1,4 +1,4 @@
-import { Constructor, namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
 import * as Table from './index'
 import { dataCube } from '../../namespaces'
 import './ColumnMapping'
@@ -71,6 +71,8 @@ ReferenceAttributeMixin.shouldApply = (cf: RdfResource) => {
   return cf.hasType(dataCube.ReferenceAttribute)
 }
 
-RdfResourceImpl.factory.addMixin(AttributeMixin)
-RdfResourceImpl.factory.addMixin(ValueAttributeMixin)
-RdfResourceImpl.factory.addMixin(ReferenceAttributeMixin)
+export default [
+  AttributeMixin,
+  ValueAttributeMixin,
+  ReferenceAttributeMixin,
+]

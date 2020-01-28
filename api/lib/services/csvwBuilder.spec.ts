@@ -82,6 +82,9 @@ describe('csvwBuilder', () => {
         types: [
           dataCube.Table,
         ],
+        source: {
+          name: 'test.csv',
+        },
       }
 
       // when
@@ -114,6 +117,9 @@ describe('csvwBuilder', () => {
         types: [
           dataCube.Table,
         ],
+        source: {
+          name: 'test.csv',
+        },
       }
 
       // when
@@ -148,6 +154,9 @@ describe('csvwBuilder', () => {
         types: [
           dataCube.Table,
         ],
+        source: {
+          name: 'test.csv',
+        },
       }
 
       // when
@@ -194,6 +203,9 @@ describe('csvwBuilder', () => {
             types: [
               dataCube.Table,
             ],
+            source: {
+              name: 'test.csv',
+            },
           }
 
           // when
@@ -242,6 +254,9 @@ describe('csvwBuilder', () => {
         project: {
           baseUri: 'http://example.com/tst-project',
         },
+        source: {
+          name: 'test.csv',
+        },
       }
 
       // when
@@ -263,6 +278,9 @@ describe('csvwBuilder', () => {
         ],
         project: {
           baseUri: 'http://example.com/tst-project/',
+        },
+        source: {
+          name: 'test.csv',
         },
       }
 
@@ -295,6 +313,9 @@ describe('csvwBuilder', () => {
         ],
         project: {
           baseUri: 'http://example.com/tst-project/',
+        },
+        source: {
+          name: 'test.csv',
         },
       }
 

@@ -4,6 +4,7 @@ import { dataCube, rdf } from '../../namespaces'
 import './Attribute'
 import { ProjectMixin } from '../Project'
 import * as DataCube from '../'
+import { SourceMixin } from '../Source'
 
 @namespace(dataCube)
 export class BaseTable extends RdfResourceImpl implements Table.Table {
@@ -12,6 +13,9 @@ export class BaseTable extends RdfResourceImpl implements Table.Table {
 
   @property.resource({ path: dataCube.project, as: [ ProjectMixin ] })
   public readonly project: DataCube.Project
+
+  @property.resource({ path: dataCube.source, as: [ SourceMixin ] })
+  public readonly source: DataCube.Source
 
   public get attributes () {
     return this._node.in(dataCube.table)
@@ -22,7 +26,7 @@ export class BaseTable extends RdfResourceImpl implements Table.Table {
   }
 }
 
-function DimensionTableMixin<TBase extends Constructor<BaseTable>> (Base: TBase) {
+export function DimensionTableMixin<TBase extends Constructor<BaseTable>> (Base: TBase) {
   @namespace(dataCube)
   class DimensionTable extends Base implements Table.DimensionTable {
     @property.literal()
@@ -35,5 +39,3 @@ function DimensionTableMixin<TBase extends Constructor<BaseTable>> (Base: TBase)
 DimensionTableMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.DimensionTable)
 }
-
-RdfResourceImpl.factory.addMixin(DimensionTableMixin)
