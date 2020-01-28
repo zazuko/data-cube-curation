@@ -1,4 +1,4 @@
-import { factory } from '@tpluscode/fun-ddr'
+import { DomainError, factory } from '@tpluscode/fun-ddr'
 import slug from 'url-slug'
 import { Source } from '../source'
 import { SourceEvents } from '../source/events'
@@ -12,6 +12,10 @@ interface UploadSourceCommand {
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {
+  if (command.columns.findIndex(column => !column || column.trim() === '') > 0) {
+    throw new DomainError(project['@id'], 'Cannot create source', 'Columns names cannot be empty')
+  }
+
   const sourceId = `${project['@id']}/source/${slug(command.fileName)}`
 
   emitter.emit<SourceEvents, 'SourceUploaded'>('SourceUploaded', {
