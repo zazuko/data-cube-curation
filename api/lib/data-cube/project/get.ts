@@ -17,6 +17,7 @@ export const placeholderRepresentation = asyncMiddleware(async (req: Request, re
         api:project <${req.resourceId}> .
     `)
 
+  res.status(404)
   res.setLink(placeholderUri, 'canonical')
   res.graph(await query.execute(req.sparql))
 })
