@@ -12,7 +12,7 @@ interface UploadSourceCommand {
 }
 
 export const createSource = factory<Project, UploadSourceCommand, Source>(function (project, command, emitter) {
-  if (command.columns.findIndex(column => !column || column.trim() === '') > 0) {
+  if (command.columns.some(column => !column || column.trim() === '')) {
     throw new DomainError(project['@id'], 'Cannot create source', 'Columns names cannot be empty')
   }
 
