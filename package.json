@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "build": "lerna run build",
     "start:api": "(cd api; npm run start)",
     "start:ui": "(cd ui; npm run serve)",
     "reset:fuseki": "docker-compose rm -f fuseki",

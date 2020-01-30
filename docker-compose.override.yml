@@ -5,4 +5,4 @@ services:
   datacube:
     command: npm run start
     volumes:
-      - ./api:/api
+      - ./:/app
