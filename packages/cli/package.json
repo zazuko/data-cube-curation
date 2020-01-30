@@ -4,7 +4,7 @@
   "description": "Runs a pipeline to create an RDF data cube",
   "main": "index.js",
   "scripts": {
-    "postinstall": "mkdir input; mkdir output",
+    "postinstall": "mkdir -p input; mkdir -p output",
     "test": "jest",
     "start": "ts-node index.ts run --verbose --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 input",
     "precommit": "lint-staged"
