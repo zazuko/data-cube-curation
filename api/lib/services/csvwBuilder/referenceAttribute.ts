@@ -1,8 +1,8 @@
-import parser from 'uri-template'
 import { error, warning } from '../../log'
 import * as Table from '../../read-model/Table'
 import * as Csvw from '../csvwBuilder/index'
 import { getAbsoluteUrl } from './aboutUrl'
+import { parse } from '../uriTemplateParser'
 
 export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {
   const referencedTable = attribute.referencedTable
@@ -18,7 +18,7 @@ export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttrib
     }, new Map<string, string>())
 
   if (typeof referencedTable.identifierTemplate === 'string') {
-    const uriTemplate = parser.parse(referencedTable.identifierTemplate)
+    const uriTemplate = parse(referencedTable.identifierTemplate)
     uriTemplate.expressions.forEach(expression => {
       expression.params.forEach(p => {
         if (columnNameMap.has(p.name)) {

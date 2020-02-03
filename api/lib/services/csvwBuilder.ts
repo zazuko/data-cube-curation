@@ -11,7 +11,7 @@ import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import wireUp from '../read-model/wireUp'
-import parser = require('uri-template')
+import { parse } from '../services/uriTemplateParser'
 
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
 
@@ -39,7 +39,7 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
 
   if (csvwColumn) {
     const propertyTemplate = attribute.propertyTemplate
-    const parsed = parser.parse(propertyTemplate)
+    const parsed = parse(propertyTemplate)
     csvwColumn.propertyUrl = getAbsoluteUrl(table.project, parsed)
     return csvwColumn
   }
@@ -64,8 +64,8 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
   csvwGraph.addDialect()
   csvwGraph.url = table.source.name
 
-  if ('identifierTemplate' in table) {
-    const parsed = parser.parse(table.identifierTemplate)
+  if ('identifierTemplate' in table && table.identifierTemplate) {
+    const parsed = parse(table.identifierTemplate)
     csvwGraph.tableSchema.aboutUrl = getAbsoluteUrl(table.project, parsed)
   }
 
