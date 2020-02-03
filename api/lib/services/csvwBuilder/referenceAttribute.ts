@@ -19,14 +19,10 @@ export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttrib
 
   if (typeof referencedTable.identifierTemplate === 'string') {
     const uriTemplate = parse(referencedTable.identifierTemplate)
-    uriTemplate.expressions.forEach(expression => {
-      expression.params.forEach(p => {
-        if (columnNameMap.has(p.name)) {
-          p.name = columnNameMap.get(p.name)
-        } else {
-          warning('Column name %s was not found in template for table <%s>', p.name, referencedTable.id)
-        }
-      })
+    columnNameMap.forEach((to, from) => {
+      if (!uriTemplate.renameColumnVariable(from, to)) {
+        warning('Column name %s was not found in template for table <%s>', to, referencedTable.id)
+      }
     })
 
     csvwColumn.valueUrl = getAbsoluteUrl(referencedTable.project, uriTemplate)

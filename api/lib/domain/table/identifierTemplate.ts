@@ -1,5 +1,5 @@
 import cf from 'clownface'
-import { NamedNode, DatasetCore } from 'rdf-js'
+import { DatasetCore } from 'rdf-js'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 import { rdf, dataCube, schema } from '../../namespaces'
 import { parse } from '../../services/uriTemplateParser'
@@ -16,7 +16,7 @@ export async function extractColumns (sourceIdOrDataset: string | DatasetCore, t
 
   let columnNames: string[]
   try {
-    columnNames = parse(template).expressions.map(ex => ex.params[0].name).map(decodeURIComponent)
+    columnNames = parse(template).columnNames
   } catch (e) {
     return e
   }
@@ -29,7 +29,7 @@ export async function extractColumns (sourceIdOrDataset: string | DatasetCore, t
   const columns = cf({ dataset })
     .has(rdf.type, dataCube.Column)
   const columnIds = columnNames.reduce((identifiers, name) => {
-    const columnNameTerm = columns.has(schema('name'), name).term as NamedNode
+    const columnNameTerm = columns.has(schema('name'), name).term
     if (!columnNameTerm) {
       columnsNotFound.push(name)
       return identifiers
