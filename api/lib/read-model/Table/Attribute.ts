@@ -31,10 +31,10 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
     public get parameters () {
       const prop = dataCube('datatype/parameters')
 
-      return this._node.out(prop)
+      return this._selfGraph.out(prop)
         .toArray()
         .reduce((params, param) => {
-          [...this._node.dataset.match(param.term)]
+          [...this._selfGraph.dataset.match(param.term)]
             .forEach(quad => {
               const csvwProperty = quad.predicate.value.replace(dataCube('datatype/').value, '')
               params[csvwProperty] = quad.object.value

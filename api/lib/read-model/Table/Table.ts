@@ -18,7 +18,7 @@ export class BaseTable extends RdfResourceImpl implements Table.Table {
   public readonly source: DataCube.Source
 
   public get attributes () {
-    return this._node.in(dataCube.table)
+    return this._selfGraph.in(dataCube.table)
       .has(rdf.type, dataCube.Attribute)
       .map(attr => {
         return RdfResourceImpl.factory.createEntity<Table.Attribute>(attr)

@@ -23,7 +23,7 @@ export function TableMixin<TBase extends Constructor> (Base: TBase) {
     public readonly csvw!: Csvw.Mapping
 
     public get attributes () {
-      return this._node.in(dataCube.table)
+      return this._selfGraph.in(dataCube.table)
         .has(rdf.type, dataCube.Attribute)
         .map(attr => {
           return this._create<Table.Attribute>(attr)

@@ -11,7 +11,7 @@ export function openFromCsvw (csvw: Csvw.Mapping, sourceDir: string) {
 }
 
 export function getCsvwTriples (csvw: RdfResource<DatasetExt>): Stream {
-  return csvw._node.dataset
+  return csvw._selfGraph.dataset
     .match(null, null, null, csvw.id)
     .map(quad => $rdf.triple(quad.subject, quad.predicate, quad.object))
     .toStream()

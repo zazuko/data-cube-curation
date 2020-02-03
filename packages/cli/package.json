@@ -14,7 +14,7 @@
     "@rdfjs/fetch-lite": "^2.0.1",
     "@rdfjs/formats-common": "^2.0.1",
     "@rdfjs/namespace": "^1.1.0",
-    "@tpluscode/rdfine": "^0.2.11",
+    "@tpluscode/rdfine": "^0.3.2",
     "alcaeus": "^1.0.0-alpha.7",
     "aws-sdk": "^2.559.0",
     "barnard59": "https://github.com/zazuko/barnard59#extract-runner",

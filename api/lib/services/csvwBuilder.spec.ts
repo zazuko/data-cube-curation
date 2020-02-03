@@ -21,7 +21,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute', async () => {
@@ -32,7 +32,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps multiple attributes mapping same column', async () => {
@@ -43,7 +43,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with datatype', async () => {
@@ -54,7 +54,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with datatype parameters', async () => {
@@ -91,7 +91,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(table as any)
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps attribute with default value', async () => {
@@ -127,7 +127,7 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset.tableSchema.columns[0].default).toEqual('03/08/1990')
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('does not map as derived type when there are no parameters', async () => {
@@ -163,7 +163,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw(table as any)
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     describe('maps specific datatypes to csvw built-in types', () => {
@@ -225,7 +225,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: ids.tableId })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
 
     it('maps reference attribute', async () => {
@@ -236,7 +236,7 @@ describe('csvwBuilder', () => {
       const csvwDataset = buildCsvw({ dataset, tableId: `http://reference-attribute.test/fact-table` })
 
       // then
-      expect(csvwDataset._node.dataset.toCanonical()).toMatchSnapshot()
+      expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
   })
 
