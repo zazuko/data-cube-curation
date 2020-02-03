@@ -11,7 +11,7 @@ import { BaseTable } from '../read-model/Table/Table'
 import * as Csvw from './csvwBuilder/index'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import wireUp from '../read-model/wireUp'
-import { parse } from '../services/uriTemplateParser'
+import { parse } from './uriTemplateParser'
 
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
 
