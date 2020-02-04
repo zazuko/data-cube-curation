@@ -16,10 +16,9 @@ const pipelines = {
 
 async function main () {
   program
-    .command('run <sourceDir>')
-    .option('--project <projectUri>', 'Data cube curation project URL')
+    .command('run <sourceDir> <targetDir> <projectUri>')
     .option('--verbose')
-    .action(run(pipelines.TransformFiles.value, __dirname))
+    .action(run(pipelines.TransformFiles.value, __dirname, log))
 
   return program.parseAsync(process.argv)
 }

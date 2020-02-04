@@ -19,16 +19,12 @@
 <#TransformFiles> a :Pipeline ;
                   :steps [
                            :stepList ( <#loadMetadata> <#doTransform> <#serialize> <#save>)
-                         ] ; :variables [
-                          :variable
-                               [ a :Variable; :name "dataCubeProject"; :value "https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133" ],
-                               [ a :Variable; :name "targetDir"; :value "output" ]
-] .
+                         ] .
 
 <#loadMetadata> a :Step ;
            code:implementedBy
              [
-               code:link <file:./lib/project#loadCsvMappings> ;
+               code:link <file:../lib/project#loadCsvMappings> ;
                a code:EcmaScript
              ] ;
            code:arguments (
@@ -59,7 +55,7 @@
 
 <#openCsv> a :Step ;
   code:implementedBy [
-      code:link <file:./lib/csv#openFromCsvw> ;
+      code:link <file:../lib/csv#openFromCsvw> ;
       a code:EcmaScript
     ] ;
   code:arguments ( "csvw"^^:VariableName "sourceDir"^^:VariableName ) .
@@ -81,7 +77,7 @@
 <#getCsvwGraph> a :Step;
                      code:implementedBy
                        [
-                         code:link <file:./lib/csv#getCsvwTriples> ;
+                         code:link <file:../lib/csv#getCsvwTriples> ;
                          a code:EcmaScript
                        ];
                      code:arguments ( "csvw"^^:VariableName ).

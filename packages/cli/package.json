@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "mkdir -p input; mkdir -p output",
-    "start": "ts-node index.ts run --verbose --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 input",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "build": "tsc"
   },
   "dependencies": {
     "@rdfine/csvw": "^0.0.0",

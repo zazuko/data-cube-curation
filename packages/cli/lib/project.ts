@@ -11,7 +11,8 @@ parsers.forEach((parser, type) => {
   Ld.parsers.set(type, parser)
 })
 
-async function loadProject (projectUri) {
+async function loadProject (projectUri, log) {
+  log.debug(`Loading project ${projectUri}`)
   const resource = (await Ld.loadResource<DataCube.Project>(projectUri)).root
   if (!resource || !('tables' in resource)) {
     throw new Error(`Did not find representation of project ${projectUri}`)
@@ -20,8 +21,10 @@ async function loadProject (projectUri) {
   return resource
 }
 
-async function loadTables (project: DataCube.Project) {
-  const resource = (await Ld.loadResource<Collection<Table>>(project.tables.id.value)).root
+async function loadTables (project: DataCube.Project, log) {
+  const tablesId = project.tables.id.value
+  log.debug(`Loading output tables ${tablesId}`)
+  const resource = (await Ld.loadResource<Collection<Table>>(tablesId)).root
   if (resource !== null && ('members' in resource)) {
     return resource.members
   }
@@ -36,8 +39,8 @@ class ProjectIterator extends stream.Readable {
       read: () => {},
     })
 
-    loadProject(projectUri)
-      .then((project) => loadTables(project))
+    loadProject(projectUri, log)
+      .then(project => loadTables(project, log))
       .then(tables => {
         const loadMetadata = tables.reduce((metadata, table) => {
           log.debug(`Loading csvw ${table.csvw.id.value}`)
