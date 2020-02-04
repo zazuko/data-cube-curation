@@ -1,0 +1,79 @@
+/**
+ * These variables are copied from Bulma, but don't affect Bulma directly
+ * because Bulma doesn't support CSS customer properties yet.
+ */
+body {
+  --white:        hsl(0, 0%, 100%);
+
+  --black:        hsl(0, 0%, 4%);
+  --black-bis:    hsl(0, 0%, 7%);
+  --black-ter:    hsl(0, 0%, 14%);
+
+  --grey-darker:  hsl(0, 0%, 21%);
+  --grey-dark:    hsl(0, 0%, 29%);
+  --grey:         hsl(0, 0%, 48%);
+  --grey-light:   hsl(0, 0%, 71%);
+  --grey-lighter: hsl(0, 0%, 86%);
+
+  --white-ter:    hsl(0, 0%, 96%);
+  --white-bis:    hsl(0, 0%, 98%);
+  --white:        hsl(0, 0%, 100%);
+
+  --orange:       hsl(14,  100%, 53%);
+  --yellow:       hsl(48,  100%, 67%);
+  --green:        hsl(141, 71%,  48%);
+  --turquoise:    hsl(171, 100%, 41%);
+  --cyan:         hsl(204, 86%,  53%);
+  --blue:         hsl(217, 71%,  53%);
+  --purple:       hsl(271, 100%, 71%);
+  --red:          hsl(348, 100%, 61%);
+
+  --radius: 4px;
+
+  --background: var(--white-ter);
+
+  --text: var(--grey-dark);
+  --text-light: var(--grey);
+  --text-strong: var(--grey-darker);
+
+  --link: var(--blue);
+
+  /* Control */
+
+  --control-border-width: 1px;
+
+  --control-height: 2.25em;
+  --control-line-height: 1.5;
+
+  --control-padding-vertical: calc(0.375em - var(--control-border-width));
+  --control-padding-horizontal: calc(0.625em - var(--control-border-width));
+
+  /* Input */
+
+  --input-color: var(--grey-darker);
+  --input-background-color: var(--white);
+  --input-border-color: var(--grey-lighter);
+  --input-height: var(--control-height);
+  --input-shadow: inset 0 1px 2px rgba(var(--black), 0.1);
+  --input-placeholder-color: rgba(var(--input-color), 0.3);
+
+  --input-hover-color: var(--grey-darker);
+  --input-hover-border-color: var(--grey-light);
+
+  --input-focus-color: var(--grey-darker);
+  --input-focus-border-color: var(--link);
+  --input-focus-box-shadow-size: 0 0 0 0.125em;
+  --input-focus-box-shadow-color: rgba(var(--link), 0.25);
+
+  --input-disabled-color: var(--text-light);
+  --input-disabled-background-color: var(--background);
+  --input-disabled-border-color: var(--background);
+  --input-disabled-placeholder-color: rgba(var(--input-disabled-color), 0.3);
+
+  --input-arrow: var(--link);
+
+  --input-icon-color: var(--grey-lighter);
+  --input-icon-active-color: var(--grey);
+
+  --input-radius: var(--radius);
+}
