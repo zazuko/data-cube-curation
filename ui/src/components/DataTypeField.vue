@@ -54,18 +54,7 @@ export default class extends Vue {
   showParams = false
 
   get datatypes () {
-    return datatypes.all.concat().sort((dt1, dt2) => {
-      const name1 = dt1.name.toUpperCase()
-      const name2 = dt2.name.toUpperCase()
-
-      if (name1 < name2) {
-        return -1
-      } else if (name1 > name2) {
-        return 1
-      } else {
-        return 0
-      }
-    })
+    return datatypes.all.concat().sort((dt1, dt2) => dt1.name.localeCompare(dt2.name))
   }
 
   get type (): DataTypeOption | null {
