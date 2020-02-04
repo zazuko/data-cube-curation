@@ -4,7 +4,7 @@ import { dataCube, schema, rdf } from '../../namespaces'
 import { getClient } from '../sparqlClient'
 
 export async function getTableAndSource (tableId: string) {
-  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?referencedColumn')
+  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?mapping', '?referencedColumn')
     .prefixes({ dataCube, schema, rdf })
     .where(`
         <${tableId}> a dataCube:Table ;
@@ -18,10 +18,9 @@ export async function getTableAndSource (tableId: string) {
         }
 
         OPTIONAL {
-          ?attribute dataCube:referencedTable ?referencedTable .
-          ?attribute dataCube:columnMapping [
-            dataCube:referencedColumn ?referencedColumn
-          ]
+          ?attribute dataCube:referencedTable ?referencedTable ;
+                     dataCube:columnMapping ?mapping .
+          ?mapping dataCube:referencedColumn ?referencedColumn .
         }
       `)
     .execute(getClient()))
