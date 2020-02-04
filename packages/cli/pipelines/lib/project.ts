@@ -3,8 +3,13 @@ import Ld, { Collection, HydraResource } from 'alcaeus'
 import * as DataCube from '@zazuko/rdfine-data-cube'
 import * as Csvw from '@rdfine/csvw'
 import { Table } from '@zazuko/rdfine-data-cube/Table'
+import { parsers } from '@rdfjs/formats-common'
 
 DataCube.wireUp(Ld.factory)
+
+parsers.forEach((parser, type) => {
+  Ld.parsers.set(type, parser)
+})
 
 async function loadProject (projectUri) {
   const resource = (await Ld.loadResource<DataCube.Project>(projectUri)).root
