@@ -10,21 +10,19 @@ jobs:
         - JOB=analyzer
       before_script:
         - docker-compose -f docker-compose.yml up -d datacube
-        - npx wait-on --timeout 30000 http://localhost:5678
+        - npx wait-on --timeout 30000 http://localhost:5678 || docker-compose logs --tail="50" datacube
       script:
         - docker-compose run analyzer
       after_failure:
-        - docker-compose logs --tail="50" datacube
         - docker-compose logs --tail="50" analyzer
     - env:
         - JOB=e2e
       before_script:
         - docker-compose -f docker-compose.yml up -d datacube
-        - npx wait-on --timeout 30000 http://localhost:5678
+        - npx wait-on --timeout 30000 http://localhost:5678 || docker-compose logs --tail="50" datacube
       script:
         - docker-compose run e2e-tests
       after_failure:
-        - docker-compose logs --tail="50" datacube
         - docker-compose logs --tail="50" e2e-tests
     - env:
         - JOB=unit

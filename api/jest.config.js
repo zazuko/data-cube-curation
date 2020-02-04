@@ -9,6 +9,5 @@ module.exports = {
   },
   'transform': {
     '^.+\\.tsx?$': 'ts-jest',
-  },
-  preserveSymlinks: true,
+  }
 }
