@@ -35,4 +35,4 @@ COPY packages/cli/pipelines ./packages/cli/pipelines/
 
 # USER nobody:nobody
 
-ENTRYPOINT ["node", "packages/cli/index.js", "run", "/input", "/output"]
+ENTRYPOINT ["node", "packages/cli/index.js"]

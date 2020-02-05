@@ -11,15 +11,19 @@
 #
 # ------------------------------
 
-<#TransformFilesGraphStore> a :Pipeline ;
-                            :steps [
-                                     :stepList ( <#loadMetadata> <#doTransform> <#setGraph> <#upload>)
-                                   ] .
-
 <#TransformFiles> a :Pipeline ;
                   :steps [
-                           :stepList ( <#loadMetadata> <#doTransform> <#serialize> <#save>)
+                           :stepList ( <#loadMetadata> <#doTransform> <#streamOutputStep> )
                          ] .
+
+<#StreamOutput> a :Pipeline, :WritableObjectMode .
+
+<#streamOutputStep> a :Step ;
+  code:implementedBy [
+                       code:link <file:../lib/pipeline#asStep> ;
+                       a code:EcmaScript
+                      ] ;
+  code:arguments ( <#StreamOutput> ) .
 
 <#loadMetadata> a :Step ;
            code:implementedBy
@@ -50,15 +54,17 @@
 <#TransformCsv> a :Pipeline, :ReadableObjectMode ;
                 :steps
                   [
-                    :stepList ( <#openCsv> <#parse> <#filterNotCsvw> )
+                    :stepList ( <#loadCsvStep> <#parse> <#filterNotCsvw> )
                   ] .
 
-<#openCsv> a :Step ;
+<#LoadCsv> a :Pipeline, :ReadableObjectMode .
+
+<#loadCsvStep> a :Step ;
   code:implementedBy [
-      code:link <file:../lib/csv#openFromCsvw> ;
-      a code:EcmaScript
-    ] ;
-  code:arguments ( "csvw"^^:VariableName "sourceDir"^^:VariableName ) .
+                       code:link <file:../lib/pipeline#asStep> ;
+                       a code:EcmaScript
+                      ] ;
+  code:arguments ( <#LoadCsv> ) .
 
 <#parse> a :Step;
          code:implementedBy
@@ -96,38 +102,3 @@
 	return true
 	}"""^^code:EcmaScript ).
 
-<#serialize> a :Step;
-             code:implementedBy
-               [
-                 code:link <node:barnard59-formats#ntriples.serialize> ;
-                 a code:EcmaScript
-               ].
-
-<#save> a :Step;
-        code:implementedBy
-          [
-            code:link <node:fs#createWriteStream>;
-            a code:EcmaScript
-          ];
-        code:arguments ("${targetDir}/everything.nt"^^code:EcmaScriptTemplateLiteral).
-
-<#setGraph> a :Step;
-            code:implementedBy [ a code:EcmaScript;
-                                 code:link <node:barnard59-base#setGraph>
-                               ];
-            code:arguments ( "graph"^^:VariableName ).
-
-<#upload> a :Step;
-          code:implementedBy [ a code:EcmaScript;
-                               code:link <node:barnard59-graph-store#put>
-                             ];
-          code:arguments [
-                           code:name "endpoint";
-                           code:value "endpoint"^^:VariableName
-                         ], [
-                              code:name "user";
-                              code:value "user"^^:VariableName
-                            ], [
-                                 code:name "password";
-                                 code:value "password"^^:VariableName
-                               ].
