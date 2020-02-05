@@ -1,4 +1,4 @@
-import { Project } from '../../read-model'
+import { Project } from '@zazuko/rdfine-data-cube'
 import isUri = require('is-uri')
 
 export function getAbsoluteUrl (project: Project, uriTemplate: any) {

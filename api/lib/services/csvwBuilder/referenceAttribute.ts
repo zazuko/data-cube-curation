@@ -1,7 +1,7 @@
 import parser from 'uri-template'
 import * as Csvw from '@rdfine/csvw'
 import { error, warning } from '../../log'
-import * as Table from '../../read-model/Table'
+import * as Table from '@zazuko/rdfine-data-cube/Table'
 import { getAbsoluteUrl } from './aboutUrl'
 
 export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {

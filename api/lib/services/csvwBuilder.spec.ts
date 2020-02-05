@@ -1,7 +1,7 @@
 import { namedNode } from '@rdfjs/data-model'
 import { NamedNode } from 'rdf-js'
 import { buildCsvw } from './csvwBuilder'
-import { Column, DimensionTable, ValueAttribute, Table } from '../read-model/Table'
+import { Column, DimensionTable, ValueAttribute, Table } from '@zazuko/rdfine-data-cube/Table'
 import { csvw, dataCube, rdf, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 

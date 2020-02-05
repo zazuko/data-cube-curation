@@ -1,7 +1,7 @@
 import { RdfResource } from '@tpluscode/rdfine'
 import { literal } from '@rdfjs/data-model'
 import { shrink } from '@zazuko/rdf-vocabularies'
-import * as Table from '../../read-model/Table/index'
+import * as Table from '@zazuko/rdfine-data-cube/Table'
 import * as Csvw from '@rdfine/csvw'
 import { csvw, rdf } from '../../namespaces'
 

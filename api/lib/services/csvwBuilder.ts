@@ -8,10 +8,10 @@ import * as Csvw from '@rdfine/csvw'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
-import * as Table from '../read-model/Table'
-import { BaseTable } from '../read-model/Table/Table'
+import * as Table from '@zazuko/rdfine-data-cube/Table'
+import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
-import wireUp from '../read-model/wireUp'
+import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
 import parser = require('uri-template')
 
 type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
@@ -52,10 +52,10 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
 export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
   let table: Table.Table | Table.DimensionTable
   if ('dataset' in tableOrDataset) {
-    table = BaseTable.factory.createEntity(cf({
+    table = RdfResourceImpl.factory.createEntity(cf({
       dataset: tableOrDataset.dataset,
       term: $rdf.namedNode(tableOrDataset.tableId),
-    }), [BaseTable])
+    }), [TableMixin])
   } else {
     table = tableOrDataset
   }
