@@ -11,7 +11,3 @@ _:serialize
   a                  :Step ;
   code:implementedBy [ code:link <node:barnard59-formats#ntriples.serialize> ;
                        a         code:EcmaScript ] .
-
-_:save
-  a                  :Step ;
-  code:implementedBy "() => process.stdout"^^code:EcmaScript .
