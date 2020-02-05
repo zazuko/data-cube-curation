@@ -5,7 +5,6 @@ import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
 import { TableEvents } from '../domain/table/events'
 import { getTableAttributes } from './attribute'
-import { expand } from '@zazuko/rdf-vocabularies'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
@@ -82,7 +81,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   if (ev.data.types.includes('Table')) {
     const hydraCollection = await getTableAttributes(ev.id)
 
-    const deletions = hydraCollection.match(null, expand('hydra:member')).toArray()
+    const deletions = hydraCollection.match(null, hydra.member).toArray()
       .map((quad: Quad) => quad.object.value)
       .map(async (attributeId: string) => {
         const aggregate = await attributes.load(attributeId)
