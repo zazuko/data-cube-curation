@@ -1,21 +1,14 @@
 <template>
     <b-field :label="label" class="data-type-input">
       <b-field>
-        <b-autocomplete
-          v-model="typeName"
-          @select="onSelect"
-          @blur="onBlur"
-          @typing="filterDatatypes"
-          :data="sortedMatchingDatatypes"
-          field="name"
+        <MultiSelect
+          :value="type"
+          @input="onInput"
+          :options="datatypes"
+          label="name"
+          track-by="uri"
           placeholder="e.g. string"
-          open-on-focus
-          keep-first
-          class="select"
-          expanded
-        >
-          <template slot="empty">No matching data type</template>
-        </b-autocomplete>
+        />
 
         <b-tooltip label="Data type options" type="is-dark" :delay="100">
           <b-button
@@ -47,7 +40,6 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { DataTypeOption, DataType } from '@/types'
-import { expand } from '@/rdf-vocabularies'
 import * as datatypes from '@/datatypes'
 import DataTypeParamField from './DataTypeParamField.vue'
 
@@ -59,13 +51,14 @@ import DataTypeParamField from './DataTypeParamField.vue'
 export default class extends Vue {
   @Prop() value: DataType | null
   @Prop() label: string
-  matchingDatatypes = datatypes.all
   showParams = false
 
-  typeName: string = datatypes.byURI(this.value?.id ?? '')?.name ?? ''
+  get datatypes () {
+    return datatypes.all.concat().sort((dt1, dt2) => dt1.name.localeCompare(dt2.name))
+  }
 
   get type (): DataTypeOption | null {
-    return datatypes.byName(this.typeName)
+    return this.value ? datatypes.byURI(this.value.id) : null
   }
 
   get typeParams (): string[] {
@@ -81,8 +74,8 @@ export default class extends Vue {
     return Object.values(paramValues).some((v) => !!v)
   }
 
-  onSelect (newValue: DataTypeOption) {
-    const newValueURI = newValue ? expand(newValue.uri) : null
+  onInput (newValue: DataTypeOption): void {
+    const newValueURI = newValue?.uri ?? null
 
     if (newValueURI !== this.value?.id) {
       const datatype = newValueURI ? { id: newValueURI, params: {} } : null
@@ -90,36 +83,8 @@ export default class extends Vue {
     }
   }
 
-  onBlur () {
-    // Empty input if no valid type was selected
-    if (!this.value) {
-      this.typeName = ''
-    }
-
-    this.matchingDatatypes = datatypes.all
-  }
-
-  filterDatatypes (value: string) {
-    this.matchingDatatypes = datatypes.all.filter((datatype) => datatype.name.indexOf(value) >= 0)
-  }
-
   capitalize ([firstLetter, ...rest]: string): string {
     return [firstLetter.toLocaleUpperCase(), ...rest].join('')
-  }
-
-  get sortedMatchingDatatypes () {
-    return this.matchingDatatypes.concat().sort((dt1, dt2) => {
-      const name1 = dt1.name.toUpperCase()
-      const name2 = dt2.name.toUpperCase()
-
-      if (name1 < name2) {
-        return -1
-      } else if (name1 > name2) {
-        return 1
-      } else {
-        return 0
-      }
-    })
   }
 }
 </script>

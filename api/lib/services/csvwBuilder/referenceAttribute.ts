@@ -1,8 +1,8 @@
-import parser from 'uri-template'
 import * as Csvw from '@rdfine/csvw'
 import { error, warning } from '../../log'
 import * as Table from '@zazuko/rdfine-data-cube/Table'
 import { getAbsoluteUrl } from './aboutUrl'
+import { parse } from '../uriTemplateParser'
 
 export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {
   const referencedTable = attribute.referencedTable
@@ -18,15 +18,11 @@ export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttrib
     }, new Map<string, string>())
 
   if (typeof referencedTable.identifierTemplate === 'string') {
-    const uriTemplate = parser.parse(referencedTable.identifierTemplate)
-    uriTemplate.expressions.forEach(expression => {
-      expression.params.forEach(p => {
-        if (columnNameMap.has(p.name)) {
-          p.name = columnNameMap.get(p.name)
-        } else {
-          warning('Column name %s was not found in template for table <%s>', p.name, referencedTable.id)
-        }
-      })
+    const uriTemplate = parse(referencedTable.identifierTemplate)
+    columnNameMap.forEach((to, from) => {
+      if (!uriTemplate.renameColumnVariable(from, to)) {
+        warning('Column name %s was not found in template for table <%s>', to, referencedTable.id)
+      }
     })
 
     csvwColumn.valueUrl = getAbsoluteUrl(referencedTable.project, uriTemplate)

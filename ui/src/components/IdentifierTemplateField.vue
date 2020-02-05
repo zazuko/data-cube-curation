@@ -1,5 +1,5 @@
 <template>
-  <b-field label="Identifier attribute template" :message="expandedValue">
+  <b-field label="Identifier attribute template" :message="message">
     <b-autocomplete
         ref="autocomplete"
         :value="value"
@@ -44,13 +44,16 @@ export default class extends Vue {
 
     if (!this.tableName) return
 
-    const prefillValue = `${this.tableName.toLowerCase()}/{_}`
+    const prefillValue = `${this.tableName.toLowerCase()}/{REPLACE}`
     this.$emit('input', prefillValue)
   }
 
+  get autocompleteComponent (): Vue | null {
+    return this.$refs.autocomplete as Vue
+  }
+
   getInputElement () {
-    const autocomplete = this.$refs.autocomplete as Vue
-    return autocomplete ? autocomplete.$el.querySelector('input') : null
+    return this.autocompleteComponent?.$el.querySelector('input') ?? null
   }
 
   getPosition (): number {
@@ -88,15 +91,39 @@ export default class extends Vue {
     inputElement && inputElement.focus()
   }
 
+  get columnNames () {
+    const columns = this.source?.columns ?? []
+    return columns.map(({ name }) => name)
+  }
+
+  get validationPattern () {
+    const columnNamesPattern = this.columnNames.join('|')
+    return `([^{}]*(\\{(${columnNamesPattern})\\})?[^{}]*)*`
+  }
+
+  get invalidMessage () {
+    const input = this.autocompleteComponent?.$refs.input as any
+    if (!this.value || !input || input.isValid) {
+      return null
+    }
+
+    const matches = this.value.matchAll(/\{([^{}]*)\}/g) ?? []
+    const inputColumnNames = [...matches].map((match) => match[1])
+    const invalidColumnNames = inputColumnNames.filter((name) => !this.columnNames.includes(name))
+
+    if (invalidColumnNames.length > 0) {
+      return `The following columns are not valid: ${invalidColumnNames.join(', ')}`
+    } else {
+      return 'Invalid value'
+    }
+  }
+
   get expandedValue () {
     return expandWithBase(this.value, this.project.baseUri)
   }
 
-  get validationPattern () {
-    const columns = this.source?.columns ?? []
-    const columnNames = columns.map(({ name }) => name).join('|')
-
-    return `([^{}]*(\\{(${columnNames})\\})?[^{}]*)*`
+  get message () {
+    return this.invalidMessage ?? this.expandedValue
   }
 }
 </script>
