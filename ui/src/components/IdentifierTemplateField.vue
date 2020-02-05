@@ -44,7 +44,7 @@ export default class extends Vue {
 
     if (!this.tableName) return
 
-    const prefillValue = `${this.tableName.toLowerCase()}/{_}`
+    const prefillValue = `${this.tableName.toLowerCase()}/{REPLACE}`
     this.$emit('input', prefillValue)
   }
 
