@@ -13,24 +13,29 @@
       <table class="table is-fullwidth is-bordered is-striped is-narrowed source-table">
         <thead>
           <tr>
-            <th v-for="(column, index) in source.columns" :key="column.id" v-show="showColumn(index)">
-              <b-field>
-                <b-checkbox v-model="selectedColumns" :native-value="column.id">
-                  {{ column.name }}
-                </b-checkbox>
-              </b-field>
-              <b-taglist>
-                <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
-                  {{ getTable(attribute.tableId).name }} > <PrefixedURI :uri="attribute.property" :project="project" />
-                </TableTag>
-              </b-taglist>
+            <th v-for="(column, index) in source.columns" :key="column.id" :class="{ 'is-collapsed': !showColumn(index) }">
+              <div v-if="showColumn(index)">
+                <b-field>
+                  <b-checkbox v-model="selectedColumns" :native-value="column.id">
+                    {{ column.name }}
+                  </b-checkbox>
+                </b-field>
+                <b-taglist>
+                  <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
+                    {{ getTable(attribute.tableId).name }} > <PrefixedURI :uri="attribute.property" :project="project" />
+                  </TableTag>
+                </b-taglist>
+              </div>
+              <span v-else>·</span>
             </th>
           </tr>
         </thead>
         <Loader tag="tbody" :data="sampleData" v-slot="{ data: sampleData }">
           <tr v-for="(row, rowIndex) in sampleData" :key="rowIndex">
-            <td v-for="(cell, colIndex) in row" :key="colIndex" v-show="showColumn(colIndex)">
-              {{ cell }}
+            <td v-for="(cell, colIndex) in row" :key="colIndex" :class="{ 'is-collapsed': !showColumn(colIndex) }">
+              <span v-show="showColumn(colIndex)">
+                {{ cell }}
+              </span>
             </td>
           </tr>
           <tr v-if="sampleData.length < 1" class="has-text-grey">
@@ -53,6 +58,14 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+th.is-collapsed,
+td.is-collapsed {
+  padding-left: 0;
+  padding-right: 0;
+  color: transparent;
+}
+
 </style>
 
 <script lang="ts">
