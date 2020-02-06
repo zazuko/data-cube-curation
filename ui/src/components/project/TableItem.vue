@@ -39,7 +39,7 @@
             <td><code><PrefixedURI :uri="table.identifierTemplate" :project="project" /></code></td>
           </tr>
           <tr v-if="table.attributesCollection">
-            <th>Properties</th>
+            <th>Attributes</th>
             <Loader tag="td" :data="valueAttributes" v-slot="{ data: attributes }">
 
               <table class="table is-fullwidth" v-if="attributes.length > 0">
