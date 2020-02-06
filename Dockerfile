@@ -1,4 +1,4 @@
-# First step: build the assets
+# First step: build the UI
 FROM node:lts-alpine AS build-ui
 
 WORKDIR /ui
@@ -16,6 +16,7 @@ ENV VUE_APP_API_URL=https://datacube.zazukoians.org/
 ENV NODE_ENV=production
 RUN npm run build
 
+# Second step: build the API project
 FROM node:lts-alpine AS build-api
 
 WORKDIR /
@@ -30,7 +31,7 @@ RUN npm ci --unsafe-perm
 ENV NODE_ENV=production
 RUN npm run build
 
-# Second step: only install runtime dependencies
+# Third step: only install runtime dependencies in final image
 FROM node:lts-alpine
 
 WORKDIR /app
