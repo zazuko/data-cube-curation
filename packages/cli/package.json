@@ -1,5 +1,5 @@
 {
-  "name": "@zazuko/data-cube-curation",
+  "name": "data-cube-curation-cli",
   "version": "0.0.0",
   "description": "Runs a pipeline to create an RDF data cube",
   "main": "index.js",
