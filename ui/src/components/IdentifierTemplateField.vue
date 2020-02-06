@@ -48,17 +48,16 @@ export default class extends Vue {
     this.$emit('input', prefillValue)
   }
 
-  get autocompleteComponent (): Vue | null {
+  getAutocompleteComponent (): Vue | null {
     return this.$refs.autocomplete as Vue
   }
 
   getInputElement () {
-    return this.autocompleteComponent?.$el.querySelector('input') ?? null
+    return this.getAutocompleteComponent()?.$el.querySelector('input') ?? null
   }
 
   getPosition (): number {
     const inputElement = this.getInputElement()
-
     return inputElement ? (inputElement.selectionStart || 0) : 0
   }
 
@@ -102,7 +101,7 @@ export default class extends Vue {
   }
 
   get invalidMessage () {
-    const input = this.autocompleteComponent?.$refs.input as any
+    const input = this.getAutocompleteComponent()?.$refs.input as any
     if (!this.value || !input || input.isValid) {
       return null
     }
