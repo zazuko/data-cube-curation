@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
-    "start": "ts-node index.ts transform --from filesystem --to filesystem --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 --verbose -v sourceDir=input -v targetFile=output/everything.nt",
+    "start": "ts-node index.ts transform --from filesystem --to filesystem --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 --debug -v sourceDir=input -v targetFile=output/everything.nt",
     "build": "tsc"
   },
   "dependencies": {
