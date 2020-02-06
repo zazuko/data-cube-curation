@@ -31,7 +31,7 @@ async function main () {
   program
     .command('transform')
     .description('Transforms source files to RDF')
-    .requiredOption('--from <sourceName>', "(required) Source of input files (built-in: 'filesystem')")
+    .requiredOption('--from <sourceName>', "(required) Source of input files (built-in: 'filesystem', 's3')")
     .requiredOption('--to <targetName>', "(required) Target to write triples (built-in: 'stdout', 'filesystem', 'graph-store')")
     .requiredOption('--project <project>', '(required) URL of a Data Cube Curation project')
     .option('-v, --variable <name=value>', 'Pipeline variables', parseVariables, new Map())

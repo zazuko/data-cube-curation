@@ -12,7 +12,7 @@ Usage: docker run --rm zazuko/datacube-cli transform [options]
 Transforms source files to RDF
 
 Options:
-  --from <sourceName>          Source of input files (built-in: 'filesystem')
+  --from <sourceName>          Source of input files (built-in: 'filesystem', 's3')
   --to <targetName>            Target to write triples (built-in: 'stdout', 'filesystem', 'graph-store')
   --project <project>          URL of a Data Cube Curation project
   -v, --variable <name=value>  Pipeline variables (default: {})
