@@ -2,7 +2,7 @@
 
 Dockerized runner of Data Cube Curation projects
 
-## Running from image
+## Running
 
 The general syntax of the runner to transform:
 
@@ -19,6 +19,13 @@ Options:
   --debug                      Print diagnostic information to standard output
   -h, --help                   output usage information
 ```
+
+The possible options and their arguments are described below. Each argument is
+provided by the `-v, --variable` option. For example
+
+```
+docker run --rm zazuko/datacube-cli transform -v sourceDir=/downloads/csv -v targetFile=./converted.nt
+``` 
 
 ### `--from filesystem`
 
@@ -55,6 +62,8 @@ Streams transformed triples to a store using the graph protocol
 
 ## Run from sources
 
+Here's an example of converting local files using a locally-built image:
+
 1. Place source csv files in directory `~/packages/cli/input`
 1. (optionally) Ensure a fresh container is built 
 
@@ -64,5 +73,9 @@ Streams transformed triples to a store using the graph protocol
 1. Run with docker-compose
 
     ```
-    docker-compose run --rm cli [options...]
+    docker-compose run --rm cli transform \ 
+        --from filesystem \
+        --to filesystem \
+        --project <URI>
+        --debug
     ```
