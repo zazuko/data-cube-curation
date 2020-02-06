@@ -1,11 +1,11 @@
 import { Constructor, RdfResource, property } from '@tpluscode/rdfine'
 import * as Table from './index'
-import { dataCube, schema } from '../../namespaces'
+import { dataCube, schema } from '../namespaces'
 
 export function ColumnMixin<TBase extends Constructor> (Base: TBase) {
   class Column extends Base implements Table.Column {
     @property.literal({ path: schema.name })
-    public name: string
+    public name!: string
   }
 
   return Column

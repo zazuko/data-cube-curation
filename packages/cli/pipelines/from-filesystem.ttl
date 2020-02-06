@@ -1,0 +1,15 @@
+@base         <urn:pipeline:data-cube-curation> .
+@prefix :     <https://pipeline.described.at/> .
+@prefix code: <https://code.described.at/> .
+
+<#LoadCsv>
+  :steps [ :stepList ( _:openCsvFromFilesystem ) ] ;
+  :variables [ :variable
+    [ a :Variable; :name "sourceDir"; :value "/input" ]
+  ].
+
+_:openCsvFromFilesystem
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/csv#openFromCsvw> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( "csvw"^^:VariableName "sourceDir"^^:VariableName ) .

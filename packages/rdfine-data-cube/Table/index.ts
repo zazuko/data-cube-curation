@@ -1,4 +1,5 @@
 import { RdfResource } from '@tpluscode/rdfine'
+import * as Csvw from '@rdfine/csvw'
 import { Project, Source } from '../'
 
 export interface Table extends RdfResource {
@@ -6,6 +7,7 @@ export interface Table extends RdfResource {
   readonly attributes: Attribute[];
   readonly project: Project;
   readonly source: Source;
+  readonly csvw: Csvw.Mapping;
 }
 
 export interface DimensionTable extends Table {

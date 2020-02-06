@@ -1,8 +1,8 @@
 import { RdfResource } from '@tpluscode/rdfine'
 import { literal } from '@rdfjs/data-model'
 import { shrink } from '@zazuko/rdf-vocabularies'
-import * as Table from '../../read-model/Table/index'
-import * as Csvw from './index'
+import * as Table from '@zazuko/rdfine-data-cube/Table'
+import * as Csvw from '@rdfine/csvw'
 import { csvw, rdf } from '../../namespaces'
 
 const xsdPrefix = /^xsd:(.+)/
@@ -48,7 +48,7 @@ export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csv
     const hasParameters = attribute.parameters && Object.entries(attribute.parameters).length > 0
 
     if (builtInType && hasParameters) {
-      const derivedDatatype = csvwColumn._create(csvwColumn._node.blankNode())
+      const derivedDatatype = csvwColumn._create(csvwColumn._selfGraph.blankNode())
       derivedDatatype[csvw.base.value] = literal(builtInType)
 
       Object.entries(attribute.parameters)

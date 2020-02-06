@@ -14,8 +14,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "noUnusedLocals": true,
-    "experimentalDecorators": true,
-    "preserveSymlinks": true
+    "experimentalDecorators": true
   },
   "exclude": ["test"]
 }

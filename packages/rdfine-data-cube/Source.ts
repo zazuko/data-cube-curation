@@ -1,5 +1,5 @@
 import { property, Constructor } from '@tpluscode/rdfine'
-import { schema } from '../namespaces'
+import { schema } from './namespaces'
 
 export function SourceMixin<Base extends Constructor> (base: Base) {
   class Source extends base {

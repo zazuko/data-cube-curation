@@ -1,4 +1,5 @@
 import { RdfResource, ResourceIndexer } from '@tpluscode/rdfine'
+import { DatasetCore } from 'rdf-js'
 
 export interface Column extends RdfResource {
   suppressed: boolean;
@@ -15,7 +16,7 @@ export interface TableSchema extends RdfResource {
   aboutUrl: string;
 }
 
-export interface Mapping extends RdfResource {
+export interface Mapping<D extends DatasetCore = DatasetCore> extends RdfResource<D> {
   newColumn(col: { name: string }): Column & ResourceIndexer;
   addDialect(): void;
   readonly tableSchema: TableSchema;

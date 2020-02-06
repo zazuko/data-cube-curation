@@ -8,6 +8,8 @@ import { log, warning } from './log'
 import env from './env'
 
 export default async function (apiDir: string) {
+  log('Starting API from %s', apiDir)
+
   const parser = new Parser({
     baseIRI: env.BASE_URI,
   })

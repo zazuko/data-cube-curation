@@ -5,7 +5,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "typeRoots" : ["./typings", "./node_modules/@types"],
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "inlineSourceMap": true,
@@ -14,8 +13,7 @@
     "noImplicitReturns": true,
     "pretty": true,
     "noUnusedLocals": true,
-    "experimentalDecorators": true,
-    "preserveSymlinks": true
+    "experimentalDecorators": true
   },
   "exclude": ["test"]
 }

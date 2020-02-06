@@ -1,8 +1,8 @@
 import { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
 import * as Table from './index'
-import { dataCube } from '../../namespaces'
+import { dataCube } from '../namespaces'
 import './ColumnMapping'
-import { BaseTable } from './Table'
+import { DimensionTableMixin } from './Table'
 
 function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
@@ -31,10 +31,10 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
     public get parameters () {
       const prop = dataCube('datatype/parameters')
 
-      return this._node.out(prop)
+      return this._selfGraph.out(prop)
         .toArray()
         .reduce((params, param) => {
-          [...this._node.dataset.match(param.term)]
+          [...this._selfGraph.dataset.match(param.term)]
             .forEach(quad => {
               const csvwProperty = quad.predicate.value.replace(dataCube('datatype/').value, '')
               params[csvwProperty] = quad.object.value
@@ -49,7 +49,7 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
 }
 function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
   class ReferenceAttribute extends Base implements Table.ReferenceAttribute {
-    @property.resource({ as: [ BaseTable ] })
+    @property.resource({ as: [ DimensionTableMixin ] })
     public referencedTable: Table.DimensionTable
 
     @property.resource({ path: dataCube.columnMapping, values: 'array' })

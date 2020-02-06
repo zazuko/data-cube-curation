@@ -1,4 +1,4 @@
-import { Project } from '../../read-model'
+import { Project } from '@zazuko/rdfine-data-cube'
 import { ParsedTemplate } from '../uriTemplateParser'
 import isUri = require('is-uri')
 

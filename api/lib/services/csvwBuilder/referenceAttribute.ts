@@ -1,6 +1,6 @@
+import * as Csvw from '@rdfine/csvw'
 import { error, warning } from '../../log'
-import * as Table from '../../read-model/Table'
-import * as Csvw from '../csvwBuilder/index'
+import * as Table from '@zazuko/rdfine-data-cube/Table'
 import { getAbsoluteUrl } from './aboutUrl'
 import { parse } from '../uriTemplateParser'
 

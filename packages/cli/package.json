@@ -1,0 +1,65 @@
+{
+  "name": "data-cube-curation-cli",
+  "version": "0.0.0",
+  "description": "Runs a pipeline to create an RDF data cube",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "mkdir -p input; mkdir -p output",
+    "precommit": "lint-staged",
+    "start": "ts-node index.ts transform --from filesystem --to filesystem --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 --debug -v sourceDir=input -v targetFile=output/everything.nt",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@rdfine/csvw": "^0.0.0",
+    "@rdfjs/fetch-lite": "^2.0.1",
+    "@rdfjs/formats-common": "^2.0.1",
+    "@rdfjs/namespace": "^1.1.0",
+    "@rdfjs/parser-jsonld": "^1.2.0",
+    "@tpluscode/rdfine": "^0.3.2",
+    "@zazuko/rdfine-data-cube": "^0.0.0",
+    "alcaeus": "^1.0.0-alpha.9",
+    "aws-sdk": "^2.559.0",
+    "barnard59": "^0.0.7",
+    "barnard59-formats": "0.0.6",
+    "clownface": "^0.12.1",
+    "commander": "^4.1.0",
+    "debug": "^4.1.1",
+    "rdf-ext": "^1.3.0",
+    "readable-stream": "^3.5.0",
+    "string-to-stream": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/rdf-ext": "^1.3.5",
+    "@types/rdf-js": "^2.0.11",
+    "@types/rdfjs__formats-common": "^2.0.0",
+    "@types/rdfjs__namespace": "^1.1.1",
+    "@types/rdfjs__sink-map": "^1.0.0",
+    "@types/readable-stream": "^2.3.5",
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^22.5.1",
+    "jest": "^24.9.0",
+    "lint-staged": "^8.2.1",
+    "standard": "^12.0.1",
+    "ts-jest": "^24.3.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zazuko/data-cube-curation.git"
+  },
+  "keywords": [
+    "rdf",
+    "data",
+    "cube"
+  ],
+  "author": "Tomasz Pluskiewicz <tomasz.pluskiewicz@zazuko.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zazuko/data-cube-curation/issues"
+  },
+  "homepage": "https://github.com/zazuko/data-cube-curation/tree/master/cli#readme"
+}

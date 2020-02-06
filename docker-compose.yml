@@ -44,5 +44,12 @@ services:
       BASE_URI: "http://localhost:5678/"
     volumes:
       - ./api/test:/tests
+  cli:
+    build:
+      context: .
+      dockerfile: cli.Dockerfile
+    volumes:
+      - ./packages/cli/input:/input
+      - ./packages/cli/output:/output
 volumes:
   uploads:

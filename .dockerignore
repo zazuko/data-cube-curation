@@ -1,4 +1,5 @@
 api/node_modules/
 ui/node_modules/
 node_modules/
+packages/*/node_modules/
 .dockerignore
