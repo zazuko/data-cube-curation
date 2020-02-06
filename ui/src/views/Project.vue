@@ -78,8 +78,7 @@ export default class ProjectView extends Vue {
 
     if (!inputElement) { return }
 
-    inputElement.select()
-    const success = document.execCommand('copy')
+    const success = copyInputContentToClipboard(inputElement)
 
     if (success) {
       this.$buefy.toast.open({
@@ -93,5 +92,18 @@ export default class ProjectView extends Vue {
       })
     }
   }
+}
+
+function copyInputContentToClipboard (input: HTMLInputElement): boolean {
+  input.select()
+
+  let success
+  try {
+    success = document.execCommand('copy')
+  } catch (e) {
+    success = false
+  }
+
+  return success
 }
 </script>
