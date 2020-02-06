@@ -87,8 +87,8 @@ export default class ProjectView extends Vue {
       })
     } else {
       this.$buefy.toast.open({
-        message: 'Error: could not copy project URI',
-        type: 'is-danger'
+        message: 'Sorry, your browser is not very cooperative. You\'ll have to hit CMD/CTRL+C manually.',
+        type: 'is-warning'
       })
     }
   }
