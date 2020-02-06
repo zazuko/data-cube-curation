@@ -1,6 +1,18 @@
 <template>
   <Loader id="project-page" :data="project" v-slot="{ data: project }">
-    <h2 class="title is-3">{{ project.name }}</h2>
+    <div class="level">
+      <div class="level-left">
+        <h2 class="level-item title is-3">{{ project.name }}</h2>
+      </div>
+      <div class="level-right">
+        <b-field class="level-item">
+          <b-tooltip label="Project URI" type="is-light" position="is-left" :delay="100" class="control">
+            <b-input ref="uriInput" size="is-small" :value="project.id" :readonly="true" />
+          </b-tooltip>
+          <b-button size="is-small" icon-left="clipboard" title="Copy to clipboard" @click="copyProjectURI" />
+        </b-field>
+      </div>
+    </div>
 
     <div class="tabs">
       <ul>
@@ -59,5 +71,39 @@ export default class ProjectView extends Vue {
       }
     }
   }
+
+  copyProjectURI () {
+    const inputComponent = this.$refs.uriInput as Vue
+    const inputElement = inputComponent?.$el.querySelector('input')
+
+    if (!inputElement) { return }
+
+    const success = copyInputContentToClipboard(inputElement)
+
+    if (success) {
+      this.$buefy.toast.open({
+        message: 'The project URI was copied to your clipboard',
+        type: 'is-success'
+      })
+    } else {
+      this.$buefy.toast.open({
+        message: 'Sorry, your browser is not very cooperative. You\'ll have to hit CMD/CTRL+C manually.',
+        type: 'is-warning'
+      })
+    }
+  }
+}
+
+function copyInputContentToClipboard (input: HTMLInputElement): boolean {
+  input.select()
+
+  let success
+  try {
+    success = document.execCommand('copy')
+  } catch (e) {
+    success = false
+  }
+
+  return success
 }
 </script>
