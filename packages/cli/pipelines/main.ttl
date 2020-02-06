@@ -11,39 +11,31 @@
 #
 # ------------------------------
 
-<#TransformFiles> a :Pipeline ;
-                  :steps [
-                           :stepList ( <#loadMetadata> <#doTransform> <#streamOutputStep> )
-                         ] .
+<#TransformFiles>
+  a      :Pipeline ;
+  :steps [ :stepList ( <#loadMetadata> <#doTransform> <#streamOutputStep> ) ] .
 
-<#StreamOutput> a :Pipeline, :WritableObjectMode .
+<#StreamOutput>
+  a :Pipeline, :WritableObjectMode .
 
-<#streamOutputStep> a :Step ;
-  code:implementedBy [
-                       code:link <file:../lib/pipeline#asStep> ;
-                       a code:EcmaScript
-                      ] ;
-  code:arguments ( <#StreamOutput> ) .
+<#streamOutputStep>
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/pipeline#asStep> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( <#StreamOutput> ) .
 
-<#loadMetadata> a :Step ;
-           code:implementedBy
-             [
-               code:link <file:../lib/project#loadCsvMappings> ;
-               a code:EcmaScript
-             ] ;
-           code:arguments (
-                            "dataCubeProject"^^:VariableName
-                          ) .
+<#loadMetadata>
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/project#loadCsvMappings> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( "dataCubeProject"^^:VariableName ) .
 
-<#doTransform> a :Step ;
-               code:implementedBy [
-                                    code:link <node:barnard59-core#forEach> ;
-                                    a code:EcmaScript
-                                  ] ;
-               code:arguments (
-                                <#TransformCsv>
-                                "(p, fileName) => { p.variables.set('csvw', fileName) }"^^code:EcmaScript
-                              ) .
+<#doTransform>
+  a                  :Step ;
+  code:implementedBy [ code:link <node:barnard59-core#forEach> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( <#TransformCsv>
+                       "(p, fileName) => { p.variables.set('csvw', fileName) }"^^code:EcmaScript ) .
 
 # ------------------------------
 #
@@ -51,42 +43,34 @@
 #
 # ------------------------------
 
-<#TransformCsv> a :Pipeline, :ReadableObjectMode ;
-                :steps
-                  [
-                    :stepList ( <#loadCsvStep> <#parse> <#filterNotCsvw> )
-                  ] .
+<#TransformCsv>
+  a      :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList ( <#loadCsvStep> <#parse> <#filterNotCsvw> ) ] .
 
-<#LoadCsv> a :Pipeline, :ReadableObjectMode .
+<#LoadCsv>
+  a :Pipeline, :ReadableObjectMode .
 
-<#loadCsvStep> a :Step ;
-  code:implementedBy [
-                       code:link <file:../lib/pipeline#asStep> ;
-                       a code:EcmaScript
-                      ] ;
-  code:arguments ( <#LoadCsv> ) .
+<#loadCsvStep>
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/pipeline#asStep> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( <#LoadCsv> ) .
 
-<#parse> a :Step;
-         code:implementedBy
-           [
-             code:link <node:barnard59-formats#csvw.parse>;
-             a code:EcmaScript
-           ];
-         code:arguments ( <#parseMetadata> ).
+<#parse>
+  a                  :Step ;
+  code:implementedBy [ code:link <node:barnard59-formats#csvw.parse> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( <#parseMetadata> ) .
 
-<#parseMetadata> a :Pipeline, :ReadableObjectMode;
-                 :steps
-                   [
-                     :stepList ( <#getCsvwGraph> )
-                   ] .
+<#parseMetadata>
+  a      :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList ( <#getCsvwGraph> ) ] .
 
-<#getCsvwGraph> a :Step;
-                     code:implementedBy
-                       [
-                         code:link <file:../lib/csv#getCsvwTriples> ;
-                         a code:EcmaScript
-                       ];
-                     code:arguments ( "csvw"^^:VariableName ).
+<#getCsvwGraph>
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/csv#getCsvwTriples> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     ( "csvw"^^:VariableName ) .
 
 <#filterNotCsvw>
   a                  :Step ;
