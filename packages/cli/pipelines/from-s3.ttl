@@ -1,0 +1,20 @@
+@base         <urn:pipeline:data-cube-curation> .
+@prefix :     <https://pipeline.described.at/> .
+@prefix code: <https://code.described.at/> .
+
+<#LoadCsv>
+  :steps [ :stepList ( _:openCsvFromBucket ) ] ;
+  :variables [ :variable
+    [ a :Variable; :name "s3endpoint" ] ,
+    [ a :Variable; :name "s3bucket" ]
+  ].
+
+_:openCsvFromBucket
+  a                  :Step ;
+  code:implementedBy [ code:link <file:../lib/s3#openFile> ;
+                       a         code:EcmaScript ] ;
+  code:arguments     (
+                       "csvw"^^:VariableName
+                       "s3endpoint"^^:VariableName
+                       "s3bucket"^^:VariableName
+                     ) .
