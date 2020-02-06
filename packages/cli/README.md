@@ -35,8 +35,8 @@ Loads input files from an S3 bucket.
 
 #### Arguments
 
-* `S3-ENDPOINT`
-* `S3-BUCKET`
+* `s3endpoint`
+* `s3bucket`
 
 Also, two environment variables must be set to authorize access to the S3
 service: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.

@@ -5,8 +5,8 @@
 <#LoadCsv>
   :steps [ :stepList ( _:openCsvFromBucket ) ] ;
   :variables [ :variable
-    [ a :Variable; :name "S3-ENDPOINT" ] ,
-    [ a :Variable; :name "S3-BUCKET" ]
+    [ a :Variable; :name "s3endpoint" ] ,
+    [ a :Variable; :name "s3bucket" ]
   ].
 
 _:openCsvFromBucket
@@ -15,6 +15,6 @@ _:openCsvFromBucket
                        a         code:EcmaScript ] ;
   code:arguments     (
                        "csvw"^^:VariableName
-                       "S3-ENDPOINT"^^:VariableName
-                       "S3-BUCKET"^^:VariableName
+                       "s3endpoint"^^:VariableName
+                       "s3bucket"^^:VariableName
                      ) .
