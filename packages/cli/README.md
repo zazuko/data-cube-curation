@@ -29,6 +29,18 @@ Loads input files a local filesystem path.
 * `sourceDir`
   * default: `/input`
 
+### `--from s3`
+
+Loads input files from an S3 bucket.
+
+#### Arguments
+
+* `S3-ENDPOINT`
+* `S3-BUCKET`
+
+Also, two environment variables must be set to authorize access to the S3
+service: `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
 ### `--to stdout`
 
 Streams transformed triples to standard output
