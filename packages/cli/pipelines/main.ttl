@@ -88,17 +88,10 @@
                        ];
                      code:arguments ( "csvw"^^:VariableName ).
 
-<#filterNotCsvw> a :Step;
-                 code:implementedBy [ a code:EcmaScript;
-                                      code:link <node:barnard59-base#filter>
-                                    ];
-                 code:arguments ( """quad => {
-    if (quad.predicate.value.startsWith('http://www.w3.org/ns/csvw#')) {
-	 return false
-	}
-	if (quad.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' && quad.object.value.startsWith('http://www.w3.org/ns/csvw#')) {
-	 return false
-	}
-	return true
-	}"""^^code:EcmaScript ).
+<#filterNotCsvw>
+  a                  :Step ;
+  code:implementedBy [ a         code:EcmaScript ;
+                       code:link <node:barnard59-base#filter> ] ;
+  code:arguments     ( [ code:link <file:../lib/output-filter#removeCsvwTriples> ;
+                         a         code:EcmaScript ] ) .
 
