@@ -40,7 +40,7 @@
         v-if="table.type != 'fact'"
       />
 
-      <b-field label="Properties">
+      <b-field label="Attributes">
         <table class="table is-narrow is-fullwidth">
           <thead>
             <tr>
