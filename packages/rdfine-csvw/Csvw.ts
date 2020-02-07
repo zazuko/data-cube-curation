@@ -25,11 +25,13 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
     })
     public tableSchema!: Csvw.TableSchema
 
-    public addDialect () {
-      this._selfGraph.addOut(csvw.dialect, this._selfGraph.blankNode(`dialect${++bnCounter}`), dialect => {
-        dialect.addOut(csvw.header, true)
-        dialect.addOut(csvw.delimiter, ';')
-        dialect.addOut(csvw.quoteChar, '"')
+    public addDialect (dialect?: { delimiter: string; quote: string}) {
+      this._selfGraph.addOut(csvw.dialect, this._selfGraph.blankNode(`dialect${++bnCounter}`), dialectNode => {
+        dialectNode.addOut(csvw.header, true)
+        if (dialect) {
+          dialectNode.addOut(csvw.delimiter, dialect.delimiter)
+          dialectNode.addOut(csvw.quoteChar, dialect.quote)
+        }
       })
     }
 
