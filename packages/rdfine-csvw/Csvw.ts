@@ -29,8 +29,8 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
       this._selfGraph.addOut(csvw.dialect, this._selfGraph.blankNode(`dialect${++bnCounter}`), dialectNode => {
         dialectNode.addOut(csvw.header, true)
         if (dialect) {
-          dialectNode.addOut(csvw.delimiter, dialect.delimiter)
-          dialectNode.addOut(csvw.quoteChar, dialect.quote)
+          dialectNode.addOut(csvw.delimiter, dialectNode.literal(dialect.delimiter))
+          dialectNode.addOut(csvw.quoteChar, dialectNode.literal(dialect.quote))
         }
       })
     }

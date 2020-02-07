@@ -12,7 +12,9 @@ const tableAndSource = `
 
 <${ids.sourceId}>
       a                         dataCube:CsvSource , dataCube:Source ;
-      <http://schema.org/name>  "UBD0028.Daten_de.csv" .`
+      <http://schema.org/name>  "UBD0028.Daten_de.csv" ;
+      dataCube:csvQuote         "\\"" ;
+      dataCube:csvDelimiter     ";" .`
 
 const unmappedColumn = `${tableAndSource}
 
@@ -68,7 +70,9 @@ BASE <http://reference-attribute.test/fact-table>
 <fact-table>
     a dataCube:FactTable, dataCube:Table ;
     dataCube:source [
+        a dataCube:CsvSource ;
         dataCube:column <fact-source/name-column> , <fact-source/id-column> ;
+        dataCube:csvQuote "\\"" ; dataCube:csvDelimiter ";" ;
     ] ;
 .
 
