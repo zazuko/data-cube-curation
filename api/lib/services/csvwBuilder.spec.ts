@@ -1,7 +1,7 @@
 import { namedNode } from '@rdfjs/data-model'
 import { NamedNode } from 'rdf-js'
 import { buildCsvw } from './csvwBuilder'
-import { Column, DimensionTable, ValueAttribute, Table } from '@zazuko/rdfine-data-cube/Table'
+import { Column, DimensionTable, ValueAttribute, Table, CsvSource } from '@zazuko/rdfine-data-cube'
 import { csvw, dataCube, rdf, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
@@ -84,7 +84,9 @@ describe('csvwBuilder', () => {
         ],
         source: {
           name: 'test.csv',
-        },
+          quote: '"',
+          delimiter: ';',
+        } as CsvSource,
       }
 
       // when
@@ -119,7 +121,9 @@ describe('csvwBuilder', () => {
         ],
         source: {
           name: 'test.csv',
-        },
+          quote: '"',
+          delimiter: ';',
+        } as CsvSource,
       }
 
       // when
@@ -156,7 +160,9 @@ describe('csvwBuilder', () => {
         ],
         source: {
           name: 'test.csv',
-        },
+          quote: '"',
+          delimiter: ';',
+        } as CsvSource,
       }
 
       // when
