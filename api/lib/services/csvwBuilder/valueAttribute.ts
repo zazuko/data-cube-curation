@@ -52,7 +52,7 @@ export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csv
       derivedDatatype[csvw.base.value] = literal(builtInType)
 
       Object.entries(attribute.parameters)
-        .forEach(([param, value]) => {
+        .forEach(([param, value]: [string, string]) => {
           derivedDatatype[csvw(param).value] = literal(value)
         })
 

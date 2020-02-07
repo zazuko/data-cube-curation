@@ -1,26 +1,16 @@
-import { construct } from '../../sparql'
+import $rdf from 'rdf-ext'
+import { describe } from '../../sparql'
 import { getClient } from '../sparqlClient'
-import { api, dataCube, rdf, schema } from '../../namespaces'
+import { api } from '../../namespaces'
 
-export function getSource (sourceId: string) {
-  return construct()
-    .graph(`?source ?prop ?value ; api:sample ?sample .`)
-    .where(`
-      BIND (<${sourceId}> as ?source)
+export async function getSource (sourceId: string) {
+  const dataset = await $rdf.dataset().import(await describe(sourceId).execute(getClient()))
 
-      VALUES ?prop
-      {
-          rdf:type
-          schema:name
-          dataCube:project
-          api:columns
-      }
-  
-      OPTIONAL {
-          ?source ?prop ?value .
-          BIND (iri(CONCAT(replace(str(?source), "/source/", "/source-sample/"))) as ?sample)
-      }`
-    )
-    .prefixes({ rdf, schema, dataCube, api })
-    .execute(getClient())
+  dataset.add($rdf.quad(
+    $rdf.namedNode(sourceId),
+    api.sample,
+    $rdf.namedNode(sourceId.replace('/source/', '/source-sample/'))
+  ))
+
+  return dataset
 }

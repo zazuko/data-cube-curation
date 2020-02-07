@@ -6,3 +6,9 @@ export interface Source extends Entity {
   columns: string[];
   name: string;
 }
+
+export interface CsvSource extends Source {
+  type: 'csv';
+  delimiter: string;
+  quote: string;
+}

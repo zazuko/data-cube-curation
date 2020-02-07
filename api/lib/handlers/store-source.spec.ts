@@ -19,6 +19,8 @@ describe('SourceUploaded', () => {
         sampleRows: [['row11', 'row12'], ['row21', 'row22']],
         fileName: '',
         projectId: 'project',
+        delimiter: ';',
+        quote: '"',
       })
 
       // then

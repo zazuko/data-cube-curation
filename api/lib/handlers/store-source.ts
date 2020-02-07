@@ -3,7 +3,7 @@ import { handle, CoreEvents } from '@tpluscode/fun-ddr'
 import { SourceEvents } from '../domain/source/events'
 import storage from '../storage'
 
-export const storeSampleHandler = handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', function storeSample (ev) {
+export const storeSampleHandler = handle<SourceEvents, 'CsvSourceUploaded'>('CsvSourceUploaded', function storeSample (ev) {
   const csvStringified = [ev.data.columns, ...ev.data.sampleRows].map(row => row.map(cell => `"${cell}"`).join(';')).join('\n')
 
   storage.saveFile(md5(ev.id), csvStringified)

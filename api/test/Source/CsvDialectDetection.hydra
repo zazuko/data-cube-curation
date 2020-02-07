@@ -12,7 +12,7 @@ With Class api:Entrypoint {
                 ```
                 @prefix schema: <http://schema.org/> .
 
-                <> schema:name "Project where source is comma-delimited" .
+                <> schema:name "Project where csv dialect is tested" .
                 ```
             } => {
                 Expect Status 201
@@ -36,21 +36,23 @@ With Class dataCube:Project {
 With Operation api:AddSource {
     Invoke {
         Content-Type "text/csv"
-        Content-Disposition 'attachment; filename="really-comma-separated.csv"'
+        Content-Disposition 'attachment; filename="semicolon-separated-quoted.csv"'
 
-        <<< "../bodies/really-comma-separated.csv"
+        <<< "../bodies/semicolon-separated-quoted.csv"
     } => {
         Expect Status 201
+        Expect Property dataCube:csvDelimiter ";"
+        Expect Property dataCube:csvQuote "\""
     }
-}
 
-With Class dataCube:Source {
-    Expect Property dataCube:csvDelimiter ","
-    Expect Property dataCube:csvQuote ""
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="quoted-comma-separated.csv"'
 
-    Expect Property api:columns {
-        Expect Type hydra:Collection
-
-        Expect Property hydra:totalItems 2
+        <<< "../bodies/quoted-comma-separated.csv"
+    } => {
+        Expect Status 201
+        Expect Property dataCube:csvDelimiter ","
+        Expect Property dataCube:csvQuote "'"
     }
 }
