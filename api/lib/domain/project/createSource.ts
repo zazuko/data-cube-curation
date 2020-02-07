@@ -17,6 +17,14 @@ interface UploadCsvCommand extends UploadSourceCommand {
   quote?: string;
 }
 
+function valueOrDefault (value: string | null | undefined, defaultValue: string) {
+  if (typeof value !== 'string') {
+    return defaultValue
+  }
+
+  return value
+}
+
 export const createSource = factory<Project, UploadCsvCommand, CsvSource>(function (project, command, emitter) {
   if (command.columns.some(column => !column || column.trim() === '')) {
     throw new DomainError(project['@id'], 'Cannot create source', 'Columns names cannot be empty')
@@ -24,13 +32,16 @@ export const createSource = factory<Project, UploadCsvCommand, CsvSource>(functi
 
   const sourceId = `${project['@id']}/source/${slug(command.fileName)}`
 
+  const delimiter = valueOrDefault(command.delimiter, csvDefault.delimiter)
+  const quote = valueOrDefault(command.quote, csvDefault.quote)
+
   emitter.emit<SourceEvents, 'CsvSourceUploaded'>('CsvSourceUploaded', {
     fileName: command.fileName,
     projectId: project['@id'],
     columns: command.columns,
     sampleRows: command.sample,
-    delimiter: command.delimiter || csvDefault.delimiter,
-    quote: command.quote || csvDefault.quote,
+    delimiter,
+    quote,
   })
 
   return {
@@ -40,7 +51,7 @@ export const createSource = factory<Project, UploadCsvCommand, CsvSource>(functi
     name: command.fileName,
     project: project['@id'],
     columns: command.columns,
-    delimiter: command.delimiter || csvDefault.delimiter,
-    quote: command.quote || csvDefault.quote,
+    delimiter,
+    quote,
   }
 })

@@ -9,14 +9,16 @@ import { getRepresentation } from '../../read-graphs/source/index'
 import env from '../../env'
 import CSVSniffer = require('csv-sniffer')
 
-const sniffer = new (CSVSniffer())()
+const csvDelimiters = [',', ';', '\t']
+
+const sniffer = new (CSVSniffer())(csvDelimiters)
 
 export function parseCsv (req, res, next) {
   res.locals.csvDialect = { }
 
   const detectedCsvFormat = sniffer.sniff(req.body)
   res.locals.csvDialect.delimiter = detectedCsvFormat.delimiter
-  res.locals.csvDialect.quote = detectedCsvFormat.quoteChar
+  res.locals.csvDialect.quote = detectedCsvFormat.quoteChar || ''
 
   const parserOptions = {
     to: 100,
