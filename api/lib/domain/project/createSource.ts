@@ -1,6 +1,6 @@
 import { DomainError, factory } from '@tpluscode/fun-ddr'
 import slug from 'url-slug'
-import { CsvSource } from '../source'
+import { CsvSource, csvDefault } from '../source'
 import { SourceEvents } from '../source/events'
 import { Project } from './index'
 
@@ -29,8 +29,8 @@ export const createSource = factory<Project, UploadCsvCommand, CsvSource>(functi
     projectId: project['@id'],
     columns: command.columns,
     sampleRows: command.sample,
-    delimiter: command.delimiter || ',',
-    quote: command.quote || '"',
+    delimiter: command.delimiter || csvDefault.delimiter,
+    quote: command.quote || csvDefault.quote,
   })
 
   return {
@@ -40,7 +40,7 @@ export const createSource = factory<Project, UploadCsvCommand, CsvSource>(functi
     name: command.fileName,
     project: project['@id'],
     columns: command.columns,
-    delimiter: command.delimiter || ',',
-    quote: command.quote || '"',
+    delimiter: command.delimiter || csvDefault.delimiter,
+    quote: command.quote || csvDefault.quote,
   }
 })

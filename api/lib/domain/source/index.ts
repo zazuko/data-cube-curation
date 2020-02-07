@@ -12,3 +12,8 @@ export interface CsvSource extends Source {
   delimiter: string;
   quote: string;
 }
+
+export const csvDefault = {
+  quote: '"',
+  delimiter: ',',
+}

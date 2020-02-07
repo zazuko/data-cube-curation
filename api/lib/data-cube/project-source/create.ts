@@ -12,15 +12,11 @@ import CSVSniffer = require('csv-sniffer')
 const sniffer = new (CSVSniffer())()
 
 export function parseCsv (req, res, next) {
-  res.locals.csvDialect = {
-    delimiter: ',',
-    quote: '"',
-  }
+  res.locals.csvDialect = { }
+
   const detectedCsvFormat = sniffer.sniff(req.body)
-  if (detectedCsvFormat) {
-    res.locals.csvDialect.delimiter = detectedCsvFormat.delimiter
-    res.locals.csvDialect.quote = detectedCsvFormat.quoteChar
-  }
+  res.locals.csvDialect.delimiter = detectedCsvFormat.delimiter
+  res.locals.csvDialect.quote = detectedCsvFormat.quoteChar
 
   const parserOptions = {
     to: 100,
