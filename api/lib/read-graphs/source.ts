@@ -5,12 +5,12 @@ import { getClient } from './sparqlClient'
 import { insertData } from '../sparql'
 import { dataCube, schema, xsd, dtype, api } from '../namespaces'
 
-handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
+handle<SourceEvents, 'CsvSourceUploaded'>('CsvSourceUploaded', ev => {
   const columns = ev.data.columns.map((name, index) => `
     <${ev.id}> dataCube:column <${ev.id}/${slug(name)}>  .
 
-    <${ev.id}/${slug(name)}> 
-      a dataCube:Column ; 
+    <${ev.id}/${slug(name)}>
+      a dataCube:Column ;
       schema:name "${name}" ;
       dtype:order "${index}"^^xsd:int .
     `)
@@ -21,7 +21,9 @@ handle<SourceEvents, 'SourceUploaded'>('SourceUploaded', ev => {
       a dataCube:Source, dataCube:CsvSource ;
       dataCube:project <${ev.data.projectId}> ;
       schema:name "${ev.data.fileName}" ;
-      api:columns <${ev.id}/columns> .
+      api:columns <${ev.id}/columns> ;
+      dataCube:csvDelimiter """${ev.data.delimiter}""" ;
+      dataCube:csvQuote "${ev.data.quote.replace('"', '\\"')}" .
     <${ev.id}/columns> dataCube:source <${ev.id}> .
 
     ${columns.join('\n')}

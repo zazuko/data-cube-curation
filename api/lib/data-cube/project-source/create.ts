@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import parse from 'csv-parse'
-import detect from 'detect-csv'
 import asyncMiddleware from 'middleware-async'
 import { createSource } from '../../domain/project'
 import { projects, sources } from '../../storage/repository'
@@ -8,17 +7,24 @@ import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/source/index'
 import env from '../../env'
+import CSVSniffer = require('csv-sniffer')
+
+const sniffer = new (CSVSniffer())()
 
 export function parseCsv (req, res, next) {
-  let delimiter = ','
-  const detectedCsvFormat = detect(req.body)
+  res.locals.csvDialect = {
+    delimiter: ',',
+    quote: '"',
+  }
+  const detectedCsvFormat = sniffer.sniff(req.body)
   if (detectedCsvFormat) {
-    delimiter = detectedCsvFormat.delimiter
+    res.locals.csvDialect.delimiter = detectedCsvFormat.delimiter
+    res.locals.csvDialect.quote = detectedCsvFormat.quoteChar
   }
 
   const parserOptions = {
     to: 100,
-    delimiter,
+    ...res.locals.csvDialect,
   }
 
   parse(
@@ -57,10 +63,11 @@ export const createSourceHandler = asyncMiddleware(async (req: Request, res: Res
   }
 
   const createSourceCommand = {
-    type: 'csv' as 'csv' | 'excel',
+    type: 'csv' as const,
     columns: res.locals.columns,
     fileName: res.locals.sourceName,
     sample: res.locals.fileSample,
+    ...res.locals.csvDialect,
   }
 
   const source = await project

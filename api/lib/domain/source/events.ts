@@ -1,8 +1,10 @@
 export interface SourceEvents {
-  SourceUploaded: {
+  CsvSourceUploaded: {
     projectId: string;
     fileName: string;
     columns: string[];
     sampleRows: string[][];
+    quote: string;
+    delimiter: string;
   };
 }
