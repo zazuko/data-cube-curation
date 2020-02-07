@@ -8,17 +8,17 @@ import * as Csvw from '@rdfine/csvw'
 import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
-import * as Table from '@zazuko/rdfine-data-cube/Table'
+import * as DataCube from '@zazuko/rdfine-data-cube'
 import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
 import { parse } from './uriTemplateParser'
 
-type Attribute = Table.ReferenceAttribute | Table.ValueAttribute | Table.Attribute
+type Attribute = DataCube.ReferenceAttribute | DataCube.ValueAttribute | DataCube.Attribute
 
 wireUp(RdfResourceImpl.factory)
 
-function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribute: Attribute): Csvw.Column | null {
+function createCsvwColumn (csvwGraph: Csvw.Mapping, table: DataCube.Table, attribute: Attribute): Csvw.Column | null {
   let csvwColumn: Csvw.Column | null = null
 
   if ('column' in attribute) {
@@ -49,8 +49,8 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: Table.Table, attribut
   return null
 }
 
-export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
-  let table: Table.Table | Table.DimensionTable
+export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTable | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
+  let table: DataCube.Table | DataCube.DimensionTable
   if ('dataset' in tableOrDataset) {
     table = RdfResourceImpl.factory.createEntity(cf({
       dataset: tableOrDataset.dataset,
@@ -65,7 +65,12 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
     term: $rdf.namedNode(`${table.id.value}/csvw`),
   }), [CsvwGraphMixin])
 
-  csvwGraph.addDialect()
+  const source: DataCube.Source | DataCube.CsvSource = table.source
+  if ('delimiter' in source) {
+    csvwGraph.addDialect(source)
+  } else {
+    csvwGraph.addDialect()
+  }
   csvwGraph.url = table.source.name
 
   if ('identifierTemplate' in table && table.identifierTemplate) {
@@ -84,7 +89,7 @@ export function buildCsvw (tableOrDataset: Table.Table | Table.DimensionTable | 
     return columns
   }, [] as Csvw.Column[])
 
-  const suppressedColumns = table.columns.reduce((mapped, column: Table.Column) => {
+  const suppressedColumns = table.columns.reduce((mapped, column: DataCube.Column) => {
     if (!mappedColumns.find(c => c.title === column.name)) {
       const csvwColumn = csvwGraph.newColumn({
         name: column.name,

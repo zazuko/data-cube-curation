@@ -1,0 +1,78 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX csvw: <http://www.w3.org/ns/csvw#>
+PREFIX datatype: <https://rdf-cube-curation.described.at/datatype/>
+
+ENTRYPOINT "project/csvw-dialect-test"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Dialect test project" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property api:factTable {
+            Expect Operation api:CreateFactTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="semicolon-separated-quoted.csv"'
+
+        <<< "../../bodies/semicolon-separated-quoted.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:CreateFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/csvw-dialect-test/source/semicolon-separated-quoted-csv> ;
+           schema:name "Observation" .
+        ```
+    } => {
+        Expect Status 201
+    }
+}
+
+With Class dataCube:Table {
+    Expect Link api:csvwMetadata {
+        Expect Property csvw:dialect {
+            Expect Property csvw:quoteChar "\""
+            Expect Property csvw:delimiter ";"
+        }
+    }
+}
+

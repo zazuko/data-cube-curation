@@ -1,6 +1,8 @@
 import { RdfResource } from '@tpluscode/rdfine'
 export { wireUp } from './wireUp'
 
+export * from './Table'
+
 export interface Project extends RdfResource {
   name: string;
   baseUri: string;
@@ -9,4 +11,9 @@ export interface Project extends RdfResource {
 
 export interface Source extends RdfResource {
   readonly name: string;
+}
+
+export interface CsvSource extends Source {
+  readonly quote: string;
+  readonly delimiter: string;
 }
