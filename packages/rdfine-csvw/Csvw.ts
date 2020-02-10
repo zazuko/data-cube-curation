@@ -4,6 +4,7 @@ import { csvw, rdf } from './namespaces'
 import * as Csvw from './index'
 import { TableSchemaMixin } from './TableSchema'
 import { ColumnMixin } from './Column'
+import { CsvwDialectMixin } from './Dialect'
 
 let bnCounter = 0
 
@@ -25,14 +26,15 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
     })
     public tableSchema!: Csvw.TableSchema
 
-    public addDialect (dialect?: { delimiter: string; quote: string}) {
-      this._selfGraph.addOut(csvw.dialect, this._selfGraph.blankNode(`dialect${++bnCounter}`), dialectNode => {
-        dialectNode.addOut(csvw.header, true)
-        if (dialect) {
-          dialectNode.addOut(csvw.delimiter, dialectNode.literal(dialect.delimiter))
-          dialectNode.addOut(csvw.quoteChar, dialectNode.literal(dialect.quote))
-        }
-      })
+    @property.resource({
+      as: [CsvwDialectMixin],
+      initial: (self) => self._selfGraph.blankNode(`dialect${++bnCounter}`),
+    })
+    public dialect!: Csvw.Dialect
+
+    public addDialect ({ delimiter, quote }: Csvw.Dialect) {
+      this.dialect.delimiter = delimiter
+      this.dialect.quote = quote
     }
 
     public newColumn (col: { name: string }) {

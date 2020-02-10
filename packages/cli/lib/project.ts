@@ -4,6 +4,8 @@ import * as DataCube from '@zazuko/rdfine-data-cube'
 import * as Csvw from '@rdfine/csvw'
 import { Table } from '@zazuko/rdfine-data-cube/Table'
 import { parsers } from '@rdfjs/formats-common'
+import Logger from 'barnard59-core/lib/logger'
+import { Context } from 'barnard59-core/lib/Pipeline'
 
 DataCube.wireUp(Ld.factory)
 
@@ -33,7 +35,7 @@ async function loadTables (project: DataCube.Project, log) {
 }
 
 class ProjectIterator extends stream.Readable {
-  constructor (projectUri: string, log: any) {
+  constructor (projectUri: string, log: Logger) {
     super({
       objectMode: true,
       read: () => {},
@@ -47,9 +49,23 @@ class ProjectIterator extends stream.Readable {
           const promise = Ld.loadResource(table.csvw.id.value)
             .then(r => r.root)
             .then((csvwResource: HydraResource & Csvw.Mapping | null) => {
-              if (csvwResource && csvwResource.url) {
-                this.push(csvwResource)
+              if (!csvwResource) {
+                log.warn(`Skipping ${table.csvw.id.value}. Failed to dereference`)
+                return
               }
+
+              if (!csvwResource.url) {
+                log.warn(`Skipping ${table.csvw.id.value}. Missing csvw:url property`)
+                return
+              }
+
+              if (!csvwResource.dialect.isSet) {
+                log.warn(`Skipping ${table.csvw.id.value}. CSV dialect not set`)
+                return
+              }
+
+              log.debug(`Will transform ${csvwResource.url}. Dialect: delimiter='${csvwResource.dialect.delimiter}' 'quote=${csvwResource.dialect.quote}'`)
+              this.push(csvwResource)
             })
             .catch(e => {
               log.error(`Failed to load ${table.csvw.id.value}`)
@@ -69,6 +85,6 @@ class ProjectIterator extends stream.Readable {
   }
 }
 
-export function loadCsvMappings (this: any, projectUri: string) {
+export function loadCsvMappings (this: Context, projectUri: string) {
   return new ProjectIterator(projectUri, this.log)
 }
