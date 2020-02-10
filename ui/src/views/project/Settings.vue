@@ -44,7 +44,7 @@ export default class extends Vue {
   created () {
     this.data = {
       name: this.project.name,
-      baseUri: this.project.baseUri
+      baseUri: this.project.baseUri,
     }
   }
 
@@ -75,7 +75,7 @@ export default class extends Vue {
         } finally {
           loading.close()
         }
-      }
+      },
     })
   }
 }

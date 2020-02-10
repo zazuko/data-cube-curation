@@ -11,7 +11,7 @@ export function Mixin<B extends Constructor> (Base: B) {
     get actions () {
       return {
         delete: findOperation(this, URI.OP_ATTRIBUTE_DELETE),
-        edit: findOperation(this, URI.OP_ATTRIBUTE_EDIT)
+        edit: findOperation(this, URI.OP_ATTRIBUTE_EDIT),
       }
     }
 

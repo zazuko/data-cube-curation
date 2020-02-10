@@ -163,8 +163,8 @@ import { getOrThrow } from '@/api/common'
   components: {
     Loader,
     PrefixedURI,
-    TableTag
-  }
+    TableTag,
+  },
 })
 export default class extends Vue {
   @Prop() readonly project: Project
@@ -235,7 +235,7 @@ export default class extends Vue {
         const loading = this.$buefy.loading.open({})
         await this.$store.dispatch('tables/delete', { project: this.project, table: this.table })
         loading.close()
-      }
+      },
     })
   }
 
@@ -252,9 +252,9 @@ export default class extends Vue {
           await this.$store.dispatch('attributes/createValue', { table: this.table, attribute })
           loading.close()
           modal.close()
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -274,9 +274,9 @@ export default class extends Vue {
           await this.$store.dispatch('attributes/createReference', { table: this.table, attribute })
           loading.close()
           modal.close()
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -291,7 +291,7 @@ export default class extends Vue {
         const loading = this.$buefy.loading.open({})
         await this.$store.dispatch('attributes/delete', attribute)
         loading.close()
-      }
+      },
     })
   }
 
@@ -300,7 +300,7 @@ export default class extends Vue {
       parent: this,
       component: TableMapping,
       props: { table },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -309,7 +309,7 @@ export default class extends Vue {
       parent: this,
       component: TablePreview,
       props: { table },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 }

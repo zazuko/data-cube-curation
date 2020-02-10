@@ -76,8 +76,8 @@ import PropertyField from '../PropertyField.vue'
 @Component({
   components: {
     PropertyField,
-    TableTag
-  }
+    TableTag,
+  },
 })
 export default class extends Vue {
   @Prop({ default: emptyAttribute }) readonly attribute: ReferenceAttributeFormData;
@@ -120,7 +120,7 @@ export default class extends Vue {
     this.attribute.columnMapping = table.identifierColumns.map((column) => ({
       referencedColumnId: column.id,
       referencedColumnName: column.name,
-      sourceColumnId: guessMappedColumn(column, referencedSource, this.source)
+      sourceColumnId: guessMappedColumn(column, referencedSource, this.source),
     }))
   }
 }
@@ -129,7 +129,7 @@ function emptyAttribute () {
   return {
     referencedTableId: '',
     property: '',
-    columnMapping: []
+    columnMapping: [],
   }
 }
 

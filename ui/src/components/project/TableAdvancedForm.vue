@@ -106,8 +106,8 @@ import PropertyField from '../PropertyField.vue'
     DataTypeField,
     IdentifierTemplateField,
     LanguageInput,
-    PropertyField
-  }
+    PropertyField,
+  },
 })
 export default class TableForm extends Vue {
   @Prop() readonly project: Project
@@ -131,7 +131,7 @@ export default class TableForm extends Vue {
     this.attributes = this.columns.map((columnId) =>
       emptyAttribute({
         columnId: columnId,
-        property: this.getColumnSlug(columnId)
+        property: this.getColumnSlug(columnId),
       }))
   }
 
@@ -156,7 +156,7 @@ function emptyTable () {
     name: '',
     color: '',
     identifierTemplate: '',
-    sourceId: ''
+    sourceId: '',
   }
 }
 
@@ -165,10 +165,10 @@ function emptyAttribute (attrs = {}) {
     property: '',
     dataType: {
       id: datatypes.defaultURI,
-      params: {}
+      params: {},
     },
     columnId: '',
-    ...attrs
+    ...attrs,
   }
 }
 

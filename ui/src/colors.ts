@@ -18,7 +18,7 @@ const colors = [
   '#FFAB91',
   '#BCAAA4',
   '#EEEEEE',
-  '#B0BEC5'
+  '#B0BEC5',
 ]
 
 /**

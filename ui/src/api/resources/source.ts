@@ -7,7 +7,7 @@ export function Mixin<B extends Constructor> (Base: B) {
   return class extends Base implements Source {
     get actions () {
       return {
-        delete: findOperation(this, URI.OP_SOURCE_DELETE)
+        delete: findOperation(this, URI.OP_SOURCE_DELETE),
       }
     }
 

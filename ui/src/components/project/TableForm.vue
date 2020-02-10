@@ -62,8 +62,8 @@ import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 
 @Component({
   components: {
-    IdentifierTemplateField
-  }
+    IdentifierTemplateField,
+  },
 })
 export default class TableForm extends Vue {
   @Prop({ default: emptyTable }) readonly table: TableFormData;
@@ -106,7 +106,7 @@ function emptyTable () {
     name: '',
     color: '',
     identifierTemplate: '',
-    sourceId: ''
+    sourceId: '',
   }
 }
 </script>

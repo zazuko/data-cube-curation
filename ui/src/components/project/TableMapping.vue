@@ -34,8 +34,8 @@ import Loader from '@/components/Loader.vue'
 
 @Component({
   components: {
-    Loader
-  }
+    Loader,
+  },
 })
 export default class extends Vue {
   @Prop() readonly table: Table;

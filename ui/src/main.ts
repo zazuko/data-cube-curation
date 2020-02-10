@@ -23,7 +23,7 @@ Vue.component('MultiSelect', MultiSelect)
 
 Vue.use(Buefy, {
   defaultIconPack: 'fas',
-  defaultIconComponent: 'FontAwesomeIcon'
+  defaultIconComponent: 'FontAwesomeIcon',
 })
 
 Vue.use(VueHighlightJS)
@@ -35,5 +35,5 @@ Vue.filter('capitalize', ([first, ...rest]: string): string => [first.toLocaleUp
 new Vue({
   router,
   store,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount('#app')

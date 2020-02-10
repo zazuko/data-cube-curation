@@ -16,12 +16,12 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      redirect: { name: 'projects' }
+      redirect: { name: 'projects' },
     },
     {
       path: '/projects',
       name: 'projects',
-      component: ProjectsView
+      component: ProjectsView,
     },
     {
       path: '/projects/:id',
@@ -32,24 +32,24 @@ export default new Router({
         {
           path: 'sources',
           name: 'project/sources',
-          component: ProjectSourcesView
+          component: ProjectSourcesView,
         },
         {
           path: 'tables',
           name: 'project/tables',
-          component: ProjectTablesView
+          component: ProjectTablesView,
         },
         {
           path: 'edit',
           name: 'project/edit',
-          component: ProjectSettingsView
-        }
-      ]
+          component: ProjectSettingsView,
+        },
+      ],
     },
     {
       path: '*',
       name: 'not-found',
-      component: ErrorNotFound
-    }
-  ]
+      component: ErrorNotFound,
+    },
+  ],
 })

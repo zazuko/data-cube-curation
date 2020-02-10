@@ -18,7 +18,7 @@ const actions: ActionTree<RootState, RootState> = {
   async loadRDFProperties ({ commit }) {
     const properties = await loadRDFProperties()
     commit('storeRDFProperties', properties)
-  }
+  },
 }
 
 const mutations: MutationTree<RootState> = {
@@ -32,14 +32,14 @@ const mutations: MutationTree<RootState> = {
 
   storeRDFProperties (state, properties) {
     state.rdfProperties = properties
-  }
+  },
 }
 
 const store: StoreOptions<RootState> = {
   strict: process.env.NODE_ENV !== 'production',
   state: {
     errors: [],
-    rdfProperties: []
+    rdfProperties: [],
   },
   actions,
   mutations,
@@ -48,8 +48,8 @@ const store: StoreOptions<RootState> = {
     tables,
     sources,
     sourcesData,
-    attributes
-  }
+    attributes,
+  },
 }
 
 export default new Vuex.Store<RootState>(store)

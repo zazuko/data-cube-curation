@@ -45,8 +45,8 @@ import DataTypeParamField from './DataTypeParamField.vue'
 
 @Component({
   components: {
-    DataTypeParamField
-  }
+    DataTypeParamField,
+  },
 })
 export default class extends Vue {
   @Prop() value: DataType | null

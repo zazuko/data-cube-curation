@@ -56,8 +56,8 @@ import SourceItem from '@/components/project/SourceItem.vue'
 @Component({
   components: {
     Loader,
-    SourceItem
-  }
+    SourceItem,
+  },
 })
 export default class extends Vue {
   columnFilter: SourceColumnFilter = 'all'

@@ -8,7 +8,7 @@ export type Constructor<T = {}> = new (...args: any[]) => HydraResource;
 
 export function findOperation (resource: HydraResource, idOrType: ResourceId): IOperation | null {
   const matches = resource.findOperations({
-    bySupportedOperation: idOrType
+    bySupportedOperation: idOrType,
   })
 
   if (matches.length > 1) {

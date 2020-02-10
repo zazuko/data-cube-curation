@@ -34,7 +34,7 @@ export default class extends Vue {
     if (this.project) {
       this.data = {
         name: this.project.name,
-        baseUri: this.project.baseUri
+        baseUri: this.project.baseUri,
       }
     }
   }
@@ -43,7 +43,7 @@ export default class extends Vue {
 function emptyProject (): ProjectFormData {
   return {
     name: '',
-    baseUri: ''
+    baseUri: '',
   }
 }
 </script>

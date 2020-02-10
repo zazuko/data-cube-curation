@@ -6,7 +6,7 @@ const kindParams = {
   [Kind.Any]: defaultParams,
   [Kind.Numeric]: ['default', 'format'],
   [Kind.Date]: ['default', 'format'],
-  [Kind.Duration]: ['default', 'format']
+  [Kind.Duration]: ['default', 'format'],
 }
 
 export const all: DataTypeOption[] = [
@@ -52,11 +52,11 @@ export const all: DataTypeOption[] = [
   { name: 'xml', uri: 'rdf:xml', kind: Kind.Any },
   { name: 'html', uri: 'rdf:html', kind: Kind.Any },
   { name: 'json', uri: 'csvw:json', kind: Kind.Any },
-  { name: 'time', uri: 'xsd:time', kind: Kind.Date }
+  { name: 'time', uri: 'xsd:time', kind: Kind.Date },
 ].map((dt) => ({
   ...dt,
   uri: expand(dt.uri),
-  params: (dt.params ?? kindParams[dt.kind]) as DataTypeParam[]
+  params: (dt.params ?? kindParams[dt.kind]) as DataTypeParam[],
 }))
 
 const nameIndex: Record<string, DataTypeOption> = all.reduce((acc, dt) => ({ ...acc, [dt.name]: dt }), {})

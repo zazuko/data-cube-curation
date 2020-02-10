@@ -48,8 +48,8 @@ import TableForm from '../../components/project/TableForm.vue'
   components: {
     TableItem,
     TableForm,
-    Loader
-  }
+    Loader,
+  },
 })
 export default class ProjectTablesView extends Vue {
   get project (): Project {
@@ -82,9 +82,9 @@ export default class ProjectTablesView extends Vue {
           } finally {
             loading.close()
           }
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -98,9 +98,9 @@ export default class ProjectTablesView extends Vue {
         table,
         save: (table: TableFormData) => {
           modal.close()
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -118,7 +118,7 @@ export default class ProjectTablesView extends Vue {
         } finally {
           loading.close()
         }
-      }
+      },
     })
   }
 }

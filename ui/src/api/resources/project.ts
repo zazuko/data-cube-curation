@@ -12,7 +12,7 @@ export function Mixin<B extends Constructor> (Base: B) {
         edit: findOperation(this, URI.OP_PROJECT_EDIT),
         createSource: this.sourcesCollection && findOperation(this.sourcesCollection, URI.OP_SOURCES_CREATE),
         createDimensionTable: this.tablesCollection && findOperation(this.tablesCollection, URI.OP_TABLES_CREATE_DIMENSION),
-        createFactTable: this.tablesCollection && findOperation(this.tablesCollection, URI.OP_TABLES_CREATE_FACT)
+        createFactTable: this.tablesCollection && findOperation(this.tablesCollection, URI.OP_TABLES_CREATE_FACT),
       }
     }
 

@@ -12,7 +12,7 @@ interface AttributesState {
 }
 
 const initialState: AttributesState = {
-  attributes: {}
+  attributes: {},
 }
 
 const getters: GetterTree<AttributesState, RootState> = {
@@ -33,7 +33,7 @@ const getters: GetterTree<AttributesState, RootState> = {
 
       return { isLoading: isLoading, data: data, error: null }
     }
-  }
+  },
 }
 
 const actions: ActionTree<AttributesState, RootState> = {
@@ -63,7 +63,7 @@ const actions: ActionTree<AttributesState, RootState> = {
       await client.projects.deleteAttribute(attribute)
       context.commit('removeOne', attribute)
     })
-  }
+  },
 }
 
 const mutations: MutationTree<AttributesState> = {
@@ -86,7 +86,7 @@ const mutations: MutationTree<AttributesState> = {
     if (!tableAttributes.data) return
 
     tableAttributes.data = tableAttributes.data.filter((a) => a.id !== attribute.id)
-  }
+  },
 }
 
 export default {
@@ -94,5 +94,5 @@ export default {
   state: initialState,
   getters,
   actions,
-  mutations
+  mutations,
 }

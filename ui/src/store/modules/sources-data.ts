@@ -12,7 +12,7 @@ interface SourcesDataState {
 }
 
 const initialState: SourcesDataState = {
-  data: {}
+  data: {},
 }
 
 const getters: GetterTree<SourcesDataState, RootState> = {
@@ -20,7 +20,7 @@ const getters: GetterTree<SourcesDataState, RootState> = {
     return (sourceId) => {
       return state.data[sourceId] || Remote.loading()
     }
-  }
+  },
 }
 
 const actions: ActionTree<SourcesDataState, RootState> = {
@@ -30,14 +30,14 @@ const actions: ActionTree<SourcesDataState, RootState> = {
 
       context.commit('storeForSource', { source, rows })
     })
-  }
+  },
 }
 
 const mutations: MutationTree<SourcesDataState> = {
   storeForSource (state, { source, rows }) {
     const data = Remote.loaded(rows)
     Vue.set(state.data, source.id, data)
-  }
+  },
 }
 
 export default {
@@ -45,5 +45,5 @@ export default {
   state: initialState,
   getters,
   actions,
-  mutations
+  mutations,
 }

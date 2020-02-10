@@ -95,7 +95,7 @@ class ProjectsClient {
     const projectsCollection = await this.projectsCollection()
 
     return {
-      create: projectsCollection && findOperation(projectsCollection, URI.OP_PROJECTS_CREATE)
+      create: projectsCollection && findOperation(projectsCollection, URI.OP_PROJECTS_CREATE),
     }
   }
 
@@ -111,7 +111,7 @@ class ProjectsClient {
   async save (operation: IOperation, project: ProjectFormData) {
     const data = {
       [URI.PROP_NAME]: project.name,
-      [URI.PROP_BASE_URI]: project.baseUri
+      [URI.PROP_BASE_URI]: project.baseUri,
     }
     return invokeSaveOperation<Project>(operation, data)
   }
@@ -131,7 +131,7 @@ class ProjectsClient {
     const incompleteTables = collection.members
 
     const tables = Promise.all(incompleteTables.map(async (incompleteTable: HydraResource) =>
-      loadResource<Table>(incompleteTable.id)
+      loadResource<Table>(incompleteTable.id),
     ))
 
     return tables
@@ -157,7 +157,7 @@ class ProjectsClient {
       '@type': URI.TYPE_DIMENSION_TABLE,
       [URI.PROP_NAME]: tableData.name,
       [URI.PROP_SOURCE]: namedNode(tableData.sourceId),
-      [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate
+      [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate,
     }
     return invokeSaveOperation<Table>(operation, data)
   }
@@ -167,7 +167,7 @@ class ProjectsClient {
     const data = {
       '@type': URI.TYPE_FACT_TABLE,
       [URI.PROP_NAME]: tableData.name,
-      [URI.PROP_SOURCE]: namedNode(tableData.sourceId)
+      [URI.PROP_SOURCE]: namedNode(tableData.sourceId),
     }
     return invokeSaveOperation<Table>(operation, data)
   }
@@ -180,7 +180,7 @@ class ProjectsClient {
     const operation = project.actions.createSource
     const headers = {
       'Content-Type': 'text/csv',
-      'Content-Disposition': `attachment; filename="${file.name}"`
+      'Content-Disposition': `attachment; filename="${file.name}"`,
     }
     return invokeSaveOperation<Source>(operation, file, headers)
   }
@@ -192,7 +192,7 @@ class ProjectsClient {
     const incompleteSources = sourcesCollection.members
 
     const sources = Promise.all(incompleteSources.map(async (incompleteSource: HydraResource) =>
-      loadResource(incompleteSource.id)
+      loadResource(incompleteSource.id),
     ))
 
     return sources
@@ -230,10 +230,10 @@ class ProjectsClient {
       // API doesn't allow datatype and language to be used together.
       [URI.PROP_DATATYPE]: (!language && attributeData.dataType) ? namedNode(attributeData.dataType.id) : undefined,
       [URI.PROP_DATATYPE_PARAMS]: {
-        [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format
+        [URI.PROP_DATATYPE_PARAM_FORMAT]: attributeData.dataType?.params?.format,
       },
       [URI.PROP_LANGUAGE]: language,
-      [URI.PROP_DEFAULT]: attributeData.dataType?.params?.default
+      [URI.PROP_DEFAULT]: attributeData.dataType?.params?.default,
     }
     return invokeSaveOperation<ValueAttribute>(operation, data)
   }
@@ -246,8 +246,8 @@ class ProjectsClient {
       [URI.PROP_REFERENCED_TABLE]: namedNode(attributeData.referencedTableId),
       [URI.PROP_COLUMN_MAPPING]: attributeData.columnMapping.map((mapping) => ({
         [URI.PROP_SOURCE_COLUMN]: namedNode(mapping.sourceColumnId),
-        [URI.PROP_REFERENCED_COLUMN]: namedNode(mapping.referencedColumnId)
-      }))
+        [URI.PROP_REFERENCED_COLUMN]: namedNode(mapping.referencedColumnId),
+      })),
     }
     return invokeSaveOperation<ReferenceAttribute>(operation, data)
   }

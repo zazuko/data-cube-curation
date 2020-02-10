@@ -15,7 +15,7 @@ interface ProjectsState {
 const initialState: ProjectsState = {
   actions: {},
   projectsList: Remote.loading(),
-  projects: {}
+  projects: {},
 }
 
 const getters: GetterTree<ProjectsState, RootState> = {
@@ -27,7 +27,7 @@ const getters: GetterTree<ProjectsState, RootState> = {
     return (id) => {
       return state.projects[id] || Remote.loading()
     }
-  }
+  },
 }
 
 const actions: ActionTree<ProjectsState, RootState> = {
@@ -73,7 +73,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
 
       context.commit('storeSources', { project, sources })
     })
-  }
+  },
 }
 
 const mutations: MutationTree<ProjectsState> = {
@@ -104,7 +104,7 @@ const mutations: MutationTree<ProjectsState> = {
 
     // Delete from projects
     Vue.delete(state.projects, project.id)
-  }
+  },
 }
 
 export default {
@@ -112,5 +112,5 @@ export default {
   state: initialState,
   getters,
   actions,
-  mutations
+  mutations,
 }

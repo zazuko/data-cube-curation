@@ -37,8 +37,8 @@ import ProjectForm from '../components/project/ProjectForm.vue'
 @Component({
   components: {
     Loader,
-    ProjectForm
-  }
+    ProjectForm,
+  },
 })
 export default class Projects extends Vue {
   get projects (): RemoteData<Project[]> {
@@ -69,9 +69,9 @@ export default class Projects extends Vue {
           } finally {
             loading.close()
           }
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 }

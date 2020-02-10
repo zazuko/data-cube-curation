@@ -16,5 +16,5 @@ function error<T> (error: any): RemoteData<T> {
 export default {
   loading,
   loaded,
-  error
+  error,
 }

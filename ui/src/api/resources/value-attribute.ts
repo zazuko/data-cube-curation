@@ -12,7 +12,7 @@ export function Mixin<B extends Constructor> (Base: B) {
     get actions () {
       return {
         delete: findOperation(this, URI.OP_ATTRIBUTE_DELETE),
-        edit: findOperation(this, URI.OP_ATTRIBUTE_EDIT)
+        edit: findOperation(this, URI.OP_ATTRIBUTE_EDIT),
       }
     }
 
@@ -38,7 +38,7 @@ export function Mixin<B extends Constructor> (Base: B) {
 
       const dataTypeParams = this.get<HydraResource>(URI.PROP_DATATYPE_PARAMS)
       const paramURIs: [ResourceId, DataTypeParam][] = [
-        [URI.PROP_DATATYPE_PARAM_FORMAT, 'format']
+        [URI.PROP_DATATYPE_PARAM_FORMAT, 'format'],
       ]
       const params: DataTypeParamValues = paramURIs.reduce((params, [paramURI, paramProp]) => {
         const paramValue = dataTypeParams?.get<string>(paramURI)
@@ -50,7 +50,7 @@ export function Mixin<B extends Constructor> (Base: B) {
 
       return {
         id: dataType?.id ?? datatypes.defaultURI,
-        params: params
+        params: params,
       }
     }
 

@@ -12,7 +12,7 @@ interface SourcesState {
 }
 
 const initialState: SourcesState = {
-  sources: {}
+  sources: {},
 }
 
 const getters: GetterTree<SourcesState, RootState> = {
@@ -29,10 +29,10 @@ const getters: GetterTree<SourcesState, RootState> = {
 
       return {
         ...projectSources,
-        data: source
+        data: source,
       }
     }
-  }
+  },
 }
 
 const actions: ActionTree<SourcesState, RootState> = {
@@ -56,7 +56,7 @@ const actions: ActionTree<SourcesState, RootState> = {
       await client.projects.deleteSource(source)
       context.commit('removeOne', source)
     })
-  }
+  },
 }
 
 const mutations: MutationTree<SourcesState> = {
@@ -79,7 +79,7 @@ const mutations: MutationTree<SourcesState> = {
     if (!projectSources.data) return
 
     projectSources.data = projectSources.data.filter((s) => s.id !== source.id)
-  }
+  },
 }
 
 export default {
@@ -87,5 +87,5 @@ export default {
   state: initialState,
   getters,
   actions,
-  mutations
+  mutations,
 }

@@ -48,8 +48,8 @@ import Loader from '../components/Loader.vue'
 
 @Component({
   components: {
-    Loader
-  }
+    Loader,
+  },
 })
 export default class ProjectView extends Vue {
   get projectId (): ResourceId {
@@ -83,12 +83,12 @@ export default class ProjectView extends Vue {
     if (success) {
       this.$buefy.toast.open({
         message: 'The project URI was copied to your clipboard',
-        type: 'is-success'
+        type: 'is-success',
       })
     } else {
       this.$buefy.toast.open({
         message: 'Sorry, your browser is not very cooperative. You\'ll have to hit CMD/CTRL+C manually.',
-        type: 'is-warning'
+        type: 'is-warning',
       })
     }
   }

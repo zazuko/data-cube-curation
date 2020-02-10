@@ -12,7 +12,7 @@ interface TablesState {
 
 const initialState: TablesState = {
   // Tables are stored per-project, indexed by projectId
-  tables: {}
+  tables: {},
 }
 
 const getters: GetterTree<TablesState, RootState> = {
@@ -20,7 +20,7 @@ const getters: GetterTree<TablesState, RootState> = {
     return (projectId) => {
       return state.tables[projectId] || Remote.loading()
     }
-  }
+  },
 }
 
 const actions: ActionTree<TablesState, RootState> = {
@@ -58,7 +58,7 @@ const actions: ActionTree<TablesState, RootState> = {
       context.dispatch('attributes/loadForTable', table, { root: true })
       context.commit('storeInProject', { project, table })
     })
-  }
+  },
 }
 
 const mutations: MutationTree<TablesState> = {
@@ -73,7 +73,7 @@ const mutations: MutationTree<TablesState> = {
     if (!projectTables.data) throw new Error('Project tables not loaded')
 
     projectTables.data.push(table)
-  }
+  },
 }
 
 export default {
@@ -81,5 +81,5 @@ export default {
   state: initialState,
   getters,
   actions,
-  mutations
+  mutations,
 }

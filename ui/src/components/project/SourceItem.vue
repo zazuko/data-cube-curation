@@ -81,7 +81,7 @@ import {
   Column,
   TableFormData,
   ValueAttributeFormData,
-  SourceColumnFilter
+  SourceColumnFilter,
 } from '@/types'
 import TableTag from '@/components/TableTag.vue'
 import PrefixedURI from '@/components/PrefixedURI.vue'
@@ -92,8 +92,8 @@ import TableAdvancedForm from '@/components/project/TableAdvancedForm.vue'
   components: {
     TableTag,
     PrefixedURI,
-    Loader
-  }
+    Loader,
+  },
 })
 export default class extends Vue {
   @Prop() readonly project: Project
@@ -156,9 +156,9 @@ export default class extends Vue {
           } finally {
             loading.close()
           }
-        }
+        },
       },
-      hasModalCard: true
+      hasModalCard: true,
     })
   }
 
@@ -173,7 +173,7 @@ export default class extends Vue {
         const loading = this.$buefy.loading.open({})
         await this.$store.dispatch('sources/delete', source)
         loading.close()
-      }
+      },
     })
   }
 }

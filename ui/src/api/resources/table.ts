@@ -20,7 +20,7 @@ export function Mixin<B extends Constructor> (Base: B) {
         delete: findOperation(this, URI.TYPE_OP_DELETE),
         edit: findOperation(this, URI.OP_TABLE_EDIT),
         createValueAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_VALUE),
-        createReferenceAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_REFERENCE)
+        createReferenceAttribute: this.attributesCollection && findOperation(this.attributesCollection, URI.OP_ATTRIBUTES_CREATE_REFERENCE),
       }
     }
 

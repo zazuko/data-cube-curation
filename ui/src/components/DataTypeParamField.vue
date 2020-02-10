@@ -13,8 +13,8 @@ import LanguageInput from './LanguageInput.vue'
 
 @Component({
   components: {
-    LanguageInput
-  }
+    LanguageInput,
+  },
 })
 export default class extends Vue {
   @Prop() param: string

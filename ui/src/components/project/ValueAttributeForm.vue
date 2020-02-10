@@ -38,8 +38,8 @@ import PropertyField from '../PropertyField.vue'
     TableTag,
     DataTypeField,
     LanguageInput,
-    PropertyField
-  }
+    PropertyField,
+  },
 })
 export default class extends Vue {
   @Prop({ default: emptyAttribute }) readonly attribute: ValueAttributeFormData;
@@ -75,8 +75,8 @@ function emptyAttribute () {
     property: '',
     dataType: {
       id: datatypes.defaultURI,
-      params: {}
-    }
+      params: {},
+    },
   }
 }
 </script>
