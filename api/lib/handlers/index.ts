@@ -1,4 +1,5 @@
 import '../read-graphs'
 import './store-source'
+import './update-source'
 import './cascade-project-archival'
 import './fact-table-selected'

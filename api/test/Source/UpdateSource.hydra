@@ -1,0 +1,64 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+With Class api:Entrypoint {
+    Expect Property api:projects {
+        Expect Operation schema:CreateAction {
+            Invoke {
+                Content-Type "text/turtle"
+
+                ```
+                @prefix schema: <http://schema.org/> .
+
+                <> schema:name "Test that source will be updated" .
+                ```
+            } => { }
+        }
+    }
+}
+
+With Class dataCube:Project {
+    Expect Property api:sources {
+        Expect Property hydra:totalItems 0
+
+        Expect Operation api:AddSource {
+            Invoke {
+                Content-Type "text/csv"
+                Content-Disposition 'attachment; filename="single-column.csv"'
+
+                <<< "../bodies/quoted-comma-separated.csv"
+            } => {
+                Expect Status 201
+            }
+        }
+    }
+
+    With Link api:sources {
+        Expect Property hydra:totalItems 1
+
+        With Property hydra:member {
+            Expect Operation api:UpdateSource {
+                Invoke {
+                    Content-Type "text/turtle"
+
+                    ```
+                    @prefix schema: <http://schema.org/> .
+                    @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+
+                    <> a dataCube:Source ;
+                       schema:name "Changed name" ;
+                       dataCube:csvDelimiter ";" ;
+                       dataCube:csvQuote "\"" .
+                    ```
+                } => {
+                    Expect Property schema:name "Changed name"
+                    Expect Property dataCube:csvDelimiter ";"
+                    Expect Property dataCube:csvQuote "\""
+                }
+            }
+        }
+    }
+}

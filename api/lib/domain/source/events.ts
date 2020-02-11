@@ -11,6 +11,19 @@ export interface SourceEvents {
   };
 }
 
+export interface CsvSourceEvents extends SourceEvents {
+  NameChanged: {
+    newName: string;
+  };
+  QuoteChanged: {
+    newQuote: string;
+  };
+  DelimiterChanged: {
+    newDelimiter: string;
+  };
+}
+
 export default {
   sourceEvents: handler<SourceEvents>(),
+  csvSourceEvents: handler<CsvSourceEvents>(),
 }

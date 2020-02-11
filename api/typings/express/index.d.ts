@@ -10,7 +10,7 @@ declare module 'express' {
     graph: DatasetExt;
     resourceId: string;
     resourcePath: string;
-    buildModel <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }): T[];
+    buildModel <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }, ids?: (string | NamedNode)[]): T[];
   }
 
   interface Response {
