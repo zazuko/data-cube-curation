@@ -24,7 +24,7 @@ export interface Dialect {
 
 export interface Mapping<D extends DatasetCore = DatasetCore> extends RdfResource<D> {
   newColumn(col: { name: string }): Column & ResourceIndexer;
-  addDialect(dialect?: { delimiter: string; quote: string }): void;
+  addDialect(dialect: { delimiter: string; quote: string }): void;
   readonly tableSchema: TableSchema;
   url: string;
   dialect: Dialect;

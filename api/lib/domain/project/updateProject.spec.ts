@@ -1,5 +1,6 @@
 import { updateProject } from './updateProject'
 import { Project } from './index'
+import { fakeDomainEventEmitter } from '../../__tests-helpers__'
 
 describe('project', () => {
   describe('update', () => {
@@ -13,10 +14,7 @@ describe('project', () => {
       project = await updateProject(project, {
         newName: 'foo',
         baseUri: 'http://example.com',
-      }, {
-        emit: new Proxy({}, { get: jest.fn() }),
-        emitFrom: jest.fn(),
-      })
+      }, fakeDomainEventEmitter())
 
       // then
       expect(project).toHaveProperty('baseUri', 'http://example.com/')
