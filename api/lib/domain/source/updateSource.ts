@@ -3,7 +3,7 @@ import { CsvSource } from './index'
 import { errorFactory } from '../error-helper'
 import { CsvSourceEvents } from './events'
 
-export interface UpdateCommand {
+interface UpdateCommand {
   name?: string;
   delimiter?: string;
   quote?: string;
