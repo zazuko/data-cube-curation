@@ -84,6 +84,21 @@ spec:
             configMapKeyRef:
               name: data-cube-curation
               key: aws_s3_bucket
+        - name: GITLAB_PIPELINE
+          valueFrom:
+            configMapKeyRef:
+              name: data-cube-curation
+              key: gitlab_pipeline
+        - name: GITLAB_PIPELINE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: data-cube-curation
+              key: gitlab_pipeline_token
+        - name: GITLAB_PIPELINE_BRANCH
+          valueFrom:
+            configMapKeyRef:
+              name: data-cube-curation
+              key: gitlab_pipeline_branch
 
         ports:
         - name: http

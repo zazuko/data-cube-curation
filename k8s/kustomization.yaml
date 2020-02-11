@@ -18,3 +18,5 @@ configMapGenerator:
     - aws_s3_bucket=data-cube-curation
     - aws_s3_endpoint=fra1.digitaloceanspaces.com
     - debug=*:error,*:warning,dataCube:request,dataCube
+    - gitlab_pipeline=https://gitlab.zazuko.com/api/v4/projects/56/trigger/pipeline
+    - gitlab_pipeline_branch=master

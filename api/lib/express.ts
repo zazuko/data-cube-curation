@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Constructor, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
 import { NamedNode } from 'rdf-js'
 import cf from 'clownface'
 import env from './env'
@@ -12,22 +12,28 @@ export function resourceId (req: Request, res: Response, next: NextFunction) {
 }
 
 export function modelBuilder (req: Request, res, next: NextFunction) {
-  req.buildModel = function <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }, ids?: (string | NamedNode)[]) {
-    let graph = cf({ dataset: req.graph })
-    if (ids) {
-      graph = graph.namedNode(ids)
-    }
+  const defaultResourceIds = ['', req.resourceId]
+  req.buildModel = function <T extends RdfResourceImpl> (Class: Constructor<T> & { types?: NamedNode[] }, ids: (string | NamedNode)[] = defaultResourceIds) {
+    let graph = cf({ dataset: req.graph }).namedNode(ids)
 
-    if (Class.types.some(Boolean)) {
+    if (Class.types && Class.types.some(Boolean)) {
       graph = graph
         .has(rdf.type, Class.types)
     }
 
     return graph
-      .filter(node => node.out().terms.some(Boolean))
+      .filter(node => node && node.out().terms.some(Boolean))
       .map(node => {
         return new Class(node)
       })
+  }
+
+  next()
+}
+
+export function representation (req: Request, res: Response, next: NextFunction) {
+  res.representation = function (resource: RdfResource) {
+    res.graph(resource._selfGraph.dataset)
   }
 
   next()

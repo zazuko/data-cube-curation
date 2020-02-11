@@ -25,8 +25,13 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
   const attribute = await aggregate.factory(addValueAttribute)(req.buildModel(AddValueAttributeCommand)[0])
 
   const newAttribute = await attribute.commit(attributes)
+  const persistedAttribute = await getSingleAttribute(newAttribute['@id'])
 
-  res.status(201)
-  res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
-  res.graph(await getSingleAttribute(newAttribute['@id']))
+  if (persistedAttribute) {
+    res.status(201)
+    res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
+    res.graph(persistedAttribute)
+  } else {
+    res.status(500)
+  }
 })

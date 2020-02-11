@@ -25,7 +25,7 @@ export const create = asyncMiddleware(async (req: Request, res: Response) => {
 
   res.status(201)
   res.setHeader('Location', `${env.BASE_URI}${project['@id'].replace('/', '')}`)
-  res.graph(await getProject(project['@id']))
+  res.representation(await getProject(project['@id']))
 })
 
 export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response
     : aggregateRoot.mutation(updateProject)(updateCommand)
 
   await aggregateRoot.commit(projects)
-  res.graph(await getProject(req.resourceId))
+  res.representation(await getProject(req.resourceId))
 })
 
 export const getFactTable = asyncMiddleware(async (req: Request, res, next) => {

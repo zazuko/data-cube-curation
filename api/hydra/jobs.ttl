@@ -1,0 +1,41 @@
+@prefix dataCube:  <https://rdf-cube-curation.described.at/> .
+@prefix api:       <https://rdf-cube-curation.described.at/api/> .
+@prefix hydra:     <http://www.w3.org/ns/hydra/core#> .
+@prefix hydra-box: <http://hydra-box.org/schema/> .
+@prefix code:      <https://code.described.at/> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+
+dataCube:Project
+  hydra:supportedProperty [ hydra:property    api:s3Bucket ;
+                            hydra:title       "Project's default S3 bucket" ;
+                            hydra:description "This is where the source files will be downloaded from when transforming to RDF" ] ;
+.
+
+api:s3Bucket
+  a          rdf:Property ;
+  rdfs:range xsd:string .
+
+api:jobs
+  a                        hydra:Link ;
+  rdfs:range               api:JobCollection ;
+  hydra:supportedOperation _:CreateJob ;
+.
+
+api:JobCollection
+  a hydra:Class .
+
+_:CreateJob
+  a                  hydra:SupportedOperation, hydra-box:View ;
+  hydra:method       "POST" ;
+  hydra:title        "Create a job" ;
+  hydra:expects      api:GitLabJobTrigger ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/jobs/post#handler> ] ) ] .
+
+api:GitLabJobTrigger
+  a                       hydra:Class ;
+  hydra:supportedProperty [ hydra:property api:s3Bucket ] ;
+.
