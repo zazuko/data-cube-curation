@@ -1,15 +1,14 @@
 import cf from 'clownface'
 import $rdf from 'rdf-ext'
-import { ProjectEvents } from '../domain/project/events'
-import { handle } from '@tpluscode/fun-ddr'
+import ProjectEvents from '../domain/project/events'
 import { ask, construct, deleteInsert, insertData } from '../sparql'
 import { api, dataCube, hydra, schema, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
-import { TableEvents } from '../domain/table/events'
+import TableEvents from '../domain/table/events'
 import { projects } from '../storage/repository'
 import { unselectFactTable } from '../domain/project'
 
-handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
+ProjectEvents.on.ProjectCreated(async ev => {
   await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" ;
        dataCube:baseUri "${ev.data.baseUri}" .
@@ -29,7 +28,7 @@ handle<ProjectEvents, 'ProjectCreated'>('ProjectCreated', async ev => {
     .execute(getClient())
 })
 
-handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async ev => {
+ProjectEvents.on.ProjectRenamed(async ev => {
   await deleteInsert(`<${ev.id}> schema:name ?currentName .`)
     .insert(`<${ev.id}> schema:name "${ev.data.name}" .`)
     .prefixes({
@@ -39,7 +38,7 @@ handle<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', async ev => {
     .execute(getClient())
 })
 
-handle<ProjectEvents, 'ProjectRebased'>('ProjectRebased', async ev => {
+ProjectEvents.on.ProjectRebased(async ev => {
   await deleteInsert(`<${ev.id}> dataCube:baseUri ?currentBase .`)
     .insert(`<${ev.id}> dataCube:baseUri "${ev.data.baseUri}" .`)
     .where(`OPTIONAL {
@@ -51,12 +50,12 @@ handle<ProjectEvents, 'ProjectRebased'>('ProjectRebased', async ev => {
     .execute(getClient())
 })
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', ev => {
+ProjectEvents.on.ProjectArchived(ev => {
   return deleteInsert(`<${ev.id}> ?p ?o .`)
     .execute(getClient())
 })
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', async function initialiseFactTableResource (ev) {
+TableEvents.on.FactTableCreated(async function initialiseFactTableResource (ev) {
   await insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
     .prefixes({
       dataCube,
@@ -64,7 +63,7 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', async function initi
     .execute(getClient())
 })
 
-handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProjectEntity (ev) {
+TableEvents.on.TableArchived(async function updateProjectEntity (ev) {
   if (ev.data.isFactTable) {
     const project = await projects
       .load(ev.data.projectId)
@@ -74,7 +73,7 @@ handle<TableEvents, 'TableArchived'>('TableArchived', async function updateProje
   }
 })
 
-handle<ProjectEvents, 'FactTableUnselected'>('FactTableUnselected', function removeFactTableLink (ev) {
+ProjectEvents.on.FactTableUnselected(function removeFactTableLink (ev) {
   return deleteInsert(`<${ev.id}> dataCube:factTable ?table`)
     .where(`
       ?table a dataCube:Table ; dataCube:source <${ev.data.previousSourceId}> .

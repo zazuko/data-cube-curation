@@ -9,7 +9,7 @@ export interface TableCommand {
   tableName: string;
 }
 
-export const selectFactTableSource = mutate<Project, TableCommand>(async (project, command, emitter) => {
+export const selectFactTableSource = mutate<Project, TableCommand, ProjectEvents>(async (project, command, emitter) => {
   const DomainError = errorFactory(project, 'Cannot initialise fact table')
 
   if (project.factTableSource) {
@@ -24,7 +24,7 @@ export const selectFactTableSource = mutate<Project, TableCommand>(async (projec
     throw new DomainError(`Source '${command.sourceId}' does not belong to project '${project['@id']}'`)
   }
 
-  emitter.emit<ProjectEvents, 'FactTableSourceSelected'>('FactTableSourceSelected', {
+  emitter.emit.FactTableSourceSelected({
     sourceId: command.sourceId,
     tableName: command.tableName,
   })

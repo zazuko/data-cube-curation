@@ -1,3 +1,5 @@
+import { handler } from '@tpluscode/fun-ddr'
+
 export interface SourceEvents {
   CsvSourceUploaded: {
     projectId: string;
@@ -7,4 +9,8 @@ export interface SourceEvents {
     quote: string;
     delimiter: string;
   };
+}
+
+export default {
+  sourceEvents: handler<SourceEvents>(),
 }

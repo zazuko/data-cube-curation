@@ -1,3 +1,5 @@
+import { handler } from '@tpluscode/fun-ddr'
+
 export interface ProjectEvents {
   ProjectCreated: {
     name: string;
@@ -18,3 +20,5 @@ export interface ProjectEvents {
     previousSourceId: string;
   };
 }
+
+export default handler<ProjectEvents>()

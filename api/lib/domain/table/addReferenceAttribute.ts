@@ -63,7 +63,7 @@ async function validateReferencedColumns (tableId: string, columnsDataset: Datas
   return errors
 }
 
-export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand, ReferenceAttribute>(async (table, command, emitter) => {
+export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand, ReferenceAttribute, AttributeEvents>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
   if (!command.propertyTemplate) {
     throw new DomainError('Predicate missing')
@@ -88,7 +88,7 @@ export const addReferenceAttribute = factory<Table, AddReferenceAttributeCommand
     throw new DomainError(...sourceColumnErrors, ...referencedColumnsErrors)
   }
 
-  emitter.emit<AttributeEvents, 'ReferenceAttributeAdded'>('ReferenceAttributeAdded', {
+  emitter.emit.ReferenceAttributeAdded({
     tableId: table['@id'],
     propertyTemplate: command.propertyTemplate,
     referencedTableId: command.referencedTableId,

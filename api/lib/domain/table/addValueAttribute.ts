@@ -19,7 +19,7 @@ export interface AddValueAttributeCommand {
   };
 }
 
-export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueAttribute>(async (table, command, emitter) => {
+export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueAttribute, AttributeEvents>(async (table, command, emitter) => {
   const DomainError = errorFactory(table, 'Cannot add attribute to table')
 
   if (!command.propertyTemplate) {
@@ -37,7 +37,7 @@ export const addValueAttribute = factory<Table, AddValueAttributeCommand, ValueA
 
   const attributeId = `${table['@id']}/attribute/${uuid()}`
 
-  emitter.emit<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', {
+  emitter.emit.ValueAttributeAdded({
     tableId: table['@id'],
     columnId: command.columnId,
     propertyTemplate: command.propertyTemplate,

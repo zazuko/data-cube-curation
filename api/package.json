@@ -27,8 +27,8 @@
   "dependencies": {
     "@fcostarodrigo/walk": "^4.0.2",
     "@rdfine/csvw": "^0.0.0",
-    "@tpluscode/fun-ddr": "^0.5.2",
-    "@tpluscode/fun-ddr-sparql-graph-repository": "^0.2.9",
+    "@tpluscode/fun-ddr": "^0.6.1",
+    "@tpluscode/fun-ddr-sparql-graph-repository": "^0.3",
     "@tpluscode/rdfine": "^0.3.2",
     "@zazuko/rdf-vocabularies": "^2019.9.24",
     "@zazuko/rdfine-data-cube": "^0.0.0",

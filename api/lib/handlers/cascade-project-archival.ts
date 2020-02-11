@@ -1,11 +1,11 @@
-import { handle, CoreEvents } from '@tpluscode/fun-ddr'
-import { ProjectEvents } from '../domain/project/events'
+import { CoreEvents } from '@tpluscode/fun-ddr'
+import ProjectEvents from '../domain/project/events'
 import { select, deleteInsert } from '../sparql'
 import { dataCube } from '../namespaces'
 import { getClient } from '../read-graphs/sparqlClient'
 import { sources, tables } from '../storage/repository'
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function deleteSourcesOfProject (ev) {
+ProjectEvents.on.ProjectArchived(async function deleteSourcesOfProject (ev) {
   await select('source')
     .where(`?source dataCube:project <${ev.id}> ; a dataCube:Source .`)
     .prefixes({
@@ -20,7 +20,7 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function delet
     }))
 })
 
-handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function deleteTablesOfProject (ev) {
+ProjectEvents.on.ProjectArchived(async function deleteTablesOfProject (ev) {
   await select('table')
     .where(`?table dataCube:project <${ev.id}> ; a dataCube:Table .`)
     .prefixes({
@@ -35,7 +35,7 @@ handle<ProjectEvents, 'ProjectArchived'>('ProjectArchived', async function delet
     }))
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function removeSource (ev) {
+CoreEvents.on.AggregateDeleted(async function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
     await deleteInsert(`
       ?source ?p0 ?o0 .

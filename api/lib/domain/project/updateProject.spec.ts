@@ -14,7 +14,8 @@ describe('project', () => {
         newName: 'foo',
         baseUri: 'http://example.com',
       }, {
-        emit: jest.fn(),
+        emit: new Proxy({}, { get: jest.fn() }),
+        emitFrom: jest.fn(),
       })
 
       // then
