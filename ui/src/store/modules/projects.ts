@@ -66,14 +66,6 @@ const actions: ActionTree<ProjectsState, RootState> = {
       context.commit('removeOne', project)
     })
   },
-
-  async loadSources (context, project) {
-    await handleAPIError(context, async () => {
-      const sources = await client.projects.getSources(project)
-
-      context.commit('storeSources', { project, sources })
-    })
-  },
 }
 
 const mutations: MutationTree<ProjectsState> = {
