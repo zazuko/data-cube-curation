@@ -24,6 +24,7 @@ export function modelBuilder (req: Request, res, next: NextFunction) {
     }
 
     return graph
+      .filter(node => node.out().terms.some(Boolean))
       .map(node => {
         return new Class(node)
       })
