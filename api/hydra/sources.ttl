@@ -97,7 +97,7 @@ _:UpdateSource
   a                  hydra:SupportedOperation, hydra-box:View, api:UpdateSource, schema:UpdateAction ;
   hydra:method       "PUT" ;
   hydra:expects      dataCube:CsvSource ;
-  hydra:title        "Update source" ;
+  hydra:title        "Edit source settings" ;
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
                                           code:link <file:lib/data-cube/project-source/update#handler> ]

@@ -8,11 +8,20 @@ export function Mixin<B extends Constructor> (Base: B) {
     get actions () {
       return {
         delete: findOperation(this, URI.OP_SOURCE_DELETE),
+        edit: findOperation(this, URI.TYPE_OP_UPDATE),
       }
     }
 
     get name (): string {
       return getOrThrow(this, URI.PROP_NAME)
+    }
+
+    get csvDelimiter (): string {
+      return this.get<string>(URI.PROP_CSV_DELIMITER) ?? ''
+    }
+
+    get csvQuote (): string {
+      return this.get<string>(URI.PROP_CSV_QUOTE) ?? ''
     }
 
     get columns (): Column[] {

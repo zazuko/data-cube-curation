@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
+import { IOperation } from 'alcaeus/types/Resources'
 import { RootState } from '@/store/types'
-import { ResourceId, Project, RemoteData, Source } from '@/types'
+import { ResourceId, Project, RemoteData, Source, SourceFormData } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
 import Remote from '@/remote'
@@ -55,6 +56,15 @@ const actions: ActionTree<SourcesState, RootState> = {
     await handleAPIError(context, async () => {
       await client.projects.deleteSource(source)
       context.commit('removeOne', source)
+    })
+  },
+
+  async update (context, { project, operation, data }: { project: Project, operation: IOperation, data: SourceFormData }) {
+    await handleAPIError(context, async () => {
+      const source = await client.projects.updateSource(operation, data)
+
+      context.commit('removeOne', source)
+      context.commit('storeInProject', { project, source })
     })
   },
 }

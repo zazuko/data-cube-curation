@@ -14,6 +14,7 @@ export const TYPE_VALUE_ATTRIBUTE = expand('dataCube:ValueAttribute')
 
 export const TYPE_OP_VIEW = expand('schema:ViewAction')
 export const TYPE_OP_DELETE = expand('schema:DeleteAction')
+export const TYPE_OP_UPDATE = expand('schema:UpdateAction')
 
 export const PROP_NAME = expand('schema:name')
 export const PROP_BASE_URI = expand('dataCube:baseUri')
@@ -33,6 +34,8 @@ export const PROP_REFERENCED_TABLE = expand('dataCube:referencedTable')
 export const PROP_COLUMN_MAPPING = expand('dataCube:columnMapping')
 export const PROP_SOURCE_COLUMN = expand('dataCube:sourceColumn')
 export const PROP_REFERENCED_COLUMN = expand('dataCube:referencedColumn')
+export const PROP_CSV_DELIMITER = expand('dataCube:csvDelimiter')
+export const PROP_CSV_QUOTE = expand('dataCube:csvQuote')
 
 export const API_PROJECTS = expand('dataCube:api/projects')
 export const API_SOURCES = expand('dataCube:api/sources')

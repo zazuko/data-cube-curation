@@ -29,10 +29,19 @@ export interface RemoteData<T> {
 export interface Source extends HydraResource {
   id: ResourceId;
   name: string;
+  csvDelimiter: string;
+  csvQuote: string;
   columns: Column[];
   projectId: ResourceId;
   actions: Actions;
   sampleCollection: Collection | null;
+}
+
+export interface SourceFormData {
+  id: ResourceId;
+  name: string;
+  csvDelimiter: string;
+  csvQuote: string;
 }
 
 export interface Column extends HydraResource {

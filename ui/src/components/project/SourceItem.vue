@@ -6,7 +6,19 @@
         <b-button icon-left="plus" @click="createTable" :disabled="selectedColumns.length < 1">
           Create table from selected columns
         </b-button>
-        <b-button icon-left="trash" v-if="source.actions.delete" @click="deleteSource(source)" />
+        <b-dropdown position="is-bottom-left">
+          <button class="button is-text" slot="trigger">
+            <b-icon icon="ellipsis-h"></b-icon>
+          </button>
+          <b-dropdown-item v-if="source.actions.edit" @click="editSource(source, source.actions.edit)">
+            <b-icon icon="cog" size="is-small" />
+            <span>{{ source.actions.edit.title }}</span>
+          </b-dropdown-item>
+          <b-dropdown-item v-if="source.actions.delete" @click="deleteSource(source)" class="has-text-danger">
+            <b-icon icon="trash" size="is-small" />
+            <span>{{ source.actions.delete.title }}</span>
+          </b-dropdown-item>
+        </b-dropdown>
       </div>
     </header>
     <section class="card-content">
@@ -65,7 +77,6 @@ td.is-collapsed {
   padding-right: 0;
   color: transparent;
 }
-
 </style>
 
 <script lang="ts">
@@ -76,6 +87,7 @@ import {
   ResourceId,
   Table,
   Source,
+  SourceFormData,
   RemoteData,
   Attribute,
   Column,
@@ -87,6 +99,7 @@ import TableTag from '@/components/TableTag.vue'
 import PrefixedURI from '@/components/PrefixedURI.vue'
 import Loader from '@/components/Loader.vue'
 import TableAdvancedForm from '@/components/project/TableAdvancedForm.vue'
+import SourceForm from '@/components/project/SourceForm.vue'
 
 @Component({
   components: {
@@ -174,6 +187,27 @@ export default class extends Vue {
         await this.$store.dispatch('sources/delete', source)
         loading.close()
       },
+    })
+  }
+
+  editSource (source: Source, operation: IOperation) {
+    const modal = this.$buefy.modal.open({
+      parent: this,
+      component: SourceForm,
+      props: {
+        source: source,
+        operation: operation,
+        save: async (data: SourceFormData) => {
+          const loading = this.$buefy.loading.open({})
+          try {
+            await this.$store.dispatch('sources/update', { project: this.project, operation, data })
+            modal.close()
+          } finally {
+            loading.close()
+          }
+        },
+      },
+      hasModalCard: true,
     })
   }
 }
