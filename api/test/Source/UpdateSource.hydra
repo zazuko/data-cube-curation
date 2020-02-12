@@ -48,8 +48,7 @@ With Class dataCube:Project {
                     @prefix schema: <http://schema.org/> .
                     @prefix dataCube: <https://rdf-cube-curation.described.at/> .
 
-                    <> a dataCube:Source ;
-                       schema:name "Changed name" ;
+                    <> schema:name "Changed name" ;
                        dataCube:csvDelimiter ";" ;
                        dataCube:csvQuote "\"" .
                     ```

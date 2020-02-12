@@ -18,10 +18,12 @@ export function modelBuilder (req: Request, res, next: NextFunction) {
       graph = graph.namedNode(ids)
     }
 
-    const nodesWithType = graph
-      .has(rdf.type, Class.types)
+    if (Class.types.some(Boolean)) {
+      graph = graph
+        .has(rdf.type, Class.types)
+    }
 
-    return nodesWithType
+    return graph
       .map(node => {
         return new Class(node)
       })
