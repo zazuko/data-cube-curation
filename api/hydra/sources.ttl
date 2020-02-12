@@ -31,6 +31,7 @@ dataCube:Source
 
 dataCube:CsvSource
   a                       hydra:Class ;
+  rdfs:subClassOf         dataCube:Source ;
   hydra:supportedProperty [ hydra:property  dataCube:csvQuote ;
                             hydra:title     "Quote character" ;
                             hydra:readable  true ;
