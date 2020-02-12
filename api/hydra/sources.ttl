@@ -95,7 +95,7 @@ _:DeleteSource
 _:UpdateSource
   a                  hydra:SupportedOperation, hydra-box:View, api:UpdateSource, schema:UpdateAction ;
   hydra:method       "PUT" ;
-  hydra:expect       dataCube:CsvSource ;
+  hydra:expects      dataCube:CsvSource ;
   hydra:title        "Update source" ;
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
