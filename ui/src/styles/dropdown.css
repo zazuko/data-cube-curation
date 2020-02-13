@@ -1,0 +1,19 @@
+/* Display icons in dropdown items like they look in buttons */
+
+.dropdown-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dropdown-item .icon:first-child:not(:last-child) {
+  margin-left: calc(-0.375em - 1px);
+  margin-right: 0.1875em;
+}
+
+.dropdown-item .icon,
+.dropdown-item .icon.is-small,
+.dropdown-item .icon.is-medium,
+.dropdown-item .icon.is-large {
+  height: 1.5em;
+  width: 1.5em;
+}
