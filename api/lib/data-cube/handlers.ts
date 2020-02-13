@@ -6,7 +6,7 @@ import asyncMiddleware from 'middleware-async'
 interface HandlerOptions<T extends Entity> {
   repository: Repository<T>;
   onGone?: (id: string) => void;
-  beforeDelete?: (current: AggregateRoot<T>, req: Request) => AggregateRoot<T> | Promise<AggregateRoot<T>>;
+  beforeDelete?: (current: AggregateRoot<T, {}>, req: Request) => AggregateRoot<T, {}> | Promise<AggregateRoot<T, {}>>;
 }
 
 export function deleteAggregateHandler<T extends Entity> (options: HandlerOptions<T>) {

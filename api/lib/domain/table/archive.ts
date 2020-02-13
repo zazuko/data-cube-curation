@@ -5,12 +5,12 @@ import { ask } from '../../sparql'
 import { dataCube } from '../../namespaces'
 import { getClient } from '../../read-graphs/sparqlClient'
 
-export const archiveTable = mutate<Table, never>(async (state, cmd, emitter) => {
+export const archiveTable = mutate<Table, never, TableEvents>(async (state, cmd, emitter) => {
   const isFactTable = await ask(`<${state['@id']}> a dataCube:FactTable`)
     .prefixes({ dataCube })
     .execute(getClient())
 
-  emitter.emit<TableEvents, 'TableArchived'>('TableArchived', {
+  emitter.emit.TableArchived({
     isFactTable,
     projectId: state.projectId,
   })

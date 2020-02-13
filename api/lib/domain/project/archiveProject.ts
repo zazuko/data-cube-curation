@@ -2,9 +2,9 @@ import { mutate } from '@tpluscode/fun-ddr'
 import { ProjectEvents } from './events'
 import { Project } from './index'
 
-export const archiveProject = mutate<Project, never>(function (state, cmd, emitter) {
+export const archiveProject = mutate<Project, never, ProjectEvents>(function (state, cmd, emitter) {
   if (state.archived === 'false') {
-    emitter.emit<ProjectEvents, 'ProjectArchived'>('ProjectArchived', null)
+    emitter.emit.ProjectArchived(null)
   }
 
   return {

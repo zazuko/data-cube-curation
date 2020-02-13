@@ -13,6 +13,7 @@ import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
 import { parse } from './uriTemplateParser'
+import { csvDefault } from '../domain/source'
 
 type Attribute = DataCube.ReferenceAttribute | DataCube.ValueAttribute | DataCube.Attribute
 
@@ -69,7 +70,7 @@ export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTa
   if ('delimiter' in source) {
     csvwGraph.addDialect(source)
   } else {
-    csvwGraph.addDialect()
+    csvwGraph.addDialect(csvDefault)
   }
   csvwGraph.url = table.source.name
 

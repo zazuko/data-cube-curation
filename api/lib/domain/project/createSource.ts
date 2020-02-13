@@ -25,7 +25,7 @@ function valueOrDefault (value: string | null | undefined, defaultValue: string)
   return value
 }
 
-export const createSource = factory<Project, UploadCsvCommand, CsvSource>(function (project, command, emitter) {
+export const createSource = factory<Project, UploadCsvCommand, CsvSource, SourceEvents>(function (project, command, emitter) {
   if (command.columns.some(column => !column || column.trim() === '')) {
     throw new DomainError(project['@id'], 'Cannot create source', 'Columns names cannot be empty')
   }
@@ -35,7 +35,7 @@ export const createSource = factory<Project, UploadCsvCommand, CsvSource>(functi
   const delimiter = valueOrDefault(command.delimiter, csvDefault.delimiter)
   const quote = valueOrDefault(command.quote, csvDefault.quote)
 
-  emitter.emit<SourceEvents, 'CsvSourceUploaded'>('CsvSourceUploaded', {
+  emitter.emit.CsvSourceUploaded({
     fileName: command.fileName,
     projectId: project['@id'],
     columns: command.columns,

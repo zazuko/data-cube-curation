@@ -9,7 +9,7 @@ interface UpdateCommand {
   baseUri: string;
 }
 
-export const updateProject = mutate<Project, UpdateCommand>(function (state, command, emitter) {
+export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(function (state, command, emitter) {
   const DomainError = errorFactory(state, 'Cannot update project')
 
   if (!command.newName || typeof command.newName !== 'string') {
@@ -23,12 +23,12 @@ export const updateProject = mutate<Project, UpdateCommand>(function (state, com
   const baseUri = ensureSlash(command.baseUri)
 
   if (state.name !== command.newName) {
-    emitter.emit<ProjectEvents, 'ProjectRenamed'>('ProjectRenamed', {
+    emitter.emit.ProjectRenamed({
       name: command.newName,
     })
   }
   if (state.baseUri !== baseUri) {
-    emitter.emit<ProjectEvents, 'ProjectRebased'>('ProjectRebased', {
+    emitter.emit.ProjectRebased({
       baseUri,
     })
   }

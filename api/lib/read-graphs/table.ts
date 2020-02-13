@@ -1,9 +1,9 @@
-import { handle, CoreEvents } from '@tpluscode/fun-ddr'
+import { CoreEvents } from '@tpluscode/fun-ddr'
 import { DomainEvent } from '@tpluscode/fun-ddr/lib'
 import { ask, construct, deleteInsert, insertData, select } from '../sparql'
 import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
-import { TableEvents } from '../domain/table/events'
+import TableEvents from '../domain/table/events'
 import { getTableAttributes } from './attribute'
 import { attributes } from '../storage/repository'
 import { Quad } from 'rdf-js'
@@ -27,10 +27,10 @@ function addTableLinks (ev: DomainEvent) {
     .execute(getClient())
 }
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', addTableLinks)
-handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', addTableLinks)
+TableEvents.on.FactTableCreated(addTableLinks)
+TableEvents.on.DimensionTableCreated(addTableLinks)
 
-handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactTableTriples (ev) {
+TableEvents.on.FactTableCreated(function createFactTableTriples (ev) {
   return insertData(`
     <${ev.id}>
       a dataCube:Table, dataCube:FactTable ;
@@ -45,7 +45,7 @@ handle<TableEvents, 'FactTableCreated'>('FactTableCreated', function createFactT
     .execute(getClient())
 })
 
-handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function createDimensionTableTriples (ev) {
+TableEvents.on.DimensionTableCreated(function createDimensionTableTriples (ev) {
   return insertData(`
     <${ev.id}>
       a dataCube:Table, dataCube:DimensionTable;
@@ -61,7 +61,7 @@ handle<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', function c
     .execute(getClient())
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function removeTable (ev) {
+CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
     await deleteInsert(`
       ?table ?p0 ?o0 .`
@@ -77,7 +77,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function remove
   }
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributes (ev) {
+CoreEvents.on.AggregateDeleted(async function deleteAttributes (ev) {
   if (ev.data.types.includes('Table')) {
     const hydraCollection = await getTableAttributes(ev.id)
 

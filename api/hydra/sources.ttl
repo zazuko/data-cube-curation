@@ -13,7 +13,7 @@ api:Sources
 
 dataCube:Source
   a                        hydra:Class ;
-  hydra:supportedOperation api:GetDataCubeSource, _:DeleteSource ;
+  hydra:supportedOperation api:GetDataCubeSource, _:DeleteSource, _:UpdateSource ;
   hydra:supportedProperty  [ hydra:property  schema:name ;
                              hydra:title     "Name" ;
                              hydra:readable  true ;
@@ -31,6 +31,7 @@ dataCube:Source
 
 dataCube:CsvSource
   a                       hydra:Class ;
+  rdfs:subClassOf         dataCube:Source ;
   hydra:supportedProperty [ hydra:property  dataCube:csvQuote ;
                             hydra:title     "Quote character" ;
                             hydra:readable  true ;
@@ -90,4 +91,16 @@ _:DeleteSource
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
                                           code:link <file:lib/data-cube/project-source/delete#handler> ] ) ] ;
+.
+
+_:UpdateSource
+  a                  hydra:SupportedOperation, hydra-box:View, api:UpdateSource, schema:UpdateAction ;
+  hydra:method       "PUT" ;
+  hydra:expects      dataCube:CsvSource ;
+  hydra:title        "Update source" ;
+  code:implementedBy [ a              hydra-box:middlewareChain ;
+                       code:arguments ( [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/update#handler> ]
+                                        [ a         code:EcmaScript ;
+                                          code:link <file:lib/data-cube/project-source/get#get> ]) ] ;
 .

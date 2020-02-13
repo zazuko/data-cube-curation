@@ -17,10 +17,10 @@ interface CreateTableCommand {
   tableName: string;
 }
 
-export const createTable = initialize<Table, CreateTableCommand>((cmd, emitter) => {
+export const createTable = initialize<Table, CreateTableCommand, TableEvents>((cmd, emitter) => {
   const tableId = `${cmd.projectId}/table/${cmd.tableName}`
 
-  emitter.emit<TableEvents, 'FactTableCreated'>('FactTableCreated', {
+  emitter.emit.FactTableCreated({
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
     tableName: cmd.tableName,

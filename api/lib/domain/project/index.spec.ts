@@ -1,5 +1,7 @@
 import { updateProject } from './index'
 import { DomainError } from '@tpluscode/fun-ddr'
+import { DomainEventEmitter } from '@tpluscode/fun-ddr/lib'
+import { fakeDomainEventEmitter } from '../../__tests-helpers__'
 
 describe('Project', () => {
   const nullProject = {
@@ -8,11 +10,11 @@ describe('Project', () => {
     archived: 'false' as 'true' | 'false',
   }
 
-  let emitter
+  let emit: jest.Mock
+  let emitter: DomainEventEmitter<any>
   beforeEach(() => {
-    emitter = {
-      emit: jest.fn(),
-    }
+    emit = jest.fn()
+    emitter = fakeDomainEventEmitter(emit)
   })
 
   describe('rename command', () => {
@@ -32,7 +34,7 @@ describe('Project', () => {
       await updateProject(project, cmd, emitter)
 
       // then
-      expect(emitter.emit).not.toHaveBeenCalled()
+      expect(emit).not.toHaveBeenCalled()
     })
 
     it('emits an event with new name', async () => {
@@ -51,7 +53,7 @@ describe('Project', () => {
       await updateProject(project, cmd, emitter)
 
       // then
-      expect(emitter.emit).toHaveBeenCalledWith('ProjectRenamed', {
+      expect(emitter.emit.ProjectRenamed).toHaveBeenCalledWith({
         name: 'bar',
       })
     })
@@ -72,7 +74,7 @@ describe('Project', () => {
       await updateProject(project, cmd, emitter)
 
       // then
-      expect(emitter.emit).toHaveBeenCalledWith('ProjectRebased', {
+      expect(emitter.emit.ProjectRebased).toHaveBeenCalledWith({
         baseUri: 'urn:bar:',
       })
     })

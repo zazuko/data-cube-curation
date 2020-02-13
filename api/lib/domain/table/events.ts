@@ -1,3 +1,5 @@
+import { handler } from '@tpluscode/fun-ddr'
+
 export interface TableEvents {
   FactTableCreated: {
     projectId: string;
@@ -15,3 +17,5 @@ export interface TableEvents {
     isFactTable: boolean;
   };
 }
+
+export default handler<TableEvents>()

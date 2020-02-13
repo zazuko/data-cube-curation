@@ -10,13 +10,13 @@ interface CreateCommand {
   baseUri?: string;
 }
 
-export const createProject = initialize<Project, CreateCommand>(function (createCommand, emitter) {
+export const createProject = initialize<Project, CreateCommand, ProjectEvents>(function (createCommand, emitter) {
   if (!createCommand.name || typeof createCommand.name !== 'string') {
     throw new DomainError('', 'Cannot create Project', 'Invalid name')
   }
 
   const baseUri = ensureSlash(createCommand.baseUri) || temporaryUri(createCommand.name)
-  emitter.emit<ProjectEvents, 'ProjectCreated'>('ProjectCreated', {
+  emitter.emit.ProjectCreated({
     name: createCommand.name,
     baseUri,
   })

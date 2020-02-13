@@ -1,11 +1,10 @@
 import slug from 'url-slug'
-import { SourceEvents } from '../domain/source/events'
-import { handle } from '@tpluscode/fun-ddr'
+import handle from '../domain/source/events'
 import { getClient } from './sparqlClient'
 import { insertData } from '../sparql'
 import { dataCube, schema, xsd, dtype, api } from '../namespaces'
 
-handle<SourceEvents, 'CsvSourceUploaded'>('CsvSourceUploaded', ev => {
+handle.sourceEvents.on.CsvSourceUploaded(ev => {
   const columns = ev.data.columns.map((name, index) => `
     <${ev.id}> dataCube:column <${ev.id}/${slug(name)}>  .
 

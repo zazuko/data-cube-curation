@@ -1,3 +1,5 @@
+import { handler } from '@tpluscode/fun-ddr'
+
 export interface AttributeEvents {
   ValueAttributeAdded: {
     tableId: string;
@@ -20,3 +22,5 @@ export interface AttributeEvents {
     }[];
   };
 }
+
+export default handler<AttributeEvents>()

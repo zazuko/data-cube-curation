@@ -12,9 +12,19 @@ export function resourceId (req: Request, res: Response, next: NextFunction) {
 }
 
 export function modelBuilder (req: Request, res, next: NextFunction) {
-  req.buildModel = function <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }) {
-    return cf({ dataset: req.graph })
-      .has(rdf.type, Class.types)
+  req.buildModel = function <T extends RdfResourceImpl> (Class: Constructor<T> & { types: NamedNode[] }, ids?: (string | NamedNode)[]) {
+    let graph = cf({ dataset: req.graph })
+    if (ids) {
+      graph = graph.namedNode(ids)
+    }
+
+    if (Class.types.some(Boolean)) {
+      graph = graph
+        .has(rdf.type, Class.types)
+    }
+
+    return graph
+      .filter(node => node.out().terms.some(Boolean))
       .map(node => {
         return new Class(node)
       })

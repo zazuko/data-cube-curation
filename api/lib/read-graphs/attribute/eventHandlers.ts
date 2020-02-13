@@ -1,14 +1,14 @@
-import { CoreEvents, handle } from '@tpluscode/fun-ddr'
+import { CoreEvents } from '@tpluscode/fun-ddr'
 import namespace from '@rdfjs/namespace'
 import { prefixes } from '@zazuko/rdf-vocabularies'
-import { AttributeEvents } from '../../domain/attribute/events'
+import AttributeEvents from '../../domain/attribute/events'
 import { deleteInsert, insertData } from '../../sparql'
 import { dataCube, rdf, schema } from '../../namespaces'
 import { getClient } from '../sparqlClient'
 
 const datatype = namespace(prefixes.dataCube + 'datatype/')
 
-handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function addAttributeToReadModel (ev) {
+AttributeEvents.on.ValueAttributeAdded(function addAttributeToReadModel (ev) {
   const builder = insertData(`
       <${ev.id}> a dataCube:Attribute , dataCube:ValueAttribute ;
         dataCube:table <${ev.data.tableId}> ;
@@ -41,7 +41,7 @@ handle<AttributeEvents, 'ValueAttributeAdded'>('ValueAttributeAdded', function a
     .execute(getClient())
 })
 
-handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function deleteAttributeReadModel (ev) {
+CoreEvents.on.AggregateDeleted(async function deleteAttributeReadModel (ev) {
   if (ev.data.types.includes('Attribute')) {
     await deleteInsert(`
       ?attribute ?p0 ?o0 .`
@@ -58,7 +58,7 @@ handle<CoreEvents, 'AggregateDeleted'>('AggregateDeleted', async function delete
   }
 })
 
-handle<AttributeEvents, 'ReferenceAttributeAdded'>('ReferenceAttributeAdded', function addReferenceAttributeToReadModel (ev) {
+AttributeEvents.on.ReferenceAttributeAdded(function addReferenceAttributeToReadModel (ev) {
   const builder = insertData(`
       <${ev.id}> a dataCube:Attribute , dataCube:ReferenceAttribute ;
         dataCube:table <${ev.data.tableId}> ;

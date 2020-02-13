@@ -6,12 +6,13 @@ import { DimensionTable, Table } from '../table'
 import { TableEvents } from '../table/events'
 import { hasSource } from '../../read-graphs/project'
 import { extractColumns } from '../table/identifierTemplate'
+import { ProjectEvents } from './events'
 
 interface CreateDimensionTableCommand extends TableCommand {
   identifierTemplate: string;
 }
 
-export const addDimensionTable = factory<Project, CreateDimensionTableCommand, Table>(async (project, cmd, emitter) => {
+export const addDimensionTable = factory<Project, CreateDimensionTableCommand, Table, ProjectEvents>(async (project, cmd, emitter) => {
   const DomainError = errorFactory(project, 'Cannot create dimension table')
   if (!cmd.tableName) {
     throw new DomainError('Name missing')
@@ -39,7 +40,7 @@ export const addDimensionTable = factory<Project, CreateDimensionTableCommand, T
     identifierTemplate: cmd.identifierTemplate,
   }
 
-  emitter.emit<TableEvents, 'DimensionTableCreated'>('DimensionTableCreated', table)
+  emitter.emitFrom<TableEvents>().DimensionTableCreated(table)
 
   return table
 })
