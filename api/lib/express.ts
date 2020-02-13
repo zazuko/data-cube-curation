@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Constructor, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
 import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
 import { NamedNode } from 'rdf-js'
-import cf from 'clownface'
+import cf, { Clownface } from 'clownface'
 import env from './env'
 import { rdf } from './namespaces'
 
@@ -19,8 +19,17 @@ type BuildModelShape<T extends RdfResource> = ConstructorShape<T> | MixinShape
 export function modelBuilder (req: Request, res, next: NextFunction) {
   const defaultResourceIds = ['', req.resourceId]
   req.buildModel = function <T extends RdfResource> (modelShape: BuildModelShape<T>, ids: (string | NamedNode)[] = defaultResourceIds) {
-    let graph = cf({ dataset: req.graph }).namedNode(ids)
+    let graph: Clownface = cf({ dataset: req.graph }).namedNode(ids)
     let Class: Constructor
+
+    if (graph.out().terms.length === 0) {
+      // try to select the sole subject if there is only one
+      const allSubjects = cf({ dataset: req.graph }).in()
+      const subjectMap = new Map<string, Clownface>(allSubjects.map(node => [node.value, node]))
+      if (subjectMap.size === 1) {
+        graph = subjectMap.values().next().value
+      }
+    }
 
     if (Array.isArray(modelShape)) {
       Class = modelShape.reduce((mixed, mixin) => {
