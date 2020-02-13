@@ -1,7 +1,20 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
 import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
-import { Project, ProjectFormData, ResourceId, Table, Source, TableFormData, Attribute, ValueAttribute, ValueAttributeFormData, ReferenceAttribute, ReferenceAttributeFormData } from '@/types'
+import {
+  Project,
+  ProjectFormData,
+  ResourceId,
+  Table,
+  Source,
+  SourceFormData,
+  TableFormData,
+  Attribute,
+  ValueAttribute,
+  ValueAttributeFormData,
+  ReferenceAttribute,
+  ReferenceAttributeFormData,
+} from '@/types'
 import { findOperation } from './common'
 import * as URI from './uris'
 import * as ProjectMixin from './resources/project'
@@ -183,6 +196,16 @@ class ProjectsClient {
       'Content-Disposition': `attachment; filename="${file.name}"`,
     }
     return invokeSaveOperation<Source>(operation, file, headers)
+  }
+
+  async updateSource (operation: IOperation, source: SourceFormData): Promise<Source> {
+    const data = {
+      '@id': source.id,
+      [URI.PROP_NAME]: source.name,
+      [URI.PROP_CSV_DELIMITER]: source.csvDelimiter,
+      [URI.PROP_CSV_QUOTE]: source.csvQuote,
+    }
+    return invokeSaveOperation<Source>(operation, data)
   }
 
   async getSources (project: Project) {

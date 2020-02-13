@@ -17,12 +17,12 @@
           </b-dropdown-item>
           <hr class="dropdown-divider">
           <b-dropdown-item v-if="table.actions.edit" @click="editTable(table)">
-            <b-icon icon="pencil-alt" />
-            {{ table.actions.edit.title }}
+            <b-icon icon="pencil-alt" size="is-small" />
+            <span>{{ table.actions.edit.title }}</span>
           </b-dropdown-item>
           <b-dropdown-item v-if="table.actions.delete" @click="deleteTable(table)" class="has-text-danger">
-            <b-icon icon="trash" />
-            {{ table.actions.delete.title }}
+            <b-icon icon="trash" size="is-small" />
+            <span>{{ table.actions.delete.title }}</span>
           </b-dropdown-item>
         </b-dropdown>
       </div>

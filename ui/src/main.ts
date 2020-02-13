@@ -15,6 +15,7 @@ import 'highlight.js/styles/github-gist.css'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import './styles/variables.css'
 import './styles/multiselect.css'
+import './styles/dropdown.css'
 
 iconsLibrary.add(fas)
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)
