@@ -28,7 +28,7 @@
         </router-link>
         <router-link :to="{ name: 'project/edit' }" v-slot="{ href, route, navigate, isActive }" style="margin-left: auto;">
           <li :class="[isActive && 'is-active']">
-            <a :href="href" @click="navigate"><b-icon icon="cog" /> Project settings</a>
+            <a :href="href" @click="navigate"><b-icon icon="cog" size="is-small" /> Project settings</a>
           </li>
         </router-link>
       </ul>
