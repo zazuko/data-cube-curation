@@ -6,6 +6,7 @@
 @prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema:    <http://schema.org/> .
 
 dataCube:Project
   hydra:supportedProperty [ hydra:property    api:s3Bucket ;
@@ -27,7 +28,7 @@ api:JobCollection
   a hydra:Class .
 
 _:CreateJob
-  a                  hydra:SupportedOperation, hydra-box:View ;
+  a                  hydra:SupportedOperation, hydra-box:View, schema:CreateAction ;
   hydra:method       "POST" ;
   hydra:title        "Create a job" ;
   hydra:expects      api:GitLabJobTrigger ;
