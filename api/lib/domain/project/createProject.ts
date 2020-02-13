@@ -8,6 +8,7 @@ interface CreateCommand {
   uriSlug?: string;
   name: string;
   baseUri?: string;
+  s3Bucket?: string;
 }
 
 export const createProject = initialize<Project, CreateCommand, ProjectEvents>(function (createCommand, emitter) {
@@ -16,9 +17,11 @@ export const createProject = initialize<Project, CreateCommand, ProjectEvents>(f
   }
 
   const baseUri = ensureSlash(createCommand.baseUri) || temporaryUri(createCommand.name)
+  const s3Bucket = createCommand.s3Bucket || ''
   emitter.emit.ProjectCreated({
     name: createCommand.name,
     baseUri,
+    s3Bucket,
   })
 
   return {
@@ -27,5 +30,6 @@ export const createProject = initialize<Project, CreateCommand, ProjectEvents>(f
     name: createCommand.name,
     archived: 'false',
     baseUri,
+    s3Bucket,
   }
 })

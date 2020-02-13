@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import asyncMiddleware from 'middleware-async'
+import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
+import { Project } from '@zazuko/rdfine-data-cube'
 import { createProject, updateProject } from '../../domain/project'
 import { projects } from '../../storage/repository'
-import { buildVariables } from '../../buildVariables'
-import { expand } from '@zazuko/rdf-vocabularies'
 import { getFactTableId } from '../../read-graphs/table'
 import { NotFoundError } from '../../error'
 import { getProject } from '../../read-graphs/project'
@@ -12,16 +12,9 @@ import env from '../../env'
 export { getTables } from './getTables'
 
 export const create = asyncMiddleware(async (req: Request, res: Response) => {
-  const { projectName, baseUri } = buildVariables(req, {
-    projectName: expand('schema:name'),
-    baseUri: expand('dataCube:baseUri'),
-  })
+  const projectRepresentation = req.buildModel<Project>([ProjectMixin])[0]
 
-  const project = await createProject({
-    name: projectName.value,
-    baseUri: baseUri.value,
-  })
-    .commit(projects)
+  const project = await createProject(projectRepresentation).commit(projects)
 
   res.status(201)
   res.setHeader('Location', `${env.BASE_URI}${project['@id'].replace('/', '')}`)
@@ -29,25 +22,18 @@ export const create = asyncMiddleware(async (req: Request, res: Response) => {
 })
 
 export const createOrUpdate = asyncMiddleware(async (req: Request, res: Response) => {
-  const { projectName, baseUri } = buildVariables(req, {
-    projectName: expand('schema:name'),
-    baseUri: expand('dataCube:baseUri'),
-  })
+  const projectRepresentation = req.buildModel<Project>([ProjectMixin])[0]
   let aggregateRoot = await projects.load(req.resourceId)
 
-  const updateCommand = {
-    newName: projectName.value,
-    baseUri: baseUri.value,
-  }
   const createCommand = {
-    name: projectName.value,
+    name: projectRepresentation.name,
     uriSlug: req.params.projectId,
-    baseUri: baseUri.value,
+    baseUri: projectRepresentation.baseUri,
   }
 
   aggregateRoot = !(await aggregateRoot.state)
     ? createProject(createCommand)
-    : aggregateRoot.mutation(updateProject)(updateCommand)
+    : aggregateRoot.mutation(updateProject)(projectRepresentation)
 
   await aggregateRoot.commit(projects)
   res.representation(await getProject(req.resourceId))

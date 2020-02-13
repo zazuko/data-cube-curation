@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { Constructor, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
 import { NamedNode } from 'rdf-js'
 import cf from 'clownface'
 import env from './env'
@@ -11,14 +12,27 @@ export function resourceId (req: Request, res: Response, next: NextFunction) {
   next()
 }
 
+type ConstructorShape<T extends RdfResource> = Constructor<T> & { types?: NamedNode[] }
+type MixinShape = Mixin<any>[]
+type BuildModelShape<T extends RdfResource> = ConstructorShape<T> | MixinShape
+
 export function modelBuilder (req: Request, res, next: NextFunction) {
   const defaultResourceIds = ['', req.resourceId]
-  req.buildModel = function <T extends RdfResourceImpl> (Class: Constructor<T> & { types?: NamedNode[] }, ids: (string | NamedNode)[] = defaultResourceIds) {
+  req.buildModel = function <T extends RdfResource> (modelShape: BuildModelShape<T>, ids: (string | NamedNode)[] = defaultResourceIds) {
     let graph = cf({ dataset: req.graph }).namedNode(ids)
+    let Class: Constructor
 
-    if (Class.types && Class.types.some(Boolean)) {
-      graph = graph
-        .has(rdf.type, Class.types)
+    if (Array.isArray(modelShape)) {
+      Class = modelShape.reduce((mixed, mixin) => {
+        return mixin(mixed)
+      }, RdfResourceImpl)
+    } else {
+      if (modelShape.types && modelShape.types.some(Boolean)) {
+        graph = graph
+          .has(rdf.type, modelShape.types)
+      }
+
+      Class = modelShape
     }
 
     return graph

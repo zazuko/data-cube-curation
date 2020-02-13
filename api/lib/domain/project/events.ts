@@ -4,6 +4,10 @@ export interface ProjectEvents {
   ProjectCreated: {
     name: string;
     baseUri: string;
+    s3Bucket: string;
+  };
+  S3BucketChanged: {
+    s3Bucket: string;
   };
   ProjectRenamed: {
     name: string;
