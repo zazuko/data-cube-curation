@@ -68,9 +68,9 @@ export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTa
 
   const source: DataCube.Source | DataCube.CsvSource = table.source
   if ('delimiter' in source) {
-    csvwGraph.addDialect(source)
+    csvwGraph.setDialect(source)
   } else {
-    csvwGraph.addDialect(csvDefault)
+    csvwGraph.setDialect(csvDefault)
   }
   csvwGraph.url = table.source.name
 

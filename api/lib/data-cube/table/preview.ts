@@ -3,7 +3,7 @@ import asyncMiddleware from 'middleware-async'
 import $rdf from 'rdf-ext'
 import { getTableAndSource } from '../../read-graphs/table/csvw'
 import CsvwParser from 'rdf-parser-csvw'
-import { loadSourceSample } from '../../services/sourceSamples'
+import { loadSourceSample, dialect } from '../../services/sourceSamples'
 import { getTableSourceId } from '../../read-graphs/table'
 import { buildCsvw } from '../../services/csvwBuilder'
 import { NotFoundError } from '../../error'
@@ -23,6 +23,7 @@ export const parseSample = asyncMiddleware(async (req: express.Request, res: exp
   const dataset = await getTableAndSource(tableId)
   const csvwMetadata = buildCsvw({ dataset, tableId })
   const sampleCsv = await loadSourceSample(sourceId)
+  csvwMetadata.setDialect(dialect)
 
   if (!sampleCsv) {
     next(new NotFoundError('Could not find sample csv'))

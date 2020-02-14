@@ -2,13 +2,18 @@ import md5 from 'md5'
 import parse from 'csv-parse'
 import storage from '../storage'
 
+export const dialect = {
+  delimiter: ';',
+  quote: '"',
+}
+
 export function loadSourceSample (sourceId: string) {
   const pathName = md5(sourceId)
   return storage.loadFile(pathName)
 }
 
 export async function loadSampleRows (sourceId: string, limit: number, offset: number) {
-  let result: string[][] = []
+  const result: string[][] = []
   const fileStream = await loadSourceSample(sourceId)
 
   if (fileStream == null) {
