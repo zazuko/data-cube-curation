@@ -12,12 +12,17 @@ export interface Project extends HydraResource {
   baseUri: string;
   tablesCollection: Collection | null;
   sourcesCollection: Collection | null;
+  jobsCollection: Collection | null;
+  s3Bucket: string;
+
+  getData(changes: { [K in keyof ProjectFormData]?: any }): ProjectFormData;
 }
 
 export interface ProjectFormData {
   id?: string;
   name: string;
   baseUri: string;
+  s3Bucket: string;
 }
 
 export interface RemoteData<T> {
@@ -137,3 +142,12 @@ export interface ErrorMessage {
 }
 
 export type SourceColumnFilter = 'all' | 'mapped' | 'not-mapped'
+
+export interface JobFormData {
+  s3Bucket: string;
+  remember: boolean;
+}
+
+export interface Job {
+  link: string | null;
+}

@@ -13,6 +13,7 @@ export const TYPE_REFERENCE_ATTRIBUTE = expand('dataCube:ReferenceAttribute')
 export const TYPE_VALUE_ATTRIBUTE = expand('dataCube:ValueAttribute')
 
 export const TYPE_OP_VIEW = expand('schema:ViewAction')
+export const TYPE_OP_CREATE = expand('schema:CreateAction')
 export const TYPE_OP_DELETE = expand('schema:DeleteAction')
 export const TYPE_OP_UPDATE = expand('schema:UpdateAction')
 
@@ -46,6 +47,8 @@ export const API_CELLS = expand('dataCube:api/cells')
 export const API_ATTRIBUTES = expand('dataCube:api/attributes')
 export const API_PREVIEW = expand('dataCube:api/preview')
 export const API_CSVW = expand('dataCube:api/csvwMetadata')
+export const API_JOBS = expand('dataCube:api/jobs')
+export const API_S3_BUCKET = expand('dataCube:api/s3Bucket')
 
 export const OP_PROJECTS_CREATE = expand('dataCube:api/CreateProject')
 export const OP_PROJECT_DELETE = expand('dataCube:api/DeleteProject')
