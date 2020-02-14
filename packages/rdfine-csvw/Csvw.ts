@@ -32,7 +32,7 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
     })
     public dialect!: Csvw.Dialect
 
-    public addDialect ({ delimiter, quote }: Pick<Csvw.Dialect, 'delimiter' | 'quote'>) {
+    public setDialect ({ delimiter, quote }: Pick<Csvw.Dialect, 'delimiter' | 'quote'>) {
       this.dialect.delimiter = delimiter
       this.dialect.quote = quote
     }
