@@ -48,6 +48,9 @@ ProjectEvents.on.ProjectRenamed(async ev => {
 ProjectEvents.on.S3BucketChanged(async ev => {
   await deleteInsert(`<${ev.id}> api:s3Bucket ?current .`)
     .insert(`<${ev.id}> api:s3Bucket "${ev.data.s3Bucket}" .`)
+    .where(`OPTIONAL {
+      <${ev.id}> api:s3Bucket ?current .
+    }`)
     .prefixes({
       api,
     })
