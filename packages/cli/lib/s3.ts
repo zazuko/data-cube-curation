@@ -1,7 +1,8 @@
 import aws from 'aws-sdk'
 import * as Csvw from '@rdfine/csvw'
-import { Readable } from 'stream'
+import { Readable, PassThrough } from 'stream'
 import { isReadable } from 'isstream'
+import NullWritable from 'null-writable'
 
 export async function openFile (this: any, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
   this.log.info(`Opening file ${csvw.url} from S3`)
@@ -28,4 +29,34 @@ export async function openFile (this: any, csvw: Csvw.Mapping, s3Endpoint: strin
   }
 
   throw new Error(`Could not read file "${csvw.url}" from S3. It was neither Buffer or Readable`)
+}
+
+export function uploadFile (this: any, fileName: string, s3Endpoint: string, s3Bucket: string) {
+  const quadStream = new PassThrough()
+
+  const s3 = new aws.S3({
+    endpoint: s3Endpoint,
+  })
+
+  s3.upload({
+    Bucket: s3Bucket,
+    Key: fileName,
+    Body: quadStream,
+  }).on('httpUploadProgress', progress => {
+    this.log.info(`Uploaded ${progress.loaded / 1024} of ${progress.total / 1024 || '?'} kB`)
+  }).send((err, data) => {
+    if (err) {
+      this.log.error(err)
+      quadStream.destroy(err)
+    } else {
+      this.log.info(`Transformed triples saved to ${data.Location}`)
+      quadStream.destroy()
+    }
+  })
+
+  return quadStream
+}
+
+export function devNull () {
+  return new NullWritable()
 }
