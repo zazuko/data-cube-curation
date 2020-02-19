@@ -23,8 +23,9 @@ async function loadProject (projectUri, log) {
   return resource
 }
 
-async function loadTables (project: DataCube.Project, log) {
+async function loadTables (project: DataCube.Project, log): Promise<Table[]> {
   const tablesId = project.tables.id.value
+  log.info(`Will transform project ${project.name}`)
   log.debug(`Loading output tables ${tablesId}`)
   const resource = (await Ld.loadResource<Collection<Table>>(tablesId)).root
   if (resource !== null && ('members' in resource)) {
@@ -45,26 +46,26 @@ class ProjectIterator extends stream.Readable {
       .then(project => loadTables(project, log))
       .then(tables => {
         const loadMetadata = tables.reduce((metadata, table) => {
-          log.debug(`Loading csvw ${table.csvw.id.value}`)
+          log.debug(`Loading csvw for table ${table.name}`)
           const promise = Ld.loadResource(table.csvw.id.value)
             .then(r => r.root)
             .then((csvwResource: HydraResource & Csvw.Mapping | null) => {
               if (!csvwResource) {
-                log.warn(`Skipping ${table.csvw.id.value}. Failed to dereference`)
+                log.warn(`Skipping table ${table.name}. Failed to dereference`)
                 return
               }
 
               if (!csvwResource.url) {
-                log.warn(`Skipping ${table.csvw.id.value}. Missing csvw:url property`)
+                log.warn(`Skipping table ${table.name}. Missing csvw:url property`)
                 return
               }
 
               if (!csvwResource.dialect.isSet) {
-                log.warn(`Skipping ${table.csvw.id.value}. CSV dialect not set`)
+                log.warn(`Skipping table ${table.name}. CSV dialect not set`)
                 return
               }
 
-              log.debug(`Will transform ${csvwResource.url}. Dialect: delimiter=${csvwResource.dialect.delimiter} quote=${csvwResource.dialect.quote}`)
+              log.debug(`Will transform table ${table.name} from ${csvwResource.url}. Dialect: delimiter=${csvwResource.dialect.delimiter} quote=${csvwResource.dialect.quote}`)
               this.push(csvwResource)
             })
             .catch(e => {

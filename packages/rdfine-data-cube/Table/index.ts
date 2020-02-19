@@ -8,6 +8,7 @@ export interface Table extends RdfResource {
   readonly project: Project;
   readonly source: Source;
   readonly csvw: Csvw.Mapping;
+  readonly name: string;
 }
 
 export interface DimensionTable extends Table {

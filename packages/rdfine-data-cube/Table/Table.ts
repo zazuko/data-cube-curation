@@ -2,7 +2,7 @@ import { namespace, property, RdfResource, Constructor } from '@tpluscode/rdfine
 import * as Csvw from '@rdfine/csvw'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
 import * as Table from './index'
-import { dataCube, rdf, api } from '../namespaces'
+import { dataCube, rdf, api, schema } from '../namespaces'
 import './Attribute'
 import { ProjectMixin } from '../Project'
 import * as DataCube from '../'
@@ -21,6 +21,9 @@ export function TableMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.resource({ path: api.csvwMetadata, as: [ CsvwMappingMixin ] })
     public readonly csvw!: Csvw.Mapping
+
+    @property.literal({ path: schema('name') })
+    public readonly name!: string
 
     public get attributes () {
       return this._selfGraph.in(dataCube.table)
