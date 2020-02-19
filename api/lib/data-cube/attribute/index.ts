@@ -8,9 +8,9 @@ export const getHandler = asyncMiddleware(async (req: Request, res: Response, ne
       if (dataset === null) {
         res.status(404)
         next()
+      } else {
+        res.graph(dataset)
       }
-
-      res.graph(dataset)
     })
     .catch(next)
 })

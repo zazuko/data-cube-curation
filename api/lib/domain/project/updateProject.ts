@@ -5,14 +5,15 @@ import { errorFactory } from '../error-helper'
 import { ensureSlash } from './baseUri'
 
 interface UpdateCommand {
-  newName: string;
+  name: string;
   baseUri: string;
+  s3Bucket?: string;
 }
 
 export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(function (state, command, emitter) {
   const DomainError = errorFactory(state, 'Cannot update project')
 
-  if (!command.newName || typeof command.newName !== 'string') {
+  if (!command.name || typeof command.name !== 'string') {
     throw new DomainError('Invalid name')
   }
 
@@ -21,10 +22,11 @@ export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(funct
   }
 
   const baseUri = ensureSlash(command.baseUri)
+  const s3Bucket = command.s3Bucket || ''
 
-  if (state.name !== command.newName) {
+  if (state.name !== command.name) {
     emitter.emit.ProjectRenamed({
-      name: command.newName,
+      name: command.name,
     })
   }
   if (state.baseUri !== baseUri) {
@@ -32,10 +34,16 @@ export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(funct
       baseUri,
     })
   }
+  if (state.s3Bucket !== s3Bucket) {
+    emitter.emit.S3BucketChanged({
+      s3Bucket,
+    })
+  }
 
   return {
     ...state,
-    name: command.newName,
+    name: command.name,
     baseUri,
+    s3Bucket,
   }
 })

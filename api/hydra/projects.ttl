@@ -55,37 +55,29 @@ api:project
 dataCube:Project
   a                        hydra:Class ;
   hydra:title              "A data cube mapping project" ;
-  hydra:supportedOperation api:GetProject,
-                           api:DeleteProject,
-                           api:ReplaceProject ;
-  hydra:supportedProperty  [
-                             hydra:property  schema:name ;
+  hydra:supportedOperation api:GetProject, api:DeleteProject, api:ReplaceProject ;
+  hydra:supportedProperty  [ hydra:property  schema:name ;
                              hydra:title     "Project name" ;
                              hydra:readable  true ;
                              hydra:writeable true ;
-                             hydra:required  true
-                           ],
-                           [
-                             hydra:property  dataCube:baseUri ;
+                             hydra:required  true ] ;
+  hydra:supportedProperty  [ hydra:property  dataCube:baseUri ;
                              hydra:title     "Base URI for generated triples" ;
                              hydra:readable  true ;
-                             hydra:writeable true
-                           ],
-                           [
-                             hydra:property  api:sources ;
+                             hydra:writeable true ] ;
+  hydra:supportedProperty  [ hydra:property  api:sources ;
                              hydra:title     "Data cube sources" ;
-                             hydra:writeable false
-                           ],
-                           [
-                             hydra:property  api:factTable ;
+                             hydra:writeable false ] ;
+  hydra:supportedProperty  [ hydra:property  api:factTable ;
                              hydra:title     "The project's output Fact Table" ;
-                             hydra:writeable false
-                           ],
-                           [
-                             hydra:property  api:tables ;
+                             hydra:writeable false ] ;
+  hydra:supportedProperty  [ hydra:property  api:tables ;
                              hydra:title     "The project's tables" ;
-                             hydra:writeable false
-                           ] .
+                             hydra:writeable false ] ;
+  hydra:supportedProperty  [ hydra:property  api:jobs ;
+                             hydra:title     "Jobs transforming source data to triples" ;
+                             hydra:readable  true ;
+                             hydra:writeable false ] .
 
 api:tables
   a                        hydra:Link ;
@@ -139,3 +131,4 @@ api:GetProjectSources
   code:implementedBy [ a              hydra-box:middlewareChain ;
                        code:arguments ( [ a         code:EcmaScript ;
                                           code:link <file:lib/data-cube/project/sources-collection#get> ] ) ] .
+

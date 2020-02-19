@@ -24,9 +24,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'a name',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'a name',
+        name: 'a name',
         baseUri: 'urn:foo:',
       }
 
@@ -43,9 +44,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'bar',
+        name: 'bar',
         baseUri: 'urn:foo:',
       }
 
@@ -64,9 +66,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'foo',
+        name: 'foo',
         baseUri: 'urn:bar:',
       }
 
@@ -85,9 +88,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'bar',
+        name: 'bar',
         baseUri: 'urn:foo:',
       }
 
@@ -104,9 +108,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'foo',
+        name: 'foo',
         baseUri: 'urn:bar:',
       }
 
@@ -123,6 +128,7 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
         baseUri: 'urn:foo:',
@@ -138,9 +144,10 @@ describe('Project', () => {
         ...nullProject,
         name: 'foo',
         baseUri: 'urn:foo:',
+        s3Bucket: '',
       }
       const cmd = {
-        newName: 'foo',
+        name: 'foo',
       }
 
       // then

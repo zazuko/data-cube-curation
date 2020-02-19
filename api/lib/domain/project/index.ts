@@ -9,6 +9,7 @@ export interface Project extends Entity {
   archived: 'true' | 'false';
   factTableSource?: string | null;
   baseUri: string;
+  s3Bucket: string;
 }
 
 export { createProject } from './createProject'

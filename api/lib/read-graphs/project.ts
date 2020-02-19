@@ -7,16 +7,23 @@ import { getClient } from './sparqlClient'
 import TableEvents from '../domain/table/events'
 import { projects } from '../storage/repository'
 import { unselectFactTable } from '../domain/project'
+import { Project } from '@zazuko/rdfine-data-cube'
+import { RdfResourceImpl } from '@tpluscode/rdfine'
+import { namedNode } from 'rdf-data-model'
+import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
 
 ProjectEvents.on.ProjectCreated(async ev => {
   await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" ;
+       api:s3Bucket "${ev.data.s3Bucket}" ;
        dataCube:baseUri "${ev.data.baseUri}" .
     <${ev.id}/tables> dataCube:project <${ev.id}> .
+    <${ev.id}/jobs> dataCube:project <${ev.id}> .
     <${ev.id}/sources> dataCube:project <${ev.id}> .
     <${ev.id}/fact-table> dataCube:project <${ev.id}> .
     <${ev.id}>
         api:tables <${ev.id}/tables> ;
+        api:jobs <${ev.id}/jobs> ;
         api:sources <${ev.id}/sources> ;
         api:factTable <${ev.id}/fact-table> .
   `)
@@ -34,6 +41,15 @@ ProjectEvents.on.ProjectRenamed(async ev => {
     .prefixes({
       schema,
       dataCube,
+    })
+    .execute(getClient())
+})
+
+ProjectEvents.on.S3BucketChanged(async ev => {
+  await deleteInsert(`<${ev.id}> api:s3Bucket ?current .`)
+    .insert(`<${ev.id}> api:s3Bucket "${ev.data.s3Bucket}" .`)
+    .prefixes({
+      api,
     })
     .execute(getClient())
 })
@@ -88,7 +104,7 @@ export function exists (id: string) {
   return ask(`<${id}> ?p ?o`).execute(getClient())
 }
 
-export async function getProject (id: string) {
+export async function getProject (id: string): Promise<Project> {
   const dataset = await $rdf.dataset().import(await construct()
     .prefixes({
       api,
@@ -103,6 +119,8 @@ export async function getProject (id: string) {
       dataCube:factTable ?factTable ;
       api:factTable ?factTableCanonical ;
       api:tables ?tables ;
+      api:jobs ?jobs ;
+      api:s3Bucket ?s3Bucket ;
       dataCube:baseUri ?baseUri .
 
     ?sources
@@ -119,9 +137,11 @@ export async function getProject (id: string) {
         a ?projectType ;
         api:sources ?sources ;
         api:factTable ?factTableCanonical ;
+        api:jobs ?jobs ;
         api:tables ?tables .
 
     OPTIONAL { ?project dataCube:baseUri ?baseUri . }
+    OPTIONAL { ?project api:s3Bucket ?s3Bucket . }
 
     OPTIONAL
     {
@@ -153,7 +173,9 @@ export async function getProject (id: string) {
     project.deleteOut(api.factTable)
   }
 
-  return dataset
+  return RdfResourceImpl.factory.createEntity(cf({
+    dataset, term: namedNode(id),
+  }), [ProjectMixin])
 }
 
 export async function hasSource (projectId: string, sourceId: string) {

@@ -12,6 +12,9 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.resource({ path: api.tables })
     public tables!: RdfResource
+
+    @property.literal({ path: api.s3Bucket })
+    public s3Bucket?: string
   }
 
   return Project
