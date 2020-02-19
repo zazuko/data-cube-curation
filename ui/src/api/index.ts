@@ -14,6 +14,8 @@ import {
   ValueAttributeFormData,
   ReferenceAttribute,
   ReferenceAttributeFormData,
+  Job,
+  JobFormData,
 } from '@/types'
 import { findOperation } from './common'
 import * as URI from './uris'
@@ -125,6 +127,7 @@ class ProjectsClient {
     const data = {
       [URI.PROP_NAME]: project.name,
       [URI.PROP_BASE_URI]: project.baseUri,
+      [URI.API_S3_BUCKET]: project.s3Bucket,
     }
     return invokeSaveOperation<Project>(operation, data)
   }
@@ -277,6 +280,25 @@ class ProjectsClient {
 
   async deleteAttribute (attribute: Attribute): Promise<void> {
     return invokeDeleteOperation(attribute.actions.delete)
+  }
+
+  async triggerJob (project: Project, job: JobFormData): Promise<Job> {
+    const operation = project.actions.triggerJob
+
+    if (!operation) { throw new Error('Operation does not exist') }
+
+    const data = {
+      [URI.API_S3_BUCKET]: job.s3Bucket,
+    }
+    const response = await operation.invoke(JSON.stringify(data))
+
+    if (response.xhr.status !== 200) {
+      throw await APIError.fromResponse(response)
+    }
+
+    const jobLink = response.xhr.headers.get('Location')
+
+    return { link: jobLink }
   }
 }
 

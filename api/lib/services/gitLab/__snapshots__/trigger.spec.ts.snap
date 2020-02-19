@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gitlab trigger calls gitlab trigger endpoint with overridden S3 settings 1`] = `
+Array [
+  "GITLAB_PIPELINE",
+  Object {
+    "body": URLSearchParams {
+      Symbol(query): Array [
+        "token",
+        "GITLAB_PIPELINE_TOKEN",
+        "ref",
+        "master",
+        "variables[PROJECT]",
+        "foo:bar",
+        "variables[S3_ENDPOINT]",
+        "AWS_S3_ENDPOINT",
+        "variables[S3_BUCKET]",
+        "changed bucket",
+        "variables[AWS_ACCESS_KEY_ID]",
+        "AWS_ACCESS_KEY_ID",
+        "variables[AWS_SECRET_ACCESS_KEY]",
+        "AWS_SECRET_ACCESS_KEY",
+      ],
+      Symbol(context): null,
+    },
+    "method": "POST",
+  },
+]
+`;
+
+exports[`gitlab trigger calls gitlab trigger endpoint with project's S3 settings 1`] = `
+Array [
+  "GITLAB_PIPELINE",
+  Object {
+    "body": URLSearchParams {
+      Symbol(query): Array [
+        "token",
+        "GITLAB_PIPELINE_TOKEN",
+        "ref",
+        "master",
+        "variables[PROJECT]",
+        "foo:bar",
+        "variables[S3_ENDPOINT]",
+        "AWS_S3_ENDPOINT",
+        "variables[S3_BUCKET]",
+        "foo",
+        "variables[AWS_ACCESS_KEY_ID]",
+        "AWS_ACCESS_KEY_ID",
+        "variables[AWS_SECRET_ACCESS_KEY]",
+        "AWS_SECRET_ACCESS_KEY",
+      ],
+      Symbol(context): null,
+    },
+    "method": "POST",
+  },
+]
+`;

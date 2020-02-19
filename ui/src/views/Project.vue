@@ -26,8 +26,13 @@
             <a :href="href" @click="navigate">Output tables</a>
           </li>
         </router-link>
-        <router-link :to="{ name: 'project/edit' }" v-slot="{ href, route, navigate, isActive }" style="margin-left: auto;">
-          <li :class="[isActive && 'is-active']">
+        <router-link :to="{ name: 'project/jobs' }" v-slot="{ href, route, navigate, isActive }" v-if="project.jobsCollection">
+          <li :class="[isActive && 'is-active']" class="tab-right">
+            <a :href="href" @click="navigate"><b-icon icon="play" size="is-small" /> Transform data</a>
+          </li>
+        </router-link>
+        <router-link :to="{ name: 'project/edit' }" v-slot="{ href, route, navigate, isActive }">
+          <li :class="[isActive && 'is-active']" class="tab-right">
             <a :href="href" @click="navigate"><b-icon icon="cog" size="is-small" /> Project settings</a>
           </li>
         </router-link>
@@ -39,6 +44,16 @@
     </section>
   </Loader>
 </template>
+
+<style scoped>
+.tab-right {
+  margin-left: auto;
+}
+
+.tab-right ~ .tab-right {
+  margin-left: 0;
+}
+</style>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'

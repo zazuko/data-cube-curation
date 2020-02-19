@@ -12,7 +12,7 @@ describe('project', () => {
 
       // when
       project = await updateProject(project, {
-        newName: 'foo',
+        name: 'foo',
         baseUri: 'http://example.com',
       }, fakeDomainEventEmitter())
 

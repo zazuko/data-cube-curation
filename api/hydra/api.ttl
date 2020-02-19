@@ -24,7 +24,8 @@
                        dataCube:ReferenceAttribute,
                        dataCube:Attribute,
                        api:AttributeCollection,
-                       api:TableCollection .
+                       api:TableCollection,
+                       api:GitLabJobTrigger .
 
 api:Entrypoint
   a                        hydra:Class ;
@@ -59,6 +60,7 @@ api:Error
 </project/:projectId/sources> a api:Sources .
 </project/:projectId> api:factTable </project/:projectId/fact-table> .
 </project/:projectId> api:tables </project/:projectId/tables> .
+</project/:projectId> api:jobs </project/:projectId/jobs> .
 </project/:projectId/fact-table> a dataCube:FactTable .
 </project/:projectId/table/:tableName> a dataCube:Table .
 </project/:projectId/table/:tableName/attribute/:attributeName> a dataCube:Attribute .

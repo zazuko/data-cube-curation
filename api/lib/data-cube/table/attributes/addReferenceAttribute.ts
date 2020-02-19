@@ -25,8 +25,13 @@ export const addReferenceAttributeHandler = asyncMiddleware(async (req: Request,
   const attribute = await aggregate.factory(addReferenceAttribute)(req.buildModel(AddReferenceAttributeCommand)[0])
 
   const newAttribute = await attribute.commit(attributes)
+  const persistedAttribute = await getSingleAttribute(newAttribute['@id'])
 
-  res.status(201)
-  res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
-  res.graph(await getSingleAttribute(newAttribute['@id']))
+  if (persistedAttribute) {
+    res.status(201)
+    res.setHeader('Location', `${env.BASE_URI}${newAttribute['@id']}`)
+    res.graph(persistedAttribute)
+  } else {
+    res.status(500)
+  }
 })

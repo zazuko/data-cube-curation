@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { ActionTree, MutationTree, GetterTree } from 'vuex'
 import { RootState } from '@/store/types'
-import { Actions, ResourceId, Project, RemoteData } from '@/types'
+import { Actions, ResourceId, Project, Job, JobFormData, RemoteData } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
 import Remote from '@/remote'
@@ -64,6 +64,19 @@ const actions: ActionTree<ProjectsState, RootState> = {
     await handleAPIError(context, async () => {
       await client.projects.delete(project)
       context.commit('removeOne', project)
+    })
+  },
+
+  async triggerJob (context, { project, data }: { project: Project, data: JobFormData }): Promise<Job> {
+    return handleAPIError(context, async () => {
+      if (data.remember) {
+        await context.dispatch('save', {
+          operation: project.actions.edit,
+          data: project.getData({ s3Bucket: data.s3Bucket }),
+        })
+      }
+
+      return client.projects.triggerJob(project, data)
     })
   },
 }

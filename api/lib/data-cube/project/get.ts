@@ -23,7 +23,7 @@ export const placeholderRepresentation = asyncMiddleware(async (req: Request, re
 })
 
 export const getExistingProject = asyncMiddleware(async (req: Request, res: Response) => {
-  return res.graph(await getProject(req.resourceId))
+  return res.representation(await getProject(req.resourceId))
 })
 
 export const get = asyncMiddleware(async (req: Request, res: Response, next) => {

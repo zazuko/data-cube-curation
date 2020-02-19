@@ -42,10 +42,7 @@ export default class extends Vue {
   }
 
   created () {
-    this.data = {
-      name: this.project.name,
-      baseUri: this.project.baseUri,
-    }
+    this.data = this.project.getData({})
   }
 
   async save () {

@@ -30,12 +30,9 @@ export default class extends Vue {
   @Prop() save: (project: ProjectFormData) => void;
   data: ProjectFormData = emptyProject();
 
-  mounted () {
+  created () {
     if (this.project) {
-      this.data = {
-        name: this.project.name,
-        baseUri: this.project.baseUri,
-      }
+      this.data = this.project.getData({})
     }
   }
 }
@@ -44,6 +41,7 @@ function emptyProject (): ProjectFormData {
   return {
     name: '',
     baseUri: '',
+    s3Bucket: '',
   }
 }
 </script>
