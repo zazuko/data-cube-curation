@@ -17,6 +17,9 @@ csvSourceEvents.on.NameChanged(function updateName (ev) {
 csvSourceEvents.on.QuoteChanged(function updateQuote (ev) {
   return deleteInsert(`<${ev.id}> dataCube:csvQuote ?current .`)
     .insert(`<${ev.id}> dataCube:csvQuote ${toString(literal(ev.data.newQuote))}`)
+    .where(`OPTIONAL {
+      <${ev.id}> dataCube:csvQuote ?current
+    }`)
     .prefixes({ dataCube })
     .execute(getClient())
 })
@@ -24,6 +27,9 @@ csvSourceEvents.on.QuoteChanged(function updateQuote (ev) {
 csvSourceEvents.on.DelimiterChanged(function updateDelimiter (ev) {
   return deleteInsert(`<${ev.id}> dataCube:csvDelimiter ?current .`)
     .insert(`<${ev.id}> dataCube:csvDelimiter "${ev.data.newDelimiter}"`)
+    .where(`OPTIONAL {
+      <${ev.id}> dataCube:csvDelimiter ?current
+    }`)
     .prefixes({ dataCube })
     .execute(getClient())
 })
