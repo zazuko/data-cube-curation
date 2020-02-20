@@ -79,9 +79,9 @@ Streams transformed triples to a store using the graph protocol
 #### Arguments
 
 * `graph`
-* `endpoint`
-* `user`
-* `password`
+* `graph-store-endpoint`
+* `graph-store-user`
+* `graph-store-password`
 
 ## Run from sources
 
