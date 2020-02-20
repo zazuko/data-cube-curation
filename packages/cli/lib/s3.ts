@@ -3,8 +3,9 @@ import * as Csvw from '@rdfine/csvw'
 import { Readable, PassThrough } from 'stream'
 import { isReadable } from 'isstream'
 import NullWritable from 'null-writable'
+import { Context } from 'barnard59-core/lib/Pipeline'
 
-export async function openFile (this: any, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
+export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
   this.log.info(`Opening file ${csvw.url} from S3`)
 
   const s3 = new aws.S3({
@@ -31,7 +32,7 @@ export async function openFile (this: any, csvw: Csvw.Mapping, s3Endpoint: strin
   throw new Error(`Could not read file "${csvw.url}" from S3. It was neither Buffer or Readable`)
 }
 
-export function uploadFile (this: any, fileName: string, s3Endpoint: string, s3Bucket: string) {
+export function uploadFile (this: Context, fileName: string, s3Endpoint: string, s3Bucket: string) {
   const quadStream = new PassThrough()
 
   const s3 = new aws.S3({
