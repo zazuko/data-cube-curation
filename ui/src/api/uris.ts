@@ -37,6 +37,7 @@ export const PROP_SOURCE_COLUMN = expand('dataCube:sourceColumn')
 export const PROP_REFERENCED_COLUMN = expand('dataCube:referencedColumn')
 export const PROP_CSV_DELIMITER = expand('dataCube:csvDelimiter')
 export const PROP_CSV_QUOTE = expand('dataCube:csvQuote')
+export const PROP_GRAPH_URI = expand('dataCube:graphUri')
 
 export const API_PROJECTS = expand('dataCube:api/projects')
 export const API_SOURCES = expand('dataCube:api/sources')
