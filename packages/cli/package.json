@@ -21,6 +21,7 @@
     "aws-sdk": "^2.559.0",
     "barnard59": "^0.0.8",
     "barnard59-formats": "0.0.6",
+    "barnard59-graph-store": "^0.0.4",
     "clownface": "^0.12.1",
     "commander": "^4.1.0",
     "debug": "^4.1.1",
