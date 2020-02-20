@@ -60,6 +60,17 @@ Streams transformed triples as n-triples to a single file
 
 * `targetFile`
   * default: `/output/transformed.nt`
+
+### `--to s3`
+
+Streams transformed triples to an S3 bucket.
+
+#### Arguments
+
+Same as for [`--from s3`](#--from-s3) above, and:
+
+* `targetFile`
+  * default: `transformed.nt`
   
 ### `--to graph-store`
 
