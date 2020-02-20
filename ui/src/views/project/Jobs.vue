@@ -9,6 +9,10 @@
         <b-input v-model="data.s3Bucket" required />
       </b-field>
 
+      <b-field label="Graph URI">
+        <b-input v-model="data.graphUri" required />
+      </b-field>
+
       <b-field>
         <label>
           <b-checkbox v-model="data.remember" />
@@ -72,6 +76,7 @@ export default class extends Vue {
   reset () {
     this.data = {
       s3Bucket: this.project.s3Bucket,
+      graphUri: this.project.graphUri,
       remember: false,
     }
     this.job = null

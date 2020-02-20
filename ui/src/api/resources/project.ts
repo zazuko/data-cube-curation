@@ -41,11 +41,16 @@ export function Mixin<B extends Constructor> (Base: B) {
       return this.get<string>(URI.API_S3_BUCKET) ?? ''
     }
 
+    get graphUri (): string {
+      return this.get<string>(URI.PROP_GRAPH_URI) ?? ''
+    }
+
     getData (changes: { [K in keyof ProjectFormData]?: any }): ProjectFormData {
       return {
         name: this.name,
         baseUri: this.baseUri,
         s3Bucket: this.s3Bucket,
+        graphUri: this.graphUri,
         ...changes,
       }
     }
