@@ -10,6 +10,7 @@ export interface Project extends Entity {
   factTableSource?: string | null;
   baseUri: string;
   s3Bucket: string;
+  graphUri?: string;
 }
 
 export { createProject } from './createProject'

@@ -8,6 +8,7 @@ export interface Project extends RdfResource {
   baseUri: string;
   tables: RdfResource;
   s3Bucket?: string;
+  graphUri?: string;
 }
 
 export interface Source extends RdfResource {

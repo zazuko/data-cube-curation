@@ -8,6 +8,7 @@ interface UpdateCommand {
   name: string;
   baseUri: string;
   s3Bucket?: string;
+  graphUri?: string;
 }
 
 export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(function (state, command, emitter) {
@@ -23,6 +24,7 @@ export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(funct
 
   const baseUri = ensureSlash(command.baseUri)
   const s3Bucket = command.s3Bucket || ''
+  const graphUri = command.graphUri || ''
 
   if (state.name !== command.name) {
     emitter.emit.ProjectRenamed({
@@ -39,11 +41,17 @@ export const updateProject = mutate<Project, UpdateCommand, ProjectEvents>(funct
       s3Bucket,
     })
   }
+  if (state.graphUri !== graphUri) {
+    emitter.emit.GraphUriChanged({
+      graphUri,
+    })
+  }
 
   return {
     ...state,
     name: command.name,
     baseUri,
     s3Bucket,
+    graphUri,
   }
 })

@@ -9,6 +9,7 @@ interface CreateCommand {
   name: string;
   baseUri?: string;
   s3Bucket?: string;
+  graphUri?: string;
 }
 
 export const createProject = initialize<Project, CreateCommand, ProjectEvents>(function (createCommand, emitter) {
@@ -22,6 +23,7 @@ export const createProject = initialize<Project, CreateCommand, ProjectEvents>(f
     name: createCommand.name,
     baseUri,
     s3Bucket,
+    graphUri: createCommand.graphUri,
   })
 
   return {
@@ -31,5 +33,6 @@ export const createProject = initialize<Project, CreateCommand, ProjectEvents>(f
     archived: 'false',
     baseUri,
     s3Bucket,
+    graphUri: createCommand.graphUri,
   }
 })

@@ -64,3 +64,15 @@ By default the server will accept files up to `5MB`.
 ```dotenv
 EXPRESS_UPLOAD_LIMIT=20MB
 ```
+
+### Setting up GitLab integration
+
+To run the transformation pipeline on GitLab add the `AWS_*` variables as seen
+above and also add those below to configure the destination for the resulting triples.
+They will be pushed to a triple store named graph using SPARQL Graph Protocol.
+
+```dotenv
+GRAPH_STORE_ENDPOINT=http://sparql.endpoint
+GRAPH_STORE_USER=secret
+GRAPH_STORE_PASSWORD=secret
+```

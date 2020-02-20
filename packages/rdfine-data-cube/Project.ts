@@ -15,6 +15,9 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.literal({ path: api.s3Bucket })
     public s3Bucket?: string
+
+    @property.literal({ path: dataCube.graphUri })
+    public graphUri?: string
   }
 
   return Project

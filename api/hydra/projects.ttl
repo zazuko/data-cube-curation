@@ -77,7 +77,11 @@ dataCube:Project
   hydra:supportedProperty  [ hydra:property  api:jobs ;
                              hydra:title     "Jobs transforming source data to triples" ;
                              hydra:readable  true ;
-                             hydra:writeable false ] .
+                             hydra:writeable false ] ;
+  hydra:supportedProperty  [ hydra:property  dataCube:graphUri ;
+                             hydra:title     "Name of graph to store the transformed triples" ;
+                             hydra:readable  true ;
+                             hydra:writeable true ] .
 
 api:tables
   a                        hydra:Link ;
