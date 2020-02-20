@@ -39,4 +39,5 @@ _:CreateJob
 api:GitLabJobTrigger
   a                       hydra:Class ;
   hydra:supportedProperty [ hydra:property api:s3Bucket ] ;
+  hydra:supportedProperty [ hydra:property dataCube:graphUri ] ;
 .

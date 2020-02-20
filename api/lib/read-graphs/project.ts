@@ -13,10 +13,14 @@ import { namedNode } from 'rdf-data-model'
 import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
 
 ProjectEvents.on.ProjectCreated(async ev => {
+  const graphUriTriple = typeof ev.data.graphUri !== 'undefined' && ev.data.graphUri !== null
+    ? `<${ev.id}> dataCube:graphUri "${ev.data.graphUri}" .` : ''
+
   await insertData(`
     <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" ;
        api:s3Bucket "${ev.data.s3Bucket}" ;
        dataCube:baseUri "${ev.data.baseUri}" .
+    ${graphUriTriple}
     <${ev.id}/tables> dataCube:project <${ev.id}> .
     <${ev.id}/jobs> dataCube:project <${ev.id}> .
     <${ev.id}/sources> dataCube:project <${ev.id}> .
@@ -53,6 +57,18 @@ ProjectEvents.on.S3BucketChanged(async ev => {
     }`)
     .prefixes({
       api,
+    })
+    .execute(getClient())
+})
+
+ProjectEvents.on.GraphUriChanged(async ev => {
+  await deleteInsert(`<${ev.id}> dataCube:graphUri ?current .`)
+    .insert(`<${ev.id}> dataCube:graphUri "${ev.data.graphUri}" .`)
+    .where(`OPTIONAL {
+      <${ev.id}> dataCube:graphUri ?current .
+    }`)
+    .prefixes({
+      dataCube,
     })
     .execute(getClient())
 })
@@ -124,7 +140,8 @@ export async function getProject (id: string): Promise<Project> {
       api:tables ?tables ;
       api:jobs ?jobs ;
       api:s3Bucket ?s3Bucket ;
-      dataCube:baseUri ?baseUri .
+      dataCube:baseUri ?baseUri ;
+      dataCube:graphUri ?graphUri.
 
     ?sources
         a hydra:Collection ;
@@ -144,6 +161,7 @@ export async function getProject (id: string): Promise<Project> {
         api:tables ?tables .
 
     OPTIONAL { ?project dataCube:baseUri ?baseUri . }
+    OPTIONAL { ?project dataCube:graphUri ?graphUri . }
     OPTIONAL { ?project api:s3Bucket ?s3Bucket . }
 
     OPTIONAL

@@ -20,3 +20,4 @@ configMapGenerator:
     - debug=*:error,*:warning,dataCube:request,dataCube
     - gitlab_pipeline=https://gitlab.zazuko.com/api/v4/projects/56/trigger/pipeline
     - gitlab_pipeline_branch=master
+    - graph_store_endpoint=http://data.zazuko.com/lindas

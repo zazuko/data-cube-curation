@@ -25,10 +25,12 @@ describe('Project', () => {
         name: 'a name',
         baseUri: 'urn:foo:',
         s3Bucket: '',
+        graphUri: 'urn:foo:bar',
       }
       const cmd = {
         name: 'a name',
         baseUri: 'urn:foo:',
+        graphUri: 'urn:foo:bar',
       }
 
       // when

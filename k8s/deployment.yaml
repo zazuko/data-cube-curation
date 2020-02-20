@@ -99,6 +99,21 @@ spec:
             configMapKeyRef:
               name: data-cube-curation
               key: gitlab_pipeline_branch
+        - name: GRAPH_STORE_USER
+          valueFrom:
+            secretKeyRef:
+              name: data-cube-curation
+              key: graph_store_user
+        - name: GRAPH_STORE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: data-cube-curation
+              key: graph_store_password
+        - name: GRAPH_STORE_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: data-cube-curation
+              key: graph_store_endpoint
 
         ports:
         - name: http
