@@ -3,12 +3,12 @@ import fetch from 'node-fetch'
 import { Project } from '@zazuko/rdfine-data-cube'
 import env from '../../env'
 
-interface GitLabJobTrigger {
-  s3Bucket?: string;
-  graphUri?: string;
+export interface GitLabJobTrigger {
+  s3Bucket: string | undefined;
+  graphUri: string | undefined;
 }
 
-export function triggerPipeline (project: Pick<Project, 's3Bucket' | 'id' | 'graphUri'>, trigger: GitLabJobTrigger = {}) {
+export function triggerPipeline (project: Pick<Project, 's3Bucket' | 'id' | 'graphUri'>, trigger: GitLabJobTrigger = { s3Bucket: undefined, graphUri: undefined }) {
   const s3Bucket = trigger.s3Bucket || project.s3Bucket
   const graphUri = trigger.graphUri || project.graphUri
 
