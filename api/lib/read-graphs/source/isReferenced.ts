@@ -1,22 +1,16 @@
-import { ask } from '../../sparql'
-import { getClient } from '../sparqlClient'
+import { ASK } from '@tpluscode/sparql-builder'
+import { execute } from '../../sparql'
 import { api, dataCube } from '../../namespaces'
 
 export function isReferenced (sourceId: string) {
-  return ask()
-    .where(`
+  return execute(ASK`
         ?s ?uses <${sourceId}>
 
         MINUS {
-            ?s a dataCube:Project
+            ?s a ${dataCube.Project}
         }
         MINUS {
-            <${sourceId}> api:columns ?s
+            <${sourceId}> ${api.columns} ?s
         }
     `)
-    .prefixes({
-      api,
-      dataCube,
-    })
-    .execute(getClient())
 }

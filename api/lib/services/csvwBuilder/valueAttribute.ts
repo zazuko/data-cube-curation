@@ -3,7 +3,7 @@ import { literal } from '@rdfjs/data-model'
 import { shrink } from '@zazuko/rdf-vocabularies'
 import * as Table from '@zazuko/rdfine-data-cube/Table'
 import * as Csvw from '@rdfine/csvw'
-import { csvw, rdf } from '../../namespaces'
+import { csvw, rdf } from '@tpluscode/rdf-ns-builders'
 
 const xsdPrefix = /^xsd:(.+)/
 

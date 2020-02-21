@@ -1,16 +1,14 @@
 import { CoreEvents } from '@tpluscode/fun-ddr'
 import ProjectEvents from '../domain/project/events'
-import { select, deleteInsert } from '../sparql'
+import { execute } from '../sparql'
+import { DELETE, SELECT } from '@tpluscode/sparql-builder'
 import { dataCube } from '../namespaces'
 import { getClient } from '../read-graphs/sparqlClient'
 import { sources, tables } from '../storage/repository'
 
 ProjectEvents.on.ProjectArchived(async function deleteSourcesOfProject (ev) {
-  await select('source')
-    .where(`?source dataCube:project <${ev.id}> ; a dataCube:Source .`)
-    .prefixes({
-      dataCube,
-    })
+  await SELECT`?source`
+    .WHERE`?source dataCube:project <${ev.id}> ; a ${dataCube.Source} .`
     .execute(getClient())
     .then(bindings => bindings.forEach(async b => {
       const source = await sources.load(b.source.value)
@@ -21,12 +19,10 @@ ProjectEvents.on.ProjectArchived(async function deleteSourcesOfProject (ev) {
 })
 
 ProjectEvents.on.ProjectArchived(async function deleteTablesOfProject (ev) {
-  await select('table')
-    .where(`?table dataCube:project <${ev.id}> ; a dataCube:Table .`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  await execute(
+    SELECT`?table`
+      .WHERE`?table dataCube:project <${ev.id}> ; a ${dataCube.Table} .`
+  )
     .then(bindings => bindings.forEach(async b => {
       const table = await tables.load(b.table.value)
       await table
@@ -37,19 +33,14 @@ ProjectEvents.on.ProjectArchived(async function deleteTablesOfProject (ev) {
 
 CoreEvents.on.AggregateDeleted(async function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
-    await deleteInsert(`
+    await execute(DELETE`
       ?source ?p0 ?o0 .
       ?column ?p1 ?o1 .`
-    )
-      .where(`
+      .WHERE`
         ?source ?p0 ?o0 .
         ?source dataCube:column ?column .
         ?column ?p1 ?o1 .
 
         FILTER ( ?source = <${ev.id}> )`)
-      .prefixes({
-        dataCube,
-      })
-      .execute(getClient())
   }
 })

@@ -3,9 +3,10 @@ import { asyncMiddleware } from 'middleware-async'
 import $rdf from 'rdf-ext'
 import { Literal } from 'rdf-js'
 import cf from 'clownface'
+import { rdf, hydra } from '@tpluscode/rdf-ns-builders'
 import { loadSampleRows } from '../../services/sourceSamples'
 import { NotFoundError } from '../../error'
-import { api, hydra, rdf } from '../../namespaces'
+import { api } from '../../namespaces'
 import env from '../../env'
 
 function buildCollectionGraph (collectionId: string, currentPageUrl: string, nextPageUrl: string, rows: Literal[][]) {

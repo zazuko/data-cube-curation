@@ -1,6 +1,6 @@
 import { Constructor, namespace, property } from '@tpluscode/rdfine'
+import { csvw } from '@tpluscode/rdf-ns-builders'
 import * as Csvw from '.'
-import { csvw } from './namespaces'
 
 export function CsvwDialectMixin<Base extends Constructor> (base: Base) {
   @namespace(csvw)

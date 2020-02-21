@@ -1,8 +1,9 @@
 import { namedNode } from '@rdfjs/data-model'
 import { NamedNode } from 'rdf-js'
+import { schema, xsd, rdf, csvw } from '@tpluscode/rdf-ns-builders'
 import { buildCsvw } from './csvwBuilder'
 import { Column, DimensionTable, ValueAttribute, Table, CsvSource } from '@zazuko/rdfine-data-cube'
-import { csvw, dataCube, rdf, schema, xsd } from '../namespaces'
+import { dataCube } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
 type RecursivePartial<T> = {
@@ -67,7 +68,7 @@ describe('csvwBuilder', () => {
       const attribute: RecursivePartial<ValueAttribute> = {
         id: namedNode('http://example.com/attribute/station_name'),
         column,
-        propertyTemplate: schema('name').value,
+        propertyTemplate: schema.name.value,
         datatype: {
           id: xsd.TOKEN,
         },
@@ -106,7 +107,7 @@ describe('csvwBuilder', () => {
       const attribute: RecursivePartial<ValueAttribute> = {
         id: namedNode('http://example.com/attribute/station_name'),
         column,
-        propertyTemplate: schema('name').value,
+        propertyTemplate: schema.name.value,
         datatype: {
           id: xsd.date,
         },
@@ -144,7 +145,7 @@ describe('csvwBuilder', () => {
       const attribute: RecursivePartial<ValueAttribute> = {
         id: namedNode('http://example.com/attribute/station_name'),
         column,
-        propertyTemplate: schema('name').value,
+        propertyTemplate: schema.name.value,
         datatype: {
           id: xsd.double,
         },
@@ -194,7 +195,7 @@ describe('csvwBuilder', () => {
           const attribute: RecursivePartial<ValueAttribute> = {
             id: namedNode('http://example.com/attribute/station_name'),
             column,
-            propertyTemplate: schema('name').value,
+            propertyTemplate: schema.name.value,
             datatype: {
               id: datatype,
             },

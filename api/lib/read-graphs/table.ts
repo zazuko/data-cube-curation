@@ -1,8 +1,9 @@
 import { CoreEvents } from '@tpluscode/fun-ddr'
 import { DomainEvent } from '@tpluscode/fun-ddr/lib'
-import { ask, construct, deleteInsert, insertData, select } from '../sparql'
-import { api, dataCube, hydra, rdf, schema } from '../namespaces'
-import { getClient } from './sparqlClient'
+import { ASK, CONSTRUCT, DELETE, INSERT, SELECT } from '@tpluscode/sparql-builder'
+import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
+import { execute } from '../sparql'
+import { api, dataCube } from '../namespaces'
 import TableEvents from '../domain/table/events'
 import { getTableAttributes } from './attribute'
 import { attributes } from '../storage/repository'
@@ -11,69 +12,49 @@ import $rdf from 'rdf-ext'
 import env from '../env'
 
 function addTableLinks (ev: DomainEvent) {
-  return insertData(`
+  return execute(INSERT.DATA`
     <${ev.id}>
-        api:csvwMetadata <${ev.id}/csvw> ;
-        api:attributes <${ev.id}/attributes> ;
-        api:preview <${ev.id}/preview> .
-    <${ev.id}/csvw> dataCube:table <${ev.id}> .
-    <${ev.id}/attributes> dataCube:table <${ev.id}> .
-    <${ev.id}/preview> dataCube:table <${ev.id}> .
+        ${api.csvwMetadata} <${ev.id}/csvw> ;
+        ${api.attributes} <${ev.id}/attributes> ;
+        ${api.preview} <${ev.id}/preview> .
+    <${ev.id}/csvw> ${dataCube.table} <${ev.id}> .
+    <${ev.id}/attributes> ${dataCube.table} <${ev.id}> .
+    <${ev.id}/preview> ${dataCube.table} <${ev.id}> .
   `)
-    .prefixes({
-      dataCube,
-      api,
-    })
-    .execute(getClient())
 }
 
 TableEvents.on.FactTableCreated(addTableLinks)
 TableEvents.on.DimensionTableCreated(addTableLinks)
 
 TableEvents.on.FactTableCreated(function createFactTableTriples (ev) {
-  return insertData(`
+  return execute(INSERT.DATA`
     <${ev.id}>
-      a dataCube:Table, dataCube:FactTable ;
-      dataCube:source <${ev.data.sourceId}>;
-      dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.tableName}" .
+      a ${dataCube.Table}, ${dataCube.FactTable} ;
+      ${dataCube.source} <${ev.data.sourceId}>;
+      ${dataCube.project} <${ev.data.projectId}> ;
+      ${schema.name} "${ev.data.tableName}" .
   `)
-    .prefixes({
-      schema,
-      dataCube,
-    })
-    .execute(getClient())
 })
 
 TableEvents.on.DimensionTableCreated(function createDimensionTableTriples (ev) {
-  return insertData(`
+  return execute(INSERT.DATA`
     <${ev.id}>
-      a dataCube:Table, dataCube:DimensionTable;
-      dataCube:source <${ev.data.sourceId}>;
-      dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.tableName}" ;
-      dataCube:identifierTemplate "${ev.data.identifierTemplate}" .
+      a ${dataCube.Table}, ${dataCube.DimensionTable};
+      ${dataCube.source} <${ev.data.sourceId}>;
+      ${dataCube.project} <${ev.data.projectId}> ;
+      ${schema.name} "${ev.data.tableName}" ;
+      ${dataCube.identifierTemplate} "${ev.data.identifierTemplate}" .
   `)
-    .prefixes({
-      schema,
-      dataCube,
-    })
-    .execute(getClient())
 })
 
 CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
-    await deleteInsert(`
+    await execute(DELETE`
       ?table ?p0 ?o0 .`
-    )
-      .where(`
+      .WHERE`
         ?table ?p0 ?o0 .
 
         FILTER ( ?table = <${ev.id}> )`)
-      .prefixes({
-        dataCube,
-      })
-      .execute(getClient())
   }
 })
 
@@ -93,14 +74,10 @@ CoreEvents.on.AggregateDeleted(async function deleteAttributes (ev) {
 })
 
 export function getFactTableId (factTableCanonicalId: string) {
-  return select('factTable')
-    .where(`
-        <${factTableCanonicalId}> dataCube:project ?project.
-        ?project dataCube:factTable ?factTable .`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  return execute(SELECT`?factTable`
+    .WHERE`
+        <${factTableCanonicalId}> ${dataCube.project} ?project.
+        ?project ${dataCube.factTable} ?factTable .`)
     .then(bindings => {
       if (bindings.length === 0) {
         return null
@@ -111,23 +88,15 @@ export function getFactTableId (factTableCanonicalId: string) {
 }
 
 export function existsInTableSource (tableId: string, columnId: string): Promise<boolean> {
-  return ask(`
-    <${tableId}> dataCube:source ?source .
-    ?source dataCube:column <${columnId}> .
+  return execute(ASK`
+    <${tableId}> ${dataCube.source} ?source .
+    ?source ${dataCube.column} <${columnId}> .
   `)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
 }
 
 export async function getTableSourceId (tableId: string) {
-  const bindings = await select('source')
-    .where(`<${tableId}> a dataCube:Table; dataCube:source ?source .`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  const bindings = await execute(SELECT`?source`
+    .WHERE`<${tableId}> a ${dataCube.Table}; ${dataCube.source} ?source .`)
 
   if (bindings.length === 0) {
     return null
@@ -139,46 +108,37 @@ export async function getTableSourceId (tableId: string) {
 export async function getProjectTables (collectionId: string) {
   const collection = $rdf.dataset()
 
-  await collection.import(await construct()
-    .graph(`
+  await collection.import(await execute(CONSTRUCT`
       <${collectionId}>
-        a hydra:Collection ;
-        hydra:member ?table ;
-        hydra:totalItems ?count .
+        a ${hydra.Collection} ;
+        ${hydra.member} ?table ;
+        ${hydra.totalItems} ?count .
 
       ?table ?p ?o .
-    `)
-    .where(`<${collectionId}> dataCube:project ?project .`)
-    .where(`
+    `
+    .WHERE`<${collectionId}> ${dataCube.project} ?project .`
+    .WHERE`
       OPTIONAL {
-        ?table dataCube:project ?project .
-        ?table a dataCube:Table .
+        ?table ${dataCube.project} ?project .
+        ?table a ${dataCube.Table} .
         ?table ?p ?o .
-      }`)
-    .where(`{
+      }`
+    .WHERE`{
       SELECT (COUNT(?table) as ?count) WHERE {
-        <${collectionId}> dataCube:project ?project .
+        <${collectionId}> ${dataCube.project} ?project .
         OPTIONAL {
           ?table
-            a dataCube:Table ;
-            dataCube:project ?project .
+            a ${dataCube.Table} ;
+            ${dataCube.project} ?project .
         }
       }
-    }`)
-    .prefixes({
-      dataCube,
-      hydra,
-    })
-    .execute(getClient()))
+    }`))
 
-  await collection.import(await construct()
-    .graph(`
-      <${collectionId}> hydra:manages [
-        hydra:property rdf:type ;
-        hydra:object dataCube:Table
-      ] `)
-    .prefixes({ hydra, dataCube, rdf })
-    .execute(getClient()))
+  await collection.import(await execute(CONSTRUCT`
+      <${collectionId}> ${hydra.manages} [
+        ${hydra.property} ${rdf.type} ;
+        ${hydra.object} ${dataCube.Table}
+      ] `))
 
   return collection
 }

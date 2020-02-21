@@ -1,6 +1,6 @@
 import { namespace, RdfResourceImpl, property, Constructor, RdfResource } from '@tpluscode/rdfine'
 import { NamedNode } from 'rdf-js'
-import { csvw, rdf } from './namespaces'
+import { csvw, rdf } from '@tpluscode/rdf-ns-builders'
 import * as Csvw from './index'
 import { TableSchemaMixin } from './TableSchema'
 import { ColumnMixin } from './Column'

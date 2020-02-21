@@ -1,5 +1,6 @@
 import rdfFetch from 'hydra-box/lib/rdfFetch'
-import SparqlHttp from 'sparql-http-client'
+import { RdfFetchResponse } from '@rdfjs/fetch-lite'
+import SparqlHttp, { SparqlHttpClient } from 'sparql-http-client'
 import authHeader from '../sparql/authentication'
 import env from '../env'
 
@@ -9,7 +10,7 @@ if (authHeader) {
 }
 
 let sparqlClient
-export function getClient () {
+export function getClient (): SparqlHttpClient<RdfFetchResponse> {
   sparqlClient = sparqlClient || new SparqlHttp({
     endpointUrl: env.READ_MODEL_SPARQL_ENDPOINT,
     updateUrl: env.READ_MODEL_SPARQL_UPDATE_ENDPOINT || env.READ_MODEL_SPARQL_ENDPOINT,

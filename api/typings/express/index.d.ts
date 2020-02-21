@@ -10,6 +10,7 @@ declare module 'express' {
     sparql: SparqlHttp;
     graph: DatasetExt;
     resourceId: string;
+    resourceNode: NamedNode;
     resourcePath: string;
     buildModel <T extends RdfResource> (mixins: Mixin<any>[], ids?: (string | NamedNode)[]): T[];
     buildModel <T extends RdfResource> (Class: Constructor<T> & { types?: NamedNode[] }, ids?: (string | NamedNode)[]): T[];

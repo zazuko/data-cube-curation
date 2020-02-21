@@ -1,7 +1,8 @@
 import cf from 'clownface'
 import { DatasetCore } from 'rdf-js'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
-import { rdf, dataCube, schema } from '../../namespaces'
+import { dataCube } from '../../namespaces'
 import { parse } from '../../services/uriTemplateParser'
 
 interface IdentifierColumn {
@@ -29,7 +30,7 @@ export async function extractColumns (sourceIdOrDataset: string | DatasetCore, t
   const columns = cf({ dataset })
     .has(rdf.type, dataCube.Column)
   const columnIds = columnNames.reduce((identifiers, name) => {
-    const columnNameTerm = columns.has(schema('name'), name).term
+    const columnNameTerm = columns.has(schema.name, name).term
     if (!columnNameTerm) {
       columnsNotFound.push(name)
       return identifiers
