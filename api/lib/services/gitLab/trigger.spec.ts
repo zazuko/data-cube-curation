@@ -41,7 +41,7 @@ describe('gitlab trigger', () => {
     // then
     expect(() => {
       // when
-      triggerPipeline(project, {})
+      triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
     }).toThrow()
   })
 
@@ -56,7 +56,7 @@ describe('gitlab trigger', () => {
     // then
     expect(() => {
       // when
-      triggerPipeline(project, {})
+      triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
     }).toThrow()
   })
 
@@ -69,7 +69,7 @@ describe('gitlab trigger', () => {
     }
 
     // when
-    await triggerPipeline(project, {})
+    await triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
 
     // then
     expect(fetchMock.mock.calls[0]).toMatchSnapshot()
