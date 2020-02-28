@@ -37,7 +37,8 @@ export function modelBuilder (req: Request, res, next: NextFunction) {
       }, RdfResourceImpl)
     } else {
       if (modelShape.types && modelShape.types.some(Boolean)) {
-        graph = graph
+        const allSubjects = cf({ dataset: req.graph }).in()
+        graph = allSubjects
           .has(rdf.type, modelShape.types)
       }
 
