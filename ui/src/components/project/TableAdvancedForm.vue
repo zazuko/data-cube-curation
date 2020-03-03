@@ -53,9 +53,12 @@
           <tbody>
             <tr v-for="(attribute, index) in attributes" :key="attribute.trackingId">
               <td>
-                <b-select v-model="attribute.columnId" expanded required>
-                  <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
-                </b-select>
+                <MultiSelect
+                  v-model="attribute.columnId"
+                  :options="source.columns.map((c) => c.id)"
+                  :custom-label="(id) => source.columns.find((c) => c.id == id).name"
+                  required
+                />
               </td>
               <td>
                 <PropertyField :project="project" v-model="attribute.property" required />
