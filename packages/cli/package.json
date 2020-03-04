@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
-    "start": "ts-node index.ts transform --from filesystem --to filesystem --project https://datacube.zazukoians.org/project/2619f35e-747e-493c-9398-ed88b62a3133 --debug -v sourceDir=input -v targetFile=output/everything.nt",
+    "start": "dotenv -- npm run start:transform",
+    "start:transform": "ts-node index.ts transform --from s3 --to stdout --project $TRANSFORM_PROJECT --debug -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$S3_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
     "build": "tsc"
   },
   "dependencies": {
