@@ -66,6 +66,7 @@ class ProjectIterator extends stream.Readable {
               }
 
               log.debug(`Will transform table ${table.name} from ${csvwResource.url}. Dialect: delimiter=${csvwResource.dialect.delimiter} quote=${csvwResource.dialect.quote}`)
+
               this.push(csvwResource)
             })
             .catch(e => {

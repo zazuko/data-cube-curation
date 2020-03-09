@@ -11,7 +11,7 @@ const ns = {
 }
 
 const pipelines = {
-  TransformFiles: ns.pipeline('#TransformFiles'),
+  TransformFiles: ns.pipeline('#Main'),
 }
 
 function parseVariables (str, all) {

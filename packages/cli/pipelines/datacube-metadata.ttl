@@ -1,0 +1,38 @@
+@base <urn:pipeline:data-cube-curation> .
+@prefix : <https://pipeline.described.at/> .
+@prefix code: <https://code.described.at/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<#DatacubeMetadata> a :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList (
+    <#loadDatacubeMetadataStep>
+    <#parseDatacubeMetadata>
+    <#accumulateToDataset>
+    <#generateDatacubeMetadata>
+  ) ] .
+
+<#loadDatacubeMetadataStep> a :Step ;
+  code:implementedBy [
+    code:link <file:../lib/pipeline#asStep> ;
+    a code:EcmaScript
+  ] ;
+  code:arguments ( <#LoadDatacubeMetadata> ) .
+
+<#parseDatacubeMetadata> a :Step ;
+  code:implementedBy [
+    code:link <node:barnard59-formats#n3.parse> ;
+    a code:EcmaScript ;
+  ] .
+
+<#accumulateToDataset> a :Step ;
+  code:implementedBy [
+    code:link <file:../lib/datacube-metadata#accumulateToDataset> ;
+    a code:EcmaScript ;
+  ] .
+
+<#generateDatacubeMetadata> a :Step ;
+  code:implementedBy [
+    code:link <file:../lib/datacube-metadata#generate> ;
+    a code:EcmaScript ;
+  ] .

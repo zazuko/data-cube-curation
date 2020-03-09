@@ -32,6 +32,7 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
     const pipelinePath = filename => path.join(basePath, `./pipelines/${filename}.ttl`)
     const dataset = $rdf.dataset()
       .merge(await fileToDataset('text/turtle', pipelinePath('main')))
+      .merge(await fileToDataset('text/turtle', pipelinePath('datacube-metadata')))
       .merge(await fileToDataset('text/turtle', pipelinePath(`from-${from}`)))
       .merge(await fileToDataset('text/turtle', pipelinePath(`to-${to}`)))
 
