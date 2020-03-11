@@ -15,7 +15,7 @@ export const all: DataTypeOption[] = [
   { name: 'binary', uri: 'xsd:base64Binary', kind: Kind.Any },
   { name: 'boolean', uri: 'xsd:boolean', kind: Kind.Any, params: [...defaultParams, 'format'] },
   { name: 'date', uri: 'xsd:date', kind: Kind.Date },
-  { name: 'datetime', uri: 'xsd:dateTime', kind: Kind.Date },
+  { name: 'dateTime', uri: 'xsd:dateTime', kind: Kind.Date },
   { name: 'dateTimeStamp', uri: 'xsd:dateTimeStamp', kind: Kind.Date },
   { name: 'decimal', uri: 'xsd:decimal', kind: Kind.Numeric },
   { name: 'integer', uri: 'xsd:integer', kind: Kind.Numeric },
