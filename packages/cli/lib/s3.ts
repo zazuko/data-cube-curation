@@ -4,6 +4,7 @@ import { Readable, PassThrough } from 'stream'
 import { isReadable } from 'isstream'
 import NullWritable from 'null-writable'
 import { Context } from 'barnard59-core/lib/Pipeline'
+import { PromiseResult } from 'aws-sdk/lib/request'
 
 export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
   this.log.info(`Opening file ${csvw.url} from S3`)
@@ -12,10 +13,16 @@ export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: s
     endpoint: s3Endpoint,
   })
 
-  const file = await s3.getObject({
-    Bucket: s3Bucket,
-    Key: csvw.url,
-  }).promise()
+  let file: PromiseResult<aws.S3.GetObjectOutput, aws.AWSError>
+  try {
+    file = await s3.getObject({
+      Bucket: s3Bucket,
+      Key: csvw.url,
+    }).promise()
+  } catch (error) {
+    this.log.error(error.message, error.stack)
+    throw new Error(`Could not read file "${csvw.url}" from S3`)
+  }
 
   if (file.Body instanceof Buffer) {
     const readable = new Readable()
