@@ -10,6 +10,7 @@ import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute
 import { error } from '../log'
 import * as DataCube from '@zazuko/rdfine-data-cube'
 import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
+import { dataCube, qb, rdf } from '@zazuko/rdfine-data-cube/namespaces'
 import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
 import { parse } from './uriTemplateParser'
@@ -103,7 +104,16 @@ export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTa
     return mapped
   }, [] as Csvw.Column[])
 
-  csvwGraph.tableSchema.columns = [...mappedColumns, ...suppressedColumns]
+  const additionalColumns: Csvw.Column[] = []
+  if (table.types.has(dataCube.FactTable)) {
+    const observationColumn = csvwGraph.newColumn()
+    observationColumn.propertyUrl = rdf.type.value
+    observationColumn.valueUrl = qb.Observation.value
+    observationColumn.virtual = true
+    additionalColumns.push(observationColumn)
+  }
+
+  csvwGraph.tableSchema.columns = [...mappedColumns, ...suppressedColumns, ...additionalColumns]
 
   return csvwGraph
 }

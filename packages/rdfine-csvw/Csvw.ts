@@ -37,8 +37,12 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
       this.dialect.quote = quote
     }
 
-    public newColumn (col: { name: string }) {
-      const node = this._selfGraph.blankNode(`column${++bnCounter}`).addOut(csvw.title, col.name)
+    public newColumn (col) {
+      const node = this._selfGraph.blankNode(`column${++bnCounter}`)
+
+      if (col?.name) {
+        node.addOut(csvw.title, col.name)
+      }
 
       return RdfResourceImpl.factory.createEntity<Csvw.Column>(node, [ColumnMixin])
     }
