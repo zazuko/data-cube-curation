@@ -1,10 +1,8 @@
 import aws from 'aws-sdk'
 import * as Csvw from '@rdfine/csvw'
-import { Readable, PassThrough } from 'stream'
-import { isReadable } from 'isstream'
+import { PassThrough } from 'stream'
 import NullWritable from 'null-writable'
 import { Context } from 'barnard59-core/lib/Pipeline'
-import { PromiseResult } from 'aws-sdk/lib/request'
 
 export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
   this.log.info(`Opening file ${csvw.url} from S3`)
@@ -13,30 +11,22 @@ export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: s
     endpoint: s3Endpoint,
   })
 
-  let file: PromiseResult<aws.S3.GetObjectOutput, aws.AWSError>
-  try {
-    file = await s3.getObject({
-      Bucket: s3Bucket,
-      Key: csvw.url,
-    }).promise()
-  } catch (error) {
-    this.log.error(error.message, error.stack)
-    throw new Error(`Could not read file "${csvw.url}" from S3`)
-  }
+  const readableStream = s3.getObject({
+    Bucket: s3Bucket,
+    Key: csvw.url,
+  }).createReadStream()
 
-  if (file.Body instanceof Buffer) {
-    const readable = new Readable()
-    readable._read = () => { }
-    readable.push(file.Body)
-    readable.push(null)
-    return readable
-  }
+  readableStream.on('error', (error: aws.AWSError) => {
+    if (error.code === 'NoSuchKey') {
+      throw new Error(`Could not find file "${csvw.url}" on S3`)
+    }
+    if (error.stack) {
+      this.log.error(error.stack)
+    }
+    throw new Error(`Error reading file "${csvw.url}" from S3`)
+  })
 
-  if (isReadable(file.Body)) {
-    return file.Body as Readable
-  }
-
-  throw new Error(`Could not read file "${csvw.url}" from S3. It was neither Buffer or Readable`)
+  return readableStream
 }
 
 export function uploadFile (this: Context, fileName: string, s3Endpoint: string, s3Bucket: string) {
