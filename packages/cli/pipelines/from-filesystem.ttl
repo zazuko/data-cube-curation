@@ -5,7 +5,7 @@
 <#LoadCsv>
   :steps [ :stepList ( _:openCsvFromFilesystem ) ] ;
   :variables [ :variable
-    [ a :Variable; :name "sourceDir"; :value "/input" ]
+    [ a :Variable; :name "sourceDir"; :value "input" ]
   ].
 
 _:openCsvFromFilesystem
