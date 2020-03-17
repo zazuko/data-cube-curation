@@ -1,8 +1,9 @@
 import { namedNode } from '@rdfjs/data-model'
+import TermSet from '@rdfjs/term-set'
 import { NamedNode } from 'rdf-js'
 import { buildCsvw } from './csvwBuilder'
 import { Column, DimensionTable, ValueAttribute, Table, CsvSource } from '@zazuko/rdfine-data-cube'
-import { csvw, dataCube, rdf, schema, xsd } from '../namespaces'
+import { csvw, dataCube, qb, rdf, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
 type RecursivePartial<T> = {
@@ -22,6 +23,27 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
+    })
+
+    it('includes "qb:Observation" virtual column', () => {
+      const table: RecursivePartial<Table> = {
+        id: namedNode('http://example.com/table/Observation'),
+        columns: [],
+        attributes: [],
+        types: new TermSet([
+          dataCube.FactTable,
+        ]),
+        source: {},
+      }
+
+      // when
+      const csvwDataset = buildCsvw(table as any)
+
+      // then
+      const column = csvwDataset.tableSchema.columns[0]
+      expect(column.virtual).toBe(true)
+      expect(column.propertyUrl).toEqual(rdf.type.value)
+      expect(column.valueUrl).toEqual(qb.Observation.value)
     })
 
     it('maps attribute', async () => {
@@ -79,9 +101,9 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
@@ -116,9 +138,9 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
@@ -155,9 +177,9 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
@@ -206,9 +228,9 @@ describe('csvwBuilder', () => {
             id: namedNode('http://example.com/table/Observation'),
             columns: [],
             attributes: [attribute],
-            types: [
+            types: new TermSet([
               dataCube.Table,
-            ],
+            ]),
             source: {
               name: 'test.csv',
             },
@@ -254,9 +276,9 @@ describe('csvwBuilder', () => {
         identifierTemplate: 'http://example.com/{foo}/{bar}',
         columns: [],
         attributes: [],
-        types: [
+        types: new TermSet([
           dataCube.DimensionTable,
-        ],
+        ]),
         project: {
           baseUri: 'http://example.com/tst-project',
         },
@@ -279,9 +301,9 @@ describe('csvwBuilder', () => {
         identifierTemplate: 'table/{foo}/{bar}',
         columns: [],
         attributes: [],
-        types: [
+        types: new TermSet([
           dataCube.DimensionTable,
-        ],
+        ]),
         project: {
           baseUri: 'http://example.com/tst-project/',
         },
@@ -314,9 +336,9 @@ describe('csvwBuilder', () => {
         identifierTemplate: 'table/{foo}/{bar}',
         columns: [column],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.DimensionTable,
-        ],
+        ]),
         project: {
           baseUri: 'http://example.com/tst-project/',
         },
