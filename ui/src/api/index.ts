@@ -38,6 +38,9 @@ rdf.resourceFactory.mixins.push(ColumnMixin)
 rdf.resourceFactory.mixins.push(ValueAttributeMixin)
 rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 
+// Tells Hydra to use current browser location as base URI for relative URIs
+Hydra.baseUri = window.location.href
+
 export class APIError extends Error {
   details: any;
   response: IHydraResponse;

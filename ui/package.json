@@ -15,7 +15,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "@rdfjs/data-model": "1.1.2",
     "@zazuko/rdf-vocabularies": "2020.2.11",
-    "alcaeus": "0.10.6",
+    "alcaeus": "0.10.7",
     "buefy": "^0.8.12",
     "core-js": "^3.6.4",
     "debug": "^4.1.1",

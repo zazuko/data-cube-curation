@@ -7,10 +7,10 @@ ADD ui/package.json ui/package-lock.json ./
 # Skip Cypress binary installation
 ENV CYPRESS_INSTALL_BINARY=0
 ENV NODE_ENV=
+ENV VUE_APP_API_URL=/
 RUN npm ci --unsafe-perm
 
 ADD ui ./
-ENV VUE_APP_API_URL=https://datacube.zazukoians.org/
 
 # build frontend
 ENV NODE_ENV=production
