@@ -2,12 +2,13 @@ import path from 'path'
 import fs from 'fs'
 import through from 'through2'
 import reduce from 'through2-reduce'
-import aws from 'aws-sdk'
 import clownface from 'clownface'
 import $rdf from 'rdf-ext'
+import getStream from 'get-stream'
 import { Context } from 'barnard59-core/lib/Pipeline'
 import toReadable from 'barnard59-base/lib/toReadable'
 import { qb, rdf } from '@zazuko/rdfine-data-cube/namespaces'
+import * as S3 from './s3'
 
 const filename = 'datacube-metadata.ttl'
 
@@ -25,15 +26,11 @@ export function openFile (this: Context, sourceDir: string) {
 export async function openFileFromS3 (this: Context, s3Endpoint: string, s3Bucket: string) {
   this.log.info(`Opening file ${filename} from S3`)
 
-  const s3 = new aws.S3({ endpoint: s3Endpoint })
+  const stream = S3.getFileStream(s3Endpoint, s3Bucket, filename)
 
   let content
   try {
-    const response = await s3.getObject({
-      Bucket: s3Bucket,
-      Key: filename,
-    }).promise()
-    content = response.Body?.toString()
+    content = await getStream(stream)
   } catch (error) {
     if (error.code === 'NoSuchKey') {
       this.log.warn('Datacube metadata file not found')

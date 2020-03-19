@@ -5,17 +5,21 @@ import NullWritable from 'null-writable'
 import { readable } from 'duplex-to'
 import { Context } from 'barnard59-core/lib/Pipeline'
 
-export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
-  this.log.info(`Opening file ${csvw.url} from S3`)
-
-  const s3 = new aws.S3({
-    endpoint: s3Endpoint,
-  })
+export function getFileStream (endpoint: string, bucket: string, filename: string) {
+  const s3 = new aws.S3({ endpoint: endpoint })
 
   const stream = s3.getObject({
-    Bucket: s3Bucket,
-    Key: csvw.url,
+    Bucket: bucket,
+    Key: filename,
   }).createReadStream()
+
+  return readable(stream)
+}
+
+export function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: string, s3Bucket: string) {
+  this.log.info(`Opening file ${csvw.url} from S3`)
+
+  const stream = getFileStream(s3Endpoint, s3Bucket, csvw.url)
 
   stream.on('error', (error: aws.AWSError) => {
     if (error.code === 'NoSuchKey') {
@@ -27,7 +31,7 @@ export async function openFile (this: Context, csvw: Csvw.Mapping, s3Endpoint: s
     throw new Error(`Error reading file "${csvw.url}" from S3`)
   })
 
-  return readable(stream)
+  return stream
 }
 
 export function uploadFile (this: Context, fileName: string, s3Endpoint: string, s3Bucket: string) {
