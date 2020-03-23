@@ -18,3 +18,22 @@ _:openCsvFromBucket
                        "s3endpoint"^^:VariableName
                        "s3bucket"^^:VariableName
                      ) .
+
+<#LoadDatacubeMetadata>
+  a :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList ( <#loadDatacubeMetadata> ) ] ;
+  :variables [ :variable
+    [ a :Variable; :name "s3endpoint" ] ,
+    [ a :Variable; :name "s3bucket" ]
+  ].
+
+<#loadDatacubeMetadata>
+  a :Step ;
+  code:implementedBy [
+    code:link <file:../lib/datacube-metadata#openFileFromS3> ;
+    a code:EcmaScript
+  ] ;
+  code:arguments (
+    "s3endpoint"^^:VariableName
+    "s3bucket"^^:VariableName
+  ) .

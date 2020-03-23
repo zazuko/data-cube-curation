@@ -5,6 +5,7 @@ declare module 'barnard59-core/lib/Pipeline' {
   namespace Pipeline {
     interface Context {
       log: Logger;
+      variables: Map<any, any>;
     }
   }
 

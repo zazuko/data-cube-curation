@@ -4,12 +4,28 @@
 
 <#LoadCsv>
   :steps [ :stepList ( _:openCsvFromFilesystem ) ] ;
-  :variables [ :variable
-    [ a :Variable; :name "sourceDir"; :value "/input" ]
-  ].
+  :variables [ :variable <#sourceDir> ].
 
 _:openCsvFromFilesystem
   a                  :Step ;
   code:implementedBy [ code:link <file:../lib/csv#openFromCsvw> ;
                        a         code:EcmaScript ] ;
   code:arguments     ( "csvw"^^:VariableName "sourceDir"^^:VariableName ) .
+
+
+<#LoadDatacubeMetadata>
+  a :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList ( <#loadDatacubeMetadata> ) ] ;
+  :variables [ :variable <#sourceDir> ].
+
+<#loadDatacubeMetadata>
+  a :Step ;
+  code:implementedBy [
+    code:link <file:../lib/datacube-metadata#openFile> ;
+    a code:EcmaScript
+  ] ;
+  code:arguments ( "sourceDir"^^:VariableName ) .
+
+<#sourceDir> a :Variable ;
+  :name "sourceDir" ;
+  :value "/input" .
