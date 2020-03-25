@@ -19,15 +19,10 @@ ColumnMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Column)
 }
 
-class ColumnMixinImpl extends ColumnMixin(RdfResourceImpl) {
-  constructor (resourceInit: ResourceNode, initializer?: Partial<Table.Column>) {
-    super(resourceInit)
+ColumnMixin.Class = class ColumnMixinImpl extends ColumnMixin(RdfResourceImpl) {
+  constructor (node: ResourceNode, initializer?: Partial<Table.Column>) {
+    super(node, initializer)
 
     this.types.add(dataCube.Column)
-    Object.entries(initializer || {})
-      .forEach(([ prop, value ]) => {
-        this[prop] = value
-      })
   }
 }
-ColumnMixin.Class = ColumnMixinImpl
