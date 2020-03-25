@@ -8,7 +8,6 @@ import TableEvents from '../domain/table/events'
 import { projects } from '../storage/repository'
 import { unselectFactTable } from '../domain/project'
 import { Project } from '@zazuko/rdfine-data-cube'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { namedNode } from 'rdf-data-model'
 import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
 
@@ -194,9 +193,9 @@ export async function getProject (id: string): Promise<Project> {
     project.deleteOut(api.factTable)
   }
 
-  return RdfResourceImpl.factory.createEntity(cf({
+  return new ProjectMixin.Class({
     dataset, term: namedNode(id),
-  }), [ProjectMixin])
+  })
 }
 
 export async function hasSource (projectId: string, sourceId: string) {

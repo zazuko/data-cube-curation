@@ -9,6 +9,7 @@ export interface Table extends RdfResource {
   readonly source: Source;
   readonly csvw: Csvw.Mapping;
   readonly name: string;
+  createIdentifier (): string | null;
 }
 
 export interface DimensionTable extends Table {
@@ -17,10 +18,12 @@ export interface DimensionTable extends Table {
 
 export interface Column extends RdfResource {
   readonly name: string;
+  readonly order: number;
 }
 
 export interface Attribute extends RdfResource {
   readonly propertyTemplate: string;
+  createPropertyId(baseUri: string): string;
 }
 
 export interface ValueAttribute extends Attribute {

@@ -16,7 +16,7 @@
     "@rdfjs/formats-common": "^2.1.0",
     "@rdfjs/namespace": "^1.1.0",
     "@rdfjs/parser-jsonld": "^1.2.0",
-    "@tpluscode/rdfine": "^0.3.5",
+    "@tpluscode/rdfine": "^0.3.6",
     "@zazuko/rdfine-data-cube": "^0.0.0",
     "alcaeus": "^1.0.0-alpha.9",
     "aws-sdk": "^2.559.0",

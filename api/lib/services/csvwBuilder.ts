@@ -11,9 +11,7 @@ import { error } from '../log'
 import * as DataCube from '@zazuko/rdfine-data-cube'
 import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { dataCube, qb, rdf } from '@zazuko/rdfine-data-cube/namespaces'
-import { getAbsoluteUrl } from './csvwBuilder/aboutUrl'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
-import { parse } from './uriTemplateParser'
 import { csvDefault } from '../domain/source'
 
 type Attribute = DataCube.ReferenceAttribute | DataCube.ValueAttribute | DataCube.Attribute
@@ -41,9 +39,7 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: DataCube.Table, attri
   }
 
   if (csvwColumn) {
-    const propertyTemplate = attribute.propertyTemplate
-    const parsed = parse(propertyTemplate)
-    csvwColumn.propertyUrl = getAbsoluteUrl(table.project, parsed)
+    csvwColumn.propertyUrl = attribute.createPropertyId(table.project.baseUri)
     return csvwColumn
   }
 
@@ -51,8 +47,8 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: DataCube.Table, attri
   return null
 }
 
-export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTable | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
-  let table: DataCube.Table | DataCube.DimensionTable
+export function buildCsvw (tableOrDataset: DataCube.Table | { dataset: DatasetCore; tableId: string }): Csvw.Mapping<DatasetExt> {
+  let table: DataCube.Table
   if ('dataset' in tableOrDataset) {
     table = RdfResourceImpl.factory.createEntity(cf({
       dataset: tableOrDataset.dataset,
@@ -74,10 +70,9 @@ export function buildCsvw (tableOrDataset: DataCube.Table | DataCube.DimensionTa
     csvwGraph.setDialect(csvDefault)
   }
   csvwGraph.url = table.source.name
-
-  if ('identifierTemplate' in table && table.identifierTemplate) {
-    const parsed = parse(table.identifierTemplate)
-    csvwGraph.tableSchema.aboutUrl = getAbsoluteUrl(table.project, parsed)
+  const aboutUrl = table.createIdentifier()
+  if (aboutUrl) {
+    csvwGraph.tableSchema.aboutUrl = aboutUrl
   }
 
   const attributes: Attribute[] = table.attributes

@@ -1,4 +1,5 @@
-import { Constructor, property, RdfResource } from '@tpluscode/rdfine'
+import { Constructor, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 import { api, dataCube, schema } from './namespaces'
 import * as DataCube from '.'
 
@@ -25,4 +26,12 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
 
 ProjectMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Project)
+}
+ProjectMixin.Class = class extends ProjectMixin(RdfResourceImpl) {
+  constructor (node: ResourceNode, init?: Initializer<DataCube.Project>) {
+    super(node, init)
+
+    this.types.add(dataCube.Attribute)
+    this.types.add(dataCube.ReferenceAttribute)
+  }
 }

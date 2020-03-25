@@ -1,4 +1,5 @@
 import { RdfResource } from '@tpluscode/rdfine'
+import { Column } from './Table'
 export { wireUp } from './wireUp'
 
 export * from './Table'
@@ -13,6 +14,7 @@ export interface Project extends RdfResource {
 
 export interface Source extends RdfResource {
   readonly name: string;
+  readonly columns: Column[];
 }
 
 export interface CsvSource extends Source {
