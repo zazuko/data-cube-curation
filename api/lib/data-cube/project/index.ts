@@ -11,6 +11,10 @@ import env from '../../env'
 
 export { getTables } from './getTables'
 
+export function canonicalFactTableId (projectId: string) {
+  return `${projectId}/fact-table`
+}
+
 export const create = asyncMiddleware(async (req: Request, res: Response) => {
   const projectRepresentation = req.buildModel<Project>([ProjectMixin])[0]
 
