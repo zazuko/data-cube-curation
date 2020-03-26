@@ -80,19 +80,14 @@ describe('FactTable', () => {
           columns,
         },
       })
-      const fooAttr = new ValueAttributeMixin.Class(graph.node(ex('attribute/foo')), {
-        columnMappings: [{
-          types: [dataCube.ColumnMapping],
-          [dataCube.sourceColumn.value]: columns[0],
-        }],
-      })
+      const fooAttr = new ValueAttributeMixin.Class(graph.node(ex('attribute/foo')))
       fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
 
       // when
       const aboutUrl = table.createIdentifier()
 
       // then
-      expect(aboutUrl).toEqual('http://foobar.com/fact-table/{foo}/{baz}')
+      expect(aboutUrl).toBeNull()
     })
   })
 })

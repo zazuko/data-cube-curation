@@ -3,7 +3,6 @@ import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 import * as Table from './index'
 import { dataCube } from '../namespaces'
 import { DimensionTableMixin } from './Table'
-import { parse } from '../lib/uriTemplateParser'
 import { ColumnMappingMixin } from './ColumnMapping'
 
 function AttributeMixin<TBase extends Constructor> (Base: TBase) {
@@ -11,10 +10,6 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   class Attribute extends Base implements Table.Attribute {
     @property.literal()
     public propertyTemplate: string
-
-    createPropertyId (baseUri: string): string {
-      return parse(this.propertyTemplate).toAbsoluteUrl(baseUri)
-    }
   }
 
   return Attribute

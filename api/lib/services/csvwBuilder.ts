@@ -13,6 +13,7 @@ import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { dataCube, qb, rdf } from '@zazuko/rdfine-data-cube/namespaces'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
 import { csvDefault } from '../domain/source'
+import { parse } from '@zazuko/rdfine-data-cube/lib/uriTemplateParser'
 
 type Attribute = DataCube.ReferenceAttribute | DataCube.ValueAttribute | DataCube.Attribute
 
@@ -39,7 +40,7 @@ function createCsvwColumn (csvwGraph: Csvw.Mapping, table: DataCube.Table, attri
   }
 
   if (csvwColumn) {
-    csvwColumn.propertyUrl = attribute.createPropertyId(table.project.baseUri)
+    csvwColumn.propertyUrl = parse(attribute.propertyTemplate).toAbsoluteUrl(table.project.baseUri)
     return csvwColumn
   }
 

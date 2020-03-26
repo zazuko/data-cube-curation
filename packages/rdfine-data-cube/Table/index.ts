@@ -23,7 +23,6 @@ export interface Column extends RdfResource {
 
 export interface Attribute extends RdfResource {
   readonly propertyTemplate: string;
-  createPropertyId(baseUri: string): string;
 }
 
 export interface ValueAttribute extends Attribute {

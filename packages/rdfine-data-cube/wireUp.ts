@@ -1,7 +1,7 @@
 import { ResourceFactory } from '@tpluscode/rdfine'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
 import { ProjectMixin } from './Project'
-import { DimensionTableMixin, TableMixin } from './Table/Table'
+import { DimensionTableMixin, TableMixin, FactTableMixin } from './Table/Table'
 import { CsvSourceMixin, SourceMixin } from './Source'
 import Attributes from './Table/Attribute'
 import { ColumnMixin } from './Table/Column'
@@ -13,6 +13,7 @@ export function wireUp (factory: ResourceFactory) {
     ProjectMixin,
     TableMixin,
     DimensionTableMixin,
+    FactTableMixin,
     SourceMixin,
     CsvSourceMixin,
     ColumnMixin,
