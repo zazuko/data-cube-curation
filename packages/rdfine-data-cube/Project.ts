@@ -31,7 +31,6 @@ ProjectMixin.Class = class extends ProjectMixin(RdfResourceImpl) {
   constructor (node: ResourceNode, init?: Initializer<DataCube.Project>) {
     super(node, init)
 
-    this.types.add(dataCube.Attribute)
-    this.types.add(dataCube.ReferenceAttribute)
+    this.types.add(dataCube.Project)
   }
 }
