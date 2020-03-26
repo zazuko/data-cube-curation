@@ -23,7 +23,7 @@
     "barnard59": "^0.0.9",
     "barnard59-base": "^0.0.3",
     "barnard59-formats": "0.0.6",
-    "barnard59-graph-store": "^0.0.4",
+    "barnard59-graph-store": "^0.0.5",
     "clownface": "^0.12.1",
     "commander": "^4.1.1",
     "debug": "^4.1.1",
