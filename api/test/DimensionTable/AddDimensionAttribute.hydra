@@ -96,7 +96,7 @@ With Class dataCube:FactTable {
                 @prefix dataCube: <https://rdf-cube-curation.described.at/> .
                 @prefix schema: <http://schema.org/> .
 
-                <> dataCube:referencedTable <project/reference-attribute-test/table/Stations> ;
+                <> dataCube:referencedTable <project/reference-attribute-test/table/stations> ;
                    dataCube:propertyTemplate <http://example.org/station> ;
                    a dataCube:ReferenceAttribute ;
                    dataCube:columnMapping [
@@ -112,7 +112,7 @@ With Class dataCube:FactTable {
                 Expect Type dataCube:Attribute
                 Expect Property dataCube:propertyTemplate "http://example.org/station"
                 Expect Property dataCube:referencedTable {
-                    Expect Id <http://localhost:5678/project/reference-attribute-test/table/Stations>
+                    Expect Id <http://localhost:5678/project/reference-attribute-test/table/stations>
                 }
                 Expect Property dataCube:columnMapping {
                     Expect Property dataCube:sourceColumn {
