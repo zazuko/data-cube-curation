@@ -1,6 +1,7 @@
 import { namespace, property, RdfResource, Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
 import * as Csvw from '@rdfine/csvw'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
+import urlSlug from 'url-slug'
 import * as Table from './index'
 import { dataCube, rdf, api, schema } from '../namespaces'
 import './Attribute'
@@ -88,7 +89,7 @@ export function FactTableMixin<TBase extends Constructor> (Base: TBase) {
       }
 
       const path = [
-        this.name,
+        urlSlug(this.name),
         ...referencedColumns,
       ].join('/')
 

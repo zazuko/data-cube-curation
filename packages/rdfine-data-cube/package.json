@@ -15,7 +15,8 @@
     "@zazuko/rdf-vocabularies": "^2019.12.23",
     "clownface": "^0.12.1",
     "is-uri": "^1.2.0",
-    "uri-template": "^1.0.1"
+    "uri-template": "^1.0.1",
+    "url-slug": "^2.3.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",

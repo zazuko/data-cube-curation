@@ -59,6 +59,40 @@ describe('FactTable', () => {
       expect(aboutUrl).toEqual('http://foobar.com/fact-table/{foo}/{baz}')
     })
 
+    it('slugifies table name in aboutUrl', () => {
+      // given
+      const graph = cf({ dataset: rdf.dataset() })
+      const column: Column = new ColumnMixin.Class(graph.node(ex(`column/foo`)), {
+        name: 'foo',
+      })
+      const table = new FactTableMixin.Class(graph.node(ex('fact-table')), {
+        name: 'Europäische Literatur',
+        project: {
+          types: [dataCube.Project],
+          id: ex.project,
+          baseUri: 'http://foobar.com/',
+        },
+        source: {
+          id: ex.source,
+          types: [dataCube.CsvSource],
+          columns: [column],
+        },
+      })
+      const fooAttr = new ReferenceAttributeMixin.Class(graph.node(ex('attribute/foo')), {
+        columnMappings: [{
+          types: [dataCube.ColumnMapping],
+          [dataCube.sourceColumn.value]: column,
+        }],
+      })
+      fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
+
+      // when
+      const aboutUrl = table.createIdentifier()
+
+      // then
+      expect(aboutUrl).toEqual('http://foobar.com/europaische-literatur/{foo}')
+    })
+
     it('returns null if there are no referenced attributes', () => {
       // given
       const graph = cf({ dataset: rdf.dataset() })
