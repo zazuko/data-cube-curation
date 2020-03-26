@@ -2,7 +2,7 @@
 @prefix :     <https://pipeline.described.at/> .
 @prefix code: <https://code.described.at/> .
 
-<#TransformFiles> a :Readable .
+<#Main> a :Readable .
 
 <#StreamOutput> a :Readable ;
   :steps     [ :stepList ( _:serialize ) ] .
