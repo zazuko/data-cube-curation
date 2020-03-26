@@ -2,7 +2,7 @@
 
 exports[`project create dimension table creates a dataCube:Table aggregate 1`] = `
 Object {
-  "@id": "/project/test/table/Table%20One",
+  "@id": "/project/test/table/table-one",
   "@type": "Table",
   "identifierTemplate": "/dimension/{column}",
   "projectId": "/project/test",
@@ -15,7 +15,7 @@ exports[`project create dimension table publishes an event 1`] = `
 Array [
   Object {
     "data": Object {
-      "@id": "/project/test/table/Table%20One",
+      "@id": "/project/test/table/table-one",
       "@type": "Table",
       "identifierTemplate": "/dimension/{column}",
       "projectId": "/project/test",
