@@ -1,17 +1,16 @@
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
 import { namedNode } from 'rdf-data-model'
-import { triggerPipeline } from './trigger'
-import fetch from 'node-fetch'
+import { triggerPipeline } from './gitLab'
 import env from '../../env'
 
-jest.mock('node-fetch')
 jest.mock('../../env')
 
 const envMock = env as any as jest.SpyInstance
-const fetchMock = fetch as any as jest.SpyInstance
 
 describe('gitlab trigger', () => {
   beforeAll(() => {
-    env.GITLAB_PIPELINE = 'GITLAB_PIPELINE'
+    env.GITLAB_PIPELINE = 'http://gitlab/'
     env.GITLAB_PIPELINE_TOKEN = 'GITLAB_PIPELINE_TOKEN'
     env.GITLAB_PIPELINE_BRANCH = 'master'
     env.AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID'
@@ -20,13 +19,16 @@ describe('gitlab trigger', () => {
     env.GRAPH_STORE_ENDPOINT = 'GRAPH_STORE_ENDPOINT'
     env.GRAPH_STORE_USER = 'GRAPH_STORE_USER'
     env.GRAPH_STORE_PASSWORD = 'GRAPH_STORE_PASSWORD'
+    fetchMock.enableMocks()
   })
 
   beforeEach(() => {
-    fetchMock.mockReset()
+    fetchMock.resetMocks()
+    fetchMock.doMock()
   })
 
   afterAll(() => {
+    fetchMock.disableMocks()
     envMock.mockRestore()
   })
 
@@ -61,6 +63,10 @@ describe('gitlab trigger', () => {
   })
 
   it('calls gitlab trigger endpoint with project\'s settings', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({
+      id: 1234,
+      'web_url': 'http://foo.com/1234',
+    }))
     // given
     const project = {
       id: namedNode('foo:bar'),
@@ -69,13 +75,19 @@ describe('gitlab trigger', () => {
     }
 
     // when
-    await triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
+    const job = await triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
 
     // then
+    expect(job).toMatchSnapshot()
     expect(fetchMock.mock.calls[0]).toMatchSnapshot()
   })
 
   it('calls gitlab trigger endpoint with overridden settings', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({
+      id: 5678,
+      'web_url': 'http://foo.com/5678',
+    }))
+
     // given
     const project = {
       id: namedNode('foo:bar'),
@@ -84,12 +96,13 @@ describe('gitlab trigger', () => {
     }
 
     // when
-    await triggerPipeline(project, {
+    const job = await triggerPipeline(project, {
       s3Bucket: 'changed bucket',
       graphUri: 'urn:foo:baz',
     })
 
     // then
+    expect(job).toMatchSnapshot()
     expect(fetchMock.mock.calls[0]).toMatchSnapshot()
   })
 })

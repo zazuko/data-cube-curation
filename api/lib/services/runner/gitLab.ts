@@ -2,13 +2,9 @@ import { URLSearchParams } from 'url'
 import fetch from 'node-fetch'
 import { Project } from '@zazuko/rdfine-data-cube'
 import env from '../../env'
+import { JobTrigger, JobRun } from './'
 
-export interface GitLabJobTrigger {
-  s3Bucket: string | undefined;
-  graphUri: string | undefined;
-}
-
-export function triggerPipeline (project: Pick<Project, 's3Bucket' | 'id' | 'graphUri'>, trigger: GitLabJobTrigger = { s3Bucket: undefined, graphUri: undefined }) {
+export function triggerPipeline (project: Pick<Project, 's3Bucket' | 'id' | 'graphUri'>, trigger: JobTrigger = { s3Bucket: undefined, graphUri: undefined }): Promise<JobRun> {
   const s3Bucket = trigger.s3Bucket || project.s3Bucket
   const graphUri = trigger.graphUri || project.graphUri
 
@@ -38,4 +34,9 @@ export function triggerPipeline (project: Pick<Project, 's3Bucket' | 'id' | 'gra
     method: 'POST',
     body: form,
   })
+    .then(r => r.json())
+    .then(d => ({
+      id: `${d.id}`,
+      webUrl: d.web_url,
+    }))
 }
