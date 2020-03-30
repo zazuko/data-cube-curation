@@ -8,6 +8,8 @@ import { addDimensionTable, selectFactTableSource } from '../../domain/project'
 import { DomainError } from '@tpluscode/fun-ddr'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/table/index'
+import { getFactTableId } from '../../read-graphs/table'
+import { canonicalFactTableId } from '../project'
 import env from '../../env'
 
 async function loadProject (projectId: string) {
@@ -54,7 +56,7 @@ async function createFactTable (req: express.Request, projectId: string) {
   })
     .commit(projects)
 
-  return `${projectId}/table/${tableName.value}`
+  return getFactTableId(canonicalFactTableId(projectId))
 }
 
 export const createTable = asyncMiddleware(async (req: express.Request, res: express.Response) => {

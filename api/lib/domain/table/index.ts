@@ -1,4 +1,5 @@
 import { initialize, Entity } from '@tpluscode/fun-ddr'
+import urlSlug from 'url-slug'
 import { TableEvents } from './events'
 
 export interface Table extends Entity {
@@ -23,7 +24,7 @@ interface CreateTableCommand {
 }
 
 export const createTable = initialize<Table, CreateTableCommand, TableEvents>((cmd, emitter) => {
-  const tableId = `${cmd.projectId}/table/${cmd.tableName}`
+  const tableId = `${cmd.projectId}/table/${urlSlug(cmd.tableName)}`
 
   emitter.emit.FactTableCreated({
     projectId: cmd.projectId,

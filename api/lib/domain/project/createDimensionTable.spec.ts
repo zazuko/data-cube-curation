@@ -34,6 +34,24 @@ describe('project', () => {
       await expect(result.state).resolves.toMatchSnapshot()
     })
 
+    it('replaces non-ASCII characters in the table id', async () => {
+      // given
+      const project = {
+        '@id': '/project/test',
+      } as Project
+
+      // when
+      const result = await addDimensionTable(project, {
+        sourceId: '/project/test/source',
+        tableName: 'Taxón y categoría taxonómica',
+        identifierTemplate: '/dimension/{column}',
+      })
+      const table = await result.state
+
+      // then
+      expect(table?.['@id']).toEqual('/project/test/table/taxon-y-categoria-taxonomica')
+    })
+
     it('publishes an event', async () => {
       // given
       const project = {

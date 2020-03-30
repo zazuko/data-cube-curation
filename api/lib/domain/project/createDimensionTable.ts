@@ -1,4 +1,5 @@
 import { factory } from '@tpluscode/fun-ddr'
+import urlSlug from 'url-slug'
 import { Project } from './index'
 import { TableCommand } from './createFactTable'
 import { errorFactory } from '../error-helper'
@@ -29,7 +30,7 @@ export const addDimensionTable = factory<Project, CreateDimensionTableCommand, T
     throw new DomainError(`Template is not correct. ${columns.message}`)
   }
 
-  const tableId = `${project['@id']}/table/${encodeURIComponent(cmd.tableName)}`
+  const tableId = `${project['@id']}/table/${urlSlug(cmd.tableName)}`
 
   const table: DimensionTable = {
     '@id': tableId,
