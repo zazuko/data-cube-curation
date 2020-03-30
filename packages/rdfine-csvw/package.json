@@ -1,6 +1,6 @@
 {
   "name": "@rdfine/csvw",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CSV of the Web bindings to @tpluscode/rdfine",
   "main": "index.js",
   "scripts": {
