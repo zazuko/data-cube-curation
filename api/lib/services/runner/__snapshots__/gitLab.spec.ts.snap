@@ -1,8 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`gitlab trigger calls gitlab trigger endpoint with overridden settings 1`] = `
+Object {
+  "id": "5678",
+  "webUrl": "http://foo.com/5678",
+}
+`;
+
+exports[`gitlab trigger calls gitlab trigger endpoint with overridden settings 2`] = `
 Array [
-  "GITLAB_PIPELINE",
+  "http://gitlab/",
   Object {
     "body": URLSearchParams {
       Symbol(query): Array [
@@ -37,8 +44,15 @@ Array [
 `;
 
 exports[`gitlab trigger calls gitlab trigger endpoint with project's settings 1`] = `
+Object {
+  "id": "1234",
+  "webUrl": "http://foo.com/1234",
+}
+`;
+
+exports[`gitlab trigger calls gitlab trigger endpoint with project's settings 2`] = `
 Array [
-  "GITLAB_PIPELINE",
+  "http://gitlab/",
   Object {
     "body": URLSearchParams {
       Symbol(query): Array [

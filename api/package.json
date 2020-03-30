@@ -26,6 +26,7 @@
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
     "@fcostarodrigo/walk": "^4.0.2",
+    "@kubernetes/client-node": "^0.11.1",
     "@rdfine/csvw": "^0.0.0",
     "@rdfjs/to-ntriples": "^1.0.2",
     "@tpluscode/fun-ddr": "^0.6.1",
@@ -95,6 +96,7 @@
     "hydra-validator-analyse": "^0.1.6",
     "hydra-validator-e2e": "^0.6",
     "jest": "^24.9.0",
+    "jest-fetch-mock": "^3.0.3",
     "jsonld": "^1.8.0",
     "lint-staged": "^8.2.1",
     "nodemon": "^2.0.1",
