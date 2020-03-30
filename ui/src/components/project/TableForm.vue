@@ -9,7 +9,7 @@
           Fact table
         </b-radio>
         <b-radio v-model="table.type" native-value="dimension" :disabled="!project.actions.createDimensionTable">
-          Dimension table sugus
+          Dimension table
         </b-radio>
       </b-field>
 
