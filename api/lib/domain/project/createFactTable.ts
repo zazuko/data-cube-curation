@@ -7,6 +7,7 @@ import { errorFactory } from '../error-helper'
 export interface TableCommand {
   sourceId: string;
   tableName: string;
+  identifierTemplate: string | null;
 }
 
 export const selectFactTableSource = mutate<Project, TableCommand, ProjectEvents>(async (project, command, emitter) => {
@@ -27,6 +28,7 @@ export const selectFactTableSource = mutate<Project, TableCommand, ProjectEvents
   emitter.emit.FactTableSourceSelected({
     sourceId: command.sourceId,
     tableName: command.tableName,
+    identifierTemplate: command.identifierTemplate,
   })
 
   return {

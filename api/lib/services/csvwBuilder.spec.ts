@@ -5,7 +5,7 @@ import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { NamedNode } from 'rdf-js'
 import { buildCsvw } from './csvwBuilder'
-import { Column, DimensionTable, ValueAttribute, Table, CsvSource, wireUp } from '@zazuko/rdfine-data-cube'
+import { Column, ValueAttribute, Table, CsvSource, wireUp } from '@zazuko/rdfine-data-cube'
 import { csvw, dataCube, qb, rdf, schema, xsd } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
 
@@ -285,17 +285,6 @@ describe('csvwBuilder', () => {
       // then
       expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
     })
-
-    it('sets table\'s aboutUrl', async () => {
-      // given
-      const dataset = await specGraphs.referenceAttributeGraph()
-
-      // when
-      const csvwDataset = buildCsvw({ dataset, tableId: `http://reference-attribute.test/fact-table` })
-
-      // then
-      expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://cube.data/project/a-fact/{name}/{the-identifier}')
-    })
   })
 
   describe('mapping for DimensionTable', () => {
@@ -311,7 +300,7 @@ describe('csvwBuilder', () => {
         datatype: { id: xsd.string },
         propertyTemplate: 'property/{foo}/{bar}',
       }
-      const table: RecursivePartial<DimensionTable> = {
+      const table: RecursivePartial<Table> = {
         id: namedNode('http://reference-attribute.test/fact-table'),
         identifierTemplate: 'table/{foo}/{bar}',
         columns: [column],

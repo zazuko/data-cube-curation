@@ -5,7 +5,7 @@ import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { Column } from '.'
 import { FactTableMixin } from './Table'
 import { ColumnMixin } from './Column'
-import { ReferenceAttributeMixin, ValueAttributeMixin } from './Attribute'
+import { ReferenceAttributeMixin } from './Attribute'
 import { dataCube } from '../namespaces'
 import { wireUp } from '../wireUp'
 
@@ -15,7 +15,20 @@ const ex = namespace('http://example.com/')
 
 describe('FactTable', () => {
   describe('createIdentifier', () => {
-    it('creates id for observation table', () => {
+    it('returns null when there is no template', () => {
+      // given
+      const graph = cf({ dataset: rdf.dataset() })
+
+      // when
+      const table = new FactTableMixin.Class(graph.blankNode())
+
+      // then
+      expect(table.createIdentifier()).toBeNull()
+    })
+  })
+
+  describe('missingIdentifierColumns', () => {
+    it('returns columns which are used in referenced tables but not in identifier', () => {
       // given
       const graph = cf({ dataset: rdf.dataset() })
       const columns: Column[] = ['foo', 'bar', 'baz'].map((name, order) =>
@@ -28,20 +41,13 @@ describe('FactTable', () => {
         project: {
           types: [dataCube.Project],
           id: ex.project,
-          baseUri: 'http://foobar.com/',
         },
         source: {
           id: ex.source,
           types: [dataCube.CsvSource],
           columns,
         },
-      })
-      const fooBazAttr = new ReferenceAttributeMixin.Class(graph.node(ex('attribute/foo-baz')), {
-        columnMappings: [{
-          [dataCube.sourceColumn.value]: columns[0],
-        }, {
-          [dataCube.sourceColumn.value]: columns[2],
-        }],
+        identifierTemplate: 'http://example.com/fact/{bar}',
       })
       const fooAttr = new ReferenceAttributeMixin.Class(graph.node(ex('attribute/foo')), {
         columnMappings: [{
@@ -49,51 +55,18 @@ describe('FactTable', () => {
           [dataCube.sourceColumn.value]: columns[0],
         }],
       })
-      fooBazAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
       fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
 
       // when
-      const aboutUrl = table.createIdentifier()
+      const aboutUrl = table.missingIdentifierColumns
 
       // then
-      expect(aboutUrl).toEqual('http://foobar.com/fact-table/{foo}/{baz}')
+      expect(aboutUrl).toEqual(
+        expect.arrayContaining([columns[0].name])
+      )
     })
 
-    it('slugifies table name in aboutUrl', () => {
-      // given
-      const graph = cf({ dataset: rdf.dataset() })
-      const column: Column = new ColumnMixin.Class(graph.node(ex(`column/foo`)), {
-        name: 'foo',
-      })
-      const table = new FactTableMixin.Class(graph.node(ex('fact-table')), {
-        name: 'Europäische Literatur',
-        project: {
-          types: [dataCube.Project],
-          id: ex.project,
-          baseUri: 'http://foobar.com/',
-        },
-        source: {
-          id: ex.source,
-          types: [dataCube.CsvSource],
-          columns: [column],
-        },
-      })
-      const fooAttr = new ReferenceAttributeMixin.Class(graph.node(ex('attribute/foo')), {
-        columnMappings: [{
-          types: [dataCube.ColumnMapping],
-          [dataCube.sourceColumn.value]: column,
-        }],
-      })
-      fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
-
-      // when
-      const aboutUrl = table.createIdentifier()
-
-      // then
-      expect(aboutUrl).toEqual('http://foobar.com/europaische-literatur/{foo}')
-    })
-
-    it('returns null if there are no referenced attributes', () => {
+    it('returns empty array when table has no identifier template', () => {
       // given
       const graph = cf({ dataset: rdf.dataset() })
       const columns: Column[] = ['foo', 'bar', 'baz'].map((name, order) =>
@@ -106,7 +79,6 @@ describe('FactTable', () => {
         project: {
           types: [dataCube.Project],
           id: ex.project,
-          baseUri: 'http://foobar.com/',
         },
         source: {
           id: ex.source,
@@ -114,14 +86,19 @@ describe('FactTable', () => {
           columns,
         },
       })
-      const fooAttr = new ValueAttributeMixin.Class(graph.node(ex('attribute/foo')))
+      const fooAttr = new ReferenceAttributeMixin.Class(graph.node(ex('attribute/foo')), {
+        columnMappings: [{
+          types: [dataCube.ColumnMapping],
+          [dataCube.sourceColumn.value]: columns[0],
+        }],
+      })
       fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
 
       // when
-      const aboutUrl = table.createIdentifier()
+      const aboutUrl = table.missingIdentifierColumns
 
       // then
-      expect(aboutUrl).toBeNull()
+      expect(aboutUrl).toEqual([])
     })
   })
 })

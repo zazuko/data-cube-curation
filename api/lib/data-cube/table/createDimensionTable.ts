@@ -40,15 +40,17 @@ async function createDimensionTable (req: express.Request, projectId: string): P
 }
 
 async function createFactTable (req: express.Request, projectId: string) {
-  const { sourceId, tableName } = buildVariables(req, {
+  const { sourceId, tableName, identifierTemplate } = buildVariables(req, {
     sourceId: expand('dataCube:source'),
     tableName: expand('schema:name'),
+    identifierTemplate: expand('dataCube:identifierTemplate'),
   })
 
   const project = await loadProject(projectId)
   await project.mutation(selectFactTableSource)({
     sourceId: sourceId.value,
     tableName: tableName.value,
+    identifierTemplate: identifierTemplate.value || null,
   })
     .commit(projects)
 

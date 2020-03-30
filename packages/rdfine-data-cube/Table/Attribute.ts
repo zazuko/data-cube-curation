@@ -2,7 +2,7 @@ import { Constructor, namespace, property, RdfResource, RdfResourceImpl } from '
 import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 import * as Table from './index'
 import { dataCube } from '../namespaces'
-import { DimensionTableMixin } from './Table'
+import { TableMixin } from './Table'
 import { ColumnMappingMixin } from './ColumnMapping'
 
 function AttributeMixin<TBase extends Constructor> (Base: TBase) {
@@ -50,8 +50,8 @@ export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> 
 }
 export function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
   class ReferenceAttribute extends Base implements Table.ReferenceAttribute {
-    @property.resource({ as: [ DimensionTableMixin ] })
-    public referencedTable: Table.DimensionTable
+    @property.resource({ as: [ TableMixin ] })
+    public referencedTable: Table.Table
 
     @property.resource({ path: dataCube.columnMapping, values: 'array', as: [ColumnMappingMixin] })
     public columnMappings: Table.ColumnMapping[]

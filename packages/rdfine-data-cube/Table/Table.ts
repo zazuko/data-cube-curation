@@ -1,7 +1,6 @@
 import { namespace, property, RdfResource, Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
 import * as Csvw from '@rdfine/csvw'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
-import urlSlug from 'url-slug'
 import * as Table from './index'
 import { dataCube, rdf, api, schema } from '../namespaces'
 import './Attribute'
@@ -12,6 +11,7 @@ import { parse } from '../lib/uriTemplateParser'
 import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 
 export function TableMixin<TBase extends Constructor> (Base: TBase) {
+  @namespace(dataCube)
   class T extends Base implements Table.Table {
     @property.resource({ path: [ dataCube.source, dataCube.column ], values: 'array' })
     public readonly columns!: Table.Column[]
@@ -27,6 +27,9 @@ export function TableMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.literal({ path: schema('name') })
     public name!: string
+
+    @property.literal()
+    public identifierTemplate: string
 
     public get attributes () {
       return this._selfGraph.in(dataCube.table)
@@ -47,11 +50,7 @@ export function TableMixin<TBase extends Constructor> (Base: TBase) {
 TableMixin.shouldApply = (res: RdfResource) => res.hasType(dataCube.Table)
 
 export function DimensionTableMixin<TBase extends Constructor> (Base: TBase) {
-  @namespace(dataCube)
-  class DimensionTable extends TableMixin(Base) implements Table.DimensionTable {
-    @property.literal()
-    public identifierTemplate: string
-
+  class DimensionTable extends TableMixin(Base) implements Table.Table {
     public createIdentifier () {
       return parse(this.identifierTemplate).toAbsoluteUrl(this.project.baseUri)
     }
@@ -77,23 +76,28 @@ export function FactTableMixin<TBase extends Constructor> (Base: TBase) {
   }
 
   @namespace(dataCube)
-  class FactTable extends TableMixin(Base) {
+  class FactTable extends TableMixin(Base) implements Table.FactTable {
     public createIdentifier () {
-      const referencedColumns = this.source.columns
-        .sort(column => column.order)
-        .filter(usedInReference.bind(this))
-        .map(column => `{${column.name}}`)
-
-      if (!referencedColumns.some(Boolean)) {
+      if (!this.identifierTemplate) {
         return null
       }
 
-      const path = [
-        urlSlug(this.name),
-        ...referencedColumns,
-      ].join('/')
+      return parse(this.identifierTemplate).toAbsoluteUrl(this.project.baseUri)
+    }
 
-      return this.project.baseUri + path
+    get missingIdentifierColumns () {
+      if (!this.identifierTemplate) {
+        return []
+      }
+
+      const referencedColumns = this.source.columns
+        .sort(column => column.order)
+        .filter(usedInReference.bind(this))
+        .map(column => column.name)
+
+      const parsedTemplate = parse(this.identifierTemplate)
+
+      return referencedColumns.filter(name => !parsedTemplate.columnNames.includes(name))
     }
   }
 
@@ -104,14 +108,15 @@ FactTableMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.FactTable)
 }
 FactTableMixin.Class = class extends FactTableMixin(RdfResourceImpl) {
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor (node: ResourceNode, init: Initializer<Table.Table>) {
+  constructor (node: ResourceNode, init?: Initializer<Table.Table>) {
     super(node, init)
+    this.types.add(dataCube.FactTable)
+    this.types.add(dataCube.Table)
   }
 }
-DimensionTableMixin.Class = class extends DimensionTableMixin(RdfResourceImpl) {
-  constructor (node: ResourceNode, init: Initializer<Table.DimensionTable>) {
+TableMixin.Class = class extends TableMixin(RdfResourceImpl) {
+  constructor (node: ResourceNode, init?: Initializer<Table.Table>) {
     super(node, init)
-    this.types.add(dataCube.DimensionTable)
+    this.types.add(dataCube.Table)
   }
 }

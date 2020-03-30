@@ -3,10 +3,10 @@ import { DomainEvent } from '@tpluscode/fun-ddr/lib'
 import { ask, construct, deleteInsert, insertData, select } from '../sparql'
 import { api, dataCube, hydra, rdf, schema } from '../namespaces'
 import { getClient } from './sparqlClient'
-import TableEvents from '../domain/table/events'
+import TableEvents, { TableEvents as EventTypes } from '../domain/table/events'
 import { getTableAttributes } from './attribute'
 import { attributes } from '../storage/repository'
-import { Quad } from 'rdf-js'
+import { NamedNode, Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import env from '../env'
 
@@ -30,36 +30,32 @@ function addTableLinks (ev: DomainEvent) {
 TableEvents.on.FactTableCreated(addTableLinks)
 TableEvents.on.DimensionTableCreated(addTableLinks)
 
-TableEvents.on.FactTableCreated(function createFactTableTriples (ev) {
-  return insertData(`
+function createTable (type: NamedNode) {
+  return (ev: DomainEvent<EventTypes['FactTableCreated']> | DomainEvent<EventTypes['DimensionTableCreated']>) => {
+    let data = `
     <${ev.id}>
-      a dataCube:Table, dataCube:FactTable ;
+      a dataCube:Table, <${type.value}> ;
       dataCube:source <${ev.data.sourceId}>;
       dataCube:project <${ev.data.projectId}> ;
       schema:name "${ev.data.tableName}" .
-  `)
-    .prefixes({
-      schema,
-      dataCube,
-    })
-    .execute(getClient())
-})
+  `
 
-TableEvents.on.DimensionTableCreated(function createDimensionTableTriples (ev) {
-  return insertData(`
-    <${ev.id}>
-      a dataCube:Table, dataCube:DimensionTable;
-      dataCube:source <${ev.data.sourceId}>;
-      dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.tableName}" ;
-      dataCube:identifierTemplate "${ev.data.identifierTemplate}" .
-  `)
-    .prefixes({
-      schema,
-      dataCube,
-    })
-    .execute(getClient())
-})
+    if (ev.data.identifierTemplate) {
+      data += `<${ev.id}> dataCube:identifierTemplate "${ev.data.identifierTemplate}" .`
+    }
+
+    return insertData(data)
+      .prefixes({
+        schema,
+        dataCube,
+      })
+      .execute(getClient())
+  }
+}
+
+TableEvents.on.FactTableCreated(createTable(dataCube.FactTable))
+
+TableEvents.on.DimensionTableCreated(createTable(dataCube.DimensionTable))
 
 CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {

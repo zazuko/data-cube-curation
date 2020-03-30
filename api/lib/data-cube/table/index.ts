@@ -22,6 +22,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
     name: expand('schema:name'),
+    identifierTemplate: expand('dataCube:identifierTemplate'),
   })
 
   const project = await projects.load(projectId)
@@ -34,6 +35,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
   await project.mutation(selectFactTableSource)({
     sourceId: variables.source.value,
     tableName: variables.name.value,
+    identifierTemplate: variables.identifierTemplate.value,
   })
     .commit(projects)
 

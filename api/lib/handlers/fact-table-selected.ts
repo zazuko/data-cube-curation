@@ -7,6 +7,7 @@ ProjectEvents.on.FactTableSourceSelected(function createProjectFactTable (ev) {
     projectId: ev.id,
     tableName: ev.data.tableName,
     sourceId: ev.data.sourceId,
+    identifierTemplate: ev.data.identifierTemplate,
   })
     .commit(tables)
 })
