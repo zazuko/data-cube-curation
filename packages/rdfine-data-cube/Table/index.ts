@@ -9,14 +9,17 @@ export interface Table extends RdfResource {
   readonly source: Source;
   readonly csvw: Csvw.Mapping;
   readonly name: string;
+  readonly identifierTemplate: string | undefined;
+  createIdentifier (): string | null;
 }
 
-export interface DimensionTable extends Table {
-  readonly identifierTemplate: string | undefined;
+export interface FactTable extends Table {
+  missingIdentifierColumns: string[];
 }
 
 export interface Column extends RdfResource {
   readonly name: string;
+  readonly order: number;
 }
 
 export interface Attribute extends RdfResource {
@@ -37,6 +40,6 @@ export interface ColumnMapping extends RdfResource {
 }
 
 export interface ReferenceAttribute extends Attribute {
-  readonly referencedTable: DimensionTable;
+  readonly referencedTable: Table;
   readonly columnMappings: ColumnMapping[];
 }

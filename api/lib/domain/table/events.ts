@@ -5,6 +5,7 @@ export interface TableEvents {
     projectId: string;
     sourceId: string;
     tableName: string;
+    identifierTemplate: string | null;
   };
   DimensionTableCreated: {
     projectId: string;

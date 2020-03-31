@@ -2,7 +2,7 @@ import cf from 'clownface'
 import { DatasetCore } from 'rdf-js'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 import { rdf, dataCube, schema } from '../../namespaces'
-import { parse } from '../../services/uriTemplateParser'
+import { parse } from '@zazuko/rdfine-data-cube/lib/uriTemplateParser'
 
 interface IdentifierColumn {
   id: string;

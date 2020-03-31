@@ -23,6 +23,7 @@ export interface ProjectEvents {
   FactTableSourceSelected: {
     sourceId: string;
     tableName: string;
+    identifierTemplate: string | null;
   };
   FactTableUnselected: {
     previousSourceId: string;

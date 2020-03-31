@@ -8,6 +8,10 @@ export interface Table extends Entity {
   tableName: string;
 }
 
+export interface FactTable extends Table {
+  identifierTemplate: string | null;
+}
+
 export interface DimensionTable extends Table {
   identifierTemplate: string;
 }
@@ -16,6 +20,7 @@ interface CreateTableCommand {
   sourceId: string;
   projectId: string;
   tableName: string;
+  identifierTemplate: string | null;
 }
 
 export const createTable = initialize<Table, CreateTableCommand, TableEvents>((cmd, emitter) => {
@@ -25,6 +30,7 @@ export const createTable = initialize<Table, CreateTableCommand, TableEvents>((c
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
     tableName: cmd.tableName,
+    identifierTemplate: cmd.identifierTemplate,
   })
 
   return {
@@ -33,5 +39,6 @@ export const createTable = initialize<Table, CreateTableCommand, TableEvents>((c
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
     tableName: cmd.tableName,
+    identifierTemplate: cmd.identifierTemplate,
   }
 })

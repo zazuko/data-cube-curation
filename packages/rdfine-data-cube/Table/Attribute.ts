@@ -1,8 +1,9 @@
-import { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
+import { Constructor, namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 import * as Table from './index'
 import { dataCube } from '../namespaces'
-import './ColumnMapping'
-import { DimensionTableMixin } from './Table'
+import { TableMixin } from './Table'
+import { ColumnMappingMixin } from './ColumnMapping'
 
 function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
@@ -14,7 +15,7 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
   return Attribute
 }
 
-function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
   class ValueAttribute extends Base implements Table.ValueAttribute {
     @property.resource()
     public datatype: RdfResource
@@ -47,13 +48,13 @@ function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: 
 
   return AttributeMixin(ValueAttribute)
 }
-function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+export function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
   class ReferenceAttribute extends Base implements Table.ReferenceAttribute {
-    @property.resource({ as: [ DimensionTableMixin ] })
-    public referencedTable: Table.DimensionTable
+    @property.resource({ as: [ TableMixin ] })
+    public referencedTable: Table.Table
 
-    @property.resource({ path: dataCube.columnMapping, values: 'array' })
-    public readonly columnMappings: Table.ColumnMapping[]
+    @property.resource({ path: dataCube.columnMapping, values: 'array', as: [ColumnMappingMixin] })
+    public columnMappings: Table.ColumnMapping[]
   }
 
   return AttributeMixin(ReferenceAttribute)
@@ -69,6 +70,24 @@ ValueAttributeMixin.shouldApply = (cf: RdfResource) => {
 
 ReferenceAttributeMixin.shouldApply = (cf: RdfResource) => {
   return cf.hasType(dataCube.ReferenceAttribute)
+}
+
+ValueAttributeMixin.Class = class extends ValueAttributeMixin(AttributeMixin(RdfResourceImpl)) {
+  constructor (node: ResourceNode, init?: Initializer<Table.ValueAttribute>) {
+    super(node, init)
+
+    this.types.add(dataCube.Attribute)
+    this.types.add(dataCube.ValueAttribute)
+  }
+}
+
+ReferenceAttributeMixin.Class = class extends ReferenceAttributeMixin(AttributeMixin(RdfResourceImpl)) {
+  constructor (node: ResourceNode, init?: Initializer<Table.ReferenceAttribute>) {
+    super(node, init)
+
+    this.types.add(dataCube.Attribute)
+    this.types.add(dataCube.ReferenceAttribute)
+  }
 }
 
 export default [

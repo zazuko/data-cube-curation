@@ -1,8 +1,7 @@
 import * as Csvw from '@rdfine/csvw'
 import { error, warning } from '../../log'
 import * as Table from '@zazuko/rdfine-data-cube/Table'
-import { getAbsoluteUrl } from './aboutUrl'
-import { parse } from '../uriTemplateParser'
+import { parse } from '@zazuko/rdfine-data-cube/lib/uriTemplateParser'
 
 export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttribute, csvwColumn: Csvw.Column) {
   const referencedTable = attribute.referencedTable
@@ -25,7 +24,7 @@ export function referenceAttributeToCsvwColumn (attribute: Table.ReferenceAttrib
       }
     })
 
-    csvwColumn.valueUrl = getAbsoluteUrl(referencedTable.project, uriTemplate)
+    csvwColumn.valueUrl = uriTemplate.toAbsoluteUrl(referencedTable.project.baseUri)
   }
 
   error(`Failed to create column for reference attribute <%s>`, attribute.id)

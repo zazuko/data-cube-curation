@@ -6,9 +6,12 @@ export const ids = {
 }
 
 const tableAndSource = `
+<http://example.com/project> dataCube:baseUri "http://cube.data/project#" .
+
 <${ids.tableId}>
       a                 dataCube:FactTable , dataCube:Table ;
-      dataCube:source   <${ids.sourceId}> .
+      dataCube:source   <${ids.sourceId}> ;
+      dataCube:project   <http://example.com/project> .
 
 <${ids.sourceId}>
       a                         dataCube:CsvSource , dataCube:Source ;
@@ -65,19 +68,25 @@ const columnMappedWithLanguage = `${mappedColumn}
 `
 
 const referenceAttribute = `
-BASE <http://reference-attribute.test/fact-table>
+@base <http://reference-attribute.test/fact-table> .
+@prefix dtype: <http://www.linkedmodel.org/schema/dtype#> .
+@prefix schema: <http://schema.org/> .
+
+<project> dataCube:baseUri "http://cube.data/project/" .
 
 <fact-table>
     a dataCube:FactTable, dataCube:Table ;
+    schema:name "a-fact" ;
     dataCube:source [
         a dataCube:CsvSource ;
         dataCube:column <fact-source/name-column> , <fact-source/id-column> ;
         dataCube:csvQuote "\\"" ; dataCube:csvDelimiter ";" ;
     ] ;
+    dataCube:project <project> ;
 .
 
-<fact-source/name-column> a dataCube:Column ; schema:name "name" .
-<fact-source/id-column> a dataCube:Column ; schema:name "the-identifier" .
+<fact-source/name-column> a dataCube:Column ; schema:name "name" ; dtype:order 0 .
+<fact-source/id-column> a dataCube:Column ; schema:name "the-identifier" ; dtype:order 1 .
 
 <dim-table>
     a dataCube:DimensionTable, dataCube:Table ;
@@ -85,6 +94,7 @@ BASE <http://reference-attribute.test/fact-table>
     dataCube:source [
         dataCube:column <dim-source/name-column>, <dim-source/id-column>
     ] ;
+    dataCube:project <project> ;
 .
 
 <dim-source/name-column> a dataCube:Column ; schema:name "station_name" .

@@ -1,0 +1,77 @@
+PREFIX api: <https://rdf-cube-curation.described.at/api/>
+PREFIX dataCube: <https://rdf-cube-curation.described.at/>
+PREFIX schema: <http://schema.org/>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+
+ENTRYPOINT "project/fact-table-identifier-template"
+
+With Class api:ProjectPlaceholder {
+    Expect Property api:project {
+        Expect Operation schema:CreateAction {
+            // Expect Method "PUT"
+        }
+    }
+}
+
+With Class dataCube:Project {
+    With Operation api:DeleteProject {
+        // Expect Operation "DELETE"
+
+        Invoke {
+            Expect Status 204
+        }
+    }
+}
+
+With Operation schema:CreateAction {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix schema: <http://schema.org/> .
+
+        <> schema:name "Fact table with identifier template" .
+        ```
+    } => {
+        Expect Property api:sources {
+            Expect Operation api:AddSource
+        }
+        Expect Property api:tables {
+            Expect Operation api:PostFactTable
+        }
+    }
+}
+
+With Operation api:AddSource {
+    Invoke {
+        Content-Type "text/csv"
+        Content-Disposition 'attachment; filename="single-column.csv"'
+
+        <<< "../bodies/single-column.csv"
+    } => {
+        Expect Status 201
+    }
+}
+
+With Operation api:PostFactTable {
+    Invoke {
+        Content-Type "text/turtle"
+
+        ```
+        @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+        @prefix schema: <http://schema.org/> .
+
+        <> dataCube:source <project/fact-table-identifier-template/source/single-column-csv> ;
+           schema:name "Observation" ;
+           dataCube:identifierTemplate "http://example.com/observation/{column}" ;
+           a dataCube:FactTable .
+        ```
+    } => {
+        Expect Status 201
+        Expect Header Location
+    }
+}
+
+With Class dataCube:FactTable {
+    Expect Property dataCube:identifierTemplate "http://example.com/observation/{column}"
+}

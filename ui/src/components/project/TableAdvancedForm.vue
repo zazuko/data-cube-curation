@@ -37,7 +37,6 @@
         :project="project"
         :tableName="table.name"
         :source="source"
-        v-if="table.type != 'fact'"
       />
 
       <b-field label="Attributes">
