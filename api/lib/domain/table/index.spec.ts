@@ -8,6 +8,7 @@ describe('table', () => {
         sourceId: '',
         projectId: 'http://example.com/project',
         tableName: 'Europäische Literatur',
+        identifierTemplate: '/{foo}',
       }
 
       // when

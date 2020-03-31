@@ -114,9 +114,10 @@ FactTableMixin.Class = class extends FactTableMixin(RdfResourceImpl) {
     this.types.add(dataCube.Table)
   }
 }
-TableMixin.Class = class extends TableMixin(RdfResourceImpl) {
+DimensionTableMixin.Class = class extends DimensionTableMixin(RdfResourceImpl) {
   constructor (node: ResourceNode, init?: Initializer<Table.Table>) {
     super(node, init)
+    this.types.add(dataCube.DimensionTable)
     this.types.add(dataCube.Table)
   }
 }
