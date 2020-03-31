@@ -12,8 +12,13 @@ api:TableCollection
 
 dataCube:FactTable
   rdfs:subClassOf          dataCube:Table ;
-  hydra:title              "Project's table" ;
-  hydra:supportedOperation api:GetFactTable .
+  hydra:title              "Project's fact table" ;
+  hydra:supportedOperation api:GetFactTable ;
+  hydra:supportedProperty [ hydra:property    dataCube:identifierTemplate ;
+                            hydra:title       "Table identifier" ;
+                            hydra:description "A URL Template which can contain column names as variables" ;
+                            hydra:required    false ]
+.
 
 dataCube:DimensionTable
   rdfs:subClassOf         dataCube:Table ;
