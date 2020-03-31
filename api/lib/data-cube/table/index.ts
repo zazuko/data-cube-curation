@@ -11,6 +11,7 @@ import { getFactTableId } from '../../read-graphs/table'
 import { canonicalFactTableId } from '../project'
 
 export { get } from './get'
+export { update } from './update'
 export { createTable } from './createDimensionTable'
 export { archive } from './archive'
 export { addAttributeHandler, getAttributes } from './attributes'

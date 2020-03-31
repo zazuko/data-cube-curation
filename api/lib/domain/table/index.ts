@@ -2,6 +2,8 @@ import { initialize, Entity } from '@tpluscode/fun-ddr'
 import urlSlug from 'url-slug'
 import { TableEvents } from './events'
 
+export { update } from './update'
+
 export interface Table extends Entity {
   sourceId: string;
   projectId: string;

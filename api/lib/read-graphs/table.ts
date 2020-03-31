@@ -1,61 +1,13 @@
 import { CoreEvents } from '@tpluscode/fun-ddr'
-import { DomainEvent } from '@tpluscode/fun-ddr/lib'
-import { ask, construct, deleteInsert, insertData, select } from '../sparql'
-import { api, dataCube, hydra, rdf, schema } from '../namespaces'
+import { ask, construct, deleteInsert, select } from '../sparql'
+import { dataCube, hydra, rdf } from '../namespaces'
 import { getClient } from './sparqlClient'
-import TableEvents, { TableEvents as EventTypes } from '../domain/table/events'
 import { getTableAttributes } from './attribute'
 import { attributes } from '../storage/repository'
-import { NamedNode, Quad } from 'rdf-js'
+import { Quad } from 'rdf-js'
 import $rdf from 'rdf-ext'
 import env from '../env'
-
-function addTableLinks (ev: DomainEvent) {
-  return insertData(`
-    <${ev.id}>
-        api:csvwMetadata <${ev.id}/csvw> ;
-        api:attributes <${ev.id}/attributes> ;
-        api:preview <${ev.id}/preview> .
-    <${ev.id}/csvw> dataCube:table <${ev.id}> .
-    <${ev.id}/attributes> dataCube:table <${ev.id}> .
-    <${ev.id}/preview> dataCube:table <${ev.id}> .
-  `)
-    .prefixes({
-      dataCube,
-      api,
-    })
-    .execute(getClient())
-}
-
-TableEvents.on.FactTableCreated(addTableLinks)
-TableEvents.on.DimensionTableCreated(addTableLinks)
-
-function createTable (type: NamedNode) {
-  return (ev: DomainEvent<EventTypes['FactTableCreated']> | DomainEvent<EventTypes['DimensionTableCreated']>) => {
-    let data = `
-    <${ev.id}>
-      a dataCube:Table, <${type.value}> ;
-      dataCube:source <${ev.data.sourceId}>;
-      dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.tableName}" .
-  `
-
-    if (ev.data.identifierTemplate) {
-      data += `<${ev.id}> dataCube:identifierTemplate "${ev.data.identifierTemplate}" .`
-    }
-
-    return insertData(data)
-      .prefixes({
-        schema,
-        dataCube,
-      })
-      .execute(getClient())
-  }
-}
-
-TableEvents.on.FactTableCreated(createTable(dataCube.FactTable))
-
-TableEvents.on.DimensionTableCreated(createTable(dataCube.DimensionTable))
+import './table/eventHandlers'
 
 CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
