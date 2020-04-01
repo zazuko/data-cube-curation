@@ -71,11 +71,13 @@ export interface Table extends HydraResource {
   mapping: any;
   preview: any;
   actions: Actions;
+
+  getData(changes: { [K in keyof TableFormData]?: any }): TableFormData;
 }
 
 export interface TableFormData {
   id?: ResourceId,
-  type: TableType,
+  type: TableType | null,
   name: string,
   color: string,
   identifierTemplate: string,

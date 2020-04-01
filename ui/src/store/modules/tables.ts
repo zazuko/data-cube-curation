@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData, Table } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import { replaceOrAdd } from '../../array-utils'
 import Remote from '@/remote'
 
 interface TablesState {
@@ -44,6 +45,14 @@ const actions: ActionTree<TablesState, RootState> = {
     })
   },
 
+  async update (context, { project, operation, data }) {
+    await handleAPIError(context, async () => {
+      const table = await client.projects.updateTable(operation, data)
+      context.dispatch('attributes/loadForTable', table, { root: true })
+      context.commit('storeInProject', { project, table })
+    })
+  },
+
   async delete (context, { project, table }) {
     await handleAPIError(context, async () => {
       await client.projects.deleteTable(table)
@@ -72,7 +81,7 @@ const mutations: MutationTree<TablesState> = {
 
     if (!projectTables.data) throw new Error('Project tables not loaded')
 
-    projectTables.data.push(table)
+    projectTables.data = replaceOrAdd(projectTables.data, table, (t1, t2) => t1.id === t2.id)
   },
 }
 

@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { Actions, ResourceId, Project, Job, JobFormData, RemoteData } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import { replaceOrAdd } from '../../array-utils'
 import Remote from '@/remote'
 
 interface ProjectsState {
@@ -93,8 +94,7 @@ const mutations: MutationTree<ProjectsState> = {
   storeOneInList (state, project: Project) {
     if (!state.projectsList.data) return
 
-    state.projectsList.data = state.projectsList.data.filter((p) => p.id !== project.id)
-    state.projectsList.data.push(project)
+    state.projectsList.data = replaceOrAdd(state.projectsList.data, project, (p1, p2) => p1.id === p2.id)
   },
 
   storeOne (state, project: Project) {

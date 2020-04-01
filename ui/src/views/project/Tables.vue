@@ -88,22 +88,6 @@ export default class ProjectTablesView extends Vue {
     })
   }
 
-  editTable (table: Table) {
-    const modal = this.$buefy.modal.open({
-      parent: this,
-      component: TableForm,
-      props: {
-        project: this.project,
-        sources: this.sources.data, // TODO: Handle loading?
-        table,
-        save: (table: TableFormData) => {
-          modal.close()
-        },
-      },
-      hasModalCard: true,
-    })
-  }
-
   deleteTable (table: Table) {
     this.$buefy.dialog.confirm({
       title: 'Delete table',

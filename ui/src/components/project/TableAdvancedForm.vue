@@ -35,7 +35,7 @@
       <IdentifierTemplateField
         v-model="table.identifierTemplate"
         :project="project"
-        :tableName="table.name"
+        :table="table"
         :source="source"
       />
 

@@ -12,23 +12,24 @@
         placeholder="e.g. my-table/{column_id}"
         :disabled="!source"
         keep-first
-        required>
+        :required="isRequired">
     </b-autocomplete>
   </b-field>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Project, Source } from '@/types'
+import { Project, Source, TableFormData } from '@/types'
 import { expandWithBase } from '@/rdf-vocabularies'
 
 @Component
 export default class extends Vue {
   @Prop() value: string
   @Prop() project: Project
-  @Prop() tableName: string
+  @Prop() table: TableFormData
   @Prop() source: Source
-  wasModified = false;
+  @Prop({ default: true }) autopopulate: boolean
+  wasModified = !this.autopopulate;
   isValid = true;
 
   onUpdate (newValue: string) {
@@ -39,13 +40,13 @@ export default class extends Vue {
     this.wasModified = true
   }
 
-  @Watch('tableName')
+  @Watch('table.name')
   prefill () {
     if (this.wasModified) return
 
-    if (!this.tableName) return
+    if (!this.table.name) return
 
-    const prefillValue = `${this.tableName}/{REPLACE}`
+    const prefillValue = `${this.table.name}/{REPLACE}`
     this.$emit('input', prefillValue)
   }
 
@@ -121,6 +122,10 @@ export default class extends Vue {
 
   get message () {
     return this.invalidMessage ?? this.expandedValue
+  }
+
+  get isRequired () {
+    return this.table.type === 'dimension'
   }
 }
 </script>

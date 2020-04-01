@@ -196,6 +196,14 @@ class ProjectsClient {
     return invokeDeleteOperation(table.actions.delete)
   }
 
+  async updateTable (operation: IOperation, tableData: TableFormData): Promise<Table> {
+    const data = {
+      [URI.PROP_NAME]: tableData.name,
+      [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate,
+    }
+    return invokeSaveOperation<Table>(operation, data)
+  }
+
   async createSource (project: Project, file: File): Promise<Source> {
     const operation = project.actions.createSource
     const headers = {
