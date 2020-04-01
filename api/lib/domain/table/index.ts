@@ -1,10 +1,15 @@
 import { initialize, Entity } from '@tpluscode/fun-ddr'
+import urlSlug from 'url-slug'
 import { TableEvents } from './events'
 
 export interface Table extends Entity {
   sourceId: string;
   projectId: string;
   tableName: string;
+}
+
+export interface FactTable extends Table {
+  identifierTemplate: string | null;
 }
 
 export interface DimensionTable extends Table {
@@ -15,15 +20,17 @@ interface CreateTableCommand {
   sourceId: string;
   projectId: string;
   tableName: string;
+  identifierTemplate: string | null;
 }
 
 export const createTable = initialize<Table, CreateTableCommand, TableEvents>((cmd, emitter) => {
-  const tableId = `${cmd.projectId}/table/${cmd.tableName}`
+  const tableId = `${cmd.projectId}/table/${urlSlug(cmd.tableName)}`
 
   emitter.emit.FactTableCreated({
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
     tableName: cmd.tableName,
+    identifierTemplate: cmd.identifierTemplate,
   })
 
   return {
@@ -32,5 +39,6 @@ export const createTable = initialize<Table, CreateTableCommand, TableEvents>((c
     projectId: cmd.projectId,
     sourceId: cmd.sourceId,
     tableName: cmd.tableName,
+    identifierTemplate: cmd.identifierTemplate,
   }
 })

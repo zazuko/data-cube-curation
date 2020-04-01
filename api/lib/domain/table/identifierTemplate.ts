@@ -3,7 +3,7 @@ import { DatasetCore } from 'rdf-js'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
 import { dataCube } from '../../namespaces'
-import { parse } from '../../services/uriTemplateParser'
+import { parse } from '@zazuko/rdfine-data-cube/lib/uriTemplateParser'
 
 interface IdentifierColumn {
   id: string;

@@ -249,9 +249,12 @@ export default class extends Vue {
         source: this.source,
         save: async (attribute: ValueAttributeFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('attributes/createValue', { table: this.table, attribute })
-          loading.close()
-          modal.close()
+          try {
+            await this.$store.dispatch('attributes/createValue', { table: this.table, attribute })
+            modal.close()
+          } finally {
+            loading.close()
+          }
         },
       },
       hasModalCard: true,
@@ -271,9 +274,12 @@ export default class extends Vue {
         sources: this.sources,
         save: async (attribute: ReferenceAttributeFormData) => {
           const loading = this.$buefy.loading.open({})
-          await this.$store.dispatch('attributes/createReference', { table: this.table, attribute })
-          loading.close()
-          modal.close()
+          try {
+            await this.$store.dispatch('attributes/createReference', { table: this.table, attribute })
+            modal.close()
+          } finally {
+            loading.close()
+          }
         },
       },
       hasModalCard: true,
@@ -289,8 +295,11 @@ export default class extends Vue {
       hasIcon: true,
       onConfirm: async () => {
         const loading = this.$buefy.loading.open({})
-        await this.$store.dispatch('attributes/delete', attribute)
-        loading.close()
+        try {
+          await this.$store.dispatch('attributes/delete', attribute)
+        } finally {
+          loading.close()
+        }
       },
     })
   }

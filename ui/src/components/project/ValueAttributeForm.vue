@@ -8,9 +8,12 @@
     </header>
     <section class="modal-card-body">
       <b-field :label="columnLabel">
-        <b-select v-model="attribute.columnId" expanded required>
-          <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
-        </b-select>
+        <MultiSelect
+          v-model="attribute.columnId"
+          :options="source.columns.map((c) => c.id)"
+          :custom-label="(id) => source.columns.find((c) => c.id == id).name"
+          required
+        />
       </b-field>
 
       <PropertyField :project="project" label="Property" v-model="attribute.property" required />

@@ -1,10 +1,16 @@
 import { namedNode } from '@rdfjs/data-model'
+import { FactTableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
+import { RdfResourceImpl } from '@tpluscode/rdfine'
+import $rdf from 'rdf-ext'
+import TermSet from '@rdfjs/term-set'
 import { NamedNode } from 'rdf-js'
-import { schema, xsd, rdf, csvw } from '@tpluscode/rdf-ns-builders'
+import { schema, xsd, rdf, csvw, qb } from '@tpluscode/rdf-ns-builders'
 import { buildCsvw } from './csvwBuilder'
-import { Column, DimensionTable, ValueAttribute, Table, CsvSource } from '@zazuko/rdfine-data-cube'
+import { Column, ValueAttribute, Table, CsvSource, wireUp } from '@zazuko/rdfine-data-cube'
 import { dataCube } from '../namespaces'
 import * as specGraphs from './csvwBuilder.spec-graphs'
+
+wireUp(RdfResourceImpl.factory)
 
 type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
@@ -23,6 +29,25 @@ describe('csvwBuilder', () => {
 
       // then
       expect(csvwDataset._selfGraph.dataset.toCanonical()).toMatchSnapshot()
+    })
+
+    it('includes "qb:Observation" virtual column', () => {
+      const graph = { dataset: $rdf.dataset(), term: namedNode('http://example.com/table/Observation') }
+      const table = new FactTableMixin.Class(graph, {
+        types: [
+          dataCube.FactTable,
+        ],
+        source: {},
+      })
+
+      // when
+      const csvwDataset = buildCsvw(table)
+
+      // then
+      const column = csvwDataset.tableSchema.columns[0]
+      expect(column.virtual).toBe(true)
+      expect(column.propertyUrl).toEqual(rdf.type.value)
+      expect(column.valueUrl).toEqual(qb.Observation.value)
     })
 
     it('maps attribute', async () => {
@@ -80,14 +105,18 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
           delimiter: ';',
         } as CsvSource,
+        createIdentifier: () => '',
+        project: {
+          baseUri: '',
+        },
       }
 
       // when
@@ -117,14 +146,18 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
           delimiter: ';',
         } as CsvSource,
+        createIdentifier: () => '',
+        project: {
+          baseUri: '',
+        },
       }
 
       // when
@@ -156,14 +189,18 @@ describe('csvwBuilder', () => {
         id: namedNode('http://example.com/table/Observation'),
         columns: [],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.Table,
-        ],
+        ]),
         source: {
           name: 'test.csv',
           quote: '"',
           delimiter: ';',
         } as CsvSource,
+        createIdentifier: () => '',
+        project: {
+          baseUri: '',
+        },
       }
 
       // when
@@ -207,11 +244,15 @@ describe('csvwBuilder', () => {
             id: namedNode('http://example.com/table/Observation'),
             columns: [],
             attributes: [attribute],
-            types: [
+            types: new TermSet([
               dataCube.Table,
-            ],
+            ]),
             source: {
               name: 'test.csv',
+            },
+            createIdentifier: () => '',
+            project: {
+              baseUri: '',
             },
           }
 
@@ -248,56 +289,6 @@ describe('csvwBuilder', () => {
   })
 
   describe('mapping for DimensionTable', () => {
-    it('uses absolute identifierTemplate for aboutUrl', async () => {
-      // given
-      const table: RecursivePartial<DimensionTable> = {
-        id: namedNode('http://reference-attribute.test/fact-table'),
-        identifierTemplate: 'http://example.com/{foo}/{bar}',
-        columns: [],
-        attributes: [],
-        types: [
-          dataCube.DimensionTable,
-        ],
-        project: {
-          baseUri: 'http://example.com/tst-project',
-        },
-        source: {
-          name: 'test.csv',
-        },
-      }
-
-      // when
-      const csvwDataset = buildCsvw(table as any)
-
-      // then
-      expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/{foo}/{bar}')
-    })
-
-    it('concatenates project base when identifier template is note absolute', async () => {
-      // given
-      const table: RecursivePartial<DimensionTable> = {
-        id: namedNode('http://reference-attribute.test/fact-table'),
-        identifierTemplate: 'table/{foo}/{bar}',
-        columns: [],
-        attributes: [],
-        types: [
-          dataCube.DimensionTable,
-        ],
-        project: {
-          baseUri: 'http://example.com/tst-project/',
-        },
-        source: {
-          name: 'test.csv',
-        },
-      }
-
-      // when
-      const csvwDataset = buildCsvw(table as any)
-
-      // then
-      expect(csvwDataset.tableSchema.aboutUrl).toEqual('http://example.com/tst-project/table/{foo}/{bar}')
-    })
-
     it('uses base URI for relative properties', async () => {
       // given
       const column: Partial<Column> = {
@@ -310,20 +301,21 @@ describe('csvwBuilder', () => {
         datatype: { id: xsd.string },
         propertyTemplate: 'property/{foo}/{bar}',
       }
-      const table: RecursivePartial<DimensionTable> = {
+      const table: RecursivePartial<Table> = {
         id: namedNode('http://reference-attribute.test/fact-table'),
         identifierTemplate: 'table/{foo}/{bar}',
         columns: [column],
         attributes: [attribute],
-        types: [
+        types: new TermSet([
           dataCube.DimensionTable,
-        ],
+        ]),
         project: {
           baseUri: 'http://example.com/tst-project/',
         },
         source: {
           name: 'test.csv',
         },
+        createIdentifier: () => '',
       }
 
       // when

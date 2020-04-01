@@ -1,13 +1,10 @@
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { hydra, schema, rdf } from '@tpluscode/rdf-ns-builders'
-import { execute } from '../../sparql'
+import { construct } from '../../sparql'
 import { api, dataCube } from '../../namespaces'
-import $rdf = require('rdf-ext');
 
 export async function getSourceCollection (sourcesCollectionId: string) {
-  const dataset = $rdf.dataset()
-
-  await dataset.import(await execute(CONSTRUCT`
+  let dataset = await construct(CONSTRUCT`
       <${sourcesCollectionId}>
           a ${hydra.Collection} ;
           ${hydra.member} ?source ;
@@ -32,9 +29,9 @@ export async function getSourceCollection (sourcesCollectionId: string) {
               <${sourcesCollectionId}> ${dataCube.project} ?project .
               ?source ${dataCube.project} ?project; a ${dataCube.Source} .
           }
-      }`))
+      }`)
 
-  await dataset.import(await execute(CONSTRUCT`
+  dataset = dataset.merge(await construct(CONSTRUCT`
       <${sourcesCollectionId}>
         ${hydra.manages} [
             ${hydra.property} ${rdf.type} ;

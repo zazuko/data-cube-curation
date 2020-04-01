@@ -1,14 +1,14 @@
 import $rdf from 'rdf-ext'
 import { CONSTRUCT, DESCRIBE } from '@tpluscode/sparql-builder'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { execute } from '../sparql'
+import { construct } from '../sparql'
 import { api, dataCube, datatype } from '../namespaces'
 import './attribute/eventHandlers'
 
 export async function getTableAttributes (tableId: string) {
-  const collection = $rdf.dataset()
+  let collection = $rdf.dataset()
 
-  await collection.import(await execute(CONSTRUCT`
+  collection = collection.merge(await construct(CONSTRUCT`
       ?attributes
         a ${hydra.Collection} ;
         ${hydra.member} ?attribute ;
@@ -29,14 +29,14 @@ export async function getTableAttributes (tableId: string) {
       }
     }`))
 
-  await collection.import(await execute(CONSTRUCT`
+  collection = collection.merge(await construct(CONSTRUCT`
       ?attributes ${hydra.manages} [
         ${hydra.property} ${rdf.type} ;
         ${hydra.object} ${dataCube.Attribute}
       ] `
     .WHERE`<${tableId}> a ${dataCube.Table} ; ${api.attributes} ?attributes .`))
 
-  await collection.import(await execute(DESCRIBE`?attribute ?params ?mapping`
+  collection = collection.merge(await construct(DESCRIBE`?attribute ?params ?mapping`
     .WHERE`
       ?attribute ${dataCube.table} <${tableId}> .
       ?attribute a ${dataCube.Attribute} .
@@ -54,9 +54,9 @@ export async function getTableAttributes (tableId: string) {
 }
 
 export async function getSingleAttribute (attributeId: string) {
-  const attribute = $rdf.dataset()
+  let attribute = $rdf.dataset()
 
-  await attribute.import(await execute(DESCRIBE`'?attribute ?params ?mapping`
+  attribute = attribute.merge(await construct(DESCRIBE`?attribute ?params ?mapping`
     .WHERE`
       BIND ( <${attributeId}> as ?attribute )
 

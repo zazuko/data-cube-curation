@@ -7,6 +7,8 @@ import { projects } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/table/index'
+import { getFactTableId } from '../../read-graphs/table'
+import { canonicalFactTableId } from '../project'
 
 export { get } from './get'
 export { createTable } from './createDimensionTable'
@@ -22,6 +24,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
   const variables = buildVariables(req, {
     source: expand('dataCube:source'),
     name: expand('schema:name'),
+    identifierTemplate: expand('dataCube:identifierTemplate'),
   })
 
   const project = await projects.load(projectId)
@@ -34,10 +37,14 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
   await project.mutation(selectFactTableSource)({
     sourceId: variables.source.value,
     tableName: variables.name.value,
+    identifierTemplate: variables.identifierTemplate.value,
   })
     .commit(projects)
 
-  const tableId = `${projectId}/table/${variables.name.value}`
+  const tableId = await getFactTableId(canonicalFactTableId(projectId))
+  if (!tableId) {
+    throw new Error('Could not find the fact table id. Ws it created successfully?')
+  }
 
   res.status(201)
   res.setHeader('Location', tableId)

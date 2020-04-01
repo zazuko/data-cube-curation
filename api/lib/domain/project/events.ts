@@ -5,6 +5,7 @@ export interface ProjectEvents {
     name: string;
     baseUri: string;
     s3Bucket: string;
+    graphUri?: string;
   };
   S3BucketChanged: {
     s3Bucket: string;
@@ -15,10 +16,14 @@ export interface ProjectEvents {
   ProjectRebased: {
     baseUri: string;
   };
+  GraphUriChanged: {
+    graphUri: string;
+  };
   ProjectArchived: null;
   FactTableSourceSelected: {
     sourceId: string;
     tableName: string;
+    identifierTemplate: string | null;
   };
   FactTableUnselected: {
     previousSourceId: string;

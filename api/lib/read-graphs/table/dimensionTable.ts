@@ -1,9 +1,9 @@
 import { SELECT } from '@tpluscode/sparql-builder'
-import { execute } from '../../sparql'
+import { select } from '../../sparql'
 import { dataCube } from '../../namespaces'
 
 export async function getIdentifierTemplate (tableId: string, throwIfNotFound = true) {
-  const bindings = await execute(SELECT`?template`
+  const bindings = await select(SELECT`?template`
     .WHERE`
       <${tableId}> a ${dataCube.DimensionTable} ; ${dataCube.identifierTemplate} ?template .
     `)

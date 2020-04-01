@@ -38,6 +38,9 @@ rdf.resourceFactory.mixins.push(ColumnMixin)
 rdf.resourceFactory.mixins.push(ValueAttributeMixin)
 rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 
+// Tells Hydra to use current browser location as base URI for relative URIs
+Hydra.baseUri = window.location.href
+
 export class APIError extends Error {
   details: any;
   response: IHydraResponse;
@@ -128,6 +131,7 @@ class ProjectsClient {
       [URI.PROP_NAME]: project.name,
       [URI.PROP_BASE_URI]: project.baseUri,
       [URI.API_S3_BUCKET]: project.s3Bucket,
+      [URI.PROP_GRAPH_URI]: project.graphUri,
     }
     return invokeSaveOperation<Project>(operation, data)
   }
@@ -289,6 +293,7 @@ class ProjectsClient {
 
     const data = {
       [URI.API_S3_BUCKET]: job.s3Bucket,
+      [URI.PROP_GRAPH_URI]: job.graphUri,
     }
     const response = await operation.invoke(JSON.stringify(data))
 

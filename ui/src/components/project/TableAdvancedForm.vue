@@ -37,7 +37,6 @@
         :project="project"
         :tableName="table.name"
         :source="source"
-        v-if="table.type != 'fact'"
       />
 
       <b-field label="Attributes">
@@ -51,11 +50,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(attribute, index) in attributes" :key="index">
+            <tr v-for="(attribute, index) in attributes" :key="attribute.trackingId">
               <td>
-                <b-select v-model="attribute.columnId" expanded required>
-                  <option v-for="column in source.columns" :value="column.id" :key="column.id">{{ column.name }}</option>
-                </b-select>
+                <MultiSelect
+                  v-model="attribute.columnId"
+                  :options="source.columns.map((c) => c.id)"
+                  :custom-label="(id) => source.columns.find((c) => c.id == id).name"
+                  required
+                />
               </td>
               <td>
                 <PropertyField :project="project" v-model="attribute.property" required />
@@ -64,7 +66,7 @@
                 <DataTypeField v-model="attribute.dataType" />
               </td>
               <td>
-                <b-button type="is-white" icon-left="times-circle" title="Remove attribute" @click="removeAttribute(attribute)" />
+                <b-button type="is-white" icon-left="times-circle" title="Remove attribute" @click="removeAttribute(index)" />
               </td>
             </tr>
           </tbody>
@@ -94,6 +96,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
+import nanoid from 'nanoid'
 import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
 import * as datatypes from '@/datatypes'
 import DataTypeField from '../DataTypeField.vue'
@@ -143,8 +146,8 @@ export default class TableForm extends Vue {
     this.attributes.push(emptyAttribute())
   }
 
-  removeAttribute (attribute: ValueAttributeFormData) {
-    this.attributes.splice(this.attributes.indexOf(attribute), 1)
+  removeAttribute (index: number) {
+    this.attributes.splice(index, 1)
   }
 }
 
@@ -162,6 +165,10 @@ function emptyTable () {
 
 function emptyAttribute (attrs = {}) {
   return {
+    // Artificial unique ID to avoid the default Vue behavior of reusing
+    // components for the same index when deleting a table row
+    trackingId: nanoid(),
+
     property: '',
     dataType: {
       id: datatypes.defaultURI,

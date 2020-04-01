@@ -1,9 +1,9 @@
 import { ASK } from '@tpluscode/sparql-builder'
-import { execute } from '../../sparql'
+import { ask } from '../../sparql'
 import { api, dataCube } from '../../namespaces'
 
 export function isReferenced (sourceId: string) {
-  return execute(ASK`
+  return ask(ASK`
         ?s ?uses <${sourceId}>
 
         MINUS {

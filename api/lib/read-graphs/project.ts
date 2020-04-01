@@ -1,12 +1,10 @@
 import cf from 'clownface'
-import $rdf from 'rdf-ext'
 import { Project } from '@zazuko/rdfine-data-cube'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
 import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
 import { schema, hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { ASK, CONSTRUCT, DELETE, INSERT } from '@tpluscode/sparql-builder'
 import ProjectEvents from '../domain/project/events'
-import { execute } from '../sparql'
+import { ask, construct, update } from '../sparql'
 import { api, dataCube } from '../namespaces'
 import TableEvents from '../domain/table/events'
 import { projects } from '../storage/repository'
@@ -14,10 +12,11 @@ import { unselectFactTable } from '../domain/project'
 import { namedNode } from '@rdfjs/data-model'
 
 ProjectEvents.on.ProjectCreated(async ev => {
-  const query = INSERT.DATA`
-    <${ev.id}> a ${dataCube.Project}; ${schema.name} ${ev.data.name} ;
-       ${api.s3Bucket} ${ev.data.s3Bucket} ;
-       ${dataCube.baseUri} ${ev.data.baseUri} .
+  let insert = INSERT.DATA`
+    <${ev.id}> a ${dataCube.Project}; ${schema.name} "${ev.data.name}" ;
+       ${api.s3Bucket} "${ev.data.s3Bucket}" ;
+       ${dataCube.baseUri} "${ev.data.baseUri}" .
+
     <${ev.id}/tables> ${dataCube.project} <${ev.id}> .
     <${ev.id}/jobs> ${dataCube.project} <${ev.id}> .
     <${ev.id}/sources> ${dataCube.project} <${ev.id}> .
@@ -29,14 +28,18 @@ ProjectEvents.on.ProjectCreated(async ev => {
         ${api.factTable} <${ev.id}/fact-table> .
   `
 
-  await execute(query)
+  if (typeof ev.data.graphUri !== 'undefined' && ev.data.graphUri !== null) {
+    insert = insert.DATA`<${ev.id}> ${dataCube.graphUri} "${ev.data.graphUri}" .`
+  }
+
+  await update(insert)
 })
 
 ProjectEvents.on.ProjectRenamed(async ev => {
   const query = DELETE`<${ev.id}> ${schema.name} ?currentName .`
-    .INSERT`<${ev.id}> ${schema.name} ${ev.data.name} .`
+    .INSERT`<${ev.id}> ${schema.name} "${ev.data.name}" .`
 
-  await execute(query)
+  await update(query)
 })
 
 ProjectEvents.on.S3BucketChanged(async ev => {
@@ -46,7 +49,17 @@ ProjectEvents.on.S3BucketChanged(async ev => {
         <${ev.id}> ${api.s3Bucket} ?current .
       }`
 
-  await execute(query)
+  await update(query)
+})
+
+ProjectEvents.on.GraphUriChanged(async ev => {
+  const query = DELETE`<${ev.id}> ${dataCube.graphUri} ?current .`
+    .INSERT`<${ev.id}> ${dataCube.graphUri} "${ev.data.graphUri}" .`
+    .WHERE`OPTIONAL {
+      <${ev.id}> ${dataCube.graphUri} ?current .
+    }`
+
+  await update(query)
 })
 
 ProjectEvents.on.ProjectRebased(async ev => {
@@ -56,15 +69,15 @@ ProjectEvents.on.ProjectRebased(async ev => {
       <${ev.id}> ${dataCube.baseUri} ?currentBase .
     }`
 
-  await execute(query)
+  await update(query)
 })
 
 ProjectEvents.on.ProjectArchived(ev => {
-  return execute(DELETE`<${ev.id}> ?p ?o .`)
+  return update(DELETE`<${ev.id}> ?p ?o .`)
 })
 
 TableEvents.on.FactTableCreated(async function initialiseFactTableResource (ev) {
-  await execute(INSERT.DATA`<${ev.data.projectId}> ${dataCube.factTable} <${ev.id}>`)
+  await update(INSERT.DATA`<${ev.data.projectId}> ${dataCube.factTable} <${ev.id}>`)
 })
 
 TableEvents.on.TableArchived(async function updateProjectEntity (ev) {
@@ -78,18 +91,18 @@ TableEvents.on.TableArchived(async function updateProjectEntity (ev) {
 })
 
 ProjectEvents.on.FactTableUnselected(function removeFactTableLink (ev) {
-  return execute(DELETE`<${ev.id}> ${dataCube.factTable} ?table`
+  return update(DELETE`<${ev.id}> ${dataCube.factTable} ?table`
     .WHERE`
       ?table a ${dataCube.Table} ; ${dataCube.source} <${ev.data.previousSourceId}> .
     `)
 })
 
 export function exists (id: string) {
-  return execute(ASK`<${id}> ?p ?o`)
+  return ask(ASK`<${id}> ?p ?o`)
 }
 
 export async function getProject (id: string): Promise<Project> {
-  const dataset = await $rdf.dataset().import(await execute(CONSTRUCT`
+  const dataset = await construct(CONSTRUCT`
     ?project a ?projectType ;
       ${schema.name} ?name ;
       ${api.sources} ?sources ;
@@ -98,7 +111,8 @@ export async function getProject (id: string): Promise<Project> {
       ${api.tables} ?tables ;
       ${api.jobs} ?jobs ;
       ${api.s3Bucket} ?s3Bucket ;
-      ${dataCube.baseUri} ?baseUri .
+      ${dataCube.baseUri} ?baseUri ;
+      ${dataCube.graphUri} ?graphUri.
 
     ?sources
         a ${hydra.Collection} ;
@@ -118,6 +132,7 @@ export async function getProject (id: string): Promise<Project> {
         ${api.tables} ?tables .
 
     OPTIONAL { ?project ${dataCube.baseUri} ?baseUri . }
+    OPTIONAL { ?project ${dataCube.graphUri} ?graphUri . }
     OPTIONAL { ?project ${api.s3Bucket} ?s3Bucket . }
 
     OPTIONAL
@@ -133,7 +148,7 @@ export async function getProject (id: string): Promise<Project> {
             BIND (<${id}> as ?project)
             OPTIONAL { ?project ${dataCube.source} ?source }
         }
-  }`))
+  }`)
 
   const project = cf({ dataset })
     .has(rdf.type, dataCube.Project)
@@ -145,18 +160,13 @@ export async function getProject (id: string): Promise<Project> {
       manages.addOut(hydra.object, dataCube.Source)
     })
 
-  const realFactTable = project.out(dataCube.factTable)
-  if (realFactTable.term) {
-    project.deleteOut(api.factTable)
-  }
-
-  return RdfResourceImpl.factory.createEntity(cf({
+  return new ProjectMixin.Class({
     dataset, term: namedNode(id),
-  }), [ProjectMixin])
+  })
 }
 
 export async function hasSource (projectId: string, sourceId: string) {
-  return execute(ASK`
+  return ask(ASK`
     <${projectId}> a ${dataCube.Project}; ${dataCube.source} <${sourceId}> .
   `)
 }

@@ -1,10 +1,12 @@
 import * as Template from 'uri-template'
+import isUri = require('is-uri')
 
 export interface ParsedTemplate {
   prefix: string;
   columnNames: string[];
   toString(): string;
   renameColumnVariable(from: string, to: string): boolean;
+  toAbsoluteUrl (baseUri: string): string;
 }
 
 class ParsedTemplateWrapper implements ParsedTemplate {
@@ -34,6 +36,14 @@ class ParsedTemplateWrapper implements ParsedTemplate {
 
     expression.params[0].name = to
     return true
+  }
+
+  toAbsoluteUrl (baseUri: string) {
+    if (isUri(this.prefix)) {
+      return this.toString()
+    }
+
+    return baseUri + this.toString()
   }
 }
 

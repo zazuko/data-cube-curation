@@ -42,6 +42,7 @@ function emptyProject (): ProjectFormData {
     name: '',
     baseUri: '',
     s3Bucket: '',
+    graphUri: '',
   }
 }
 </script>

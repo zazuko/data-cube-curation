@@ -3,17 +3,22 @@
 @prefix code: <https://code.described.at/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-# ------------------------------
-#
-# Transform pipeline
-#
-# One-by-one parses and transforms the source csv files to RDF
-#
-# ------------------------------
+<#Main> a :Pipeline ;
+  :steps [ :stepList ( <#mergeInputs> <#linkObservationsToDataset> <#streamOutputStep> ) ] .
 
-<#TransformFiles>
-  a      :Pipeline ;
-  :steps [ :stepList ( <#loadMetadata> <#doTransform> <#streamOutputStep> ) ] .
+<#mergeInputs> a :Step ;
+  code:implementedBy [
+    code:link <node:barnard59-base#concat.object> ;
+    a code:EcmaScript
+  ] ;
+  code:arguments ( <#DatacubeMetadata> <#TransformFiles> ) .
+
+<#linkObservationsToDataset>
+  a :Step ;
+  code:implementedBy [
+    a code:EcmaScript ;
+    code:link <file:../lib/datacube-metadata#linkObservationsToDataset>
+  ] .
 
 <#StreamOutput>
   a :Pipeline, :WritableObjectMode .
@@ -23,6 +28,18 @@
   code:implementedBy [ code:link <file:../lib/pipeline#asStep> ;
                        a         code:EcmaScript ] ;
   code:arguments     ( <#StreamOutput> ) .
+
+# ------------------------------
+#
+# Transform pipeline
+#
+# One-by-one parses and transforms the source csv files to RDF
+#
+# ------------------------------
+
+<#TransformFiles>
+  a      :Pipeline, :ReadableObjectMode ;
+  :steps [ :stepList ( <#loadMetadata> <#doTransform> ) ] .
 
 <#loadMetadata>
   a                  :Step ;
@@ -78,4 +95,3 @@
                        code:link <node:barnard59-base#filter> ] ;
   code:arguments     ( [ code:link <file:../lib/output-filter#removeCsvwTriples> ;
                          a         code:EcmaScript ] ) .
-

@@ -1,13 +1,13 @@
 <template>
-  <b-field label="Identifier attribute template" :message="message">
+  <b-field label="Identifier attribute template" :message="message" :type="{ 'is-danger': !isValid }">
     <b-autocomplete
         ref="autocomplete"
         :value="value"
         @input="onUpdate"
         @typing="onTyping"
         @select="onSelect"
+        @blur="validate"
         :data="propositions"
-        :pattern="validationPattern"
         :custom-formatter="formatProposition"
         placeholder="e.g. my-table/{column_id}"
         :disabled="!source"
@@ -29,6 +29,7 @@ export default class extends Vue {
   @Prop() tableName: string
   @Prop() source: Source
   wasModified = false;
+  isValid = true;
 
   onUpdate (newValue: string) {
     this.$emit('input', newValue)
@@ -44,7 +45,7 @@ export default class extends Vue {
 
     if (!this.tableName) return
 
-    const prefillValue = `${this.tableName.toLowerCase()}/{REPLACE}`
+    const prefillValue = `${this.tableName}/{REPLACE}`
     this.$emit('input', prefillValue)
   }
 
@@ -95,16 +96,8 @@ export default class extends Vue {
     return columns.map(({ name }) => name)
   }
 
-  get validationPattern () {
-    const columnNamesPattern = this.columnNames.join('|')
-    return `([^{}]*(\\{(${columnNamesPattern})\\})?[^{}]*)*`
-  }
-
   get invalidMessage () {
-    const input = this.getAutocompleteComponent()?.$refs.input as any
-    if (!this.value || !input || input.isValid) {
-      return null
-    }
+    if (!this.value) return null
 
     const matches = this.value.matchAll(/\{([^{}]*)\}/g) ?? []
     const inputColumnNames = [...matches].map((match) => match[1])
@@ -113,8 +106,13 @@ export default class extends Vue {
     if (invalidColumnNames.length > 0) {
       return `The following columns are not valid: ${invalidColumnNames.join(', ')}`
     } else {
-      return 'Invalid value'
+      return null
     }
+  }
+
+  validate () {
+    const input = this.getAutocompleteComponent()?.$refs.input as any
+    this.isValid = input?.checkHtml5Validity() && !this.invalidMessage
   }
 
   get expandedValue () {

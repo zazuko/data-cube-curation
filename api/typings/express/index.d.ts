@@ -1,4 +1,3 @@
-import SparqlHttp from 'sparql-http-client'
 import { Constructor, RdfResource } from '@tpluscode/rdfine'
 import { NamedNode, DatasetCore, Stream } from 'rdf-js'
 import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
@@ -7,7 +6,6 @@ import DatasetExt = require('rdf-ext/lib/Dataset')
 declare module 'express' {
 
   interface Request {
-    sparql: SparqlHttp;
     graph: DatasetExt;
     resourceId: string;
     resourceNode: NamedNode;

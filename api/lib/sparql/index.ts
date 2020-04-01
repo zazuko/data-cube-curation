@@ -1,23 +1,51 @@
-/* eslint-disable import/export */
-import { Stream } from 'rdf-js'
-import { RdfFetchResponse } from '@rdfjs/fetch-lite'
 import authHeader from './authentication'
-import { SparqlHttpClient } from 'sparql-http-client'
-import { SparqlQuery } from '@tpluscode/sparql-builder/lib'
+import { Term } from 'rdf-js'
+import rdf from 'rdf-ext'
+import { ParsingQuery } from 'sparql-http-client/ParsingQuery'
 import { getClient } from '../read-graphs/sparqlClient'
+import {
+  SparqlAskExecutable,
+  SparqlGraphQueryExecutable,
+  SparqlQueryExecutable,
+  SparqlUpdateExecutable,
+} from '@tpluscode/sparql-builder/lib'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import env from '../env'
 
-export function execute (query: SparqlQuery<Response>, client?: SparqlHttpClient): Promise<Stream>
-export function execute <T>(query: SparqlQuery<T>, client?: SparqlHttpClient): Promise<T>
-export async function execute <T> (query: SparqlQuery<T | RdfFetchResponse>, client: SparqlHttpClient = getClient()) {
-  const result = await query.execute(client, {
+export function ask <T> (query: SparqlAskExecutable, client: ParsingQuery = getClient()): Promise<boolean> {
+  return query.execute(client, {
     headers: {
       authentication: authHeader,
     },
+    base: env.BASE_URI,
+  })
+}
+
+export function select <T> (query: SparqlQueryExecutable, client: ParsingQuery = getClient()): Promise<Record<string, Term>[]> {
+  return query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
+}
+
+export async function construct <T> (query: SparqlGraphQueryExecutable, client: ParsingQuery = getClient()): Promise<DatasetExt> {
+  const quads = await query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
   })
 
-  if (result instanceof Response) {
-    return result.quadStream()
-  }
+  return rdf.dataset(quads)
+}
 
-  return result
+export function update <T> (query: SparqlUpdateExecutable, client: ParsingQuery = getClient()): Promise<void> {
+  return query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
 }

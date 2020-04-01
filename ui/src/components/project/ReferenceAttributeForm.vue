@@ -10,7 +10,7 @@
         On table <TableTag :table="table" class="is-medium" />,
       </p>
       <p>
-        create a link to the <label for="referenced-table"><strong>category table</strong></label>
+        create a link to the <label for="referenced-table"><strong>dimension table</strong></label>
       </p>
       <b-field>
         <b-select v-model="attribute.referencedTableId" id="referenced-table">
@@ -24,8 +24,8 @@
 
       <div v-if="referencedTable" v-show="attribute.columnMapping.length > 0">
         <p>
-          The identifier <code>{{ referencedTable.identifierTemplate }}</code> shall use
-          the columns
+          The identifier <code>{{ referencedTable.identifierTemplate }}</code> will take
+          its values from the column{{ attribute.columnMapping.length === 1 ? '' : 's' }}
         </p>
         <table class="table columns-table">
           <tbody>
@@ -35,7 +35,7 @@
                   <option v-for="column in source.columns" :key="column.id" :value="column.id">{{ column.name }}</option>
                 </b-select>
               </td>
-              <td>for <code>{{ mapping.referencedColumnName }}</code></td>
+              <td>for <code>{{ '{' + mapping.referencedColumnName + '}' }}</code></td>
             </tr>
           </tbody>
         </table>

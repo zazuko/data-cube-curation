@@ -14,6 +14,7 @@ export interface Project extends HydraResource {
   sourcesCollection: Collection | null;
   jobsCollection: Collection | null;
   s3Bucket: string;
+  graphUri: string;
 
   getData(changes: { [K in keyof ProjectFormData]?: any }): ProjectFormData;
 }
@@ -23,6 +24,7 @@ export interface ProjectFormData {
   name: string;
   baseUri: string;
   s3Bucket: string;
+  graphUri: string;
 }
 
 export interface RemoteData<T> {
@@ -145,6 +147,7 @@ export type SourceColumnFilter = 'all' | 'mapped' | 'not-mapped'
 
 export interface JobFormData {
   s3Bucket: string;
+  graphUri: string;
   remember: boolean;
 }
 

@@ -184,8 +184,11 @@ export default class extends Vue {
       hasIcon: true,
       onConfirm: async () => {
         const loading = this.$buefy.loading.open({})
-        await this.$store.dispatch('sources/delete', source)
-        loading.close()
+        try {
+          await this.$store.dispatch('sources/delete', source)
+        } finally {
+          loading.close()
+        }
       },
     })
   }

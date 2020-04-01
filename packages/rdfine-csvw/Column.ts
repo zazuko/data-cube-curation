@@ -25,6 +25,9 @@ export function ColumnMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.literal({ path: csvw.suppressOutput, type: Boolean })
     public suppressed: boolean;
+
+    @property.literal({ type: Boolean })
+    public virtual: boolean;
   }
 
   return Column

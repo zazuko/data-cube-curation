@@ -45,7 +45,6 @@
         :project="project"
         :tableName="table.name"
         :source="source"
-        v-if="table.type != 'fact'"
       />
     </section>
     <footer class="modal-card-foot">
@@ -72,14 +71,6 @@ export default class TableForm extends Vue {
   @Prop() readonly save: (table: TableFormData) => void;
 
   mounted () {
-    if (!this.table.type) {
-      if (this.project.actions.createFactTable) {
-        this.table.type = 'fact'
-      } else {
-        this.table.type = 'dimension'
-      }
-    }
-
     if (!this.table.sourceId && this.sources.length === 1) {
       this.table.sourceId = this.sources[0].id
     }
@@ -102,7 +93,6 @@ export default class TableForm extends Vue {
 
 function emptyTable () {
   return {
-    type: '',
     name: '',
     color: '',
     identifierTemplate: '',

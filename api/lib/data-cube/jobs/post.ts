@@ -1,16 +1,19 @@
 import asyncMiddleware from 'middleware-async'
 import { Request, Response } from 'express'
-import { triggerPipeline } from '../../services/gitLab/trigger'
+import { GitLabJobTrigger, triggerPipeline } from '../../services/gitLab/trigger'
 import { getProject } from '../../read-graphs/project'
 import { RdfResourceImpl, property, namespace } from '@tpluscode/rdfine'
-import { api } from '../../namespaces'
+import { api, dataCube } from '../../namespaces'
 import { getProjectId } from '../../read-graphs/project/links'
 import * as log from '../../log'
 
 @namespace(api)
-class TriggerCommand extends RdfResourceImpl {
+class TriggerCommand extends RdfResourceImpl implements GitLabJobTrigger {
   @property.literal()
-  s3Bucket?: string;
+  s3Bucket: string;
+
+  @property({ path: dataCube.graphUri })
+  graphUri: string;
 }
 
 export const handler = asyncMiddleware(async (req: Request, res: Response, next) => {
@@ -22,9 +25,9 @@ export const handler = asyncMiddleware(async (req: Request, res: Response, next)
   }
 
   const project = await getProject(projectId)
-  const overrides = req.buildModel(TriggerCommand)
+  const overrides = req.buildModel(TriggerCommand)[0]
 
-  const gitLabResponse = await triggerPipeline(project, overrides[0])
+  const gitLabResponse = await triggerPipeline(project, overrides)
   const gitLabJob = await gitLabResponse.json()
 
   if (gitLabResponse.ok) {

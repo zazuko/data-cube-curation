@@ -17,6 +17,9 @@ describe('gitlab trigger', () => {
     env.AWS_ACCESS_KEY_ID = 'AWS_ACCESS_KEY_ID'
     env.AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY'
     env.AWS_S3_ENDPOINT = 'AWS_S3_ENDPOINT'
+    env.GRAPH_STORE_ENDPOINT = 'GRAPH_STORE_ENDPOINT'
+    env.GRAPH_STORE_USER = 'GRAPH_STORE_USER'
+    env.GRAPH_STORE_PASSWORD = 'GRAPH_STORE_PASSWORD'
   })
 
   beforeEach(() => {
@@ -32,39 +35,58 @@ describe('gitlab trigger', () => {
     const project = {
       id: namedNode('foo:bar'),
       s3Bucket: undefined,
+      graphUri: 'urn:foo:bar',
     }
 
     // then
     expect(() => {
       // when
-      triggerPipeline(project, {})
+      triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
     }).toThrow()
   })
 
-  it('calls gitlab trigger endpoint with project\'s S3 settings', async () => {
+  it('throws if graph name is not given', () => {
+    // given
+    const project = {
+      id: namedNode('foo:bar'),
+      s3Bucket: 'foobar',
+      graphUri: undefined,
+    }
+
+    // then
+    expect(() => {
+      // when
+      triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
+    }).toThrow()
+  })
+
+  it('calls gitlab trigger endpoint with project\'s settings', async () => {
     // given
     const project = {
       id: namedNode('foo:bar'),
       s3Bucket: 'foo',
+      graphUri: 'urn:foo:bar',
     }
 
     // when
-    await triggerPipeline(project, {})
+    await triggerPipeline(project, { graphUri: undefined, s3Bucket: undefined })
 
     // then
     expect(fetchMock.mock.calls[0]).toMatchSnapshot()
   })
 
-  it('calls gitlab trigger endpoint with overridden S3 settings', async () => {
+  it('calls gitlab trigger endpoint with overridden settings', async () => {
     // given
     const project = {
       id: namedNode('foo:bar'),
       s3Bucket: 'foo',
+      graphUri: 'urn:foo:bar',
     }
 
     // when
     await triggerPipeline(project, {
       s3Bucket: 'changed bucket',
+      graphUri: 'urn:foo:baz',
     })
 
     // then

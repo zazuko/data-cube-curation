@@ -1,4 +1,5 @@
-import { Constructor, property, RdfResource } from '@tpluscode/rdfine'
+import { Constructor, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { api, dataCube } from './namespaces'
 import * as DataCube from '.'
@@ -16,6 +17,9 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
 
     @property.literal({ path: api.s3Bucket })
     public s3Bucket?: string
+
+    @property.literal({ path: dataCube.graphUri })
+    public graphUri?: string
   }
 
   return Project
@@ -23,4 +27,11 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
 
 ProjectMixin.shouldApply = (node: RdfResource) => {
   return node.hasType(dataCube.Project)
+}
+ProjectMixin.Class = class extends ProjectMixin(RdfResourceImpl) {
+  constructor (node: ResourceNode, init?: Initializer<DataCube.Project>) {
+    super(node, init)
+
+    this.types.add(dataCube.Project)
+  }
 }

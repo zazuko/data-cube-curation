@@ -1,15 +1,13 @@
 import { CoreEvents } from '@tpluscode/fun-ddr'
 import ProjectEvents from '../domain/project/events'
-import { execute } from '../sparql'
+import { select, update } from '../sparql'
 import { DELETE, SELECT } from '@tpluscode/sparql-builder'
 import { dataCube } from '../namespaces'
-import { getClient } from '../read-graphs/sparqlClient'
 import { sources, tables } from '../storage/repository'
 
 ProjectEvents.on.ProjectArchived(async function deleteSourcesOfProject (ev) {
-  await SELECT`?source`
-    .WHERE`?source dataCube:project <${ev.id}> ; a ${dataCube.Source} .`
-    .execute(getClient())
+  await select(SELECT`?source`
+    .WHERE`?source ${dataCube.project} <${ev.id}> ; a ${dataCube.Source} .`)
     .then(bindings => bindings.forEach(async b => {
       const source = await sources.load(b.source.value)
       await source
@@ -19,9 +17,9 @@ ProjectEvents.on.ProjectArchived(async function deleteSourcesOfProject (ev) {
 })
 
 ProjectEvents.on.ProjectArchived(async function deleteTablesOfProject (ev) {
-  await execute(
+  await select(
     SELECT`?table`
-      .WHERE`?table dataCube:project <${ev.id}> ; a ${dataCube.Table} .`
+      .WHERE`?table ${dataCube.project} <${ev.id}> ; a ${dataCube.Table} .`
   )
     .then(bindings => bindings.forEach(async b => {
       const table = await tables.load(b.table.value)
@@ -33,12 +31,12 @@ ProjectEvents.on.ProjectArchived(async function deleteTablesOfProject (ev) {
 
 CoreEvents.on.AggregateDeleted(async function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
-    await execute(DELETE`
+    await update(DELETE`
       ?source ?p0 ?o0 .
       ?column ?p1 ?o1 .`
       .WHERE`
         ?source ?p0 ?o0 .
-        ?source dataCube:column ?column .
+        ?source ${dataCube.column} ?column .
         ?column ?p1 ?o1 .
 
         FILTER ( ?source = <${ev.id}> )`)

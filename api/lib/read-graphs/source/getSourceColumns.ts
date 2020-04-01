@@ -2,12 +2,11 @@ import cf from 'clownface'
 import $rdf from 'rdf-ext'
 import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { rdf, schema, dtype, hydra } from '@tpluscode/rdf-ns-builders'
-import { execute } from '../../sparql'
+import { construct } from '../../sparql'
 import { api, dataCube } from '../../namespaces'
 
 export async function getSourceColumns (sourceId: string) {
-  const dataset = $rdf.dataset()
-  await dataset.import(await execute(CONSTRUCT`
+  const dataset = await construct(CONSTRUCT`
       ?source ${api.columns} ?columnsCollection ;
               ${dataCube.column} ?column .
 
@@ -38,7 +37,7 @@ export async function getSourceColumns (sourceId: string) {
 
               ?source ${dataCube.column} ?column .
           }
-      }`))
+      }`)
 
   const graph = cf({ dataset })
   const collection = graph.node($rdf.namedNode(`${sourceId}/columns`))

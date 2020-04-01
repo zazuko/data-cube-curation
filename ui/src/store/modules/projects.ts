@@ -72,7 +72,7 @@ const actions: ActionTree<ProjectsState, RootState> = {
       if (data.remember) {
         await context.dispatch('save', {
           operation: project.actions.edit,
-          data: project.getData({ s3Bucket: data.s3Bucket }),
+          data: project.getData({ s3Bucket: data.s3Bucket, graphUri: data.graphUri }),
         })
       }
 

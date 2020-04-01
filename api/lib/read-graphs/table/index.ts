@@ -2,7 +2,7 @@ import cf from 'clownface'
 import $rdf from 'rdf-ext'
 import { NamedNode } from 'rdf-js'
 import { ASK, CONSTRUCT } from '@tpluscode/sparql-builder'
-import { execute } from '../../sparql'
+import { ask, construct } from '../../sparql'
 import { dataCube } from '../../namespaces'
 import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { NotFoundError } from '../../error'
@@ -10,21 +10,20 @@ import { extractColumns } from '../../domain/table/identifierTemplate'
 import { warning } from '../../log'
 
 export async function getRepresentation (tableId: string) {
-  const tableExists = await execute(ASK`<${tableId}> a ${dataCube.Table}`)
+  const tableExists = await ask(ASK`<${tableId}> a ${dataCube.Table}`)
 
   if (!tableExists) {
     throw new NotFoundError()
   }
 
-  const dataset = $rdf.dataset()
-  await dataset.import(await execute(CONSTRUCT`
+  const dataset = await construct(CONSTRUCT`
       ?table ?p ?o .
     `.WHERE`
     BIND (<${tableId}> as ?table)
 
     ?table
         a ${dataCube.Table} ;
-        ?p ?o .`))
+        ?p ?o .`)
 
   const table = cf({ dataset }).has(rdf.type, dataCube.Table)
   const source = table.out(dataCube.source).term as NamedNode

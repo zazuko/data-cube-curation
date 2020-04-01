@@ -1,9 +1,9 @@
 import { SELECT } from '@tpluscode/sparql-builder'
-import { execute } from '../../sparql'
+import { select } from '../../sparql'
 import { dataCube } from '../../namespaces'
 
 export async function getProjectId (linkedResourceId: string) {
-  const results = await execute(SELECT`?project`
+  const results = await select(SELECT`?project`
     .WHERE`<${linkedResourceId}> ${dataCube.project} ?project .`)
 
   if (results.length !== 1) {
