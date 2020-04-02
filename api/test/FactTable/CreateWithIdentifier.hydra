@@ -63,7 +63,7 @@ With Operation api:PostFactTable {
 
         <> dataCube:source <project/fact-table-identifier-template/source/single-column-csv> ;
            schema:name "Observation" ;
-           dataCube:identifierTemplate "http://example.com/observation/{column}" ;
+           dataCube:identifierTemplate "http://example.com/observation/{station_id}" ;
            a dataCube:FactTable .
         ```
     } => {
@@ -73,5 +73,5 @@ With Operation api:PostFactTable {
 }
 
 With Class dataCube:FactTable {
-    Expect Property dataCube:identifierTemplate "http://example.com/observation/{column}"
+    Expect Property dataCube:identifierTemplate "http://example.com/observation/{station_id}"
 }
