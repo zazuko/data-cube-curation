@@ -1,5 +1,5 @@
 import { blankNode } from '@rdfjs/data-model'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl from '@tpluscode/rdfine'
 import rdf from 'rdf-ext'
 import { DimensionTableMixin } from './Table'
 import { dataCube } from '../namespaces'

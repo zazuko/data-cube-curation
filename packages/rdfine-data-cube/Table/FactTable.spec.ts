@@ -1,7 +1,7 @@
 import cf from 'clownface'
 import rdf from 'rdf-ext'
 import namespace from '@rdfjs/namespace'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl from '@tpluscode/rdfine'
 import { Column } from '.'
 import { FactTableMixin } from './Table'
 import { ColumnMixin } from './Column'
