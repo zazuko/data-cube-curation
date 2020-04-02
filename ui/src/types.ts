@@ -65,7 +65,7 @@ export interface Table extends HydraResource {
   name: string;
   color: string;
   sourceId: ResourceId;
-  identifierTemplate: string | null;
+  identifierTemplate: string;
   identifierColumns: Column[];
   attributesCollection: Collection | null;
   mapping: any;

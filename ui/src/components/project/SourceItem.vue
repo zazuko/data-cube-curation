@@ -160,10 +160,18 @@ export default class extends Vue {
         project: this.project,
         source: this.source,
         columns: this.selectedColumns,
-        save: async (table: TableFormData, attributes: ValueAttributeFormData[]) => {
+        save: async (data: TableFormData, attributes: ValueAttributeFormData[]) => {
+          const operation = data.type === 'fact'
+            ? this.project.actions.createFactTable
+            : this.project.actions.createDimensionTable
           const loading = this.$buefy.loading.open({})
           try {
-            await this.$store.dispatch('tables/createWithAttributes', { project: this.project, table, attributes })
+            await this.$store.dispatch('tables/createWithAttributes', {
+              project: this.project,
+              operation,
+              data,
+              attributes,
+            })
             this.selectedColumns = []
             modal.close()
           } finally {

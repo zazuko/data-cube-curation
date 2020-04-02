@@ -34,9 +34,14 @@
             <th>Source CSV</th>
             <td>{{ source.name }}</td>
           </tr>
-          <tr v-if="!table.isFact">
+          <tr>
             <th>Identifier template</th>
-            <td><code><PrefixedURI :uri="table.identifierTemplate" :project="project" /></code></td>
+            <td>
+              <code v-if="table.identifierTemplate">
+                <PrefixedURI :uri="table.identifierTemplate" :project="project" />
+              </code>
+              <p v-else>Auto</p>
+            </td>
           </tr>
           <tr v-if="table.attributesCollection">
             <th>Attributes</th>

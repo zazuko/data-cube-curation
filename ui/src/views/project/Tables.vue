@@ -74,10 +74,13 @@ export default class ProjectTablesView extends Vue {
       props: {
         project: this.project,
         sources: this.sources.data, // TODO: Handle loading?
-        save: async (table: TableFormData) => {
+        save: async (data: TableFormData) => {
+          const operation = data.type === 'fact'
+            ? this.project.actions.createFactTable
+            : this.project.actions.createDimensionTable
           const loading = this.$buefy.loading.open({})
           try {
-            await this.$store.dispatch('tables/create', { project: this.project, table })
+            await this.$store.dispatch('tables/create', { project: this.project, operation, data })
             modal.close()
           } finally {
             loading.close()

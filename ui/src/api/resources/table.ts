@@ -32,8 +32,8 @@ export function Mixin<B extends Constructor> (Base: B) {
       return getOrThrow(this, URI.PROP_NAME)
     }
 
-    get identifierTemplate (): string | null {
-      return this.get(URI.PROP_IDENTIFIER_TEMPLATE)
+    get identifierTemplate (): string {
+      return this.get(URI.PROP_IDENTIFIER_TEMPLATE) || ''
     }
 
     get identifierColumns (): Column[] {

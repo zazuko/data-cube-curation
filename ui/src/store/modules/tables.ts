@@ -37,9 +37,9 @@ const actions: ActionTree<TablesState, RootState> = {
     })
   },
 
-  async create (context, { project, table: tableData }) {
+  async create (context, { project, operation, data }) {
     await handleAPIError(context, async () => {
-      const table = await client.projects.createTable(project, tableData)
+      const table = await client.projects.createTable(operation, data)
       context.dispatch('attributes/loadForTable', table, { root: true })
       context.commit('storeInProject', { project, table })
     })
@@ -61,9 +61,9 @@ const actions: ActionTree<TablesState, RootState> = {
     })
   },
 
-  async createWithAttributes (context, { project, table: tableData, attributes }) {
+  async createWithAttributes (context, { project, operation, data, attributes }) {
     await handleAPIError(context, async () => {
-      const table = await client.projects.createTableWithAttributes(project, tableData, attributes)
+      const table = await client.projects.createTableWithAttributes(operation, data, attributes)
       context.dispatch('attributes/loadForTable', table, { root: true })
       context.commit('storeInProject', { project, table })
     })

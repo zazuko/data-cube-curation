@@ -80,6 +80,14 @@ export default class TableForm extends Vue {
     if (!this.data.sourceId && this.sources.length === 1) {
       this.data.sourceId = this.sources[0].id
     }
+
+    if (!this.data.type) {
+      if (this.project.actions.createFactTable) {
+        this.data.type = 'fact'
+      } else {
+        this.data.type = 'dimension'
+      }
+    }
   }
 
   get title () {
