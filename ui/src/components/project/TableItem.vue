@@ -231,7 +231,6 @@ export default class extends Vue {
   }
 
   editTable (table: Table) {
-    const operation = table.actions.edit
     const modal = this.$buefy.modal.open({
       parent: this,
       component: TableForm,
@@ -239,7 +238,7 @@ export default class extends Vue {
         project: this.project,
         sources: this.sources,
         table,
-        save: async (data: TableFormData) => {
+        save: async (operation: IOperation, data: TableFormData) => {
           const loading = this.$buefy.loading.open({})
           try {
             await this.$store.dispatch('tables/update', { project: this.project, operation, data })

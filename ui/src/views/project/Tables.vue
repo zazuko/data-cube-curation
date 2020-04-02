@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Project, Table, RemoteData, TableFormData } from '@/types'
 import Loader from '../../components/Loader.vue'
 import TableItem from '../../components/project/TableItem.vue'
@@ -74,10 +75,7 @@ export default class ProjectTablesView extends Vue {
       props: {
         project: this.project,
         sources: this.sources.data, // TODO: Handle loading?
-        save: async (data: TableFormData) => {
-          const operation = data.type === 'fact'
-            ? this.project.actions.createFactTable
-            : this.project.actions.createDimensionTable
+        save: async (operation: IOperation, data: TableFormData) => {
           const loading = this.$buefy.loading.open({})
           try {
             await this.$store.dispatch('tables/create', { project: this.project, operation, data })

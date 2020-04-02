@@ -1,7 +1,7 @@
 <template>
-  <form action="" class="modal-card" @submit.prevent="save(data)">
+  <form action="" class="modal-card" @submit.prevent="save(operation, data)">
     <header class="modal-card-head">
-      <h3 class="modal-card-title">{{ title }}</h3>
+      <h3 class="modal-card-title">{{ operation.title }}</h3>
     </header>
     <section class="modal-card-body">
       <b-field v-if="isCreation">
@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
+import { IOperation } from 'alcaeus/types/Resources'
 import { Project, Source, Table, TableFormData } from '@/types'
 import IdentifierTemplateField from '../IdentifierTemplateField.vue'
 
@@ -69,7 +70,7 @@ export default class TableForm extends Vue {
   @Prop() readonly table: Table | null;
   @Prop() readonly project: Project;
   @Prop() readonly sources: Source[];
-  @Prop() readonly save: (table: TableFormData) => void;
+  @Prop() readonly save: (operation: IOperation, data: TableFormData) => void;
   data: TableFormData = emptyTable();
 
   created () {
@@ -102,6 +103,16 @@ export default class TableForm extends Vue {
     if (!this.data.sourceId) return null
 
     return this.sources.find((source) => source.id === this.data.sourceId)
+  }
+
+  get operation () {
+    if (this.table) {
+      return this.table.actions.edit
+    } else {
+      return this.data.type === 'fact'
+        ? this.project.actions.createFactTable
+        : this.project.actions.createDimensionTable
+    }
   }
 }
 
