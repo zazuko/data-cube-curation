@@ -4,6 +4,10 @@ import { update } from './update'
 import { DimensionTable, FactTable } from './index'
 import { fakeDomainEventEmitter } from '../../__tests-helpers__'
 import { TableEvents } from './events'
+import { extractColumns } from './identifierTemplate'
+
+jest.mock('./identifierTemplate')
+const extractColumnIdsMock = extractColumns as jest.Mock
 
 describe('table', () => {
   let emitter: DomainEventEmitter<TableEvents>
@@ -58,6 +62,28 @@ describe('table', () => {
 
         // then
         expect(changed.identifierTemplate).toEqual(command.identifierTemplate)
+      })
+
+      it('throws when template validation fails', async () => {
+        // given
+        const table: DimensionTable = {
+          '@id': 'table',
+          '@type': 'FactTable',
+          tableName: 'foo',
+          projectId: 'projectId',
+          sourceId: 'sourceId',
+          identifierTemplate: '/{foo}',
+        }
+        const command = {
+          name: 'foo',
+          identifierTemplate: '/{foo',
+        }
+
+        // when
+        extractColumnIdsMock.mockResolvedValueOnce(new Error('Validation failed'))
+
+        // then
+        await expect(update(table, command, emitter)).rejects.toBeInstanceOf(DomainError)
       })
     })
 
@@ -141,6 +167,28 @@ describe('table', () => {
         const command = {
           name: 'foo',
         }
+
+        // then
+        await expect(update(table, command, emitter)).rejects.toBeInstanceOf(DomainError)
+      })
+
+      it('throws when template is malformed', async () => {
+        // given
+        const table: DimensionTable = {
+          '@id': 'table',
+          '@type': 'DimensionTable',
+          tableName: 'foo',
+          projectId: 'projectId',
+          sourceId: 'sourceId',
+          identifierTemplate: '/{foo}',
+        }
+        const command = {
+          name: 'foo',
+          identifierTemplate: '/{foo',
+        }
+
+        // when
+        extractColumnIdsMock.mockResolvedValueOnce(new Error('Validation failed'))
 
         // then
         await expect(update(table, command, emitter)).rejects.toBeInstanceOf(DomainError)
