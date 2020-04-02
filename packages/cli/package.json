@@ -7,7 +7,7 @@
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
     "start": "dotenv -- npm run start:transform",
-    "start:transform": "ts-node index.ts transform --from s3 --to stdout --project $TRANSFORM_PROJECT --debug -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
+    "start:transform": "ts-node index.ts transform --from s3 --to stdout --project $TRANSFORM_PROJECT --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
     "build": "tsc"
   },
   "dependencies": {
@@ -20,7 +20,7 @@
     "@zazuko/rdfine-data-cube": "^0.1.0",
     "alcaeus": "^1.0.0-alpha.9",
     "aws-sdk": "^2.559.0",
-    "barnard59": "^0.0.9",
+    "barnard59": "^0.1.0",
     "barnard59-base": "^0.0.3",
     "barnard59-formats": "0.0.6",
     "barnard59-graph-store": "^0.0.5",
