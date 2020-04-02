@@ -12,10 +12,12 @@ import './table/eventHandlers'
 CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
     await deleteInsert(`
-      ?table ?p0 ?o0 .`
+      ?table ?p0 ?o0 .
+      ?s1 ?p1 ?table .`
     )
       .where(`
-        ?table ?p0 ?o0 .
+        OPTIONAL { ?table ?p0 ?o0 . }
+        OPTIONAL { ?s1 ?p1 ?table . }
 
         FILTER ( ?table = <${ev.id}> )`)
       .prefixes({

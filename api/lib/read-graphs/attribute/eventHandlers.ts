@@ -44,11 +44,13 @@ AttributeEvents.on.ValueAttributeAdded(function addAttributeToReadModel (ev) {
 CoreEvents.on.AggregateDeleted(async function deleteAttributeReadModel (ev) {
   if (ev.data.types.includes('Attribute')) {
     await deleteInsert(`
-      ?attribute ?p0 ?o0 .`
+      ?attribute ?p0 ?o0 .
+      ?p1 ?s1 ?attribute .`
     )
       .where(`
         ?attribute a dataCube:Attribute .
-        ?attribute ?p0 ?o0 .
+        OPTIONAL { ?attribute ?p0 ?o0 . }
+        OPTIONAL { ?p1 ?s1 ?attribute . }
 
         FILTER ( ?attribute = <${ev.id}> )`)
       .prefixes({
