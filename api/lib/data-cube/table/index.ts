@@ -44,7 +44,7 @@ export const createFactTable = asyncMiddleware(async (req: express.Request, res:
 
   const tableId = await getFactTableId(canonicalFactTableId(projectId))
   if (!tableId) {
-    throw new Error('Could not find the fact table id. Ws it created successfully?')
+    throw new Error('Could not find the fact table id. Was it created successfully?')
   }
 
   res.status(201)
