@@ -1,4 +1,7 @@
 import { createTable } from '.'
+import './identifierTemplate'
+
+jest.mock('./identifierTemplate')
 
 describe('table', () => {
   describe('createTable', () => {
