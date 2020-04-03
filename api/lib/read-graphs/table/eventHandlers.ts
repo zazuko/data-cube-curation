@@ -27,17 +27,15 @@ TableEvents.on.DimensionTableCreated(addTableLinks)
 
 function createTable (type: NamedNode) {
   return (ev: DomainEvent<EventTypes['FactTableCreated']> | DomainEvent<EventTypes['DimensionTableCreated']>) => {
-    let data = `
+    const identifierTemplate = ev.data.identifierTemplate || ''
+    const data = `
     <${ev.id}>
       a dataCube:Table, <${type.value}> ;
       dataCube:source <${ev.data.sourceId}>;
       dataCube:project <${ev.data.projectId}> ;
-      schema:name "${ev.data.tableName}" .
+      schema:name "${ev.data.tableName}" ;
+      dataCube:identifierTemplate "${identifierTemplate}" .
   `
-
-    if (ev.data.identifierTemplate) {
-      data += `<${ev.id}> dataCube:identifierTemplate "${ev.data.identifierTemplate}" .`
-    }
 
     return insertData(data)
       .prefixes({
@@ -53,11 +51,13 @@ TableEvents.on.FactTableCreated(createTable(dataCube.FactTable))
 TableEvents.on.DimensionTableCreated(createTable(dataCube.DimensionTable))
 
 TableEvents.on.TableIdentifierTemplateChanged(function updateTemplate (ev) {
+  const identifierTemplate = ev.data.identifierTemplate || ''
+
   return deleteInsert(`
         <${ev.id}> dataCube:identifierTemplate ?template .
     `)
     .insert(`
-        <${ev.id}> dataCube:identifierTemplate "${ev.data.identifierTemplate}" .
+        <${ev.id}> dataCube:identifierTemplate "${identifierTemplate}" .
     `)
     .where(`
       OPTIONAL {
