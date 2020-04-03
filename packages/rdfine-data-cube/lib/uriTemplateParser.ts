@@ -1,5 +1,5 @@
 import * as Template from 'uri-template'
-import isUri = require('is-uri')
+import isUri from 'is-uri'
 
 export interface ParsedTemplate {
   prefix: string;

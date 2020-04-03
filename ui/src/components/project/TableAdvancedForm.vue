@@ -96,7 +96,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import { IOperation } from 'alcaeus/types/Resources'
 import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
 import * as datatypes from '@/datatypes'

@@ -1,4 +1,5 @@
-import { namespace, property, RdfResource, Constructor, RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl, { namespace, property, RdfResource, Constructor } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/RdfResource'
 import * as Csvw from '@rdfine/csvw'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
 import * as Table from './index'
@@ -8,7 +9,6 @@ import { ProjectMixin } from '../Project'
 import * as DataCube from '../'
 import { SourceMixin } from '../Source'
 import { parse } from '../lib/uriTemplateParser'
-import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
 
 export function TableMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)

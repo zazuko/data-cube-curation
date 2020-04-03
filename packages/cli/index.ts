@@ -36,6 +36,7 @@ async function main () {
     .requiredOption('--project <project>', '(required) URL of a Data Cube Curation project')
     .option('-v, --variable <name=value>', 'Pipeline variables', parseVariables, new Map())
     .option('--debug', 'Print diagnostic information to standard output')
+    .option('--enable-buffer-monitor', 'enable histogram of buffer usage')
     .action(transform(pipelines.TransformFiles, __dirname, log))
 
   return program.parseAsync(process.argv)
