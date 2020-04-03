@@ -4,6 +4,7 @@ import { RootState } from '@/store/types'
 import { ResourceId, Project, RemoteData, Table } from '@/types'
 import { client } from '../../api'
 import { handleAPIError } from '../common'
+import { replaceOrAdd } from '../../array-utils'
 import Remote from '@/remote'
 
 interface TablesState {
@@ -36,9 +37,17 @@ const actions: ActionTree<TablesState, RootState> = {
     })
   },
 
-  async create (context, { project, table: tableData }) {
+  async create (context, { project, operation, data }) {
     await handleAPIError(context, async () => {
-      const table = await client.projects.createTable(project, tableData)
+      const table = await client.projects.createTable(operation, data)
+      context.dispatch('attributes/loadForTable', table, { root: true })
+      context.commit('storeInProject', { project, table })
+    })
+  },
+
+  async update (context, { project, operation, data }) {
+    await handleAPIError(context, async () => {
+      const table = await client.projects.updateTable(operation, data)
       context.dispatch('attributes/loadForTable', table, { root: true })
       context.commit('storeInProject', { project, table })
     })
@@ -52,9 +61,9 @@ const actions: ActionTree<TablesState, RootState> = {
     })
   },
 
-  async createWithAttributes (context, { project, table: tableData, attributes }) {
+  async createWithAttributes (context, { project, operation, data, attributes }) {
     await handleAPIError(context, async () => {
-      const table = await client.projects.createTableWithAttributes(project, tableData, attributes)
+      const table = await client.projects.createTableWithAttributes(operation, data, attributes)
       context.dispatch('attributes/loadForTable', table, { root: true })
       context.commit('storeInProject', { project, table })
     })
@@ -72,7 +81,7 @@ const mutations: MutationTree<TablesState> = {
 
     if (!projectTables.data) throw new Error('Project tables not loaded')
 
-    projectTables.data.push(table)
+    projectTables.data = replaceOrAdd(projectTables.data, table, (t1, t2) => t1.id === t2.id)
   },
 }
 

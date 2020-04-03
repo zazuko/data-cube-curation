@@ -1,6 +1,6 @@
 import { NamedNode } from 'rdf-js'
 import ns from '@rdfjs/namespace'
-import { namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl, { namespace, property, RdfResource } from '@tpluscode/rdfine'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { dataCube } from '../../../namespaces'
 

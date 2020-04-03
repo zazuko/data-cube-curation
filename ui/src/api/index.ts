@@ -157,24 +157,9 @@ class ProjectsClient {
     return tables
   }
 
-  async createTable (project: Project, tableData: TableFormData): Promise<Table> {
-    if (tableData.type === 'fact') {
-      return this.createFactTable(project, tableData)
-    } else {
-      return this.createDimensionTable(project, tableData)
-    }
-  }
-
-  async createTableWithAttributes (project: Project, tableData: TableFormData, attributes: ValueAttributeFormData[]): Promise<Table> {
-    const table = await this.createTable(project, tableData)
-    await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
-    return table
-  }
-
-  async createDimensionTable (project: Project, tableData: TableFormData): Promise<Table> {
-    const operation = project.actions.createFactTable
+  async createTable (operation: IOperation, tableData: TableFormData): Promise<Table> {
     const data = {
-      '@type': URI.TYPE_DIMENSION_TABLE,
+      '@type': operation.supportedOperation.expects.id,
       [URI.PROP_NAME]: tableData.name,
       [URI.PROP_SOURCE]: namedNode(tableData.sourceId),
       [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate,
@@ -182,18 +167,22 @@ class ProjectsClient {
     return invokeSaveOperation<Table>(operation, data)
   }
 
-  async createFactTable (project: Project, tableData: TableFormData): Promise<Table> {
-    const operation = project.actions.createDimensionTable
-    const data = {
-      '@type': URI.TYPE_FACT_TABLE,
-      [URI.PROP_NAME]: tableData.name,
-      [URI.PROP_SOURCE]: namedNode(tableData.sourceId),
-    }
-    return invokeSaveOperation<Table>(operation, data)
+  async createTableWithAttributes (operation: IOperation, tableData: TableFormData, attributes: ValueAttributeFormData[]): Promise<Table> {
+    const table = await this.createTable(operation, tableData)
+    await Promise.all(attributes.map((attribute) => this.createValueAttribute(table, attribute)))
+    return table
   }
 
   async deleteTable (table: Table): Promise<void> {
     return invokeDeleteOperation(table.actions.delete)
+  }
+
+  async updateTable (operation: IOperation, tableData: TableFormData): Promise<Table> {
+    const data = {
+      [URI.PROP_NAME]: tableData.name,
+      [URI.PROP_IDENTIFIER_TEMPLATE]: tableData.identifierTemplate,
+    }
+    return invokeSaveOperation<Table>(operation, data)
   }
 
   async createSource (project: Project, file: File): Promise<Source> {

@@ -1,5 +1,5 @@
 <template>
-  <b-field label="Identifier attribute template" :message="message" :type="{ 'is-danger': !isValid }">
+  <b-field label="Identifier template" :message="message" :type="{ 'is-danger': !isValid }" :addons="false">
     <b-autocomplete
         ref="autocomplete"
         :value="value"
@@ -12,23 +12,26 @@
         placeholder="e.g. my-table/{column_id}"
         :disabled="!source"
         keep-first
-        required>
+        :required="isRequired">
     </b-autocomplete>
+    <p class="help" v-if="!isRequired">If omitted, a generated identifier will be used.</p>
+    <p class="help" v-show="expandedValue">Expanded: {{ expandedValue }}</p>
   </b-field>
 </template>
 
 <script lang="ts">
 import { Prop, Component, Vue, Watch } from 'vue-property-decorator'
-import { Project, Source } from '@/types'
+import { Project, Source, TableFormData } from '@/types'
 import { expandWithBase } from '@/rdf-vocabularies'
 
 @Component
 export default class extends Vue {
   @Prop() value: string
   @Prop() project: Project
-  @Prop() tableName: string
+  @Prop() table: TableFormData
   @Prop() source: Source
-  wasModified = false;
+  @Prop({ default: true }) autopopulate: boolean
+  wasModified = !this.autopopulate;
   isValid = true;
 
   onUpdate (newValue: string) {
@@ -39,13 +42,13 @@ export default class extends Vue {
     this.wasModified = true
   }
 
-  @Watch('tableName')
+  @Watch('table.name')
   prefill () {
     if (this.wasModified) return
 
-    if (!this.tableName) return
+    if (!this.table.name) return
 
-    const prefillValue = `${this.tableName}/{REPLACE}`
+    const prefillValue = `${this.table.name}/{REPLACE}`
     this.$emit('input', prefillValue)
   }
 
@@ -97,7 +100,13 @@ export default class extends Vue {
   }
 
   get invalidMessage () {
-    if (!this.value) return null
+    if (!this.value) {
+      if (!this.isRequired) {
+        return null
+      } else {
+        return 'Please fill in this field'
+      }
+    }
 
     const matches = this.value.matchAll(/\{([^{}]*)\}/g) ?? []
     const inputColumnNames = [...matches].map((match) => match[1])
@@ -111,16 +120,19 @@ export default class extends Vue {
   }
 
   validate () {
-    const input = this.getAutocompleteComponent()?.$refs.input as any
-    this.isValid = input?.checkHtml5Validity() && !this.invalidMessage
+    this.isValid = !this.invalidMessage
+  }
+
+  get message () {
+    return this.isValid ? '' : this.invalidMessage
   }
 
   get expandedValue () {
     return expandWithBase(this.value, this.project.baseUri)
   }
 
-  get message () {
-    return this.invalidMessage ?? this.expandedValue
+  get isRequired () {
+    return this.table.type === 'dimension'
   }
 }
 </script>

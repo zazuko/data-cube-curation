@@ -1,6 +1,6 @@
 import asyncMiddleware from 'middleware-async'
 import { NextFunction, Request, Response } from 'express'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl from '@tpluscode/rdfine'
 import { CsvSourceMixin, SourceMixin } from '@zazuko/rdfine-data-cube/Source'
 import { sources } from '../../storage/repository'
 import { updateSource } from '../../domain/source/updateSource'

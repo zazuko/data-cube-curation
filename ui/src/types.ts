@@ -65,17 +65,19 @@ export interface Table extends HydraResource {
   name: string;
   color: string;
   sourceId: ResourceId;
-  identifierTemplate: string | null;
+  identifierTemplate: string;
   identifierColumns: Column[];
   attributesCollection: Collection | null;
   mapping: any;
   preview: any;
   actions: Actions;
+
+  getData(changes: { [K in keyof TableFormData]?: any }): TableFormData;
 }
 
 export interface TableFormData {
   id?: ResourceId,
-  type: TableType,
+  type: TableType | null,
   name: string,
   color: string,
   identifierTemplate: string,

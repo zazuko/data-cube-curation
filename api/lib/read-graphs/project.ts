@@ -73,7 +73,15 @@ ProjectEvents.on.ProjectRebased(async ev => {
 })
 
 ProjectEvents.on.ProjectArchived(ev => {
-  return update(DELETE`<${ev.id}> ?p ?o .`)
+  return update(DELETE`<${ev.id}> ?p ?o . ?s1 ?p1 <${ev.id}> .`
+    .WHERE`
+      OPTIONAL {
+        <${ev.id}> ?p ?o .
+      }
+      OPTIONAL {
+        ?s1 ?p1 <${ev.id}> .
+      }
+    `)
 })
 
 TableEvents.on.FactTableCreated(async function initialiseFactTableResource (ev) {

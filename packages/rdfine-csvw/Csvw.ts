@@ -1,4 +1,5 @@
-import { namespace, RdfResourceImpl, property, Constructor, RdfResource } from '@tpluscode/rdfine'
+import { namespace, property, Constructor, RdfResource } from '@tpluscode/rdfine'
+import RdfResourceImpl from '@tpluscode/rdfine/RdfResource'
 import { NamedNode } from 'rdf-js'
 import { csvw, rdf } from '@tpluscode/rdf-ns-builders'
 import * as Csvw from './index'

@@ -1,8 +1,7 @@
 module.exports = {
-  globals: {
-    'ts-jest': {
-      babelConfig: true,
-    },
-  },
-  preset: 'ts-jest',
+  roots: ['<rootDir>'],
+  testRegex: '(test|spec)\\.tsx?$',
+  transformIgnorePatterns: [
+    'node_modules/(?!(@tpluscode/rdfine)/)',
+  ],
 }

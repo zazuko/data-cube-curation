@@ -1,5 +1,5 @@
-import { Constructor, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
-import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
+import RdfResourceImpl, { Constructor, property, RdfResource } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/RdfResource'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { api, dataCube } from './namespaces'
 import * as DataCube from '.'

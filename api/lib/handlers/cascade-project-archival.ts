@@ -33,11 +33,15 @@ CoreEvents.on.AggregateDeleted(async function removeSource (ev) {
   if (ev.data.types.includes('Source')) {
     await update(DELETE`
       ?source ?p0 ?o0 .
-      ?column ?p1 ?o1 .`
+      ?s1 ?p1 ?source .
+      ?column ?p2 ?o2 .
+      ?s3 ?p3 ?column .`
       .WHERE`
-        ?source ?p0 ?o0 .
-        ?source ${dataCube.column} ?column .
-        ?column ?p1 ?o1 .
+        OPTIONAL { ?source ?p0 ?o0 . }
+        OPTIONAL { ?source ${dataCube.column} ?column . }
+        OPTIONAL { ?s1 ?p1 ?source . }
+        OPTIONAL { ?column ?p2 ?o2 . }
+        OPTIONAL { ?s3 ?p3 ?column . }
 
         FILTER ( ?source = <${ev.id}> )`)
   }

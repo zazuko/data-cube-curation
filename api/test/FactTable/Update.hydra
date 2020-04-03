@@ -3,20 +3,16 @@ PREFIX dataCube: <https://rdf-cube-curation.described.at/>
 PREFIX schema: <http://schema.org/>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 
-ENTRYPOINT "project/fact-table-identifier-template"
+ENTRYPOINT "project/fact-table-created-updated"
 
 With Class api:ProjectPlaceholder {
     Expect Property api:project {
-        Expect Operation schema:CreateAction {
-            // Expect Method "PUT"
-        }
+        Expect Operation schema:CreateAction
     }
 }
 
 With Class dataCube:Project {
     With Operation api:DeleteProject {
-        // Expect Operation "DELETE"
-
         Invoke {
             Expect Status 204
         }
@@ -30,7 +26,7 @@ With Operation schema:CreateAction {
         ```
         @prefix schema: <http://schema.org/> .
 
-        <> schema:name "Fact table with identifier template" .
+        <> schema:name "Fact table project" .
         ```
     } => {
         Expect Property api:sources {
@@ -61,9 +57,9 @@ With Operation api:PostFactTable {
         @prefix dataCube: <https://rdf-cube-curation.described.at/> .
         @prefix schema: <http://schema.org/> .
 
-        <> dataCube:source <project/fact-table-identifier-template/source/single-column-csv> ;
-           schema:name "Observation" ;
-           dataCube:identifierTemplate "http://example.com/observation/{station_id}" ;
+
+        <> dataCube:source <project/fact-table-created-updated/source/single-column-csv> ;
+           schema:name "Obsevration" ;
            a dataCube:FactTable .
         ```
     } => {
@@ -73,5 +69,38 @@ With Operation api:PostFactTable {
 }
 
 With Class dataCube:FactTable {
-    Expect Property dataCube:identifierTemplate "http://example.com/observation/{station_id}"
+    Expect Property dataCube:identifierTemplate ""
+
+    Expect Operation schema:UpdateAction {
+        Invoke {
+            ```
+            @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+            @prefix schema: <http://schema.org/> .
+
+
+            <> schema:name "Observation" ;
+               dataCube:identifierTemplate "/foo/bar/{station_id}" ;
+               a dataCube:FactTable .
+            ```
+        } => {
+            Expect Property schema:name "Observation"
+            Expect Property dataCube:identifierTemplate "/foo/bar/{station_id}"
+        }
+    }
+
+    Expect Operation schema:UpdateAction {
+        Invoke {
+            ```
+            @prefix dataCube: <https://rdf-cube-curation.described.at/> .
+            @prefix schema: <http://schema.org/> .
+
+
+            <> schema:name "Observation" ;
+               a dataCube:FactTable .
+            ```
+        } => {
+            Expect Property schema:name "Observation"
+            Expect Property dataCube:identifierTemplate ""
+        }
+    }
 }

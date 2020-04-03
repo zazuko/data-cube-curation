@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { Constructor, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl, { Constructor, RdfResource } from '@tpluscode/rdfine'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
 import { NamedNode } from 'rdf-js'

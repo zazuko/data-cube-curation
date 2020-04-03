@@ -10,6 +10,7 @@ import { getTableAttributes } from './attribute'
 import { attributes } from '../storage/repository'
 import { NamedNode, Quad } from 'rdf-js'
 import env from '../env'
+import './table/eventHandlers'
 
 function addTableLinks (ev: DomainEvent) {
   return update(INSERT.DATA`
@@ -53,9 +54,11 @@ TableEvents.on.DimensionTableCreated(createTable(dataCube.DimensionTable))
 CoreEvents.on.AggregateDeleted(async function removeTable (ev) {
   if (ev.data.types.includes('Table')) {
     await update(DELETE`
-      ?table ?p0 ?o0 .`
+      ?table ?p0 ?o0 .
+      ?s1 ?p1 ?table .`
       .WHERE`
-        ?table ?p0 ?o0 .
+        OPTIONAL { ?table ?p0 ?o0 . }
+        OPTIONAL { ?s1 ?p1 ?table . }
 
         FILTER ( ?table = <${ev.id}> )`)
   }

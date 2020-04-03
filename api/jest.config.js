@@ -1,13 +1,9 @@
 module.exports = {
-  'roots': [
+  roots: [
     '<rootDir>/lib',
   ],
-  globals: {
-    'ts-jest': {
-      babelConfig: true,
-    },
-  },
-  'transform': {
-    '^.+\\.tsx?$': 'ts-jest',
-  }
+  testRegex: '(test|spec)\\.tsx?$',
+  transformIgnorePatterns: [
+    'node_modules/(?!(@tpluscode)/)',
+  ],
 }

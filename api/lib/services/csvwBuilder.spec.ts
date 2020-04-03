@@ -1,6 +1,6 @@
 import { namedNode } from '@rdfjs/data-model'
 import { FactTableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
-import { RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl from '@tpluscode/rdfine'
 import $rdf from 'rdf-ext'
 import TermSet from '@rdfjs/term-set'
 import { NamedNode } from 'rdf-js'

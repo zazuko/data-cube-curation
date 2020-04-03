@@ -1,5 +1,5 @@
-import { Constructor, namespace, property, RdfResource, RdfResourceImpl } from '@tpluscode/rdfine'
-import { Initializer, ResourceNode } from '@tpluscode/rdfine/lib/RdfResource'
+import RdfResourceImpl, { Constructor, namespace, property, RdfResource } from '@tpluscode/rdfine'
+import { Initializer, ResourceNode } from '@tpluscode/rdfine/RdfResource'
 import * as Table from './index'
 import { dataCube } from '../namespaces'
 import { TableMixin } from './Table'
