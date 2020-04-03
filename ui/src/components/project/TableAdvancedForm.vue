@@ -1,14 +1,14 @@
 <template>
-  <form action="" class="modal-card" @submit.prevent="save(table, attributes)">
+  <form action="" class="modal-card" @submit.prevent="save(operation, data, attributes)">
     <header class="modal-card-head">
       <h3 class="modal-card-title">Create table from columns</h3>
     </header>
     <section class="modal-card-body">
       <b-field>
-        <b-radio v-model="table.type" native-value="fact" :disabled="!project.actions.createFactTable">
+        <b-radio v-model="data.type" native-value="fact" :disabled="!project.actions.createFactTable">
           Fact table
         </b-radio>
-        <b-radio v-model="table.type" native-value="dimension" :disabled="!project.actions.createDimensionTable">
+        <b-radio v-model="data.type" native-value="dimension" :disabled="!project.actions.createDimensionTable">
           Dimension table
         </b-radio>
       </b-field>
@@ -16,15 +16,15 @@
       <div class="columns">
         <div class="column">
         <b-field label="Name">
-          <b-input type="text" v-model="table.name" required />
+          <b-input type="text" v-model="data.name" required />
         </b-field>
         </div>
 
         <div class="column is-3">
           <b-field label="Display color">
             <div class="control has-icons-right is-clearfix">
-              <input type="text" v-model="table.color" class="input" disabled>
-              <span class="icon is-right" :style="{ color: table.color }">
+              <input type="text" v-model="data.color" class="input" disabled>
+              <span class="icon is-right" :style="{ color: data.color }">
                 <i class="mdi mdi-circle mdi-24px"></i>
               </span>
             </div>
@@ -33,9 +33,9 @@
       </div>
 
       <IdentifierTemplateField
-        v-model="table.identifierTemplate"
+        v-model="data.identifierTemplate"
         :project="project"
-        :tableName="table.name"
+        :table="data"
         :source="source"
       />
 
@@ -97,6 +97,7 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { nanoid } from 'nanoid'
+import { IOperation } from 'alcaeus/types/Resources'
 import { TableType, ResourceId, Project, Source, TableFormData, ValueAttributeFormData } from '@/types'
 import * as datatypes from '@/datatypes'
 import DataTypeField from '../DataTypeField.vue'
@@ -116,20 +117,20 @@ export default class TableForm extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly source: Source
   @Prop() readonly columns: ResourceId[]
-  @Prop() readonly save: (table: TableFormData, attributes: ValueAttributeFormData[]) => void
-  table: TableFormData = emptyTable()
+  @Prop() readonly save: (operation: IOperation, data: TableFormData, attributes: ValueAttributeFormData[]) => void
+  data: TableFormData = emptyTable()
   attributes: ValueAttributeFormData[] = []
 
   mounted () {
-    if (!this.table.type) {
+    if (!this.data.type) {
       if (this.project.actions.createFactTable) {
-        this.table.type = 'fact'
+        this.data.type = 'fact'
       } else {
-        this.table.type = 'dimension'
+        this.data.type = 'dimension'
       }
     }
 
-    this.table.sourceId = this.source.id
+    this.data.sourceId = this.source.id
 
     this.attributes = this.columns.map((columnId) =>
       emptyAttribute({
@@ -148,6 +149,12 @@ export default class TableForm extends Vue {
 
   removeAttribute (index: number) {
     this.attributes.splice(index, 1)
+  }
+
+  get operation () {
+    return this.data.type === 'fact'
+      ? this.project.actions.createFactTable
+      : this.project.actions.createDimensionTable
   }
 }
 

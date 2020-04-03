@@ -34,9 +34,14 @@
             <th>Source CSV</th>
             <td>{{ source.name }}</td>
           </tr>
-          <tr v-if="!table.isFact">
+          <tr>
             <th>Identifier template</th>
-            <td><code><PrefixedURI :uri="table.identifierTemplate" :project="project" /></code></td>
+            <td>
+              <code v-if="table.identifierTemplate">
+                <PrefixedURI :uri="table.identifierTemplate" :project="project" />
+              </code>
+              <p v-else>Auto</p>
+            </td>
           </tr>
           <tr v-if="table.attributesCollection">
             <th>Attributes</th>
@@ -147,13 +152,14 @@
 <script lang="ts">
 import { Prop, Component, Vue } from 'vue-property-decorator'
 import { IOperation, HydraResource } from 'alcaeus/types/Resources'
-import { Project, ResourceId, Table, Source, RemoteData, Attribute, Column, ValueAttributeFormData, ReferenceAttributeFormData } from '@/types'
+import { Project, ResourceId, Table, TableFormData, Source, RemoteData, Attribute, Column, ValueAttributeFormData, ReferenceAttributeFormData } from '@/types'
 import Remote from '@/remote'
 import Loader from '@/components/Loader.vue'
 import ValueAttributeForm from './ValueAttributeForm.vue'
 import ReferenceAttributeForm from './ReferenceAttributeForm.vue'
 import TableMapping from './TableMapping.vue'
 import TablePreview from './TablePreview.vue'
+import TableForm from './TableForm.vue'
 import TableTag from '../TableTag.vue'
 import PrefixedURI from '../PrefixedURI.vue'
 import * as URI from '@/api/uris'
@@ -222,6 +228,28 @@ export default class extends Vue {
     const referencedColumnName = this.getColumn(getOrThrow<Column>(mapping, URI.PROP_REFERENCED_COLUMN).id).name
 
     return `${sourceColumnName} -> ${referencedColumnName}`
+  }
+
+  editTable (table: Table) {
+    const modal = this.$buefy.modal.open({
+      parent: this,
+      component: TableForm,
+      props: {
+        project: this.project,
+        sources: this.sources,
+        table,
+        save: async (operation: IOperation, data: TableFormData) => {
+          const loading = this.$buefy.loading.open({})
+          try {
+            await this.$store.dispatch('tables/update', { project: this.project, operation, data })
+            modal.close()
+          } finally {
+            loading.close()
+          }
+        },
+      },
+      hasModalCard: true,
+    })
   }
 
   deleteTable (table: Table) {

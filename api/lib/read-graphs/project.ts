@@ -85,7 +85,15 @@ ProjectEvents.on.ProjectRebased(async ev => {
 })
 
 ProjectEvents.on.ProjectArchived(ev => {
-  return deleteInsert(`<${ev.id}> ?p ?o .`)
+  return deleteInsert(`<${ev.id}> ?p ?o . ?s1 ?p1 <${ev.id}> .`)
+    .where(`
+      OPTIONAL {
+        <${ev.id}> ?p ?o .
+      }
+      OPTIONAL {
+        ?s1 ?p1 <${ev.id}> .
+      }
+    `)
     .execute(getClient())
 })
 

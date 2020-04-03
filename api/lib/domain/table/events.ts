@@ -17,6 +17,12 @@ export interface TableEvents {
     projectId: string;
     isFactTable: boolean;
   };
+  TableIdentifierTemplateChanged: {
+    identifierTemplate: string | null;
+  };
+  TableNameChanged: {
+    name: string;
+  };
 }
 
 export default handler<TableEvents>()

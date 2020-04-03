@@ -5,7 +5,7 @@ import { expand } from '@zazuko/rdf-vocabularies'
 import { projects, tables } from '../../storage/repository'
 import { NotFoundError } from '../../error'
 import { addDimensionTable, selectFactTableSource } from '../../domain/project'
-import { DomainError } from '@tpluscode/fun-ddr'
+import { errorFactory } from '../../domain/error-helper'
 import { getProjectId } from '../../read-graphs/project/links'
 import { getRepresentation } from '../../read-graphs/table/index'
 import { getFactTableId } from '../../read-graphs/table'
@@ -69,13 +69,18 @@ export const createTable = asyncMiddleware(async (req: express.Request, res: exp
     type: expand('rdf:type'),
   })
 
+  const DomainError = errorFactory(projectId, 'Cannot create table')
   let tableId
   if (type.value === expand('dataCube:DimensionTable')) {
     tableId = await createDimensionTable(req, projectId)
   } else if (type.value === expand('dataCube:FactTable')) {
     tableId = await createFactTable(req, projectId)
   } else {
-    throw new DomainError(projectId, 'Cannot create table', 'Missing or unrecognized table type')
+    throw new DomainError('Missing or unrecognized table type')
+  }
+
+  if (!tableId) {
+    throw new DomainError('Please check that the input was valid')
   }
 
   res.status(201)
