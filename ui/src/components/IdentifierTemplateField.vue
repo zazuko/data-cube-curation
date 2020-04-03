@@ -1,5 +1,5 @@
 <template>
-  <b-field label="Identifier attribute template" :message="message" :type="{ 'is-danger': !isValid }">
+  <b-field label="Identifier template" :message="!isValid && invalidMessage" :type="{ 'is-danger': !isValid }" :addons="false">
     <b-autocomplete
         ref="autocomplete"
         :value="value"
@@ -14,6 +14,8 @@
         keep-first
         :required="isRequired">
     </b-autocomplete>
+    <p class="help" v-if="!isRequired">If omitted, a generated identifier will be used.</p>
+    <p class="help" v-show="expandedValue">Expanded: {{ expandedValue }}</p>
   </b-field>
 </template>
 
@@ -118,10 +120,6 @@ export default class extends Vue {
 
   get expandedValue () {
     return expandWithBase(this.value, this.project.baseUri)
-  }
-
-  get message () {
-    return this.invalidMessage ?? this.expandedValue
   }
 
   get isRequired () {
