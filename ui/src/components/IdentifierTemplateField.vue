@@ -1,5 +1,5 @@
 <template>
-  <b-field label="Identifier template" :message="!isValid && invalidMessage" :type="{ 'is-danger': !isValid }" :addons="false">
+  <b-field label="Identifier template" :message="message" :type="{ 'is-danger': !isValid }" :addons="false">
     <b-autocomplete
         ref="autocomplete"
         :value="value"
@@ -100,7 +100,13 @@ export default class extends Vue {
   }
 
   get invalidMessage () {
-    if (!this.value) return null
+    if (!this.value) {
+      if (!this.isRequired) {
+        return null
+      } else {
+        return 'Please fill in this field'
+      }
+    }
 
     const matches = this.value.matchAll(/\{([^{}]*)\}/g) ?? []
     const inputColumnNames = [...matches].map((match) => match[1])
@@ -114,8 +120,11 @@ export default class extends Vue {
   }
 
   validate () {
-    const input = this.getAutocompleteComponent()?.$refs.input as any
-    this.isValid = input?.checkHtml5Validity() && !this.invalidMessage
+    this.isValid = !this.invalidMessage
+  }
+
+  get message () {
+    return this.isValid ? '' : this.invalidMessage
   }
 
   get expandedValue () {
