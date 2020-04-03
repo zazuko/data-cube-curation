@@ -5,7 +5,6 @@ import { construct } from '../../sparql'
 import { namedNode } from '@rdfjs/data-model'
 import { api } from '../../namespaces'
 import { exists, getProject } from '../../read-graphs/project'
-import { getClient } from '../../read-graphs/sparqlClient'
 
 export const placeholderRepresentation = asyncMiddleware(async (req: Request, res: Response) => {
   const placeholder = namedNode(req.resourceId.replace(/\/project/, '/_project'))
@@ -16,7 +15,7 @@ export const placeholderRepresentation = asyncMiddleware(async (req: Request, re
     `
   res.status(404)
   res.setLink(placeholder.value, 'canonical')
-  res.graph(await construct(query, getClient()))
+  res.graph(await construct(query))
 })
 
 export const getExistingProject = asyncMiddleware(async (req: Request, res: Response) => {

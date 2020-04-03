@@ -55,7 +55,7 @@ export async function getSourceColumns (sourceId: string) {
     .sort((left, right) => left.order - right.order)
     .map(item => item.column)
 
-  // TODO: remove the explicit `?source ${dataCube.column} ?column` triples
+  // TODO: remove the explicit `?source dataCube:column ?column` triples
   collection.addList(hydra.member, columns)
 
   return dataset

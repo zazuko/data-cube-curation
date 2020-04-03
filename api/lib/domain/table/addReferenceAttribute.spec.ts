@@ -101,8 +101,7 @@ describe('table', () => {
       const result = await addReferenceAttribute(table, command)
 
       // then
-      const error = await result.error
-      expect(error).toBeInstanceOf(DomainError)
+      await expect(result.error).resolves.toBeInstanceOf(DomainError)
     })
 
     it('errors when referenced column does not exist', async () => {
