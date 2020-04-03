@@ -4,13 +4,15 @@ declare module 'barnard59/lib/runner' {
   import { Debugger } from 'debug'
 
   type Runner = {
-    (dataset: DatasetCore): Promise<any>;
+    pipeline: any;
+    promise: Promise<any>;
   }
 
   interface RunnerInit {
+    dataset: DatasetCore;
     basePath: string;
     outputStream: Writable;
-    pipeline: string;
+    term: string;
     variable?: Map<string, string>;
   }
 

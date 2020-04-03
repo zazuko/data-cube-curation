@@ -1,4 +1,5 @@
-import { namespace, property, RdfResourceImpl } from '@tpluscode/rdfine'
+import { namespace, property } from '@tpluscode/rdfine'
+import RdfResource from '@tpluscode/rdfine/RdfResource'
 import { NamedNode } from 'rdf-js'
 import ns from '@rdfjs/namespace'
 import { rdf } from '@zazuko/rdfine-data-cube/namespaces'
@@ -12,7 +13,7 @@ function nextVariableId () {
 }
 
 @namespace(nsPipeline)
-class Variable extends RdfResourceImpl {
+class Variable extends RdfResource {
   @property.literal()
   public name!: string
 
@@ -27,7 +28,7 @@ class Variable extends RdfResourceImpl {
 }
 
 @namespace(nsPipeline)
-class Variables extends RdfResourceImpl {
+class Variables extends RdfResource {
   @property.resource({
     path: 'variable',
     values: 'array',
@@ -36,7 +37,7 @@ class Variables extends RdfResourceImpl {
 }
 
 @namespace(nsPipeline)
-export class Pipeline extends RdfResourceImpl {
+export class Pipeline extends RdfResource {
   public addVariable (name: string, value: string) {
     const variable = this.__variableSets[0].variables.find(v => v.name === name)
 

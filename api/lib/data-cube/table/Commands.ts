@@ -1,4 +1,4 @@
-import { property, RdfResourceImpl } from '@tpluscode/rdfine'
+import RdfResourceImpl, { property } from '@tpluscode/rdfine'
 import { dataCube, schema } from '../../namespaces'
 
 export class UpdateTable extends RdfResourceImpl {
