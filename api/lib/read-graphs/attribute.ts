@@ -1,94 +1,73 @@
 import $rdf from 'rdf-ext'
-import { construct, describe } from '../sparql'
-import { api, dataCube, datatype, hydra, rdf } from '../namespaces'
-import { getClient } from './sparqlClient'
+import { CONSTRUCT, DESCRIBE } from '@tpluscode/sparql-builder'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { construct } from '../sparql'
+import { api, dataCube, datatype } from '../namespaces'
 import './attribute/eventHandlers'
 
 export async function getTableAttributes (tableId: string) {
-  const collection = $rdf.dataset()
+  let collection = $rdf.dataset()
 
-  await collection.import(await construct()
-    .graph(`
+  collection = collection.merge(await construct(CONSTRUCT`
       ?attributes
-        a hydra:Collection ;
-        hydra:member ?attribute ;
-        hydra:totalItems ?count .
-    `)
-    .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
-    .where(`
+        a ${hydra.Collection} ;
+        ${hydra.member} ?attribute ;
+        ${hydra.totalItems} ?count .
+    `
+    .WHERE`<${tableId}> a ${dataCube.Table} ; ${api.attributes} ?attributes .
       OPTIONAL {
-        ?attribute dataCube:table <${tableId}> .
-        ?attribute a dataCube:Attribute .
+        ?attribute ${dataCube.table} <${tableId}> .
+        ?attribute a ${dataCube.Attribute} .
       }
-    `)
-    .where(`{
+    {
       SELECT (COUNT(?attribute) as ?count) WHERE {
         OPTIONAL {
           ?attribute
-            a dataCube:Attribute ;
-            dataCube:table <${tableId}> .
+            a ${dataCube.Attribute} ;
+            ${dataCube.table} <${tableId}> .
         }
       }
-    }`)
-    .prefixes({
-      dataCube,
-      hydra,
-      api,
-    })
-    .execute(getClient()))
+    }`))
 
-  await collection.import(await construct()
-    .graph(`
-      ?attributes hydra:manages [
-        hydra:property rdf:type ;
-        hydra:object dataCube:Attribute
-      ] `)
-    .where(`<${tableId}> a dataCube:Table ; api:attributes ?attributes .`)
-    .prefixes({ hydra, dataCube, rdf, api })
-    .execute(getClient()))
+  collection = collection.merge(await construct(CONSTRUCT`
+      ?attributes ${hydra.manages} [
+        ${hydra.property} ${rdf.type} ;
+        ${hydra.object} ${dataCube.Attribute}
+      ] `
+    .WHERE`<${tableId}> a ${dataCube.Table} ; ${api.attributes} ?attributes .`))
 
-  await collection.import(await describe('?attribute', '?params', '?mapping')
-    .where(`
-      ?attribute dataCube:table <${tableId}> .
-      ?attribute a dataCube:Attribute .
+  collection = collection.merge(await construct(DESCRIBE`?attribute ?params ?mapping`
+    .WHERE`
+      ?attribute ${dataCube.table} <${tableId}> .
+      ?attribute a ${dataCube.Attribute} .
 
       OPTIONAL {
-        ?attribute dataCube:columnMapping ?mapping .
+        ?attribute ${dataCube.columnMapping} ?mapping .
       }
 
       OPTIONAL {
-        ?attribute datatype:parameters ?params .
+        ?attribute ${datatype.parameters} ?params .
       }
-    `)
-    .prefixes({
-      dataCube,
-      datatype,
-    })
-    .execute(getClient()))
+    `))
 
   return collection
 }
 
 export async function getSingleAttribute (attributeId: string) {
-  const attribute = $rdf.dataset()
+  let attribute = $rdf.dataset()
 
-  await attribute.import(await describe('?attribute', '?params', '?mapping')
-    .where(`
+  attribute = attribute.merge(await construct(DESCRIBE`?attribute ?params ?mapping`
+    .WHERE`
       BIND ( <${attributeId}> as ?attribute )
 
       OPTIONAL {
-        ?attribute dataCube:columnMapping ?mapping .
+        ?attribute ${dataCube.columnMapping} ?mapping .
       }
 
       OPTIONAL {
-        ?attribute datatype:parameters ?params .
+        ?attribute ${datatype.parameters} ?params .
       }
-    `)
-    .prefixes({
-      dataCube,
-      datatype,
-    })
-    .execute(getClient()))
+    `))
 
   if (attribute.length === 0) {
     return null

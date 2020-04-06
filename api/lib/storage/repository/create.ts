@@ -1,21 +1,19 @@
 import { Entity, Repository } from '@tpluscode/fun-ddr'
 import { SparqlGraphRepository } from '@tpluscode/fun-ddr-sparql-graph-repository'
-import SparqlHttp from 'sparql-http-client'
+import SparqlHttp from 'sparql-http-client/ParsingClient'
 import { prefixes, expand } from '@zazuko/rdf-vocabularies'
-import rdfFetch from 'hydra-box/lib/rdfFetch'
 import authHeader from '../../sparql/authentication'
 import env from '../../env'
 
 const base = env.BASE_URI
-const defaultHeaders: HeadersInit = {}
+const headers: HeadersInit = {}
 if (authHeader) {
-  defaultHeaders.Authorization = authHeader
+  headers.Authorization = authHeader
 }
 const sparqlClient = new SparqlHttp({
   endpointUrl: env.SPARQL_ENDPOINT,
   updateUrl: env.SPARQL_UPDATE_ENDPOINT || env.SPARQL_ENDPOINT,
-  fetch: rdfFetch,
-  defaultHeaders,
+  headers,
 })
 
 const context = {

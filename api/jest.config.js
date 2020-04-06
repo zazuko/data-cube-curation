@@ -4,6 +4,6 @@ module.exports = {
   ],
   testRegex: '(test|spec)\\.tsx?$',
   transformIgnorePatterns: [
-    'node_modules/(?!(@tpluscode/rdfine)/)',
+    'node_modules/(?!(@tpluscode)/)',
   ],
 }

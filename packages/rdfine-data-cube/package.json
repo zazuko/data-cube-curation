@@ -12,6 +12,7 @@
     "@rdfine/csvw": "^0.1.0",
     "@rdfjs/namespace": "^1.1.0",
     "@tpluscode/rdfine": "^0.4",
+    "@tpluscode/rdf-ns-builders": "^0.1",
     "@zazuko/rdf-vocabularies": "^2019.12.23",
     "clownface": "^0.12.1",
     "is-uri": "^1.2.0",

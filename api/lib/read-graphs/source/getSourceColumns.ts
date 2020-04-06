@@ -1,32 +1,31 @@
 import cf from 'clownface'
 import $rdf from 'rdf-ext'
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
+import { rdf, schema, dtype, hydra } from '@tpluscode/rdf-ns-builders'
 import { construct } from '../../sparql'
-import { getClient } from '../sparqlClient'
-import { api, dataCube, dtype, hydra, rdf, schema } from '../../namespaces'
+import { api, dataCube } from '../../namespaces'
 
 export async function getSourceColumns (sourceId: string) {
-  const dataset = $rdf.dataset()
-  await dataset.import(await construct()
-    .graph(`
-      ?source api:columns ?columnsCollection ;
-              dataCube:column ?column .
+  const dataset = await construct(CONSTRUCT`
+      ?source ${api.columns} ?columnsCollection ;
+              ${dataCube.column} ?column .
 
       ?columnsCollection
-          a hydra:Collection ;
-          hydra:totalItems ?count .
+          a ${hydra.Collection} ;
+          ${hydra.totalItems} ?count .
 
-      ?column ?columnProp ?o .`)
-    .where(`
+      ?column ?columnProp ?o .`
+    .WHERE`
       BIND (<${sourceId}> as ?source)
-      ?source api:columns ?columnsCollection .
+      ?source ${api.columns} ?columnsCollection .
 
-      ?source dataCube:column ?column .
+      ?source ${dataCube.column} ?column .
 
       VALUES ?columnProp
       {
-          rdf:type
-          schema:name
-          dtype:order
+          ${rdf.type}
+          ${schema.name}
+          ${dtype.order}
       }
 
       OPTIONAL { ?column ?columnProp ?o . }
@@ -36,18 +35,9 @@ export async function getSourceColumns (sourceId: string) {
           {
               BIND (<${sourceId}> as ?source)
 
-              ?source dataCube:column ?column .
+              ?source ${dataCube.column} ?column .
           }
       }`)
-    .prefixes({
-      dtype,
-      schema,
-      dataCube,
-      rdf,
-      hydra,
-      api,
-    })
-    .execute(getClient()))
 
   const graph = cf({ dataset })
   const collection = graph.node($rdf.namedNode(`${sourceId}/columns`))

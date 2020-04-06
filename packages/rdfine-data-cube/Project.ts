@@ -1,6 +1,7 @@
 import RdfResourceImpl, { Constructor, property, RdfResource } from '@tpluscode/rdfine'
 import { Initializer, ResourceNode } from '@tpluscode/rdfine/RdfResource'
-import { api, dataCube, schema } from './namespaces'
+import { schema } from '@tpluscode/rdf-ns-builders'
+import { api, dataCube } from './namespaces'
 import * as DataCube from '.'
 
 export function ProjectMixin<TBase extends Constructor> (Base: TBase) {

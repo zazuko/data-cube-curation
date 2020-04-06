@@ -1,12 +1,10 @@
+import { SELECT } from '@tpluscode/sparql-builder'
 import { select } from '../../sparql'
 import { dataCube } from '../../namespaces'
-import { getClient } from '../sparqlClient'
 
 export async function getTableId (linedResourceId: string) {
-  const results = await select('table')
-    .where(`<${linedResourceId}> dataCube:table ?table .`)
-    .prefixes({ dataCube })
-    .execute(getClient())
+  const results = await select(SELECT`?table`
+    .WHERE`<${linedResourceId}> ${dataCube.table} ?table .`)
 
   if (results.length !== 1) {
     return null

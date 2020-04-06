@@ -2,7 +2,7 @@ import { addValueAttribute, AddValueAttributeCommand } from './addValueAttribute
 import { Table } from './index'
 import { expand } from '@zazuko/rdf-vocabularies'
 import { existsInTableSource } from '../../read-graphs/table'
-import { xsd } from '../../namespaces'
+import { xsd } from '@tpluscode/rdf-ns-builders'
 
 jest.mock('../../read-graphs/table')
 

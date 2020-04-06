@@ -1,16 +1,19 @@
+import { turtle } from '@tpluscode/rdf-string/'
+import { schema } from '@tpluscode/rdf-ns-builders'
 import { extractColumns } from './identifierTemplate'
 import { parseGraph } from '../../__tests-helpers__'
 import { getSourceColumns } from '../../read-graphs/source/getSourceColumns'
+import { dataCube } from '../../namespaces'
 
 jest.mock('../../read-graphs/source/getSourceColumns')
 
 const getSourceColumnsMock = getSourceColumns as jest.Mock
 
-const sourceColumns = parseGraph(`
-  <http://foo.bar/column1> a dataCube:Column; schema:name "first_name" .
-  <http://foo.bar/column2> a dataCube:Column; schema:name "last_name" .
-  <http://foo.bar/column2> a dataCube:Column; schema:name "unused_column" .
-  <http://foo.bar/column-with-spaces-and-others> a dataCube:Column; schema:name "Fahrzeug größe" .
+const sourceColumns = parseGraph(turtle`
+  <http://foo.bar/column1> a ${dataCube.Column}; ${schema.name} "first_name" .
+  <http://foo.bar/column2> a ${dataCube.Column}; ${schema.name} "last_name" .
+  <http://foo.bar/column2> a ${dataCube.Column}; ${schema.name} "unused_column" .
+  <http://foo.bar/column-with-spaces-and-others> a ${dataCube.Column}; ${schema.name} "Fahrzeug größe" .
 `)
 
 describe('identifierTemplate', () => {

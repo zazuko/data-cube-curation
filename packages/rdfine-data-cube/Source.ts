@@ -1,5 +1,6 @@
 import { property, Constructor, RdfResource } from '@tpluscode/rdfine'
-import { dataCube, schema } from './namespaces'
+import { schema } from '@tpluscode/rdf-ns-builders'
+import { dataCube } from './namespaces'
 import * as DataCube from './index'
 
 export function SourceMixin<Base extends Constructor> (base: Base) {

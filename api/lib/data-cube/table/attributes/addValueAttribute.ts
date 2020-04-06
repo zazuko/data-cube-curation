@@ -33,5 +33,6 @@ export const addValueAttributeHandler = asyncMiddleware(async (req: express.Requ
     res.graph(persistedAttribute)
   } else {
     res.status(500)
+    res.end()
   }
 })

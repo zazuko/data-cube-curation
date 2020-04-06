@@ -1,13 +1,15 @@
 import $rdf from 'rdf-ext'
-import { describe } from '../../sparql'
-import { getClient } from '../sparqlClient'
+import { DESCRIBE } from '@tpluscode/sparql-builder'
+import { namedNode } from '@rdfjs/data-model'
+import { construct } from '../../sparql'
 import { api } from '../../namespaces'
 
 export async function getSource (sourceId: string) {
-  const dataset = await $rdf.dataset().import(await describe(sourceId).execute(getClient()))
+  const source = namedNode(sourceId)
+  const dataset = await construct(DESCRIBE`${source}`)
 
   dataset.add($rdf.quad(
-    $rdf.namedNode(sourceId),
+    source,
     api.sample,
     $rdf.namedNode(sourceId.replace('/source/', '/source-sample/'))
   ))

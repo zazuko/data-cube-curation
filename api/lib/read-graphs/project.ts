@@ -1,92 +1,80 @@
 import cf from 'clownface'
-import $rdf from 'rdf-ext'
+import { Project } from '@zazuko/rdfine-data-cube'
+import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
+import { schema, hydra, rdf } from '@tpluscode/rdf-ns-builders'
+import { ASK, CONSTRUCT, DELETE, INSERT } from '@tpluscode/sparql-builder'
 import ProjectEvents from '../domain/project/events'
-import { ask, construct, deleteInsert, insertData } from '../sparql'
-import { api, dataCube, hydra, schema, rdf } from '../namespaces'
-import { getClient } from './sparqlClient'
+import { ask, construct, update } from '../sparql'
+import { api, dataCube } from '../namespaces'
 import TableEvents from '../domain/table/events'
 import { projects } from '../storage/repository'
 import { unselectFactTable } from '../domain/project'
-import { Project } from '@zazuko/rdfine-data-cube'
-import { namedNode } from 'rdf-data-model'
-import { ProjectMixin } from '@zazuko/rdfine-data-cube/Project'
+import { namedNode } from '@rdfjs/data-model'
 
 ProjectEvents.on.ProjectCreated(async ev => {
-  const graphUriTriple = typeof ev.data.graphUri !== 'undefined' && ev.data.graphUri !== null
-    ? `<${ev.id}> dataCube:graphUri "${ev.data.graphUri}" .` : ''
+  let insert = INSERT.DATA`
+    <${ev.id}> a ${dataCube.Project}; ${schema.name} "${ev.data.name}" ;
+       ${api.s3Bucket} "${ev.data.s3Bucket}" ;
+       ${dataCube.baseUri} "${ev.data.baseUri}" .
 
-  await insertData(`
-    <${ev.id}> a dataCube:Project; schema:name "${ev.data.name}" ;
-       api:s3Bucket "${ev.data.s3Bucket}" ;
-       dataCube:baseUri "${ev.data.baseUri}" .
-    ${graphUriTriple}
-    <${ev.id}/tables> dataCube:project <${ev.id}> .
-    <${ev.id}/jobs> dataCube:project <${ev.id}> .
-    <${ev.id}/sources> dataCube:project <${ev.id}> .
-    <${ev.id}/fact-table> dataCube:project <${ev.id}> .
+    <${ev.id}/tables> ${dataCube.project} <${ev.id}> .
+    <${ev.id}/jobs> ${dataCube.project} <${ev.id}> .
+    <${ev.id}/sources> ${dataCube.project} <${ev.id}> .
+    <${ev.id}/fact-table> ${dataCube.project} <${ev.id}> .
     <${ev.id}>
-        api:tables <${ev.id}/tables> ;
-        api:jobs <${ev.id}/jobs> ;
-        api:sources <${ev.id}/sources> ;
-        api:factTable <${ev.id}/fact-table> .
-  `)
-    .prefixes({
-      schema,
-      dataCube,
-      api,
-    })
-    .execute(getClient())
+        ${api.tables} <${ev.id}/tables> ;
+        ${api.jobs} <${ev.id}/jobs> ;
+        ${api.sources} <${ev.id}/sources> ;
+        ${api.factTable} <${ev.id}/fact-table> .
+  `
+
+  if (typeof ev.data.graphUri !== 'undefined' && ev.data.graphUri !== null) {
+    insert = insert.DATA`<${ev.id}> ${dataCube.graphUri} "${ev.data.graphUri}" .`
+  }
+
+  await update(insert)
 })
 
 ProjectEvents.on.ProjectRenamed(async ev => {
-  await deleteInsert(`<${ev.id}> schema:name ?currentName .`)
-    .insert(`<${ev.id}> schema:name "${ev.data.name}" .`)
-    .prefixes({
-      schema,
-      dataCube,
-    })
-    .execute(getClient())
+  const query = DELETE`<${ev.id}> ${schema.name} ?currentName .`
+    .INSERT`<${ev.id}> ${schema.name} "${ev.data.name}" .`
+
+  await update(query)
 })
 
 ProjectEvents.on.S3BucketChanged(async ev => {
-  await deleteInsert(`<${ev.id}> api:s3Bucket ?current .`)
-    .insert(`<${ev.id}> api:s3Bucket "${ev.data.s3Bucket}" .`)
-    .where(`OPTIONAL {
-      <${ev.id}> api:s3Bucket ?current .
-    }`)
-    .prefixes({
-      api,
-    })
-    .execute(getClient())
+  const query = DELETE`<${ev.id}> ${api.s3Bucket} ?current .`
+    .INSERT`<${ev.id}> ${api.s3Bucket} "${ev.data.s3Bucket}" .`
+    .WHERE`OPTIONAL {
+        <${ev.id}> ${api.s3Bucket} ?current .
+      }`
+
+  await update(query)
 })
 
 ProjectEvents.on.GraphUriChanged(async ev => {
-  await deleteInsert(`<${ev.id}> dataCube:graphUri ?current .`)
-    .insert(`<${ev.id}> dataCube:graphUri "${ev.data.graphUri}" .`)
-    .where(`OPTIONAL {
-      <${ev.id}> dataCube:graphUri ?current .
-    }`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  const query = DELETE`<${ev.id}> ${dataCube.graphUri} ?current .`
+    .INSERT`<${ev.id}> ${dataCube.graphUri} "${ev.data.graphUri}" .`
+    .WHERE`OPTIONAL {
+      <${ev.id}> ${dataCube.graphUri} ?current .
+    }`
+
+  await update(query)
 })
 
 ProjectEvents.on.ProjectRebased(async ev => {
-  await deleteInsert(`<${ev.id}> dataCube:baseUri ?currentBase .`)
-    .insert(`<${ev.id}> dataCube:baseUri "${ev.data.baseUri}" .`)
-    .where(`OPTIONAL {
-      <${ev.id}> dataCube:baseUri ?currentBase .
-    }`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  const query = DELETE`<${ev.id}> ${dataCube.baseUri} ?currentBase .`
+    .INSERT`<${ev.id}> ${dataCube.baseUri} "${ev.data.baseUri}" .`
+    .WHERE`OPTIONAL {
+      <${ev.id}> ${dataCube.baseUri} ?currentBase .
+    }`
+
+  await update(query)
 })
 
 ProjectEvents.on.ProjectArchived(ev => {
-  return deleteInsert(`<${ev.id}> ?p ?o . ?s1 ?p1 <${ev.id}> .`)
-    .where(`
+  return update(DELETE`<${ev.id}> ?p ?o . ?s1 ?p1 <${ev.id}> .`
+    .WHERE`
       OPTIONAL {
         <${ev.id}> ?p ?o .
       }
@@ -94,15 +82,10 @@ ProjectEvents.on.ProjectArchived(ev => {
         ?s1 ?p1 <${ev.id}> .
       }
     `)
-    .execute(getClient())
 })
 
 TableEvents.on.FactTableCreated(async function initialiseFactTableResource (ev) {
-  await insertData(`<${ev.data.projectId}> dataCube:factTable <${ev.id}>`)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
+  await update(INSERT.DATA`<${ev.data.projectId}> ${dataCube.factTable} <${ev.id}>`)
 })
 
 TableEvents.on.TableArchived(async function updateProjectEntity (ev) {
@@ -116,75 +99,64 @@ TableEvents.on.TableArchived(async function updateProjectEntity (ev) {
 })
 
 ProjectEvents.on.FactTableUnselected(function removeFactTableLink (ev) {
-  return deleteInsert(`<${ev.id}> dataCube:factTable ?table`)
-    .where(`
-      ?table a dataCube:Table ; dataCube:source <${ev.data.previousSourceId}> .
+  return update(DELETE`<${ev.id}> ${dataCube.factTable} ?table`
+    .WHERE`
+      ?table a ${dataCube.Table} ; ${dataCube.source} <${ev.data.previousSourceId}> .
     `)
-    .prefixes({
-      dataCube,
-    })
-    .execute(getClient())
 })
 
 export function exists (id: string) {
-  return ask(`<${id}> ?p ?o`).execute(getClient())
+  return ask(ASK`<${id}> ?p ?o`)
 }
 
 export async function getProject (id: string): Promise<Project> {
-  const dataset = await $rdf.dataset().import(await construct()
-    .prefixes({
-      api,
-      dataCube,
-      schema,
-      hydra,
-    })
-    .graph(`
+  const dataset = await construct(CONSTRUCT`
     ?project a ?projectType ;
-      schema:name ?name ;
-      api:sources ?sources ;
-      dataCube:factTable ?factTable ;
-      api:factTable ?factTableCanonical ;
-      api:tables ?tables ;
-      api:jobs ?jobs ;
-      api:s3Bucket ?s3Bucket ;
-      dataCube:baseUri ?baseUri ;
-      dataCube:graphUri ?graphUri.
+      ${schema.name} ?name ;
+      ${api.sources} ?sources ;
+      ${dataCube.factTable} ?factTable ;
+      ${api.factTable} ?factTableCanonical ;
+      ${api.tables} ?tables ;
+      ${api.jobs} ?jobs ;
+      ${api.s3Bucket} ?s3Bucket ;
+      ${dataCube.baseUri} ?baseUri ;
+      ${dataCube.graphUri} ?graphUri.
 
     ?sources
-        a hydra:Collection ;
-        hydra:member ?source ;
-        hydra:totalItems ?count .
+        a ${hydra.Collection} ;
+        ${hydra.member} ?source ;
+        ${hydra.totalItems} ?count .
 
-    ?source schema:name ?sourceName`)
-    .where(`
+    ?source ${schema.name} ?sourceName`
+    .WHERE`
     BIND (<${id}> as ?project)
 
     ?project
-        schema:name ?name ;
+        ${schema.name} ?name ;
         a ?projectType ;
-        api:sources ?sources ;
-        api:factTable ?factTableCanonical ;
-        api:jobs ?jobs ;
-        api:tables ?tables .
+        ${api.sources} ?sources ;
+        ${api.factTable} ?factTableCanonical ;
+        ${api.jobs} ?jobs ;
+        ${api.tables} ?tables .
 
-    OPTIONAL { ?project dataCube:baseUri ?baseUri . }
-    OPTIONAL { ?project dataCube:graphUri ?graphUri . }
-    OPTIONAL { ?project api:s3Bucket ?s3Bucket . }
+    OPTIONAL { ?project ${dataCube.baseUri} ?baseUri . }
+    OPTIONAL { ?project ${dataCube.graphUri} ?graphUri . }
+    OPTIONAL { ?project ${api.s3Bucket} ?s3Bucket . }
 
     OPTIONAL
     {
-        ?project dataCube:factTable ?factTable .
-        ?project dataCube:source ?source .
-        ?source schema:name ?sourceName .
+        ?project ${dataCube.factTable} ?factTable .
+        ?project ${dataCube.source} ?source .
+        ?source ${schema.name} ?sourceName .
     }
 
     {
         SELECT (COUNT(?source) as ?count)
         {
             BIND (<${id}> as ?project)
-            OPTIONAL { ?project dataCube:source ?source }
+            OPTIONAL { ?project ${dataCube.source} ?source }
         }
-  }`).execute(getClient()))
+  }`)
 
   const project = cf({ dataset })
     .has(rdf.type, dataCube.Project)
@@ -196,20 +168,13 @@ export async function getProject (id: string): Promise<Project> {
       manages.addOut(hydra.object, dataCube.Source)
     })
 
-  const realFactTable = project.out(dataCube.factTable)
-  if (realFactTable.term) {
-    project.deleteOut(api.factTable)
-  }
-
   return new ProjectMixin.Class({
     dataset, term: namedNode(id),
   })
 }
 
 export async function hasSource (projectId: string, sourceId: string) {
-  return ask(`
-    <${projectId}> a dataCube:Project; dataCube:source <${sourceId}> .
+  return ask(ASK`
+    <${projectId}> a ${dataCube.Project}; ${dataCube.source} <${sourceId}> .
   `)
-    .prefixes({ dataCube })
-    .execute(getClient())
 }

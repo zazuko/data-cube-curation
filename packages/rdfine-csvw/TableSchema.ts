@@ -1,5 +1,5 @@
 import { Constructor, namespace, property } from '@tpluscode/rdfine'
-import { csvw } from './namespaces'
+import { csvw } from '@tpluscode/rdf-ns-builders'
 import * as Csvw from './index'
 import { ColumnMixin } from './Column'
 

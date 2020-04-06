@@ -1,14 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
 import RdfResourceImpl, { Constructor, RdfResource } from '@tpluscode/rdfine'
+import { rdf } from '@tpluscode/rdf-ns-builders'
 import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
 import { NamedNode } from 'rdf-js'
+import { namedNode } from '@rdfjs/data-model'
 import cf, { Clownface } from 'clownface'
 import env from './env'
-import { rdf } from './namespaces'
 
 export function resourceId (req: Request, res: Response, next: NextFunction) {
   req.resourcePath = req.path.substring(1)
   req.resourceId = `${env.BASE_URI}${req.resourcePath}`
+  req.resourceNode = namedNode(req.resourceId)
   next()
 }
 

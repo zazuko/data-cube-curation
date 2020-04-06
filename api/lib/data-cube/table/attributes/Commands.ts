@@ -33,10 +33,10 @@ export class AddValueAttributeCommand extends AddAttributeCommand {
     return this._datatype ? this._datatype.value : undefined
   }
 
-  @property()
+  @property.literal()
   public default: string;
 
-  @property()
+  @property.literal()
   public language: string;
 
   public get columnId () {

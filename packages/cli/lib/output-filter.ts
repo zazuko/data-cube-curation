@@ -1,5 +1,5 @@
 import { Quad } from 'rdf-js'
-import { csvw, rdf } from '@rdfine/csvw/namespaces'
+import { csvw, rdf } from '@tpluscode/rdf-ns-builders'
 
 const csvwNs = csvw().value
 

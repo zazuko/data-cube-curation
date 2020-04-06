@@ -2,7 +2,7 @@ import { namespace, property } from '@tpluscode/rdfine'
 import RdfResource from '@tpluscode/rdfine/RdfResource'
 import { NamedNode } from 'rdf-js'
 import ns from '@rdfjs/namespace'
-import { rdf } from '@zazuko/rdfine-data-cube/namespaces'
+import { rdf } from '@tpluscode/rdf-ns-builders'
 
 const nsPipeline = ns('https://pipeline.described.at/')
 

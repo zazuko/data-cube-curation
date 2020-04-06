@@ -1,35 +1,38 @@
-import { literal } from 'rdf-data-model'
+import { namedNode } from '@rdfjs/data-model'
+import { DELETE } from '@tpluscode/sparql-builder'
+import { schema } from '@tpluscode/rdf-ns-builders'
 import Events from '../domain/source/events'
-import { deleteInsert } from '../sparql'
-import { dataCube, schema } from '../namespaces'
-import { getClient } from '../read-graphs/sparqlClient'
-import toString = require('@rdfjs/to-ntriples/lib/literal')
+import { update } from '../sparql'
+import { dataCube } from '../namespaces'
 
 const { csvSourceEvents } = Events
 
 csvSourceEvents.on.NameChanged(function updateName (ev) {
-  return deleteInsert(`<${ev.id}> schema:name ?current .`)
-    .insert(`<${ev.id}> schema:name "${ev.data.newName}"`)
-    .prefixes({ schema })
-    .execute(getClient())
+  const source = namedNode(ev.id)
+
+  return update(DELETE`
+    ${source} ${schema.name} "${ev.data.newName}" .
+  `.INSERT`
+    ${source} ${schema.name} "${ev.data.newName}" .
+  `)
 })
 
 csvSourceEvents.on.QuoteChanged(function updateQuote (ev) {
-  return deleteInsert(`<${ev.id}> dataCube:csvQuote ?current .`)
-    .insert(`<${ev.id}> dataCube:csvQuote ${toString(literal(ev.data.newQuote))}`)
-    .where(`OPTIONAL {
-      <${ev.id}> dataCube:csvQuote ?current
-    }`)
-    .prefixes({ dataCube })
-    .execute(getClient())
+  const source = namedNode(ev.id)
+
+  return update(DELETE`
+    ${source} ${dataCube.csvQuote} ?current .
+  `.INSERT`
+    ${source} ${dataCube.csvQuote} "${ev.data.newQuote.replace('"', '\\"')}" .
+  `)
 })
 
 csvSourceEvents.on.DelimiterChanged(function updateDelimiter (ev) {
-  return deleteInsert(`<${ev.id}> dataCube:csvDelimiter ?current .`)
-    .insert(`<${ev.id}> dataCube:csvDelimiter "${ev.data.newDelimiter}"`)
-    .where(`OPTIONAL {
-      <${ev.id}> dataCube:csvDelimiter ?current
-    }`)
-    .prefixes({ dataCube })
-    .execute(getClient())
+  const source = namedNode(ev.id)
+
+  return update(DELETE`
+    ${source} ${dataCube.csvDelimiter} ?current .
+  `.INSERT`
+    ${source} ${dataCube.csvDelimiter} "${ev.data.newDelimiter}" .
+  `)
 })

@@ -1,27 +1,26 @@
-import $rdf from 'rdf-ext'
-import { describe } from '../../sparql'
-import { dataCube, schema, rdf } from '../../namespaces'
-import { getClient } from '../sparqlClient'
+import { DESCRIBE } from '@tpluscode/sparql-builder'
+import { namedNode } from '@rdfjs/data-model'
+import { dataCube } from '../../namespaces'
+import { construct } from '../../sparql'
 
-export async function getTableAndSource (tableId: string) {
-  return $rdf.dataset().import(await describe(tableId, '?source', '?attribute', '?column', '?project', '?referencedTable', '?mapping', '?referencedColumn')
-    .prefixes({ dataCube, schema, rdf })
-    .where(`
-        <${tableId}> a dataCube:Table ;
-                   dataCube:source ?source ;
-                   dataCube:project ?project .
+export function getTableAndSource (tableId: string) {
+  const table = namedNode(tableId)
+  return construct(DESCRIBE`${table} ?source ?attribute ?column ?project ?referencedTable ?mapping ?referencedColumn`
+    .WHERE`
+        <${tableId}> a ${dataCube.Table} ;
+                   ${dataCube.source} ?source ;
+                   ${dataCube.project} ?project .
 
-        ?source dataCube:column ?column .
+        ?source ${dataCube.column} ?column .
 
         OPTIONAL {
-          ?attribute dataCube:table <${tableId}> .
+          ?attribute ${dataCube.table} <${tableId}> .
         }
 
         OPTIONAL {
-          ?attribute dataCube:referencedTable ?referencedTable ;
-                     dataCube:columnMapping ?mapping .
-          ?mapping dataCube:referencedColumn ?referencedColumn .
+          ?attribute ${dataCube.referencedTable} ?referencedTable ;
+                     ${dataCube.columnMapping} ?mapping .
+          ?mapping ${dataCube.referencedColumn} ?referencedColumn .
         }
       `)
-    .execute(getClient()))
 }

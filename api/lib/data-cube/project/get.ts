@@ -1,25 +1,21 @@
 import { Request, Response } from 'express'
 import { asyncMiddleware } from 'middleware-async'
+import { CONSTRUCT } from '@tpluscode/sparql-builder'
 import { construct } from '../../sparql'
-import { api, dataCube } from '../../namespaces'
+import { namedNode } from '@rdfjs/data-model'
+import { api } from '../../namespaces'
 import { exists, getProject } from '../../read-graphs/project'
 
 export const placeholderRepresentation = asyncMiddleware(async (req: Request, res: Response) => {
-  const placeholderUri = req.resourceId.replace(/\/project/, '/_project')
+  const placeholder = namedNode(req.resourceId.replace(/\/project/, '/_project'))
 
-  const query = construct()
-    .prefixes({
-      api,
-      dataCube,
-    })
-    .graph(`
-      <${placeholderUri}> a api:ProjectPlaceholder ;
-        api:project <${req.resourceId}> .
-    `)
-
+  const query = CONSTRUCT`
+      ${placeholder} a ${api.ProjectPlaceholder} ;
+        ${api.project} ${req.resourceNode} .
+    `
   res.status(404)
-  res.setLink(placeholderUri, 'canonical')
-  res.graph(await query.execute(req.sparql))
+  res.setLink(placeholder.value, 'canonical')
+  res.graph(await construct(query))
 })
 
 export const getExistingProject = asyncMiddleware(async (req: Request, res: Response) => {

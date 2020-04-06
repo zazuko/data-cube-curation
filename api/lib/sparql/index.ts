@@ -1,30 +1,51 @@
-import { SelectBuilder } from './SelectBuilder'
-import { AskBuilder } from './AskBuilder'
-import { ConstructBuilder } from './ConstructBuilder'
-import { InsertDataBuilder } from './InsertDataBuilder'
-import { DeleteInsertBuilder } from './DeleteInsertBuilder'
-import { DescribeBuilder } from './DescribeBuilder'
+import authHeader from './authentication'
+import { Term } from 'rdf-js'
+import rdf from 'rdf-ext'
+import { ParsingQuery } from 'sparql-http-client/ParsingQuery'
+import { getClient } from '../read-graphs/sparqlClient'
+import {
+  SparqlAskExecutable,
+  SparqlGraphQueryExecutable,
+  SparqlQueryExecutable,
+  SparqlUpdateExecutable,
+} from '@tpluscode/sparql-builder/lib'
+import DatasetExt from 'rdf-ext/lib/Dataset'
+import env from '../env'
 
-export function construct () {
-  return new ConstructBuilder()
+export function ask <T> (query: SparqlAskExecutable, client: ParsingQuery = getClient()): Promise<boolean> {
+  return query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
 }
 
-export function select (...variables: string[]) {
-  return new SelectBuilder().variables(...variables)
+export function select <T> (query: SparqlQueryExecutable, client: ParsingQuery = getClient()): Promise<Record<string, Term>[]> {
+  return query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
 }
 
-export function ask (...patterns: string[]) {
-  return new AskBuilder().where(...patterns)
+export async function construct <T> (query: SparqlGraphQueryExecutable, client: ParsingQuery = getClient()): Promise<DatasetExt> {
+  const quads = await query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
+
+  return rdf.dataset(quads)
 }
 
-export function insertData (...data: string[]) {
-  return new InsertDataBuilder().graph(...data)
-}
-
-export function deleteInsert (...deletePatterns: string[]) {
-  return new DeleteInsertBuilder().delete(...deletePatterns)
-}
-
-export function describe (idOrVariable: string, ...idOrVariables: string[]) {
-  return new DescribeBuilder(idOrVariable, idOrVariables)
+export function update <T> (query: SparqlUpdateExecutable, client: ParsingQuery = getClient()): Promise<void> {
+  return query.execute(client, {
+    headers: {
+      authentication: authHeader,
+    },
+    base: env.BASE_URI,
+  })
 }
