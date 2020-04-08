@@ -11,9 +11,11 @@ csvSourceEvents.on.NameChanged(function updateName (ev) {
   const source = namedNode(ev.id)
 
   return update(DELETE`
-    ${source} ${schema.name} "${ev.data.newName}" .
+    ${source} ${schema.name} ?name .
   `.INSERT`
     ${source} ${schema.name} "${ev.data.newName}" .
+  `.WHERE`
+    OPTIONAL { ${source} ${schema.name} ?name }
   `)
 })
 
@@ -24,6 +26,8 @@ csvSourceEvents.on.QuoteChanged(function updateQuote (ev) {
     ${source} ${dataCube.csvQuote} ?current .
   `.INSERT`
     ${source} ${dataCube.csvQuote} "${ev.data.newQuote.replace('"', '\\"')}" .
+  `.WHERE`
+    OPTIONAL { ${source} ${dataCube.csvQuote} ?current }
   `)
 })
 
@@ -34,5 +38,7 @@ csvSourceEvents.on.DelimiterChanged(function updateDelimiter (ev) {
     ${source} ${dataCube.csvDelimiter} ?current .
   `.INSERT`
     ${source} ${dataCube.csvDelimiter} "${ev.data.newDelimiter}" .
+  `.WHERE`
+    OPTIONAL { ${source} ${dataCube.csvDelimiter} ?current }
   `)
 })

@@ -38,6 +38,9 @@ ProjectEvents.on.ProjectCreated(async ev => {
 ProjectEvents.on.ProjectRenamed(async ev => {
   const query = DELETE`<${ev.id}> ${schema.name} ?currentName .`
     .INSERT`<${ev.id}> ${schema.name} "${ev.data.name}" .`
+    .WHERE`
+      OPTIONAL { <${ev.id}> ${schema.name} ?currentName }
+    `
 
   await update(query)
 })
