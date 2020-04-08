@@ -7,7 +7,7 @@ import $rdf from 'rdf-ext'
 import getStream from 'get-stream'
 import { Context } from 'barnard59-core/lib/Pipeline'
 import toReadable from 'barnard59-base/lib/toReadable'
-import { qb, rdf } from '@zazuko/rdfine-data-cube/namespaces'
+import { qb, rdf } from '@tpluscode/rdf-ns-builders'
 import * as S3 from './s3'
 
 const filename = 'datacube-metadata.ttl'
