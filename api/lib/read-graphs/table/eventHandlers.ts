@@ -63,5 +63,7 @@ TableEvents.on.TableNameChanged(function updateName (ev) {
     `
     .INSERT`
         <${ev.id}> ${schema.name} "${ev.data.name}" .
+    `.WHERE`
+        OPTIONAL { <${ev.id}> ${schema.name} ?name }
     `)
 })
