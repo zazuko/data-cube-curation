@@ -1,6 +1,5 @@
 import cf from 'clownface'
 import $rdf from 'rdf-ext'
-import { NamedNode } from 'rdf-js'
 import { ASK, CONSTRUCT } from '@tpluscode/sparql-builder'
 import { ask, construct } from '../../sparql'
 import { dataCube } from '../../namespaces'
@@ -26,7 +25,7 @@ export async function getRepresentation (tableId: string) {
         ?p ?o .`)
 
   const table = cf({ dataset }).has(rdf.type, dataCube.Table)
-  const source = table.out(dataCube.source).term as NamedNode
+  const source = table.out(dataCube.source).term
   const identifierTemplate = table.out(dataCube.identifierTemplate).term
 
   if (source && identifierTemplate) {
