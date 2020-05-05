@@ -1,6 +1,6 @@
 import { Hydra } from 'alcaeus'
 import { IHydraResponse } from 'alcaeus/types/HydraResponse'
-import { HydraResource, Collection, IOperation } from 'alcaeus/types/Resources'
+import { HydraResource, Collection, IOperation, ApiDocumentation } from 'alcaeus/types/Resources'
 import {
   Project,
   ProjectFormData,
@@ -40,6 +40,20 @@ rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 
 // Tells Hydra to use current browser location as base URI for relative URIs
 Hydra.baseUri = window.location.href
+
+// Monkeypatch Alcaeus to cache the API documentation
+// Alcaeus/Hydra doesn't provide a better way to avoid fetching the
+// documentation for every resource yet.
+// We can cache it in this project because we know that it doesn't ever change.
+let _documentation: ApiDocumentation | null = null
+const _loadDocumentation = Hydra.loadDocumentation.bind(Hydra)
+Hydra.loadDocumentation = async function (...args) {
+  if (!_documentation) {
+    _documentation = await _loadDocumentation(...args)
+  }
+
+  return _documentation
+}
 
 export class APIError extends Error {
   details: any;
