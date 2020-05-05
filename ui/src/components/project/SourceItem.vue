@@ -32,11 +32,11 @@
                     {{ column.name }}
                   </b-checkbox>
                 </b-field>
-                <b-taglist>
-                  <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="getTable(attribute.tableId)">
-                    {{ getTable(attribute.tableId).name }} > <PrefixedURI :uri="attribute.property" :project="project" />
+                <Loader class="tags" :data="tables" v-slot="{ data: tables }">
+                  <TableTag v-for="attribute in columnAttributes(column)" :key="attribute.id" :table="findTable(tables, attribute.tableId)">
+                    {{ findTable(tables, attribute.tableId).name }} > <PrefixedURI :uri="attribute.property" :project="project" />
                   </TableTag>
-                </b-taglist>
+                </Loader>
               </div>
               <span v-else>·</span>
             </th>
@@ -95,6 +95,7 @@ import {
   ValueAttributeFormData,
   SourceColumnFilter,
 } from '@/types'
+import Remote from '@/remote'
 import TableTag from '@/components/TableTag.vue'
 import PrefixedURI from '@/components/PrefixedURI.vue'
 import Loader from '@/components/Loader.vue'
@@ -111,7 +112,7 @@ import SourceForm from '@/components/project/SourceForm.vue'
 export default class extends Vue {
   @Prop() readonly project: Project
   @Prop() readonly source: Source
-  @Prop() readonly tables: Table[]
+  @Prop() readonly tables: RemoteData<Table[]>
   @Prop() readonly columnFilter: SourceColumnFilter
   selectedColumns: string[] = []
 
@@ -124,11 +125,13 @@ export default class extends Vue {
   }
 
   get sourceAttributes (): RemoteData<Attribute[]> {
-    return this.$store.getters['attributes/forTables'](this.tables)
+    if (this.tables.isLoading) return Remote.loading()
+
+    return this.$store.getters['attributes/forTables'](this.tables.data)
   }
 
-  getTable (id: ResourceId): Table {
-    const table = this.tables.find((table) => table.id === id)
+  findTable (tables: Table[], id: ResourceId): Table {
+    const table = tables.find((table) => table.id === id)
 
     if (!table) throw new Error(`Table with ID ${id} not found`)
 
