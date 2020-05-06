@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.3.0...data-cube-curation-ui@0.4.0) (2020-05-06)
+
+
+### Bug Fixes
+
+* **ui:** avoid fetching API docs for every resource ([6413aef](https://github.com/zazuko/data-cube-curation/commit/6413aef))
+* **ui:** identifier template validation bug ([e6a4796](https://github.com/zazuko/data-cube-curation/commit/e6a4796))
+* **ui:** show identifier template field for all table types ([25ba2d3](https://github.com/zazuko/data-cube-curation/commit/25ba2d3))
+* **ui:** show sources before tables are loaded ([7b474bf](https://github.com/zazuko/data-cube-curation/commit/7b474bf))
+
+
+### Features
+
+* **ui:** ability to edit a table ([5b3072b](https://github.com/zazuko/data-cube-curation/commit/5b3072b))
+* **ui:** add help message on identifier template field ([21b3b86](https://github.com/zazuko/data-cube-curation/commit/21b3b86))
+* **ui:** add identifier template on fact table form ([71105d8](https://github.com/zazuko/data-cube-curation/commit/71105d8))
+
+
+
+
+
 # [0.3.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.2.0...data-cube-curation-ui@0.3.0) (2020-03-30)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-cli@0.1.0...data-cube-curation-cli@0.2.0) (2020-05-06)
+
+
+### Features
+
+* **cli:** add monitor flag to data cube cli ([4e90cd3](https://github.com/zazuko/data-cube-curation/commit/4e90cd3))
+* generating a URL based on dimension columns ([fd9ae1c](https://github.com/zazuko/data-cube-curation/commit/fd9ae1c)), closes [#34](https://github.com/zazuko/data-cube-curation/issues/34)
+
+
+
+
+
 # 0.1.0 (2020-03-30)
 
 

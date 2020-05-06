@@ -1,6 +1,6 @@
 {
   "name": "@rdfine/csvw",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CSV of the Web bindings to @tpluscode/rdfine",
   "main": "index.js",
   "scripts": {
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@rdfjs/namespace": "^1.1.0",
-    "@tpluscode/rdfine": "^0.4",
     "@tpluscode/rdf-ns-builders": "^0.1.0",
+    "@tpluscode/rdfine": "^0.4",
     "@zazuko/rdf-vocabularies": "^2019.12.23",
     "clownface": "^0.12.1"
   },

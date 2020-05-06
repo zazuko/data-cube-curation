@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.2.0...data-cube-curation-api@0.3.0) (2020-05-06)
+
+
+### Bug Fixes
+
+* **api:** project would have two names when updating ([440709c](https://github.com/zazuko/data-cube-curation/commit/440709c)), closes [#272](https://github.com/zazuko/data-cube-curation/issues/272)
+* **api:** remove empty INSERT from DELETE, which would fail in Stardog ([31336b3](https://github.com/zazuko/data-cube-curation/commit/31336b3)), closes [tpluscode/sparql-builder#12](https://github.com/tpluscode/sparql-builder/issues/12)
+* ensure that identifierTemplate is empty string when missing ([5efbf6f](https://github.com/zazuko/data-cube-curation/commit/5efbf6f))
+* not all triples were being removed from read model ([c109382](https://github.com/zazuko/data-cube-curation/commit/c109382))
+* validate the identifier template when creating and updating tables ([aabeb79](https://github.com/zazuko/data-cube-curation/commit/aabeb79))
+* **api:** add missing property to FactTable class ([d7f121c](https://github.com/zazuko/data-cube-curation/commit/d7f121c))
+
+
+### Features
+
+* **api:** ability to change table's name and id template ([6d2c8b9](https://github.com/zazuko/data-cube-curation/commit/6d2c8b9))
+* generating a URL based on dimension columns ([fd9ae1c](https://github.com/zazuko/data-cube-curation/commit/fd9ae1c)), closes [#34](https://github.com/zazuko/data-cube-curation/issues/34)
+
+
+
+
+
 # [0.2.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.1.0...data-cube-curation-api@0.2.0) (2020-03-30)
 
 
