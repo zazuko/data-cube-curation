@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
+import jwt from 'express-jwt'
+import jwksRsa from 'jwks-rsa'
 import RdfResourceImpl, { Constructor, RdfResource } from '@tpluscode/rdfine'
 import { rdf } from '@tpluscode/rdf-ns-builders'
 import { Mixin } from '@tpluscode/rdfine/lib/ResourceFactory'
@@ -15,7 +17,7 @@ export function resourceId (req: Request, res: Response, next: NextFunction) {
 }
 
 type ConstructorShape<T extends RdfResource> = Constructor<T> & { types?: NamedNode[] }
-type MixinShape = Mixin<any>[]
+type MixinShape = Mixin[]
 type BuildModelShape<T extends RdfResource> = ConstructorShape<T> | MixinShape
 
 export function modelBuilder (req: Request, res, next: NextFunction) {
@@ -64,3 +66,18 @@ export function representation (req: Request, res: Response, next: NextFunction)
 
   next()
 }
+
+export const authentication = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: env.AUTH_JWKS_URI,
+  }),
+
+  // Validate the audience and the issuer.
+  audience: env.AUTH_AUDIENCE,
+  issuer: env.AUTH_ISSUER,
+  algorithms: ['RS256'],
+  credentialsRequired: true,
+})

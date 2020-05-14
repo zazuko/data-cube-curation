@@ -10,7 +10,7 @@ import { httpProblemMiddleware } from './lib/error/middleware'
 import frontend, { rootRedirect } from './frontend'
 import hydraMiddleware from './lib/hydra-box'
 import { log } from './lib/log'
-import { resourceId, modelBuilder, representation } from './lib/express'
+import { resourceId, modelBuilder, representation, authentication } from './lib/express'
 import env from './lib/env'
 
 dotenvExpand(dotenv.config())
@@ -53,6 +53,7 @@ Promise.resolve().then(async () => {
   app.use(resourceId)
   app.use(modelBuilder)
   app.use(representation)
+  app.use(authentication)
   app.use(await hydraMiddleware(path.join(__dirname, 'hydra')))
   app.use(function (req, res, next) {
     next(new NotFoundError())
