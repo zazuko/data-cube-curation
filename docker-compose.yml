@@ -38,7 +38,7 @@ services:
     environment:
       ENTRYPOINT_URL: "http://localhost:5678/"
   e2e-tests:
-    image: hydrofoil/hypertest:0.6.0-alpha.0
+    image: hydrofoil/hypertest:0.6.5
     network_mode: "host"
     environment:
       BASE_URI: "http://localhost:5678/"
