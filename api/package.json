@@ -58,7 +58,7 @@
     "md5": "^2.2.1",
     "middleware-async": "^1.0.2",
     "node-fetch": "^2.6.0",
-    "rdf-parser-csvw": "^0.13.0",
+    "rdf-parser-csvw": "^0.14.0",
     "replace-in-file": "^4.2.0",
     "sparql-http-client": "^2.2.0",
     "url-slug": "^2.2.0",
