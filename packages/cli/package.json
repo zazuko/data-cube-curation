@@ -1,6 +1,6 @@
 {
   "name": "data-cube-curation-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Runs a pipeline to create an RDF data cube",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "@rdfjs/parser-jsonld": "^1.2.0",
     "@tpluscode/rdf-ns-builders": "^0.1",
     "@tpluscode/rdfine": "^0.4",
-    "@zazuko/rdfine-data-cube": "^0.2.0",
+    "@zazuko/rdfine-data-cube": "^0.2.1",
     "alcaeus": "^1.0.0-alpha.11",
     "aws-sdk": "^2.559.0",
     "barnard59": "^0.1.0",

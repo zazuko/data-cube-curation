@@ -1,6 +1,6 @@
 {
   "name": "@zazuko/rdfine-data-cube",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "RDFine object model for data cube curation",
   "main": "index.js",
   "scripts": {
