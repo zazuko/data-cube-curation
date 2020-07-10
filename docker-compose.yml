@@ -30,6 +30,9 @@ services:
       READ_MODEL_SPARQL_UPDATE_ENDPOINT: http://fuseki:3030/data-cube-read/update
       STORAGE_FILESYSTEM_PATH: /uploads
       NODE_ENV: production
+      AUTH_JWKS_URI: https://auth.lindas.admin.ch/realms/ref/protocol/openid-connect/certs
+      AUTH_AUDIENCE: account
+      AUTH_ISSUER: https://auth.lindas.admin.ch/realms/ref
     volumes:
       - uploads:/uploads
   analyzer:

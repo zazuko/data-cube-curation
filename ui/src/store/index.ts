@@ -7,6 +7,7 @@ import tables from './modules/tables'
 import sources from './modules/sources'
 import sourcesData from './modules/sources-data'
 import attributes from './modules/attributes'
+import { oidc } from './modules/oidc'
 
 Vue.use(Vuex)
 
@@ -49,6 +50,7 @@ const store: StoreOptions<RootState> = {
     sources,
     sourcesData,
     attributes,
+    oidc,
   },
 }
 
