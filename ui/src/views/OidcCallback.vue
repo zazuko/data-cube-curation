@@ -19,6 +19,7 @@ export default {
         this.$router.push(redirectPath)
       })
       .catch((err) => {
+        // eslint-disable-next-line no-console
         console.error(err)
         this.$router.push('/auth-error') // Handle errors any way you want
       })
