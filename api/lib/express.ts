@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'express-jwt'
 import jwksRsa from 'jwks-rsa'
@@ -67,17 +68,22 @@ export function representation (req: Request, res: Response, next: NextFunction)
   next()
 }
 
-export const authentication = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: env.AUTH_JWKS_URI,
-  }),
+export const authentication = async () => {
+  const openIdConfigResponse = await fetch(`${env.AUTH_ISSUER}/.well-known/openid-configuration`)
+  const { jwks_uri } = await openIdConfigResponse.json()
 
-  // Validate the audience and the issuer.
-  audience: env.AUTH_AUDIENCE,
-  issuer: env.AUTH_ISSUER,
-  algorithms: ['RS256'],
-  credentialsRequired: true,
-})
+  return jwt({
+    secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: jwks_uri,
+    }),
+
+    // Validate the audience and the issuer.
+    audience: env.AUTH_AUDIENCE,
+    issuer: env.AUTH_ISSUER,
+    algorithms: ['RS256'],
+    credentialsRequired: true,
+  })
+}

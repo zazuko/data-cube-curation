@@ -32,6 +32,9 @@
       "scripthost"
     ]
   },
+  "files": [
+    "types/global.d.ts"
+  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

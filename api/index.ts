@@ -7,7 +7,7 @@ import dotenvExpand from 'dotenv-expand'
 import debug from 'debug'
 import { NotFoundError } from './lib/error'
 import { httpProblemMiddleware } from './lib/error/middleware'
-import frontend, { rootRedirect } from './frontend'
+import frontend, { rootRedirect, uiConfig } from './frontend'
 import hydraMiddleware from './lib/hydra-box'
 import { log } from './lib/log'
 import { resourceId, modelBuilder, representation, authentication } from './lib/express'
@@ -46,6 +46,7 @@ Promise.resolve().then(async () => {
     app.use('/app', frontend)
     app.get('/', rootRedirect)
   }
+  app.get('/env-config.js', uiConfig)
   app.use(logger)
   app.use(cors({
     exposedHeaders: ['link', 'location'],
@@ -53,7 +54,7 @@ Promise.resolve().then(async () => {
   app.use(resourceId)
   app.use(modelBuilder)
   app.use(representation)
-  app.use(authentication)
+  app.use(await authentication())
   app.use(await hydraMiddleware(path.join(__dirname, 'hydra')))
   app.use(function (req, res, next) {
     next(new NotFoundError())
