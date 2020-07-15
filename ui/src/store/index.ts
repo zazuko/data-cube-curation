@@ -36,8 +36,10 @@ const mutations: MutationTree<RootState> = {
   },
 }
 
+const production = process.env.NODE_ENV === 'production'
+
 const store: StoreOptions<RootState> = {
-  strict: process.env.NODE_ENV !== 'production',
+  strict: !production,
   state: {
     errors: [],
     rdfProperties: [],
@@ -50,8 +52,14 @@ const store: StoreOptions<RootState> = {
     sources,
     sourcesData,
     attributes,
-    oidc,
   },
+}
+
+if (production) {
+  store.modules = {
+    ...store.modules,
+    oidc: oidc(),
+  }
 }
 
 export default new Vuex.Store<RootState>(store)

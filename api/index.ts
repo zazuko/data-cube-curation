@@ -42,7 +42,7 @@ Promise.resolve().then(async () => {
   const app = express()
 
   app.enable('trust proxy')
-  if (env.has.NODE_ENV && env.NODE_ENV === 'production') {
+  if (env.production) {
     app.use('/app', frontend)
     app.get('/', rootRedirect)
   }
@@ -54,7 +54,9 @@ Promise.resolve().then(async () => {
   app.use(resourceId)
   app.use(modelBuilder)
   app.use(representation)
-  app.use(await authentication())
+  if (env.production) {
+    app.use(await authentication())
+  }
   app.use(await hydraMiddleware(path.join(__dirname, 'hydra')))
   app.use(function (req, res, next) {
     next(new NotFoundError())

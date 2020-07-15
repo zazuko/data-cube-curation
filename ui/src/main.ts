@@ -34,7 +34,9 @@ Vue.config.productionTip = false
 
 Vue.filter('capitalize', ([first, ...rest]: string): string => [first.toLocaleUpperCase(), ...rest].join(''))
 
-router.beforeEach(vuexOidcCreateRouterMiddleware(store))
+if (process.env.NODE_ENV === 'production') {
+  router.beforeEach(vuexOidcCreateRouterMiddleware(store))
+}
 
 new Vue({
   router,

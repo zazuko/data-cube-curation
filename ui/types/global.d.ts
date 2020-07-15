@@ -1,8 +1,6 @@
 interface Window {
-  config: {
-    oidc: {
-      authority: string
-      clientId: string
-    };
+  oidc: {
+    authority: string
+    clientId: string
   }
 }

@@ -19,11 +19,9 @@ export function rootRedirect (req, res, next) {
 export function uiConfig (req, res) {
   res.header('content-type', 'application/javascript')
   res.write(`
-window.config = {
-  oidc: {
-    authority: '${env.AUTH_ISSUER}',
-    clientId: '${env.AUTH_AUDIENCE}',
-  },
+window.oidc = {
+  authority: '${env.AUTH_ISSUER}',
+  clientId: '${env.AUTH_AUDIENCE}',
 }`)
   res.end()
 }
