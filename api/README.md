@@ -16,6 +16,20 @@ PORT=5678
 BASE_URI=http://localhost:${PORT}/
 ```
 
+### Authentication settings
+
+Locally the API runs without authentication.
+
+In production mode (`NODEV_ENV === 'production'`) it requires OpenID Connect settings:
+
+```dotenv
+AUTH_AUDIENCE=pipelines
+AUTH_CLIENT_ID=datacube-zazukoians
+AUTH_ISSUER=https://auth.server/
+```
+
+The UI app does not need additional configuration. Because they are always deployed together, the OIDC configuration will be provided by the server using the above environment variables.
+
 ### SPARQL endpoint settings
 
 Two writable SPARQL stores are required to run the application.
