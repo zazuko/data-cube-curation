@@ -21,7 +21,7 @@ export function uiConfig (req, res) {
   res.write(`
 window.oidc = {
   authority: '${env.AUTH_ISSUER}',
-  clientId: '${env.AUTH_AUDIENCE}',
+  clientId: '${env.AUTH_CLIENT_ID}',
 }`)
   res.end()
 }
