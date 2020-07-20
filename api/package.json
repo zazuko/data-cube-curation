@@ -1,6 +1,6 @@
 {
   "name": "data-cube-curation-api",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Hydra API for building RDF Data Cubes",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
   "homepage": "https://github.com/zazuko/data-cube-curation#readme",
   "dependencies": {
     "@fcostarodrigo/walk": "^4.0.2",
-    "@rdfine/csvw": "^0.2.0",
+    "@rdfine/csvw": "^0.2.1",
     "@rdfjs/data-model": "^1.1.2",
     "@rdfjs/to-ntriples": "^1.0.2",
     "@tpluscode/fun-ddr": "^0.6.1",
@@ -36,7 +36,7 @@
     "@tpluscode/rdfine": "^0.4",
     "@tpluscode/sparql-builder": "^0.3.2",
     "@zazuko/rdf-vocabularies": "^2020.3.23",
-    "@zazuko/rdfine-data-cube": "^0.2.1",
+    "@zazuko/rdfine-data-cube": "^0.2.2",
     "aws-sdk": "^2.559.0",
     "body-parser": "^1.19.0",
     "clownface": "^0.12.1",

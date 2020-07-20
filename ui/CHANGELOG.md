@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.4.0...data-cube-curation-ui@0.5.0) (2020-07-20)
+
+
+### Features
+
+* **ui:** add open id connect to front end ([69b0446](https://github.com/zazuko/data-cube-curation/commit/69b0446116a584c032984740423d00a72d7a14fa))
+
+
+
+
+
 # [0.4.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.3.0...data-cube-curation-ui@0.4.0) (2020-05-06)
 
 

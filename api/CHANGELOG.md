@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.3.1...data-cube-curation-api@0.4.0) (2020-07-20)
+
+
+### Features
+
+* **api:** secure the API with JWT token ([7dd158b](https://github.com/zazuko/data-cube-curation/commit/7dd158b601424f542159bf18b908c2b4d51eb2f9))
+* **ui:** add open id connect to front end ([69b0446](https://github.com/zazuko/data-cube-curation/commit/69b0446116a584c032984740423d00a72d7a14fa))
+
+
+
+
+
 ## [0.3.1](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.3.0...data-cube-curation-api@0.3.1) (2020-06-22)
 
 

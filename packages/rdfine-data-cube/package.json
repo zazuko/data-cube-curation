@@ -1,6 +1,6 @@
 {
   "name": "@zazuko/rdfine-data-cube",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "RDFine object model for data cube curation",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@rdfine/csvw": "^0.2.0",
+    "@rdfine/csvw": "^0.2.1",
     "@rdfjs/namespace": "^1.1.0",
     "@tpluscode/rdf-ns-builders": "^0.1",
     "@tpluscode/rdfine": "^0.4",
