@@ -31,6 +31,7 @@ services:
       STORAGE_FILESYSTEM_PATH: /uploads
       NODE_ENV: development
       AUTH_AUDIENCE: pipelines
+      AUTH_CLIENT_ID: datacube-zazukoians
       AUTH_ISSUER: https://auth.lindas.admin.ch/realms/ref
     volumes:
       - uploads:/uploads
