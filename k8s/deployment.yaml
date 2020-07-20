@@ -11,134 +11,134 @@ spec:
         runAsGroup: 65534
 
       containers:
-      - name: data-cube-curation
-        image: data-cube-curation
-        imagePullPolicy: Always
+        - name: data-cube-curation
+          image: data-cube-curation
+          imagePullPolicy: Always
 
-        env:
-        - name: PORT
-          value: "3000"
-        - name: STORAGE
-          value: s3
+          env:
+            - name: PORT
+              value: "3000"
+            - name: STORAGE
+              value: s3
 
-        - name: DEBUG
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: debug
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: debug
 
-        - name: BASE_URI
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: base_uri
+            - name: BASE_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: base_uri
 
-        - name: SPARQL_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: sparql_endpoint
-        - name: SPARQL_UPDATE_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: sparql_update_endpoint
-        - name: READ_MODEL_SPARQL_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: read_model_sparql_endpoint
-        - name: READ_MODEL_SPARQL_UPDATE_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: read_model_sparql_update_endpoint
-        - name: SPARQL_ENDPOINT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: sparql_endpoint_username
-        - name: SPARQL_ENDPOINT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: sparql_endpoint_password
+            - name: SPARQL_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: sparql_endpoint
+            - name: SPARQL_UPDATE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: sparql_update_endpoint
+            - name: READ_MODEL_SPARQL_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: read_model_sparql_endpoint
+            - name: READ_MODEL_SPARQL_UPDATE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: read_model_sparql_update_endpoint
+            - name: SPARQL_ENDPOINT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: sparql_endpoint_username
+            - name: SPARQL_ENDPOINT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: sparql_endpoint_password
 
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: aws_access_key_id
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: aws_secret_access_key
-        - name: AWS_S3_ENDPOINT
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: aws_s3_endpoint
-        - name: AWS_S3_BUCKET
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: aws_s3_bucket
-        - name: GITLAB_PIPELINE
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: gitlab_pipeline
-        - name: GITLAB_PIPELINE_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: gitlab_pipeline_token
-        - name: GITLAB_PIPELINE_BRANCH
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: gitlab_pipeline_branch
-        - name: GRAPH_STORE_USER
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: graph_store_user
-        - name: GRAPH_STORE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: data-cube-curation
-              key: graph_store_password
-        - name: GRAPH_STORE_ENDPOINT
-          valueFrom:
-            configMapKeyRef:
-              name: data-cube-curation
-              key: graph_store_endpoint
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: aws_secret_access_key
+            - name: AWS_S3_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: aws_s3_endpoint
+            - name: AWS_S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: aws_s3_bucket
+            - name: GITLAB_PIPELINE
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: gitlab_pipeline
+            - name: GITLAB_PIPELINE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: gitlab_pipeline_token
+            - name: GITLAB_PIPELINE_BRANCH
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: gitlab_pipeline_branch
+            - name: GRAPH_STORE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: graph_store_user
+            - name: GRAPH_STORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: data-cube-curation
+                  key: graph_store_password
+            - name: GRAPH_STORE_ENDPOINT
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: graph_store_endpoint
 
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
 
-        livenessProbe:
-          initialDelaySeconds: 5
-          httpGet:
-            path: /
-            port: http
+          livenessProbe:
+            initialDelaySeconds: 5
+            httpGet:
+              path: /
+              port: http
 
-        readinessProbe:
-          initialDelaySeconds: 5
-          httpGet:
-            path: /
-            port: http
+          readinessProbe:
+            initialDelaySeconds: 5
+            httpGet:
+              path: /
+              port: http
 
-        resources:
-          requests:
-            cpu: 100m
-            memory: 150Mi
-          limits:
-            cpu: 200m
-            memory: 300Mi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 150Mi
+            limits:
+              cpu: 200m
+              memory: 300Mi
 
-        securityContext:
-          readOnlyRootFilesystem: true
+          securityContext:
+            readOnlyRootFilesystem: true
