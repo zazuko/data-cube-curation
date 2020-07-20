@@ -21,3 +21,6 @@ configMapGenerator:
       - gitlab_pipeline=https://gitlab.zazuko.com/api/v4/projects/56/trigger/pipeline
       - gitlab_pipeline_branch=master
       - graph_store_endpoint=http://data.zazuko.com/lindas
+      - auth_audience=https://datacube.zazukoians.org/
+      - auth_client_id=datacube-curation-frontend
+      - auth_issuer=https://keycloak.zazukoians.org/realms/zazuko

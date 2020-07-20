@@ -115,6 +115,22 @@ spec:
                   name: data-cube-curation
                   key: graph_store_endpoint
 
+            - name: AUTH_AUDIENCE
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: auth_audience
+            - name: AUTH_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: auth_audience
+            - name: AUTH_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  name: data-cube-curation
+                  key: auth_issuer
+
           ports:
             - name: http
               containerPort: 3000
