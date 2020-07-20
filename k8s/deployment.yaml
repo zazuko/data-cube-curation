@@ -124,7 +124,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: data-cube-curation
-                  key: auth_audience
+                  key: auth_client_id
             - name: AUTH_ISSUER
               valueFrom:
                 configMapKeyRef:
