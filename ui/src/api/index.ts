@@ -25,6 +25,7 @@ import * as TableMixin from './resources/table'
 import * as ColumnMixin from './resources/column'
 import * as ValueAttributeMixin from './resources/value-attribute'
 import * as ReferenceAttributeMixin from './resources/reference-attribute'
+import store from '@/store'
 
 const apiURL = process.env.VUE_APP_API_URL
 
@@ -311,7 +312,14 @@ class ProjectsClient {
 }
 
 async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {
-  const response = await Hydra.loadResource(id)
+  const response = await Hydra.loadResource(id, {
+    // eslint-disable-next-line camelcase
+    authorization: 'Bearer ' + store.state.oidc?.access_token,
+  })
+
+  if (response.xhr.status === 401 || response.xhr.status === 403) {
+    throw new Error('Access denied')
+  }
 
   if (response.xhr.status !== 200) {
     throw await APIError.fromResponse(response)

@@ -7,6 +7,7 @@ import ProjectSourcesView from './views/project/Sources.vue'
 import ProjectTablesView from './views/project/Tables.vue'
 import ProjectJobsView from './views/project/Jobs.vue'
 import ProjectSettingsView from './views/project/Settings.vue'
+import OidcCallback from './views/OidcCallback.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/',
       name: 'home',
       redirect: { name: 'projects' },
+    },
+    {
+      path: '/oidc-callback',
+      name: 'oidcCallback',
+      component: OidcCallback,
     },
     {
       path: '/projects',

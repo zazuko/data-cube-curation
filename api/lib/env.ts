@@ -12,6 +12,10 @@ const handler = {
       return hasProxy
     }
 
+    if (prop === 'production') {
+      return process.env.NODE_ENV === 'production'
+    }
+
     const value = env[prop]
 
     if (!value && process.env.NODE_ENV === 'production') {
@@ -25,4 +29,5 @@ const handler = {
 
 export default new Proxy(process.env, handler) as Record<string, string> & {
   has: Record<string, boolean>;
+  production: boolean;
 }

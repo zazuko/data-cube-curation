@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import VueHighlightJS from 'vue-highlightjs'
 import MultiSelect from 'vue-multiselect'
+import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc'
 
 import { library as iconsLibrary } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
@@ -32,6 +33,10 @@ Vue.use(VueHighlightJS)
 Vue.config.productionTip = false
 
 Vue.filter('capitalize', ([first, ...rest]: string): string => [first.toLocaleUpperCase(), ...rest].join(''))
+
+if (process.env.NODE_ENV === 'production') {
+  router.beforeEach(vuexOidcCreateRouterMiddleware(store))
+}
 
 new Vue({
   router,
