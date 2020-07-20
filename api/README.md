@@ -20,7 +20,7 @@ BASE_URI=http://localhost:${PORT}/
 
 Locally the API runs without authentication.
 
-In production mode (`NODEV_ENV === 'production'`) it requires OpenID Connect settings:
+In production mode (`NODE_ENV === 'production'`) it requires OpenID Connect settings:
 
 ```dotenv
 AUTH_AUDIENCE=pipelines
