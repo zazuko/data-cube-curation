@@ -50,7 +50,7 @@
     "express": "^4.17.1",
     "express-history-api-fallback": "^2.2.1",
     "express-http-problem-details": "^0.1.5",
-    "express-jwt": "^5.3.3",
+    "express-jwt": "^6",
     "http-problem-details": "^0.1.4",
     "http-problem-details-mapper": "^0.1.6",
     "hydra-box": "^0.4.2",
