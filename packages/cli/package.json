@@ -7,7 +7,7 @@
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
     "transform": "dotenv -- yarn start",
-    "start": "ts-node index.ts transform --from s3 --project $TRANSFORM_PROJECT --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
+    "start": "ts-node index.ts transform --from s3 --project \"$TRANSFORM_PROJECT\" --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
     "build": "tsc"
   },
   "dependencies": {
