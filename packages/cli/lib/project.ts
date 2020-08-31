@@ -81,6 +81,7 @@ class ProjectIterator extends stream.Readable {
 
         return Promise.all(loadMetadata)
       })
+      .catch(e => this.emit('error', e))
       .finally(() => {
         this.push(null)
       })

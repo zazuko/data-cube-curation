@@ -37,6 +37,10 @@ async function main () {
     .option('-v, --variable <name=value>', 'Pipeline variables', parseVariables, new Map())
     .option('--debug', 'Print diagnostic information to standard output')
     .option('--enable-buffer-monitor', 'enable histogram of buffer usage')
+    .option('--issuer <url>', 'OpenID Connect provider to authenticate against')
+    .option('--client-id <clientId>', 'Client ID to use to authenticate API calls')
+    .option('--client-secret <clientSecret>', 'Client secret to use to authenticate API calls')
+    .option('--auth-param <name=value>', 'Additional variables to pass to the token endpoint', parseVariables, new Map())
     .action(transform(pipelines.TransformFiles, __dirname, log))
 
   return program.parseAsync(process.argv)
