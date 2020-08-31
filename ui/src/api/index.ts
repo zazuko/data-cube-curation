@@ -42,6 +42,19 @@ rdf.resourceFactory.mixins.push(ReferenceAttributeMixin)
 // Tells Hydra to use current browser location as base URI for relative URIs
 Hydra.baseUri = window.location.href
 
+// Inject the access token in all requests if present
+Hydra.defaultHeaders = () => {
+  const headers = new Headers()
+
+  // eslint-disable-next-line camelcase
+  const token = store.state.oidc?.access_token
+  if (token) {
+    headers.set('Authorization', 'Bearer ' + token)
+  }
+
+  return headers
+}
+
 // Monkeypatch Alcaeus to cache the API documentation
 // Alcaeus/Hydra doesn't provide a better way to avoid fetching the
 // documentation for every resource yet.
@@ -312,10 +325,7 @@ class ProjectsClient {
 }
 
 async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {
-  const response = await Hydra.loadResource(id, {
-    // eslint-disable-next-line camelcase
-    authorization: 'Bearer ' + store.state.oidc?.access_token,
-  })
+  const response = await Hydra.loadResource(id)
 
   if (response.xhr.status === 401 || response.xhr.status === 403) {
     throw new Error('Access denied')
