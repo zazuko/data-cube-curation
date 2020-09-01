@@ -17,9 +17,9 @@ interface RunOptions extends Command {
   project: string;
   variable: Map<string, string>;
   enableBufferMonitor: boolean;
-  issuer?: string;
-  clientId: string;
-  clientSecret: string;
+  authIssuer?: string;
+  authClientId: string;
+  authClientSecret: string;
   authParam: Map<string, string>;
 }
 
@@ -29,11 +29,11 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
 
     log.enabled = debug
 
-    if (command.issuer) {
+    if (command.authIssuer) {
       const authConfig: AuthConfig = {
-        issuer: command.issuer,
-        clientId: command.clientId,
-        clientSecret: command.clientSecret,
+        issuer: command.authIssuer,
+        clientId: command.authClientId,
+        clientSecret: command.authClientSecret,
         params: command.authParam,
       }
 
