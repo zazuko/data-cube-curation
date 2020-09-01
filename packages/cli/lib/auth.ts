@@ -2,8 +2,7 @@ import fetch from 'node-fetch'
 import { Debugger } from 'debug'
 import querystring from 'querystring'
 import Hydra from 'alcaeus'
-
-let log: Debugger
+import once from 'once'
 
 export type AuthConfig = {
   issuer: string;
@@ -22,6 +21,13 @@ type Token = {
   expires_in: number;
 }
 
+type TokenError = {
+  error: string;
+  error_description?: string;
+}
+
+type TokenResponse = Token | TokenError
+
 type LiveToken = Token & {
   expiration: number;
 }
@@ -30,72 +36,69 @@ function isValid (token: LiveToken) {
   return token.expiration > Date.now() + 60 * 1000
 }
 
-let metadata: Metadata | null = null
-async function getMetadata (config: AuthConfig): Promise<Metadata> {
-  if (!metadata) {
-    const response = await fetch(
-      `${config.issuer}/.well-known/openid-configuration`
-    )
-    metadata = (await response.json()) as Metadata
-  }
-  return metadata
-}
+const getMetadata = once(async (config: AuthConfig) => {
+  const response = await fetch(
+    `${config.issuer}/.well-known/openid-configuration`,
+  )
+  return (await response.json()) as Metadata
+})
 
-let token: LiveToken | null = null
-async function getToken (config: AuthConfig): Promise<LiveToken> {
-  if (!token || !isValid(token)) {
-    const m = await getMetadata(config)
+const tokenGetter = function (config: AuthConfig, log: Debugger) {
+  let token: LiveToken | null = null
 
-    const params = {}
-    params['grant_type'] = 'client_credentials'
-    params['client_id'] = config.clientId
-    params['client_secret'] = config.clientSecret
+  return async function getToken (): Promise<LiveToken> {
+    if (!token || !isValid(token)) {
+      const metadata = await getMetadata(config)
 
-    config.params.forEach((value, key) => (params[key] = value))
+      const params = {
+        'grant_type': 'client_credentials',
+        'client_id': config.clientId,
+        'client_secret': config.clientSecret,
+      }
 
-    const response = await fetch(m['token_endpoint'], {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: querystring.stringify(params),
-    })
+      config.params.forEach((value, key) => (params[key] = value))
 
-    const t = (await response.json()) as Token
+      const response = await fetch(metadata.token_endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: querystring.stringify(params),
+      })
 
-    if (t['error']) {
-      throw new Error(t['error_description'] || t['error'])
+      const newToken = (await response.json()) as TokenResponse
+
+      if ('error' in newToken) {
+        throw new Error(newToken.error_description || newToken.error)
+      }
+
+      log('Renewed access token', newToken)
+
+      const expiration = Date.now() + newToken.expires_in * 1000
+      token = {
+        ...newToken,
+        expiration,
+      }
     }
 
-    log('Renewed access token', t)
+    return token
+  }
+}
 
-    const expiration = Date.now() + t.expires_in * 1000
-    token = {
-      ...t,
-      expiration,
+export async function setupAuthentication (config: AuthConfig, log: Debugger) {
+  const getToken = tokenGetter(config, log)
+
+  async function renew () {
+    const token = await getToken()
+    Hydra.defaultHeaders = {
+      Authorization: `Bearer ${token.access_token}`,
     }
   }
 
-  return token
-}
+  await renew()
+  const interval = setInterval(renew, 1000)
 
-async function renew (config: AuthConfig) {
-  const t = await getToken(config)
-  Hydra.defaultHeaders = {
-    Authorization: `Bearer ${t['access_token']}`,
-  }
-}
-
-let interval: NodeJS.Timeout | null = null
-export function stopRenewing () {
-  if (interval) {
+  return function () {
     clearInterval(interval)
-    interval = null
   }
-}
-
-export async function setupAuthentication (config: AuthConfig, log_: Debugger) {
-  log = log_
-  await renew(config)
-  interval = setInterval(() => renew(config), 1000)
 }

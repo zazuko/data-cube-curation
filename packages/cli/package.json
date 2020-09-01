@@ -7,7 +7,7 @@
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
     "transform": "dotenv -- yarn start",
-    "start": "ts-node index.ts transform --from s3 --project \"$TRANSFORM_PROJECT\" --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH",
+    "start": "ts-node index.ts transform --from s3 --project \"$TRANSFORM_PROJECT\" --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH --auth-issuer $AUTH_ISSUER --auth-client-id $AUTH_CLIENT_ID --auth-client-secret $AUTH_CLIENT_SECRET",
     "build": "tsc"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "get-stream": "5.1.0",
     "isstream": "^0.1.2",
     "null-writable": "^1.0.5",
+    "once": "^1.4.0",
     "rdf-ext": "^1.3.0",
     "readable-stream": "^3.6.0",
     "string-to-stream": "^3.0.1",
@@ -42,6 +43,7 @@
     "@types/debug": "^4.1.5",
     "@types/isstream": "^0.1.0",
     "@types/node-fetch": "^2.5.7",
+    "@types/once": "^1.4.0",
     "@types/rdf-ext": "^1.3.5",
     "@types/rdf-js": "^2.0.11",
     "@types/rdfjs__formats-common": "^2.0.0",

@@ -6,7 +6,7 @@ import cf from 'clownface'
 import { fileToDataset } from 'barnard59'
 import { Pipeline } from '../pipeline-model/Pipeline'
 import { Debugger } from 'debug'
-import { AuthConfig, setupAuthentication, stopRenewing } from '../auth'
+import { AuthConfig, setupAuthentication } from '../auth'
 import Runner = require('barnard59/lib/runner')
 const bufferDebug = require('barnard59/lib/bufferDebug')
 
@@ -29,6 +29,7 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
 
     log.enabled = debug
 
+    let stopRenewing: () => void | undefined
     if (command.authIssuer) {
       const authConfig: AuthConfig = {
         issuer: command.authIssuer,
@@ -37,7 +38,7 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
         params: command.authParam,
       }
 
-      await setupAuthentication(authConfig, log)
+      stopRenewing = await setupAuthentication(authConfig, log)
     }
 
     const pipelinePath = filename => path.join(basePath, `./pipelines/${filename}.ttl`)
@@ -67,6 +68,6 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
       bufferDebug(run.pipeline)
     }
 
-    return run.promise.finally(stopRenewing)
+    return run.promise.finally(() => stopRenewing && stopRenewing())
   }
 }
