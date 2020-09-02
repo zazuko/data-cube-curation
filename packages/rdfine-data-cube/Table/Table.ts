@@ -1,4 +1,4 @@
-import RdfResourceImpl, { namespace, property, RdfResource, Constructor } from '@tpluscode/rdfine'
+import RdfResourceImpl, { namespace, property, Constructor } from '@tpluscode/rdfine'
 import { Initializer, ResourceNode } from '@tpluscode/rdfine/RdfResource'
 import * as Csvw from '@rdfine/csvw'
 import CsvwMappingMixin from '@rdfine/csvw/Csvw'
@@ -13,7 +13,7 @@ import { parse } from '../lib/uriTemplateParser'
 
 export function TableMixin<TBase extends Constructor> (Base: TBase) {
   @namespace(dataCube)
-  class T extends Base implements Table.Table {
+  abstract class T extends Base implements Table.Table {
     @property.resource({ path: [ dataCube.source, dataCube.column ], values: 'array' })
     public readonly columns!: Table.Column[]
 
@@ -33,22 +33,20 @@ export function TableMixin<TBase extends Constructor> (Base: TBase) {
     public identifierTemplate: string
 
     public get attributes () {
-      return this._selfGraph.in(dataCube.table)
+      return this.pointer.in(dataCube.table)
         .has(rdf.type, dataCube.Attribute)
         .map(attr => {
           return this._create<Table.Attribute>(attr)
         })
     }
 
-    public createIdentifier (): string | null {
-      throw new Error(`Abstract method. The table <${this.id.value}> should be either a FactTable or DimensionTable`)
-    }
+    public abstract createIdentifier (): string | null
   }
 
   return T
 }
 
-TableMixin.shouldApply = (res: RdfResource) => res.hasType(dataCube.Table)
+TableMixin.appliesTo = dataCube.Table
 
 export function DimensionTableMixin<TBase extends Constructor> (Base: TBase) {
   class DimensionTable extends TableMixin(Base) implements Table.Table {
@@ -60,9 +58,7 @@ export function DimensionTableMixin<TBase extends Constructor> (Base: TBase) {
   return DimensionTable
 }
 
-DimensionTableMixin.shouldApply = (node: RdfResource) => {
-  return node.hasType(dataCube.DimensionTable)
-}
+DimensionTableMixin.appliesTo = dataCube.DimensionTable
 
 export function FactTableMixin<TBase extends Constructor> (Base: TBase) {
   function usedInReference (this: FactTable, column: Table.Column) {
@@ -105,9 +101,8 @@ export function FactTableMixin<TBase extends Constructor> (Base: TBase) {
   return FactTable
 }
 
-FactTableMixin.shouldApply = (node: RdfResource) => {
-  return node.hasType(dataCube.FactTable)
-}
+FactTableMixin.appliesTo = dataCube.FactTable
+
 FactTableMixin.Class = class extends FactTableMixin(RdfResourceImpl) {
   constructor (node: ResourceNode, init?: Initializer<Table.Table>) {
     super(node, init)

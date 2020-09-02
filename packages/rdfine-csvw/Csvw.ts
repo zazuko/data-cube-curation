@@ -1,4 +1,4 @@
-import { namespace, property, Constructor, RdfResource } from '@tpluscode/rdfine'
+import { namespace, property, Constructor } from '@tpluscode/rdfine'
 import RdfResourceImpl from '@tpluscode/rdfine/RdfResource'
 import { NamedNode } from 'rdf-js'
 import { csvw, rdf } from '@tpluscode/rdf-ns-builders'
@@ -23,13 +23,13 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
 
     @property.resource({
       as: [TableSchemaMixin],
-      initial: (self) => self._selfGraph.blankNode(`tableSchema${++bnCounter}`),
+      initial: (self) => self.pointer.blankNode(`tableSchema${++bnCounter}`),
     })
     public tableSchema!: Csvw.TableSchema
 
     @property.resource({
       as: [CsvwDialectMixin],
-      initial: (self) => self._selfGraph.blankNode(`dialect${++bnCounter}`),
+      initial: (self) => self.pointer.blankNode(`dialect${++bnCounter}`),
     })
     public dialect!: Csvw.Dialect
 
@@ -39,7 +39,7 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
     }
 
     public newColumn (col) {
-      const node = this._selfGraph.blankNode(`column${++bnCounter}`)
+      const node = this.pointer.blankNode(`column${++bnCounter}`)
 
       if (col?.name) {
         node.addOut(csvw.title, col.name)
@@ -52,4 +52,4 @@ export default function CsvwMappingMixin<Base extends Constructor> (base: Base) 
   return CsvwMapping
 }
 
-CsvwMappingMixin.shouldApply = (res: RdfResource) => res.hasType(csvw.CsvwMapping)
+CsvwMappingMixin.appliesTo = csvw.CsvwMapping

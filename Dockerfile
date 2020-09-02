@@ -17,7 +17,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Second step: build the API project
-FROM node:lts-alpine AS build-api
+FROM node:13-alpine AS build-api
 
 WORKDIR /
 ADD api ./api/
@@ -32,7 +32,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Third step: only install runtime dependencies in final image
-FROM node:lts-alpine
+FROM node:13-alpine
 
 WORKDIR /app
 

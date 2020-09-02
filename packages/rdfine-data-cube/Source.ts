@@ -1,4 +1,4 @@
-import { property, Constructor, RdfResource } from '@tpluscode/rdfine'
+import { property, Constructor } from '@tpluscode/rdfine'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { dataCube } from './namespaces'
 import * as DataCube from './index'
@@ -27,4 +27,4 @@ export function CsvSourceMixin<Base extends Constructor<DataCube.Source>> (base:
   return CsvSource
 }
 
-CsvSourceMixin.shouldApply = (r: RdfResource) => r.hasType(dataCube.CsvSource)
+CsvSourceMixin.appliesTo = dataCube.CsvSource

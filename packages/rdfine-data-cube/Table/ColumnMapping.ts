@@ -17,4 +17,4 @@ export function ColumnMappingMixin<TBase extends Constructor> (Base: TBase) {
 }
 
 ColumnMappingMixin.shouldApply = (term: RdfResource) =>
-  term._selfGraph.out([ dataCube.referencedColumn, dataCube.sourceColumn ]).terms.length > 1
+  term.pointer.out([ dataCube.referencedColumn, dataCube.sourceColumn ]).terms.length > 1

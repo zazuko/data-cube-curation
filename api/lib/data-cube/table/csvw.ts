@@ -14,5 +14,5 @@ export const get = asyncMiddleware(async (req: express.Request, res: express.Res
 
   const dataset = await getTableAndSource(tableId)
   const csvw = await buildCsvw({ dataset, tableId })
-  res.graph(csvw._selfGraph.dataset)
+  res.graph(csvw.pointer.dataset)
 })
