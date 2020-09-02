@@ -44,9 +44,10 @@ export class Pipeline extends RdfResource {
     if (variable) {
       variable.value = value
     } else {
-      const newVariable = this._create<Variable>(this._selfGraph.blankNode(nextVariableId()), [Variable])
-      newVariable.name = name
-      newVariable.value = value
+      const newVariable = new Variable(this.pointer.blankNode(nextVariableId()), {
+        name,
+        value,
+      })
 
       this.__variableSets[0].variables = [
         ...this.__variableSets[0].variables,
@@ -60,7 +61,7 @@ export class Pipeline extends RdfResource {
     values: 'array',
     as: [Variables],
     initial: self => {
-      return self._selfGraph.blankNode(nextVariableId()).term
+      return self.pointer.blankNode(nextVariableId()).term
     },
   })
   private __variableSets!: Variables[]

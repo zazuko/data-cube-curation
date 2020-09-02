@@ -48,7 +48,7 @@ export function valueAttributeToCsvwColumn (attribute: Table.ValueAttribute, csv
     const hasParameters = attribute.parameters && Object.entries(attribute.parameters).length > 0
 
     if (builtInType && hasParameters) {
-      const derivedDatatype = csvwColumn._create(csvwColumn._selfGraph.blankNode())
+      const derivedDatatype = csvwColumn._create(csvwColumn.pointer.blankNode())
       derivedDatatype[csvw.base.value] = literal(builtInType)
 
       Object.entries(attribute.parameters)

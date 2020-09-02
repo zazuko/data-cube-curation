@@ -1,6 +1,7 @@
 import { blankNode } from '@rdfjs/data-model'
 import RdfResourceImpl from '@tpluscode/rdfine'
 import rdf from 'rdf-ext'
+import cf from 'clownface'
 import { DimensionTableMixin } from './Table'
 import { dataCube } from '../namespaces'
 import { wireUp } from '../wireUp'
@@ -11,7 +12,7 @@ describe('Table', () => {
   describe('createIdentifier', () => {
     it('concatenates project base when identifier template is not absolute', async () => {
       // given
-      const node = { dataset: rdf.dataset(), term: blankNode() }
+      const node = cf({ dataset: rdf.dataset(), term: blankNode() })
       const table = new DimensionTableMixin.Class(node, {
         identifierTemplate: 'table/{foo}/{bar}',
         project: {
@@ -29,7 +30,7 @@ describe('Table', () => {
 
     it('uses absolute identifierTemplate for aboutUrl', async () => {
       // given
-      const node = { dataset: rdf.dataset(), term: blankNode() }
+      const node = cf({ dataset: rdf.dataset(), term: blankNode() })
       const table = new DimensionTableMixin.Class(node, {
         identifierTemplate: 'http://example.com/{foo}/{bar}',
         project: {

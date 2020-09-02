@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import { Debugger } from 'debug'
 import querystring from 'querystring'
-import Hydra from 'alcaeus'
+import Hydra from './hydra'
 import once from 'once'
 
 export type AuthConfig = {

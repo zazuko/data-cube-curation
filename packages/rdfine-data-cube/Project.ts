@@ -25,9 +25,8 @@ export function ProjectMixin<TBase extends Constructor> (Base: TBase) {
   return Project
 }
 
-ProjectMixin.shouldApply = (node: RdfResource) => {
-  return node.hasType(dataCube.Project)
-}
+ProjectMixin.appliesTo = dataCube.Project
+
 ProjectMixin.Class = class extends ProjectMixin(RdfResourceImpl) {
   constructor (node: ResourceNode, init?: Initializer<DataCube.Project>) {
     super(node, init)
