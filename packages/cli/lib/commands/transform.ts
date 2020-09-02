@@ -6,6 +6,7 @@ import cf from 'clownface'
 import { fileToDataset } from 'barnard59'
 import { Pipeline } from '../pipeline-model/Pipeline'
 import { Debugger } from 'debug'
+import { AuthConfig, setupAuthentication } from '../auth'
 import Runner = require('barnard59/lib/runner')
 const bufferDebug = require('barnard59/lib/bufferDebug')
 
@@ -16,11 +17,29 @@ interface RunOptions extends Command {
   project: string;
   variable: Map<string, string>;
   enableBufferMonitor: boolean;
+  authIssuer?: string;
+  authClientId: string;
+  authClientSecret: string;
+  authParam: Map<string, string>;
 }
 
 export default function (pipelineId: NamedNode, basePath: string, log: Debugger) {
   return async function (command: RunOptions) {
     const { from, to, project, debug, variable, enableBufferMonitor } = command
+
+    log.enabled = debug
+
+    let stopRenewing: () => void | undefined
+    if (command.authIssuer) {
+      const authConfig: AuthConfig = {
+        issuer: command.authIssuer,
+        clientId: command.authClientId,
+        clientSecret: command.authClientSecret,
+        params: command.authParam,
+      }
+
+      stopRenewing = await setupAuthentication(authConfig, log)
+    }
 
     const pipelinePath = filename => path.join(basePath, `./pipelines/${filename}.ttl`)
     const dataset = $rdf.dataset()
@@ -37,7 +56,6 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
     })
 
     Runner.log.enabled = debug
-    log.enabled = debug
 
     const pipeline = new Pipeline(cf({ dataset, term: pipelineId }))
 
@@ -50,6 +68,6 @@ export default function (pipelineId: NamedNode, basePath: string, log: Debugger)
       bufferDebug(run.pipeline)
     }
 
-    return run.promise
+    return run.promise.finally(() => stopRenewing && stopRenewing())
   }
 }
