@@ -16,6 +16,7 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
 }
 
 export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+  @namespace(dataCube)
   class ValueAttribute extends Base implements Table.ValueAttribute {
     @property.resource()
     public datatype: RdfResource
@@ -49,6 +50,7 @@ export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> 
   return AttributeMixin(ValueAttribute)
 }
 export function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+  @namespace(dataCube)
   class ReferenceAttribute extends Base implements Table.ReferenceAttribute {
     @property.resource({ as: [ TableMixin ] })
     public referencedTable: Table.Table

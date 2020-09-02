@@ -7,7 +7,7 @@
     "postinstall": "mkdir -p input; mkdir -p output",
     "precommit": "lint-staged",
     "transform": "dotenv -- yarn start",
-    "start": "ts-node index.ts transform --from s3 --project \"$TRANSFORM_PROJECT\" --debug --enable-buffer-monitor -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH --auth-issuer $AUTH_ISSUER --auth-client-id $AUTH_CLIENT_ID --auth-client-secret $AUTH_CLIENT_SECRET",
+    "start": "ts-node index.ts transform --from filesystem --to stdout --project \"$TRANSFORM_PROJECT\" --debug -v s3endpoint=$S3_ENDPOINT -v s3bucket=$S3_BUCKET -v graph-store-endpoint=$GRAPH_STORE_ENDPOINT -v graph-store-user=$GRAPH_STORE_USER -v graph-store-password=$GRAPH_STORE_PASSWORD -v graph=$TRANSFORM_GRAPH --auth-issuer $AUTH_ISSUER --auth-client-id $AUTH_CLIENT_ID --auth-client-secret $AUTH_CLIENT_SECRET",
     "build": "tsc"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "@rdfjs/parser-jsonld": "^1.2.0",
     "@rdf-esm/sink-map": "^0.5.2",
     "@tpluscode/rdf-ns-builders": "^0.3.7",
-    "@tpluscode/rdfine": "^0.5.2",
+    "@tpluscode/rdfine": "^0.5.3",
     "@zazuko/rdfine-data-cube": "^0.2.3",
     "alcaeus": "^1.0.0-beta.11",
     "aws-sdk": "^2.559.0",

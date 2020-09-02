@@ -9,6 +9,7 @@ import { valueAttributeToCsvwColumn } from './csvwBuilder/valueAttribute'
 import { referenceAttributeToCsvwColumn } from './csvwBuilder/referenceAttribute'
 import { error } from '../log'
 import * as DataCube from '@zazuko/rdfine-data-cube'
+import { TableMixin } from '@zazuko/rdfine-data-cube/Table/Table'
 import { dataCube } from '@zazuko/rdfine-data-cube/namespaces'
 import { rdf, qb } from '@tpluscode/rdf-ns-builders'
 import { wireUp } from '@zazuko/rdfine-data-cube/wireUp'
@@ -54,7 +55,7 @@ export function buildCsvw (tableOrDataset: DataCube.Table | { dataset: DatasetCo
     table = RdfResourceImpl.factory.createEntity(cf({
       dataset: tableOrDataset.dataset,
       term: $rdf.namedNode(tableOrDataset.tableId),
-    }))
+    }), [TableMixin])
   } else {
     table = tableOrDataset
   }
