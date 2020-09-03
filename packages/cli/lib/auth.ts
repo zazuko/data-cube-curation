@@ -43,62 +43,50 @@ const getMetadata = once(async (config: AuthConfig) => {
   return (await response.json()) as Metadata
 })
 
-const tokenGetter = function (config: AuthConfig, log: Debugger) {
-  let token: LiveToken | null = null
+const getToken = async function (config: AuthConfig, log: Debugger) {
+  const metadata = await getMetadata(config)
 
-  return async function getToken (): Promise<LiveToken> {
-    if (!token || !isValid(token)) {
-      const metadata = await getMetadata(config)
+  const params = {
+    'grant_type': 'client_credentials',
+    'client_id': config.clientId,
+    'client_secret': config.clientSecret,
+  }
 
-      const params = {
-        'grant_type': 'client_credentials',
-        'client_id': config.clientId,
-        'client_secret': config.clientSecret,
-      }
+  config.params.forEach((value, key) => (params[key] = value))
 
-      config.params.forEach((value, key) => (params[key] = value))
+  const response = await fetch(metadata.token_endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: querystring.stringify(params),
+  })
 
-      const response = await fetch(metadata.token_endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: querystring.stringify(params),
-      })
+  const newToken = (await response.json()) as TokenResponse
 
-      const newToken = (await response.json()) as TokenResponse
+  if ('error' in newToken) {
+    throw new Error(newToken.error_description || newToken.error)
+  }
 
-      if ('error' in newToken) {
-        throw new Error(newToken.error_description || newToken.error)
-      }
+  log('Renewed access token', newToken)
 
-      log('Renewed access token', newToken)
-
-      const expiration = Date.now() + newToken.expires_in * 1000
-      token = {
-        ...newToken,
-        expiration,
-      }
-    }
-
-    return token
+  const expiration = Date.now() + newToken.expires_in * 1000
+  return {
+    ...newToken,
+    expiration,
   }
 }
 
-export async function setupAuthentication (config: AuthConfig, log: Debugger) {
-  const getToken = tokenGetter(config, log)
+export function setupAuthentication (config: AuthConfig, log: Debugger) {
+  let token: LiveToken | undefined
 
-  async function renew () {
-    const token = await getToken()
-    Hydra.defaultHeaders = {
+  Hydra.defaultHeaders = async () => {
+    if (!token || !isValid(token)) {
+      token = await getToken(config, log)
+    }
+
+    return {
       Authorization: `Bearer ${token.access_token}`,
     }
-  }
-
-  await renew()
-  const interval = setInterval(renew, 1000)
-
-  return function () {
-    clearInterval(interval)
   }
 }
