@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.4.0...data-cube-curation-api@0.5.0) (2020-09-09)
+
+
+### Bug Fixes
+
+* delete datatype params on cascade when attribute is removed ([5659165](https://github.com/zazuko/data-cube-curation/commit/5659165102865c2b93507fcf7217c091219587f8))
+
+
+### Features
+
+* make the oidc config runtime configurable ([9316da5](https://github.com/zazuko/data-cube-curation/commit/9316da5e23365b518102609f8a7371c076ccf06d))
+
+
+
+
+
 # [0.4.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.3.1...data-cube-curation-api@0.4.0) (2020-07-20)
 
 

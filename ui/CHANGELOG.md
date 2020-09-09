@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.5.0...data-cube-curation-ui@0.6.0) (2020-09-09)
+
+
+### Bug Fixes
+
+* **ui:** make all API calls authenticated ([29500fe](https://github.com/zazuko/data-cube-curation/commit/29500fe1e22a41d7f3c5abd36fd047297e6a68be))
+
+
+### Features
+
+* make the oidc config runtime configurable ([9316da5](https://github.com/zazuko/data-cube-curation/commit/9316da5e23365b518102609f8a7371c076ccf06d))
+
+
+
+
+
 # [0.5.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.4.0...data-cube-curation-ui@0.5.0) (2020-07-20)
 
 

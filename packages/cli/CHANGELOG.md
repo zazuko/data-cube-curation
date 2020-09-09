@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-cli@0.2.2...data-cube-curation-cli@0.3.0) (2020-09-09)
+
+
+### Bug Fixes
+
+* **cli:** prefix auth-related flags ([75ff752](https://github.com/zazuko/data-cube-curation/commit/75ff7523eef11e4d30e7eca1665add58f083586a))
+
+
+### Features
+
+* **cli:** authenticate API calls ([46739cb](https://github.com/zazuko/data-cube-curation/commit/46739cb95e14049a90f8b50b5105c6674e5b1224))
+
+
+
+
+
 ## [0.2.2](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-cli@0.2.1...data-cube-curation-cli@0.2.2) (2020-07-20)
 
 **Note:** Version bump only for package data-cube-curation-cli
