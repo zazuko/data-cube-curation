@@ -74,7 +74,7 @@ export class APIError extends Error {
   response: IHydraResponse;
 
   constructor (details: any, response: IHydraResponse) {
-    const message = details.title || 'Unkown error'
+    const message = details.title || 'Unknown error'
 
     super(message)
 
@@ -326,10 +326,6 @@ class ProjectsClient {
 
 async function loadResource<T extends HydraResource = HydraResource> (id: ResourceId): Promise<T> {
   const response = await Hydra.loadResource(id)
-
-  if (response.xhr.status === 401 || response.xhr.status === 403) {
-    throw new Error('Access denied')
-  }
 
   if (response.xhr.status !== 200) {
     throw await APIError.fromResponse(response)
