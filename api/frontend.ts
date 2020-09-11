@@ -24,14 +24,13 @@ export function uiConfig (req, res) {
     const stream = fs.createReadStream(env.AUTH_CONFIG_FILE)
     stream.pipe(res)
   } else {
-    res.write(`
+    res.send(`
 window.oidc = {
   authority: '${env.AUTH_ISSUER}',
   clientId: '${env.AUTH_CLIENT_ID}',
   scope: 'profile pipelines:read pipelines:write',
 }`)
   }
-  res.end()
 }
 
 export default app
