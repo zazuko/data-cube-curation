@@ -19,6 +19,7 @@
       <div class="errors">
         <b-message v-for="(error, index) in errors" :key="index" :title="error.title" type="is-danger" has-icon aria-close-label="Dismiss" @close="dismissError(error)">
           {{ error.detail }}
+          <a target="_blank" v-if="error.link" :href="error.link.href" >{{ error.link.title }}</a>
         </b-message>
       </div>
     </main>

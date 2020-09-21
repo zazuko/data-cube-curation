@@ -72,8 +72,15 @@ export default class extends Vue {
 
   async loadPreview () {
     try {
+      let authorization: string | undefined
+      if (this.$store.state.oidc) {
+        authorization = 'Bearer ' + this.$store.state.oidc.access_token
+      }
       const response = await rdfFetch(this.table.preview.id, {
-        headers: { accept: 'application/n-triples' },
+        headers: {
+          accept: 'application/n-triples',
+          authorization,
+        },
       })
       const dataset = await response.dataset()
       const n3 = await serializeN3(dataset)

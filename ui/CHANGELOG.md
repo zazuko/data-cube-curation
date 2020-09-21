@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.6.0...data-cube-curation-ui@0.7.0) (2020-09-21)
+
+
+### Bug Fixes
+
+* add authorization to preview fetch ([d1ba64e](https://github.com/zazuko/data-cube-curation/commit/d1ba64e40e0ea4aed6180481c96e79aae247fa42))
+
+
+### Features
+
+* **api:** return access request link in 403 responses ([48de2dc](https://github.com/zazuko/data-cube-curation/commit/48de2dc62b325ac5d061ac5f70a893fe517080b7))
+
+
+
+
+
 # [0.6.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.5.0...data-cube-curation-ui@0.6.0) (2020-09-09)
 
 
