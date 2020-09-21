@@ -8,7 +8,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* add authorization to prefiew fetch ([d1ba64e](https://github.com/zazuko/data-cube-curation/commit/d1ba64e40e0ea4aed6180481c96e79aae247fa42))
+* add authorization to preview fetch ([d1ba64e](https://github.com/zazuko/data-cube-curation/commit/d1ba64e40e0ea4aed6180481c96e79aae247fa42))
 
 
 ### Features
