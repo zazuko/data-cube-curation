@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.6.0...data-cube-curation-api@0.6.1) (2020-09-24)
+
+
+### Bug Fixes
+
+* **api:** send request access link on all auth error responses ([8f180fa](https://github.com/zazuko/data-cube-curation/commit/8f180fa0aabc4c4c9da65fb217aa25f858fad5b4))
+
+
+
+
+
 # [0.6.0](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-api@0.5.0...data-cube-curation-api@0.6.0) (2020-09-21)
 
 
