@@ -3,7 +3,7 @@ import { MapperRegistry } from 'http-problem-details-mapper'
 import { NotFoundErrorMapper } from './NotFound'
 import * as domainMappers from './DomainErrors'
 import { RequestErrorMapper } from './RequestError'
-import * as forbiddenError from './Forbidden'
+import * as authError from './auth'
 
 const strategy = new ExpressMappingStrategy(
   new MapperRegistry()
@@ -12,6 +12,7 @@ const strategy = new ExpressMappingStrategy(
     .registerMapper(new domainMappers.DomainErrorMapper())
     .registerMapper(new domainMappers.AggregateNotFoundErrorMapper())
     .registerMapper(new domainMappers.ConcurrencyErrorMapper())
-    .registerMapper(new forbiddenError.Mapper()))
+    .registerMapper(new authError.ForbiddenMapper())
+    .registerMapper(new authError.UnauthorizedMapper()))
 
 export const httpProblemMiddleware = HttpProblemResponse({ strategy })

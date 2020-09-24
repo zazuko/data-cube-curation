@@ -3,14 +3,16 @@ import { ProblemDocument } from 'http-problem-details'
 import httpError from 'http-errors'
 import env from '../env'
 
-export class Mapper extends ErrorMapper {
-  public constructor () {
-    super(httpError.Forbidden)
+class AuthErrorMapper extends ErrorMapper {
+  private readonly status: number;
+  constructor (e: any, status: number) {
+    super(e)
+    this.status = status
   }
 
   mapError (): ProblemDocument {
     return new ProblemDocument({
-      status: 403,
+      status: this.status,
       title: 'Access denied',
       detail: 'Follow the link to request access to this page:',
       type: 'http://tempuri.org/Forbidden',
@@ -20,5 +22,17 @@ export class Mapper extends ErrorMapper {
         href: `${env.AUTH_ACCESS_REQUEST}`,
       },
     })
+  }
+}
+
+export class UnauthorizedMapper extends AuthErrorMapper {
+  public constructor () {
+    super(httpError.Unauthorized, 401)
+  }
+}
+
+export class ForbiddenMapper extends AuthErrorMapper {
+  public constructor () {
+    super(httpError.Forbidden, 403)
   }
 }
