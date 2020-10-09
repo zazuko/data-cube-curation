@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.2](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.7.1...data-cube-curation-ui@0.7.2) (2020-10-09)
+
+
+### Bug Fixes
+
+* ui should automatically renew auth token ([c545155](https://github.com/zazuko/data-cube-curation/commit/c54515540186ef61f90c33476285076f75ef5c78))
+
+
+
+
+
 ## [0.7.1](https://github.com/zazuko/data-cube-curation/compare/data-cube-curation-ui@0.7.0...data-cube-curation-ui@0.7.1) (2020-09-24)
 
 **Note:** Version bump only for package data-cube-curation-ui
