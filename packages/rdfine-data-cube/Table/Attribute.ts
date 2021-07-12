@@ -16,6 +16,7 @@ function AttributeMixin<TBase extends Constructor> (Base: TBase) {
 }
 
 export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+  @namespace(dataCube)
   class ValueAttribute extends Base implements Table.ValueAttribute {
     @property.resource()
     public datatype: RdfResource
@@ -32,10 +33,10 @@ export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> 
     public get parameters () {
       const prop = dataCube('datatype/parameters')
 
-      return this._selfGraph.out(prop)
+      return this.pointer.out(prop)
         .toArray()
         .reduce((params, param) => {
-          [...this._selfGraph.dataset.match(param.term)]
+          [...this.pointer.dataset.match(param.term)]
             .forEach(quad => {
               const csvwProperty = quad.predicate.value.replace(dataCube('datatype/').value, '')
               params[csvwProperty] = quad.object.value
@@ -49,6 +50,7 @@ export function ValueAttributeMixin<TBase extends Constructor<Table.Attribute>> 
   return AttributeMixin(ValueAttribute)
 }
 export function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribute>> (Base: TBase) {
+  @namespace(dataCube)
   class ReferenceAttribute extends Base implements Table.ReferenceAttribute {
     @property.resource({ as: [ TableMixin ] })
     public referencedTable: Table.Table
@@ -60,17 +62,11 @@ export function ReferenceAttributeMixin<TBase extends Constructor<Table.Attribut
   return AttributeMixin(ReferenceAttribute)
 }
 
-AttributeMixin.shouldApply = (cf: RdfResource) => {
-  return cf.hasType(dataCube.Attribute)
-}
+AttributeMixin.appliesTo = dataCube.Attribute
 
-ValueAttributeMixin.shouldApply = (cf: RdfResource) => {
-  return cf.hasType(dataCube.ValueAttribute)
-}
+ValueAttributeMixin.appliesTo = dataCube.ValueAttribute
 
-ReferenceAttributeMixin.shouldApply = (cf: RdfResource) => {
-  return cf.hasType(dataCube.ReferenceAttribute)
-}
+ReferenceAttributeMixin.appliesTo = dataCube.ReferenceAttribute
 
 ValueAttributeMixin.Class = class extends ValueAttributeMixin(AttributeMixin(RdfResourceImpl)) {
   constructor (node: ResourceNode, init?: Initializer<Table.ValueAttribute>) {

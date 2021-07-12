@@ -6,4 +6,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!(@tpluscode)/)',
   ],
+  moduleNameMapper: {
+    '@rdf-esm/(.*)': '@rdfjs/$1',
+  },
 }

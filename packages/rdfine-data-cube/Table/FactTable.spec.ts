@@ -55,14 +55,14 @@ describe('FactTable', () => {
           [dataCube.sourceColumn.value]: columns[0],
         }],
       })
-      fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
+      fooAttr.pointer.addOut(dataCube.table, table.pointer)
 
       // when
       const aboutUrl = table.missingIdentifierColumns
 
       // then
       expect(aboutUrl).toEqual(
-        expect.arrayContaining([columns[0].name])
+        expect.arrayContaining([columns[0].name]),
       )
     })
 
@@ -92,7 +92,7 @@ describe('FactTable', () => {
           [dataCube.sourceColumn.value]: columns[0],
         }],
       })
-      fooAttr._selfGraph.addOut(dataCube.table, table._selfGraph)
+      fooAttr.pointer.addOut(dataCube.table, table.pointer)
 
       // when
       const aboutUrl = table.missingIdentifierColumns

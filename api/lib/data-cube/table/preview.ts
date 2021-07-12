@@ -31,7 +31,7 @@ export const parseSample = asyncMiddleware(async (req: express.Request, res: exp
   }
 
   const parser = new CsvwParser({
-    metadata: csvwMetadata._selfGraph.dataset,
+    metadata: csvwMetadata.pointer.dataset,
     factory: $rdf,
   })
 

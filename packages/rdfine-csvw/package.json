@@ -9,19 +9,20 @@
   },
   "dependencies": {
     "@rdfjs/namespace": "^1.1.0",
-    "@tpluscode/rdf-ns-builders": "^0.1.0",
-    "@tpluscode/rdfine": "^0.4",
+    "@tpluscode/rdf-ns-builders": "^0.3.7",
+    "@tpluscode/rdfine": "^0.5.3",
     "@zazuko/rdf-vocabularies": "^2019.12.23",
-    "clownface": "^0.12.1"
+    "clownface": "^1"
   },
   "devDependencies": {
-    "@types/rdf-js": "^2.0.11",
+    "@types/rdf-js": "^4",
+    "@types/rdfjs__namespace": "^1.1.1",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^5.16.0",
     "lint-staged": "^8.2.1",
     "standard": "^12.0.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.7"
   },
   "repository": {
     "type": "git",

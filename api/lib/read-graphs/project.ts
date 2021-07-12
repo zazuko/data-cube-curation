@@ -171,9 +171,9 @@ export async function getProject (id: string): Promise<Project> {
       manages.addOut(hydra.object, dataCube.Source)
     })
 
-  return new ProjectMixin.Class({
+  return new ProjectMixin.Class(cf({
     dataset, term: namedNode(id),
-  })
+  }))
 }
 
 export async function hasSource (projectId: string, sourceId: string) {

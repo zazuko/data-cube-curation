@@ -1,5 +1,6 @@
 import stream from 'readable-stream'
-import Ld, { Collection, HydraResource } from 'alcaeus'
+import type { Collection, HydraResource } from 'alcaeus'
+import Ld from './hydra'
 import * as DataCube from '@zazuko/rdfine-data-cube'
 import * as Csvw from '@rdfine/csvw'
 import { Table } from '@zazuko/rdfine-data-cube/Table'
@@ -7,15 +8,13 @@ import { parsers } from '@rdfjs/formats-common'
 import Logger from 'barnard59-core/lib/logger'
 import { Context } from 'barnard59-core/lib/Pipeline'
 
-DataCube.wireUp(Ld.factory)
-
 parsers.forEach((parser, type) => {
   Ld.parsers.set(type, parser)
 })
 
 async function loadProject (projectUri, log) {
   log.debug(`Loading project ${projectUri}`)
-  const resource = (await Ld.loadResource<DataCube.Project>(projectUri)).root
+  const resource = (await Ld.loadResource<DataCube.Project>(projectUri)).representation?.root
   if (!resource || !('tables' in resource)) {
     throw new Error(`Did not find representation of project ${projectUri}`)
   }
@@ -27,8 +26,8 @@ async function loadTables (project: DataCube.Project, log): Promise<Table[]> {
   const tablesId = project.tables.id.value
   log.info(`Will transform project ${project.name}`)
   log.debug(`Loading output tables ${tablesId}`)
-  const resource = (await Ld.loadResource<Collection<Table>>(tablesId)).root
-  if (resource !== null && ('members' in resource)) {
+  const resource = (await Ld.loadResource<Collection<Table>>(tablesId)).representation?.root
+  if (resource && ('members' in resource)) {
     return resource.members
   }
 
@@ -48,7 +47,7 @@ class ProjectIterator extends stream.Readable {
         const loadMetadata = tables.reduce((metadata, table) => {
           log.debug(`Loading csvw for table ${table.name}`)
           const promise = Ld.loadResource(table.csvw.id.value)
-            .then(r => r.root)
+            .then(r => r.representation?.root)
             .then((csvwResource: HydraResource & Csvw.Mapping | null) => {
               if (!csvwResource) {
                 log.warn(`Skipping table ${table.name}. Failed to dereference`)
